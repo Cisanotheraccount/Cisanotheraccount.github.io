@@ -27,13 +27,17 @@ for (const project of workProjects) {
  await page('work/'+project.slug, project.title+' — Ci Song / Gala X Ci', project.summary, content);
 }
 await writeFile('dist/404.html', template.replace('<div id="root"></div>', '<main><h1>Page not found</h1><a href="/">Design portfolio</a> · <a href="/photography/">Photography &amp; Film</a></main>').replace(/<script[^>]+src="[^"]+"[^>]*><\/script>/g,''));
-// Publish the approved glass-and-starlight site at the public root. Keep the
+// Publish the approved glass-and-starlight site at its branded entry. Keep the
 // previous design available separately; Photography and direct case URLs retain
 // their existing bundles. The development entries remain independent.
 await mkdir('dist/legacy', { recursive: true });
 await writeFile('dist/legacy/index.html', await readFile('dist/index.html', 'utf8'));
-await writeFile('dist/index.html', await readFile('dist/v-next/index.html', 'utf8'));
+await mkdir('dist/galaxci', { recursive: true });
+await writeFile('dist/galaxci/index.html', await readFile('dist/v-next/index.html', 'utf8'));
+// Preserve bookmarked project hashes and query options when entering at /. The
+// replacement avoids an extra Back-button step through this forwarding page.
+await writeFile('dist/index.html', '<!doctype html><html lang="en"><head><meta charset="UTF-8"><meta name="viewport" content="width=device-width, initial-scale=1"><title>Gala X Ci — Ci Song</title><script>location.replace("/galaxci/" + location.search + location.hash);</script><noscript><meta http-equiv="refresh" content="0;url=/galaxci/"></noscript></head><body><a href="/galaxci/">Open Gala X Ci</a></body></html>');
 // This offline palette contact sheet is a review artifact, not a site asset.
 await rm('dist/v-next/work-background/palette-review.jpg', { force: true });
 await rm('.site-build',{recursive:true,force:true});
-console.log('Published next-version root, preserved legacy design, photography, seven project routes and a 404 page.');
+console.log('Published /galaxci/ with root forwarding, legacy design, photography, seven project routes and a 404 page.');

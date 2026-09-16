@@ -2,7 +2,7 @@
 
 Personal portfolio of Ci Song: interfaces, experiments, environments and photography.
 
-**Website:** https://cisanotheraccount.github.io/  
+**Website:** https://cisanotheraccount.github.io/galaxci/  
 **Contact:** galaxci.song@gmail.com
 
 ## Run locally
@@ -23,7 +23,7 @@ npm run build
 npm run preview
 ```
 
-The production root serves the current glass-and-starlight portfolio. `/v-next/` remains available, alongside `/photography/`, the earlier `/legacy/` design and existing project URLs.
+The `/galaxci/` route serves the current glass-and-starlight portfolio. The root URL forwards there, preserving bookmarked project hashes and query parameters. `/v-next/` remains available, alongside `/photography/`, the earlier `/legacy/` design and existing project URLs.
 
 React, TypeScript, Vite, Three.js, Motion and Lenis. Seven project details use hash routing, so direct links and refresh work on GitHub Pages. The starfield and project colors use the original photographs and portfolio material.
 

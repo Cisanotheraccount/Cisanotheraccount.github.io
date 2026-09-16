@@ -1,0 +1,48 @@
+{
+  "source": "内容资料/03_摄影与平面设计合集/摄影/首页背景原图/201A3976.jpg",
+  "sourceSha256": "5d4f83c4c09adcce5859f836f08d842222ab65e9494e93a70226059d99556af0",
+  "sourceWidth": 8192,
+  "sourceHeight": 5464,
+  "width": 8192,
+  "height": 3000,
+  "crop": {
+    "x": 0,
+    "y": 0,
+    "width": 8192,
+    "height": 3000
+  },
+  "colorSpace": "sRGB",
+  "variants": [
+    {
+      "url": "/v-next/work-background/stars-1536.jpg",
+      "width": 1536,
+      "height": 562,
+      "bytes": 524709,
+      "sha256": "4198b3287a91a381bf93112c9bd8bc5579b2f2e097df48a439ee72c162e8c6b6"
+    },
+    {
+      "url": "/v-next/work-background/stars-2560.jpg",
+      "width": 2560,
+      "height": 938,
+      "bytes": 1413181,
+      "sha256": "e64aa706d477a197bdf6f3a8819bae764c68610947890ecae7b7c1abc07141dd"
+    },
+    {
+      "url": "/v-next/work-background/stars-3072.jpg",
+      "width": 3072,
+      "height": 1125,
+      "bytes": 2018128,
+      "sha256": "da44412ad2545d60404b1ccc4478d34fd3328d486a2fa63257ec016d72ac6aad"
+    },
+    {
+      "url": "/v-next/work-background/stars-4096.jpg",
+      "width": 4096,
+      "height": 1500,
+      "bytes": 3602750,
+      "sha256": "fc29db30edc26534b18ba1e512e065a8c646cec6ced76a64c92725a43f93f763"
+    }
+  ],
+  "processing": "Top 3000 rows of the EXIF-oriented 8192×5464 source, avoiding the silhouette below. Proportional Lanczos resize; JPEG quality 98, 4:4:4, original ICC. No exposure, saturation, grading or sharpening changes. Section brightness is controlled separately at display time.",
+  "originalPreserved": true,
+  "heroExportsPreserved": true
+}

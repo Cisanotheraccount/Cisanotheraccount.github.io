@@ -1,0 +1,46 @@
+{
+  "source": "内容资料/03_摄影与平面设计合集/摄影/首页背景原图/201A3976.jpg",
+  "sourceSha256": "5d4f83c4c09adcce5859f836f08d842222ab65e9494e93a70226059d99556af0",
+  "sourceBytes": 27999879,
+  "width": 8192,
+  "height": 5464,
+  "colorSpace": "sRGB",
+  "processing": "EXIF orientation, proportional Lanczos resize, JPEG quality 98 with 4:4:4 color sampling and original sRGB ICC. No exposure, color grade, sharpening or creative crop. Original and previous WebP exports preserved.",
+  "encoding": {
+    "format": "JPEG",
+    "quality": 98,
+    "subsampling": "4:4:4",
+    "optimized": true
+  },
+  "colorValidation": "v-next/review/meteors-color-v4/encoding-report.json",
+  "derivatives": [
+    {
+      "url": "/v-next/background/stars-1536.jpg",
+      "width": 1536,
+      "height": 1024,
+      "bytes": 908420,
+      "sha256": "232f40ab2e291368fce8b48e652f9ff21438bd287a971041fb6f5e272b574e5b"
+    },
+    {
+      "url": "/v-next/background/stars-2560.jpg",
+      "width": 2560,
+      "height": 1708,
+      "bytes": 2478850,
+      "sha256": "454a4e4e6b53d48560186a529997387dde28fd0e5cf801403bfddcf741643f94"
+    },
+    {
+      "url": "/v-next/background/stars-3072.jpg",
+      "width": 3072,
+      "height": 2049,
+      "bytes": 3570871,
+      "sha256": "e62c756c0ab80a86c3a7ed94cc93b1d11bc51ff18241dd4e1bbf595b495d19a7"
+    },
+    {
+      "url": "/v-next/background/stars-4096.jpg",
+      "width": 4096,
+      "height": 2732,
+      "bytes": 6427893,
+      "sha256": "716d4d82ce11503e1bc4d1cdf263180497fc185a873a6e0b706f7265d77b18bc"
+    }
+  ]
+}

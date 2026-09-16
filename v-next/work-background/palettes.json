@@ -1,0 +1,191 @@
+{
+  "hypnos-cockpit": {
+    "primary": [
+      118,
+      113,
+      143
+    ],
+    "secondary": [
+      85,
+      109,
+      143
+    ],
+    "source": "/portfolio/hypnos-cockpit-1600.webp",
+    "sourceSha256": "b032b8a3e100f4bd34bf7ea5621ec7d76633928f9d91726a468408f20fc6951c",
+    "extracted": {
+      "primary": [
+        71,
+        66,
+        99
+      ],
+      "secondary": [
+        42,
+        75,
+        122
+      ]
+    },
+    "method": "64-color median-cut proxy; omit black/white backplates; saturation-weighted hue groups; retain a distinct measured secondary hue or measured neutral; HSV saturation x0.62 capped 0.48, value clamped 0.56–0.74."
+  },
+  "introme": {
+    "primary": [
+      174,
+      181,
+      189
+    ],
+    "secondary": [
+      143,
+      128,
+      122
+    ],
+    "source": "/portfolio/introme-1600.webp",
+    "sourceSha256": "618c466eecf81232c9432028633575fa3a5964950fc211fc80e7cd9cf31aa134",
+    "extracted": {
+      "primary": [
+        188,
+        200,
+        215
+      ],
+      "secondary": [
+        139,
+        115,
+        107
+      ]
+    },
+    "method": "64-color median-cut proxy; omit black/white backplates; saturation-weighted hue groups; retain a distinct measured secondary hue or measured neutral; HSV saturation x0.62 capped 0.48, value clamped 0.56–0.74."
+  },
+  "shotflow": {
+    "primary": [
+      82,
+      106,
+      143
+    ],
+    "secondary": [
+      138,
+      139,
+      143
+    ],
+    "source": "/portfolio/shotflow-1290.webp",
+    "sourceSha256": "a615cc1f2303ce4bd8b2c636e72cf6da18ea77a20fbbe1eded48d7a9586f105c",
+    "extracted": {
+      "primary": [
+        18,
+        34,
+        58
+      ],
+      "secondary": [
+        82,
+        83,
+        87
+      ]
+    },
+    "method": "64-color median-cut proxy; omit black/white backplates; saturation-weighted hue groups; retain a distinct measured secondary hue or measured neutral; HSV saturation x0.62 capped 0.48, value clamped 0.56–0.74."
+  },
+  "psytrain": {
+    "primary": [
+      148,
+      137,
+      126
+    ],
+    "secondary": [
+      189,
+      189,
+      189
+    ],
+    "source": "/portfolio/psytrain-1600.webp",
+    "sourceSha256": "2eff9127e29a537ef2eb11758cf66c1ba134d9cd6a891e1f5ba50e541d0673f5",
+    "extracted": {
+      "primary": [
+        148,
+        130,
+        113
+      ],
+      "secondary": [
+        201,
+        201,
+        201
+      ]
+    },
+    "method": "64-color median-cut proxy; omit black/white backplates; saturation-weighted hue groups; retain a distinct measured secondary hue or measured neutral; HSV saturation x0.62 capped 0.48, value clamped 0.56–0.74."
+  },
+  "deal-points": {
+    "primary": [
+      126,
+      154,
+      189
+    ],
+    "secondary": [
+      182,
+      182,
+      184
+    ],
+    "source": "/portfolio/deal-points-1100.webp",
+    "sourceSha256": "bb9ea161dc0e76c760848573c62ed834c0dbef08e5b65eab230f3e0e66f9d6ee",
+    "extracted": {
+      "primary": [
+        92,
+        139,
+        197
+      ],
+      "secondary": [
+        181,
+        181,
+        184
+      ]
+    },
+    "method": "64-color median-cut proxy; omit black/white backplates; saturation-weighted hue groups; retain a distinct measured secondary hue or measured neutral; HSV saturation x0.62 capped 0.48, value clamped 0.56–0.74."
+  },
+  "orbit": {
+    "primary": [
+      189,
+      189,
+      189
+    ],
+    "secondary": [
+      189,
+      189,
+      189
+    ],
+    "source": "/portfolio/orbit-1100.webp",
+    "sourceSha256": "acc0706e7508f2bbdbb7b04900355fd06e300c6acd166e502234cb2ab1ab5c57",
+    "extracted": {
+      "primary": [
+        232,
+        232,
+        232
+      ],
+      "secondary": [
+        232,
+        232,
+        232
+      ]
+    },
+    "method": "64-color median-cut proxy; omit black/white backplates; saturation-weighted hue groups; retain a distinct measured secondary hue or measured neutral; HSV saturation x0.62 capped 0.48, value clamped 0.56–0.74."
+  },
+  "m-box": {
+    "primary": [
+      189,
+      150,
+      145
+    ],
+    "secondary": [
+      173,
+      169,
+      189
+    ],
+    "source": "/portfolio/m-box-1100.webp",
+    "sourceSha256": "ebcc6cb65501049d2b2faff931a4ec28d5795b6ac8dbe5b75689a8484405cb18",
+    "extracted": {
+      "primary": [
+        222,
+        149,
+        140
+      ],
+      "secondary": [
+        163,
+        157,
+        189
+      ]
+    },
+    "method": "64-color median-cut proxy; omit black/white backplates; saturation-weighted hue groups; retain a distinct measured secondary hue or measured neutral; HSV saturation x0.62 capped 0.48, value clamped 0.56–0.74."
+  }
+}

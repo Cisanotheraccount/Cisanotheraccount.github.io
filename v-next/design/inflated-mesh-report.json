@@ -1,0 +1,55 @@
+{
+  "source": "galaxci-shapes.json",
+  "method": "Constrained Delaunay triangulation with p,q28,a0.0035; P1 FEM torsion field; mirrored z=scale*sqrt(u); two-ring quadratic recovered-gradient normals; shared boundary vertices",
+  "vertices": 25997,
+  "triangles": 52006,
+  "edges": 78009,
+  "closed_two_manifold": true,
+  "opposed_half_edges": true,
+  "euler_characteristic": -6,
+  "components": 2,
+  "total_genus": 5,
+  "positive_volume": 44.04363856394593,
+  "bounds": [
+    [
+      -11.16517,
+      -5.0,
+      -0.64
+    ],
+    [
+      11.16517,
+      5.0,
+      0.64
+    ]
+  ],
+  "parts": [
+    {
+      "component": 0,
+      "vertex_start": 0,
+      "vertex_count": 25468,
+      "triangle_start": 0,
+      "triangle_count": 50952,
+      "xy_area": 57.06089960440001,
+      "holes": 5,
+      "max_half_thickness": 0.64
+    },
+    {
+      "component": 1,
+      "vertex_start": 25468,
+      "vertex_count": 529,
+      "triangle_start": 50952,
+      "triangle_count": 1054,
+      "xy_area": 1.1876330188000004,
+      "holes": 0,
+      "max_half_thickness": 0.48251924780605826
+    }
+  ],
+  "scale": 1.5985665697771616,
+  "dependencies": {
+    "triangle": "20250106",
+    "scipy": "1.18.1",
+    "numpy": "2.5.3",
+    "shapely": "2.1.2"
+  },
+  "seconds": 1.24
+}

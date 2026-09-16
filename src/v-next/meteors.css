@@ -1,0 +1,53 @@
+.gxc-meteors { position: absolute; inset: 0; z-index: 2; pointer-events: none; overflow: hidden; }
+.gxc-meteor-mark { position: absolute; left: 0; top: 0; display: grid; place-items: center; width: 44px; height: 44px; border-radius: 50%; pointer-events: auto; opacity: 0; color: #f5f6f8; will-change: transform; outline-offset: 4px; }
+.gxc-meteor-mark[hidden], .gxc-fast-meteor[hidden] { display: none !important; }
+.gxc-meteor-symbol { display: grid; place-items: center; position: relative; width: 44px; height: 44px; border-radius: 50%; transition: transform 140ms var(--ease), background-color 160ms ease; }
+.gxc-meteor-symbol img { width: 30px; height: 30px; filter: drop-shadow(0 1px 3px #000b) drop-shadow(0 0 6px #dce7ff35); }
+.gxc-meteor-symbol::before { content: ''; position: absolute; top: 18px; left: 32px; width: 24px; height: 1px; background: linear-gradient(90deg,#e7edff61,transparent); transform: rotate(-14deg); transform-origin: left center; pointer-events: none; }
+.gxc-meteor-label { position: absolute; top: 47px; left: 50%; transform: translateX(-50%); padding: 4px 7px; border-radius: 5px; white-space: nowrap; font: 500 10px/1.3 Inter,sans-serif; letter-spacing: .01em; background: #0b0f18e6; color: #f8f8fa; box-shadow: 0 2px 8px #0002; opacity: 0; pointer-events: none; }
+.gxc-meteor-mark[data-frozen=true] .gxc-meteor-symbol { background: #dce7ff0c; }
+.gxc-meteor-mark:active .gxc-meteor-symbol { transform: scale(.97); }
+.gxc-meteor-mark:focus-visible { outline: 2px solid #e1ddca; background: #0b0f1866; }
+.gxc-fast-meteor { position: absolute; left: 0; top: 0; width: 122px; height: 10px; overflow: visible; opacity: 0; pointer-events: none; transform-origin: 4px 5px; will-change: transform, opacity; }
+.gxc-meteors[data-suspended=true] .gxc-meteor-mark { pointer-events: none; }
+.gxc-meteors[data-reduced=true] { position: relative; inset: auto; display: flex; flex-wrap: wrap; justify-content: center; gap: 14px 12px; padding: 24px var(--gutter) 28px; overflow: visible; }
+.gxc-meteors[data-reduced=true] .gxc-meteor-mark { position: relative; width: 64px; height: 64px; transform: none !important; opacity: 1 !important; will-change: auto; }
+.gxc-meteors[data-reduced=true] .gxc-meteor-symbol { align-self: start; }
+.gxc-meteors[data-reduced=true] .gxc-meteor-symbol::before { display: none; }
+.gxc-meteors[data-reduced=true] .gxc-meteor-label { top: 44px; padding: 1px 3px; opacity: 1; transform: translate(-50%,0); background: transparent; font-size: 9px; }
+.gxc-meteors[data-reduced=true] .gxc-fast-meteor { display: none; }
+@media (hover: none), (pointer: coarse) {
+  .gxc-meteor-symbol::before { width: 18px; }
+}
+@media (prefers-reduced-motion: reduce) { .gxc-meteor-mark, .gxc-fast-meteor { will-change: auto; } }
+
+/* Empty layout space must not intercept a project entrance below it. Actual
+   paragraphs retain text selection and priority over the flight layer. */
+.gxc-hero-top { pointer-events: none; }
+.gxc-hero-top > p { pointer-events: auto; }
+
+.gxc-sky-fallback { position: absolute; inset: 0; z-index: 0; pointer-events: none; overflow: hidden; }
+.gxc-sky-fallback .gxc-fast-meteor { height: 14px; transform-origin: 4px 7px; filter: drop-shadow(0 0 5px #ccddff66); }
+.gxc-hero[data-sky-ready=true] .gxc-sky-fallback,
+.gxc-sky-fallback[data-reduced=true] { visibility: hidden; }
+/* Text and controls stay above flights; empty grid/flex columns allow project hits. */
+.gxc-hero-top > p { width: fit-content; max-width: 100%; }
+.gxc-header { pointer-events: none; }
+.gxc-brand, .gxc-nav { pointer-events: auto; }
+.gxc-hero-bottom { pointer-events: none; }
+.gxc-hero-bottom > p, .gxc-hero-bottom a, .gxc-hero-bottom .gxc-mono { pointer-events: auto; }
+.gxc-meteor-symbol::before { left: 22px; top: 22px; width: var(--meteor-tail-length,24px); transform: rotate(var(--meteor-tail-angle,-14deg)) translateX(15px); transform-origin: 0 50%; }
+/* Icon and name share the same background image layer. The DOM link supplies
+   keyboard/click access; its text is rendered only in the static reduced view. */
+.gxc-meteors[data-reduced=false] .gxc-meteor-label { visibility: hidden; }
+.gxc-project-fallback { position: absolute; inset: 0; z-index: 0; pointer-events: none; overflow: hidden; }
+.gxc-meteor-visual { position: absolute; left: 0; top: 0; width: 44px; height: 44px; place-items: center; will-change: transform; }
+.gxc-meteor-visual .gxc-meteor-label { opacity: var(--project-label-opacity,0); max-width: 82px; box-sizing: border-box; }
+.gxc-meteors[data-reduced=false] .gxc-meteor-symbol img,
+.gxc-meteors[data-reduced=false] .gxc-meteor-symbol::before { visibility: hidden; }
+.gxc-hero[data-project-sky-ready=true] .gxc-project-fallback,
+.gxc-project-fallback[data-reduced=true] { visibility: hidden; }
+/* If only the atlas fails, draw fallback images over the opaque GL backdrop. */
+.gxc-hero[data-sky-ready=true]:not([data-project-sky-ready=true]) .gxc-project-fallback { z-index: 2; }
+.gxc-meteors[data-reduced=true] .gxc-meteor-symbol img { visibility: visible; }
+@media (prefers-reduced-motion: reduce) { .gxc-meteor-visual { will-change: auto; } }

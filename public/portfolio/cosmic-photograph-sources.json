@@ -1,0 +1,46 @@
+{
+  "createdAt": "2026-09-14T04:43:44.168792+00:00",
+  "source": {
+    "path": "public/assets/galaxci-starry-silhouette.jpeg",
+    "width": 2171,
+    "height": 1448,
+    "bytes": 1219029,
+    "sha256": "fe4deaf1b1920b2e9891fb87090beccb568d3fafc63ea5dce7d212ea84263a5e"
+  },
+  "processing": {
+    "operation": "Technical resize and WebP encoding only",
+    "requestedWidths": [
+      1920,
+      960
+    ],
+    "format": "WebP",
+    "quality": 90,
+    "method": 6,
+    "resampling": "Lanczos",
+    "aspectRatioPreserved": true,
+    "crop": false,
+    "creativeEditing": false,
+    "orientation": "EXIF transpose if present",
+    "orientedSourceSize": [
+      2171,
+      1448
+    ],
+    "sourcePreserved": true
+  },
+  "derivatives": [
+    {
+      "path": "public/portfolio/cosmic-photograph-1920.webp",
+      "width": 1920,
+      "height": 1281,
+      "bytes": 668422,
+      "sha256": "a286c1e0668a3956bc19db5e23dc5350cee6ed3bacc6c9167f9a437245608e81"
+    },
+    {
+      "path": "public/portfolio/cosmic-photograph-960.webp",
+      "width": 960,
+      "height": 640,
+      "bytes": 143042,
+      "sha256": "f2f55c98ec7746e38329ce0625eaff3946087689b1d10bbdd960085ba7d76772"
+    }
+  ]
+}

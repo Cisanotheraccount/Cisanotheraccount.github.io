@@ -1,0 +1,90 @@
+html[data-photography] { background: var(--ink); color-scheme: dark; }
+.photo-site { --photo-paper: var(--ink); --photo-line: var(--line); color: var(--paper); background: var(--photo-paper); padding: 0 var(--gutter); min-height: 100vh; }
+.photo-site a, .photo-site button { color: inherit; }
+.photo-site a:focus-visible, .photo-site button:focus-visible, .photo-dialog button:focus-visible { outline: 2px solid currentColor; outline-offset: 6px; }
+.photo-header { display: flex; align-items: center; justify-content: space-between; gap: 24px; min-height: 90px; border-bottom: 1px solid var(--photo-line); }
+.photo-brand { font: 29px/1 "Space Grotesk", sans-serif; letter-spacing: -.04em; display: block; }
+.photo-brand span { display: block; font: 10px/1.5 Inter,sans-serif; letter-spacing: .02em; margin-top: 9px; }
+.photo-header nav { display: flex; gap: 36px; font-size: 13px; }
+.photo-header nav a, .photo-design-link { display: flex; align-items: center; gap: 9px; min-height: 44px; }
+.photo-design-link { font-size: 11px; }
+.photo-header nav a:hover, .photo-design-link:hover { text-decoration: underline; text-underline-offset: 6px; }
+.photo-hero { padding-top: 29px; }
+.photo-hero-line { display: flex; justify-content: space-between; gap: 20px; font-size: 10px; letter-spacing: .035em; }
+.photo-hero h1 { font: 400 clamp(65px, 10.5vw, 178px)/1.02 "Space Grotesk",sans-serif; letter-spacing: -.065em; margin: 40px 0 46px; }
+.photo-site em { font-family: "Space Grotesk",sans-serif; font-weight: 400; font-style: normal; }
+.photo-cover-frame { position: relative; aspect-ratio: 2.35; background: #161616; min-height: 270px; overflow: hidden; }
+.photo-cover-no { position: absolute; top: 30px; left: 34px; font-size: 13px; }
+.photo-cover-label { position: absolute; inset: 0; display: flex; flex-direction: column; align-items: center; justify-content: center; gap: 12px; }
+.photo-cover-label > span:first-child { font: 400 clamp(24px,3.6vw,58px)/1.1 "Space Grotesk",sans-serif; letter-spacing: -.025em; }
+.photo-cover-label > span:last-child { font-size: 11px; color: #aaa; }
+.photo-cover-signature { position: absolute; right: 34px; bottom: 26px; font: 400 22px "Space Grotesk",sans-serif; }
+.photo-corner { position: absolute; width: 24px; height: 24px; border-color: #444; border-style: solid; }
+.photo-corner.tl { top: 15px; left: 15px; border-width: 1px 0 0 1px; }.photo-corner.tr { top: 15px; right: 15px; border-width: 1px 1px 0 0; }.photo-corner.bl { bottom: 15px; left: 15px; border-width: 0 0 1px 1px; }.photo-corner.br { bottom: 15px; right: 15px; border-width: 0 1px 1px 0; }
+.photo-cover-caption { display: flex; align-items: center; justify-content: space-between; gap: 20px; font-size: 10px; padding: 12px 0; }
+.photo-cover-caption a { display: inline-flex; align-items: center; gap: 20px; min-height: 44px; font-size: 12px; }
+.photo-selected, .photo-films { padding-top: 130px; scroll-margin-top: 30px; }
+.photo-section-intro { display: grid; grid-template-columns: 1fr 2fr 1fr; align-items: end; gap: 25px; margin-bottom: 36px; }
+.photo-kicker { font-size: 10px; letter-spacing: .055em; text-transform: uppercase; }
+.photo-section-intro h2 { font: 400 clamp(42px,5.7vw,86px)/1 "Space Grotesk",sans-serif; letter-spacing: -.055em; margin: 0; }
+.photo-section-intro p { font-size: 11px; line-height: 1.7; color: #aaa; }
+.photo-filters { display: flex; flex-wrap: wrap; gap: 12px 28px; border-top: 1px solid var(--photo-line); border-bottom: 1px solid var(--photo-line); padding: 9px 0; }
+.photo-filters button { background: transparent; font-size: 12px; min-height: 44px; padding: 6px 0; display: inline-flex; align-items: baseline; gap: 8px; position: relative; }
+.photo-filters button span { font-size: 9px; color: #aaa; }
+.photo-filters button::after { content: ''; position: absolute; height: 1px; background: currentColor; bottom: 5px; left: 0; width: 100%; transform: scaleX(0); transform-origin: left; transition: transform .3s ease; }
+.photo-filters button[aria-pressed=true]::after, .photo-filters button:hover::after { transform: scaleX(1); }
+.photo-preview-note { font-size: 10px; color: #aaa; margin: 16px 0 32px; }
+.photo-grid { display: grid; grid-template-columns: repeat(12,minmax(0,1fr)); gap: 80px 7%; align-items: start; }
+.photo-card { display: block; grid-column: span 7; width: 100%; background: none; text-align: left; padding: 0; }
+.photo-card-portrait { grid-column: span 5; }
+.photo-card:nth-child(4n + 2) { margin-top: 110px; }
+.photo-placeholder { display: block; position: relative; background: #181818; aspect-ratio: 1.48; overflow: hidden; transition: background .35s ease; }
+.photo-card-portrait .photo-placeholder { aspect-ratio: .8; }
+.placeholder-restaurants { background: #1b1b1b; }.placeholder-spaces { background: #151515; }.placeholder-live { background: #343434; color: #eee; }
+.photo-slot-index { position: absolute; left: 20px; top: 20px; font-size: 10px; }
+.photo-slot-label { display: flex; align-items: center; justify-content: center; flex-direction: column; position: absolute; inset: 0; font: 400 clamp(23px,3vw,45px) "Space Grotesk",sans-serif; letter-spacing: -.035em; transition: transform .6s cubic-bezier(.22,1,.36,1); }
+.photo-slot-label small { font: 10px Inter,sans-serif; letter-spacing: 0; margin-top: 12px; opacity: .7; }
+.photo-slot-open { position: absolute; right: 20px; bottom: 20px; transition: transform .3s var(--ease); }
+.photo-card:hover .photo-slot-open { transform: translate(4px,-4px); }.photo-card:hover .photo-slot-label { transform: translateY(-6px); }
+.photo-card-caption { display: flex; justify-content: space-between; gap: 16px; font-size: 11px; padding: 15px 0; }.photo-card-caption > :last-child { font-size: 10px; opacity: .65; }
+.photo-card { animation: photo-enter .55s cubic-bezier(.22,1,.36,1) both; }
+.photo-films { padding-bottom: 110px; }
+.photo-film-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 28px; }
+.photo-film-frame { background: #252525; color: #ddd; aspect-ratio: 16/9; display: flex; justify-content: space-between; align-items: flex-end; padding: 18px; font-size: 10px; position: relative; }
+.photo-film-center { position: absolute; inset: 0; display: flex; flex-direction: column; justify-content: center; align-items: center; font: 400 29px "Space Grotesk",sans-serif; }.photo-film-center span { font: 10px Inter,sans-serif; margin-top: 12px; color: #aaa; }
+.photo-contact { border-top: 1px solid var(--photo-line); display: grid; grid-template-columns: 1.3fr 1fr; gap: 80px; padding: 65px 0 90px; }
+.photo-contact h2 { font: 400 clamp(40px,5.7vw,86px)/1.05 "Space Grotesk",sans-serif; letter-spacing: -.05em; margin: 28px 0 0; }
+.photo-contact-info { align-self: end; max-width: 430px; }.photo-contact-info p { font-size: 14px; line-height: 1.7; margin: 0 0 20px; }.photo-contact-info p + p { color: #aaa; }.photo-contact-info a { min-height: 44px; display: flex; align-items: center; justify-content: space-between; gap: 16px; border-bottom: 1px solid #777; font-size: clamp(12px,1.4vw,19px); overflow-wrap: anywhere; }
+.photo-footer { border-top: 1px solid var(--photo-line); display: flex; flex-wrap: wrap; justify-content: space-between; gap: 24px; align-items: center; padding: 25px 0; font-size: 10px; }.photo-footer a { display: flex; align-items: center; gap: 7px; min-height: 44px; }
+.photo-dialog { position: fixed; inset: 0; width: 100%; max-width: none; height: 100%; max-height: none; border: 0; margin: 0; padding: 24px var(--gutter); background: var(--ink); color: var(--paper); overflow-y: auto; animation: photo-enter .55s var(--ease); }
+.photo-dialog::backdrop { background: #171717; }.photo-dialog header { display: flex; justify-content: space-between; align-items: center; gap: 20px; font-size: 11px; }.photo-dialog button { background: none; color: inherit; display: flex; align-items: center; justify-content: center; gap: 14px; min-height: 44px; min-width: 44px; }
+.photo-dialog-title { margin: 30px 0; display: flex; justify-content: space-between; align-items: end; gap: 20px; }.photo-dialog-title h2 { font: 400 clamp(30px,5vw,65px) "Space Grotesk",sans-serif; letter-spacing: -.04em; margin: 0; }.photo-dialog-title p { font-size: 11px; color: #aaa; }
+.photo-dialog-frame { height: min(60vh,800px); min-height: 230px; background: #181818; display: grid; place-items: center; touch-action: pan-y; }.photo-frame-content { display: flex; flex-direction: column; align-items: center; gap: 16px; animation: photo-enter .5s var(--ease); }.photo-frame-content span:first-child { font: 400 clamp(35px,5vw,70px) "Space Grotesk",sans-serif; }.photo-frame-content span:last-child { font-size: 11px; color: #aaa; }.photo-dialog-controls { display: flex; align-items: center; justify-content: center; gap: 34px; padding: 18px 0; font-size: 11px; }
+@keyframes photo-enter { from { opacity: .3; transform: translateY(15px); } to { opacity: 1; transform: translateY(0); } }
+@media (max-width: 950px) { .photo-section-intro { grid-template-columns: 1fr 2fr; }.photo-section-intro p { grid-column: 2; }.photo-contact { gap: 40px; }.photo-grid { gap: 45px 5%; } }
+@media (max-width: 600px) { .photo-header { flex-wrap: wrap; gap: 8px 20px; padding: 22px 0 10px; }.photo-header nav { gap: 22px; }.photo-design-link { width: 100%; font-size: 10px; }.photo-hero-line > :last-child { display: none; }.photo-hero h1 { font-size: clamp(56px,12.5vw,76px); margin: 34px 0; }.photo-cover-frame { aspect-ratio: .88; }.photo-cover-caption { align-items: start; flex-direction: column; gap: 0; padding-top: 16px; }.photo-selected, .photo-films { padding-top: 75px; }.photo-section-intro { display: flex; flex-direction: column; align-items: start; gap: 20px; }.photo-section-intro p { margin: 0; }.photo-filters { gap: 8px 20px; }.photo-grid { display: block; }.photo-card, .photo-card:nth-child(4n + 2) { margin-top: 0; margin-bottom: 35px; }.photo-card-portrait { width: 84%; }.photo-card-portrait:nth-child(even) { margin-left: auto; }.photo-slot-label { font-size: 32px; }.photo-film-grid, .photo-contact { grid-template-columns: 1fr; }.photo-films { padding-bottom: 65px; }.photo-contact { padding: 40px 0 60px; }.photo-dialog-title { flex-direction: column; align-items: start; }.photo-footer { gap: 10px 20px; } }
+@media (prefers-reduced-motion: reduce) { .photo-site *, .photo-dialog, .photo-dialog * { animation: none !important; transition: none !important; scroll-behavior: auto !important; } }
+
+/* Shared Gala X Ci identity; photography differs through the image layout. */
+.photo-site { position: relative; isolation: isolate; overflow: clip; }
+.photo-atmosphere { position: absolute; z-index: -1; inset: 0 0 auto; height: min(1150px, 125svh); pointer-events: none; overflow: hidden; }
+.photo-atmosphere img { width: 100%; height: 100%; object-fit: cover; object-position: center top; filter: grayscale(1); opacity: .38; }
+.photo-atmosphere::after { content: ''; position: absolute; inset: 0; background: linear-gradient(180deg, #08080833, #08080877 50%, var(--ink)); }
+.photo-header { position: relative; z-index: 2; }
+.photo-header .wordmark { font: 500 24px/1 "Space Grotesk",sans-serif; letter-spacing: -.07em; }
+.photo-header nav .nav-link { display: inline-flex; }
+.photo-header nav .nav-link:hover { text-decoration: none; }
+.photo-hero h1 { display: flex; justify-content: space-between; align-items: baseline; font: 500 clamp(80px,17.2vw,330px)/.94 "Space Grotesk",sans-serif; letter-spacing: -.075em; margin: 26px 0 30px; }
+.photo-hero h1 > span { animation: photo-enter .8s var(--ease) both; }
+.photo-hero h1 > span:nth-child(2) { font-size: .82em; font-weight: 400; color: #ddd; animation-delay: .065s; }
+.photo-hero h1 > span:nth-child(3) { animation-delay: .13s; }
+.photo-hero-line { align-items: center; }
+.photo-hero-discipline { display: flex; align-items: center; justify-content: space-between; gap: 20px; margin-bottom: 28px; }
+.photo-hero-discipline p { font-size: clamp(15px,1.35vw,22px); line-height: 1.45; letter-spacing: -.025em; }
+.photo-cover-frame, .photo-placeholder, .photo-film-frame, .photo-dialog-frame { border: 1px solid #303030; border-radius: 3px; }
+.photo-kicker { color: #bcbcbc; }
+.photo-section-intro h2 em, .photo-contact h2 em { color: var(--muted); }
+.photo-site .motion-toggle { color: var(--paper); }
+.photo-site[data-motion-paused=true] *, .photo-site[data-motion-paused=true] .photo-dialog * { animation: none !important; transition: none !important; }
+@media (max-width: 600px) { .photo-header { gap: 6px 18px; padding: 18px 0 8px; }.photo-header nav { gap: 18px; }.photo-hero h1 { font-size: clamp(68px,17.2vw,104px); }.photo-hero-discipline p { font-size: 15px; }.photo-hero-line { gap: 12px; font-size: 10px; }.photo-hero-line .motion-toggle { flex-shrink: 0; }.photo-hero-line .motion-toggle span { display: none; } }
+@media (prefers-reduced-motion: reduce) { .photo-site *, .photo-dialog, .photo-dialog * { animation: none !important; transition: none !important; } }

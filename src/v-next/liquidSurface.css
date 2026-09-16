@@ -1,0 +1,117 @@
+/* Import after styles.css. Interface optics live on their own layer so the
+   backdrop bends while DOM labels, focus outlines, and hit targets stay crisp. */
+.gxc-glass.gxc-liquid-surface {
+  background: transparent;
+  border: 0;
+  box-shadow: 0 8px 26px #00000021, 0 1px 3px #00000018;
+  backdrop-filter: none;
+  -webkit-backdrop-filter: none;
+  color: #fff;
+  text-shadow: 0 1px 3px #0009;
+}
+.gxc-glass.gxc-liquid-surface::before,
+.gxc-glass.gxc-liquid-surface::after { content: none; }
+.gxc-glass.gxc-liquid-surface > .gxc-liquid-defs {
+  position: absolute; width: 0; height: 0; overflow: hidden; pointer-events: none;
+}
+.gxc-glass.gxc-liquid-surface > .gxc-liquid-optics {
+  position: absolute; inset: 0; z-index: 0; border-radius: inherit; pointer-events: none;
+  background: linear-gradient(155deg, #ffffff0e 0%, #ffffff04 40%, #ffffff02 75%, #ffffff08);
+  /* One soft lip, with the directional highlight generated from the lens map. */
+  box-shadow: inset 0 .8px .9px #ffffff9c, inset 0 -.65px 1px #ffffff40;
+}
+.gxc-glass.gxc-liquid-surface[data-glass=frosted] > .gxc-liquid-optics {
+  background: linear-gradient(150deg, #f0f4ff1f, #171b231c 52%, #eaf2ff10);
+  box-shadow: inset 0 .5px .5px #ffffff73, inset 0 -.5px 1px #ffffff20;
+}
+.gxc-glass.gxc-liquid-surface > .gxc-liquid-feedback {
+  position: absolute; inset: 0; overflow: hidden; border-radius: inherit; pointer-events: none; z-index: 1;
+}
+.gxc-liquid-light {
+  position: absolute; top: 0; left: 0; width: 180px; height: 180px; opacity: 0;
+  background: radial-gradient(ellipse, #ffffff20, #ffffff0c 35%, transparent 70%);
+  transition: transform 160ms cubic-bezier(.23,1,.32,1), opacity 180ms ease;
+}
+.gxc-liquid-ripple {
+  position: absolute; width: 180px; height: 180px; border-radius: 50%; opacity: 0;
+  background: radial-gradient(ellipse, #fff7, #fff3 22%, #ffffff08 50%, transparent 70%);
+}
+.gxc-glass.gxc-liquid-surface > .gxc-liquid-indicator {
+  position: absolute; top: 0; left: 0; z-index: 1; pointer-events: none; border-radius: 24px;
+  opacity: 0; background: linear-gradient(150deg, #ffffff2b, #ffffff13);
+  box-shadow: inset 0 .5px 1px #ffffff40, 0 1px 4px #0000000d;
+  transition: transform 220ms cubic-bezier(.23,1,.32,1), width 220ms cubic-bezier(.23,1,.32,1), opacity 160ms ease;
+}
+.gxc-liquid-surface > nav,
+.gxc-liquid-surface > button,
+.gxc-liquid-surface > .gxc-menu-top,
+.gxc-liquid-surface > .gxc-menu-photo,
+.gxc-liquid-surface > .gxc-mono { z-index: 2; }
+.gxc-nav.gxc-liquid-surface { min-height: 52px; padding: 4px 6px; }
+.gxc-nav.gxc-liquid-surface nav { position: relative; background: transparent; }
+.gxc-nav.gxc-liquid-surface nav a {
+  height: 44px; min-width: 44px; font-size: 12px; font-weight: 550; color: #fff;
+  background: transparent; box-shadow: none;
+  transition: transform var(--liquid-press-duration,140ms) cubic-bezier(.23,1,.32,1), color 160ms ease;
+}
+.gxc-nav.gxc-liquid-surface nav a[aria-current] { background: transparent; box-shadow: none; }
+.gxc-nav.gxc-liquid-surface nav a,
+.gxc-nav.gxc-liquid-surface nav a[aria-current],
+.gxc-liquid-surface button,
+.gxc-menu-panel.gxc-liquid-surface nav a,
+.gxc-menu-panel.gxc-liquid-surface .gxc-menu-photo,
+.gxc-menu-panel.gxc-liquid-surface .gxc-menu-top > span,
+.gxc-menu-panel.gxc-liquid-surface > .gxc-mono {
+  color: var(--liquid-ink, #fff);
+  background-color: var(--liquid-label-veil, transparent);
+  text-shadow: var(--liquid-label-shadow, 0 1px 3px #0006);
+  border-radius: 22px;
+}
+.gxc-menu-panel.gxc-liquid-surface nav a { border-radius: 8px; }
+.gxc-menu-panel.gxc-liquid-surface .gxc-menu-photo,
+.gxc-menu-panel.gxc-liquid-surface .gxc-menu-top > span,
+.gxc-menu-panel.gxc-liquid-surface > .gxc-mono { border-radius: 4px; }
+.gxc-nav.gxc-liquid-surface nav a span { display: none; }
+.gxc-nav.gxc-liquid-surface .gxc-motion { width: 44px; height: 44px; border: 0; border-radius: 0; color: var(--liquid-ink, #fff); }
+.gxc-nav.gxc-liquid-surface .gxc-motion::before { content: ''; position: absolute; top: 14px; left: 0; width: 1px; height: 16px; background: #ffffff26; }
+.gxc-liquid-surface button { transition: transform var(--liquid-press-duration,140ms) cubic-bezier(.23,1,.32,1), background 160ms ease; }
+.gxc-nav.gxc-liquid-surface nav a:active,
+.gxc-liquid-surface button:active { transform: scale(var(--liquid-press-scale,.97)); }
+.gxc-liquid-surface a:focus-visible, .gxc-liquid-surface button:focus-visible { outline-color: var(--liquid-ink,#fff); outline-offset: 2px; }
+.gxc-menu-panel.gxc-liquid-surface { border-radius: 32px; box-shadow: 0 22px 64px #00000038, 0 3px 9px #00000020; }
+.gxc-menu-panel.gxc-liquid-surface > .gxc-liquid-optics { background: linear-gradient(155deg,#ffffff14,#ffffff07 48%,#ffffff0a); }
+.gxc-menu-panel.gxc-liquid-surface[data-glass=frosted] > .gxc-liquid-optics { background: linear-gradient(155deg,#171b22ed,#12161de6 48%,#151922e8); }
+.gxc-menu-dialog::backdrop { background: #0305093d; }
+.gxc-menu-panel.gxc-liquid-surface .gxc-menu-top button { background: var(--liquid-label-veil, #ffffff12); box-shadow: none; }
+.gxc-menu-panel.gxc-liquid-surface nav a { border-color: #ffffff2b; }
+.gxc-menu-panel.gxc-liquid-surface nav a .gxc-mono,
+.gxc-menu-panel.gxc-liquid-surface > .gxc-mono { color: var(--liquid-ink, #fff); }
+@media (hover:hover) and (pointer:fine) {
+  .gxc-nav.gxc-liquid-surface nav a:hover { background-color: var(--liquid-label-veil, transparent); box-shadow: none; }
+  .gxc-liquid-surface button:hover { background-color: var(--liquid-label-veil, #ffffff17); }
+  .gxc-menu-panel.gxc-liquid-surface nav a:hover { background-color: var(--liquid-label-veil, #ffffff09); }
+}
+@media (max-width:760px) {
+  .gxc-nav.gxc-liquid-surface { min-height: 52px; padding: 4px 5px; }
+  .gxc-nav.gxc-liquid-surface > .gxc-liquid-indicator { display: none; }
+  .gxc-nav.gxc-liquid-surface .gxc-motion::before { left: auto; right: 0; }
+}
+.gxc-site[data-motion=reduced] .gxc-liquid-light,
+.gxc-site[data-motion=reduced] .gxc-liquid-ripple { display: none; }
+.gxc-site[data-motion=reduced] .gxc-liquid-surface a,
+.gxc-site[data-motion=reduced] .gxc-liquid-surface button,
+.gxc-site[data-motion=reduced] .gxc-liquid-indicator { transition: none; }
+.gxc-site[data-motion=reduced] .gxc-liquid-surface a:active,
+.gxc-site[data-motion=reduced] .gxc-liquid-surface button:active { transform: none !important; }
+.gxc-liquid-surface [data-liquid-ink] {
+  background-color: transparent !important;
+  background-image: var(--liquid-veil-image,none), var(--liquid-icon-image,none) !important;
+  background-size: var(--liquid-veil-size,0 0), var(--liquid-icon-size,0 0) !important;
+  background-position: var(--liquid-veil-position,center), var(--liquid-icon-position,center) !important;
+  background-repeat: no-repeat !important;
+}
+@media (prefers-reduced-motion:reduce) {
+  .gxc-liquid-light, .gxc-liquid-ripple { display: none; }
+  .gxc-liquid-surface a, .gxc-liquid-surface button, .gxc-liquid-indicator { transition: none; }
+  .gxc-liquid-surface a:active, .gxc-liquid-surface button:active { transform: none !important; }
+}

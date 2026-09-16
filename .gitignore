@@ -1,0 +1,17 @@
+node_modules/
+dist/
+.site-build/
+versions/
+内容资料/
+research/
+tests/
+design-qa.md
+.env
+.env.*
+*.tar
+*.tar.gz
+.DS_Store
+.cache/
+v-next/review/
+v-next/snapshots/
+tsconfig.tsbuildinfo

@@ -1,0 +1,219 @@
+{
+  "purpose": "Homepage prototype: source-faithful web derivatives; no crop, recolor or generative editing.",
+  "status": "Preview copy, not publication approval or final homepage selection.",
+  "export": {
+    "format": "WebP",
+    "quality": 88,
+    "widths": [
+      800,
+      1600
+    ],
+    "aspectRatioPreserved": true,
+    "alphaPreserved": true
+  },
+  "assets": [
+    {
+      "project": "psytrain",
+      "source": "内容资料/02_项目/P01_PsytrAIn/images/旧站素材/06_b311c349d269.png",
+      "sourceSha256": "b311c349d269bc84904fa362f258d7ee37d9dfc4e361c2cbd8c9bfada265774d",
+      "sourceSize": [
+        2000,
+        1294
+      ],
+      "sourceBytes": 2171819,
+      "derivatives": [
+        {
+          "file": "psytrain-1600.webp",
+          "width": 1600,
+          "height": 1035,
+          "bytes": 47642,
+          "sha256": "2eff9127e29a537ef2eb11758cf66c1ba134d9cd6a891e1f5ba50e541d0673f5"
+        },
+        {
+          "file": "psytrain-800.webp",
+          "width": 800,
+          "height": 518,
+          "bytes": 18932,
+          "sha256": "a35b64281b7176253bdea16db0c4f306eb1117b52850d7cdf4be4b467bf92f97"
+        }
+      ]
+    },
+    {
+      "project": "hypnos-cockpit",
+      "source": "内容资料/02_项目/P04_Hypnos-Cockpit/images/旧站素材/06_020d5528162c.png",
+      "sourceSha256": "020d5528162c88fcaadee759bdc385a36243763d35841078ef02e1a3982a0651",
+      "sourceSize": [
+        2000,
+        1294
+      ],
+      "sourceBytes": 2278539,
+      "derivatives": [
+        {
+          "file": "hypnos-cockpit-1600.webp",
+          "width": 1600,
+          "height": 1035,
+          "bytes": 71292,
+          "sha256": "b032b8a3e100f4bd34bf7ea5621ec7d76633928f9d91726a468408f20fc6951c"
+        },
+        {
+          "file": "hypnos-cockpit-800.webp",
+          "width": 800,
+          "height": 518,
+          "bytes": 23840,
+          "sha256": "2d49d83f96a2a83bd0a780df6de74ea35cadcf8a52e2c141474e409cb7bb0ed2"
+        }
+      ]
+    },
+    {
+      "project": "introme",
+      "source": "内容资料/02_项目/P19_IntroMe/images/Figma原图/deck-a/raw-9d54f91b22bbef05ea4bb0dae8b4b8fcf9f930b9fd2d740c20f415e5e9a7ede4.png",
+      "sourceSha256": "9d54f91b22bbef05ea4bb0dae8b4b8fcf9f930b9fd2d740c20f415e5e9a7ede4",
+      "sourceSize": [
+        3796,
+        2642
+      ],
+      "sourceBytes": 4412967,
+      "derivatives": [
+        {
+          "file": "introme-1600.webp",
+          "width": 1600,
+          "height": 1114,
+          "bytes": 53302,
+          "sha256": "618c466eecf81232c9432028633575fa3a5964950fc211fc80e7cd9cf31aa134"
+        },
+        {
+          "file": "introme-800.webp",
+          "width": 800,
+          "height": 557,
+          "bytes": 20620,
+          "sha256": "29bafbd702942ede417b42574001cf0841afb8af6fae74df44bc22d706a04f70"
+        }
+      ]
+    },
+    {
+      "project": "deal-points",
+      "source": "内容资料/02_项目/P02_Deal-Points/images/旧站素材/06_5b6661ab41b4.png",
+      "sourceSha256": "5b6661ab41b40adc4da388f10b21b84606c3ea450c155ff1b82e224aab763759",
+      "sourceSize": [
+        1100,
+        712
+      ],
+      "derivatives": [
+        {
+          "file": "deal-points-800.webp",
+          "width": 800,
+          "height": 518,
+          "bytes": 44088,
+          "sha256": "28e9da8549b76811bbbe89289ddbbd39b9852d4d5c789925e4e472fea1b30317"
+        },
+        {
+          "file": "deal-points-1100.webp",
+          "width": 1100,
+          "height": 712,
+          "bytes": 70358,
+          "sha256": "bb9ea161dc0e76c760848573c62ed834c0dbef08e5b65eab230f3e0e66f9d6ee"
+        }
+      ]
+    },
+    {
+      "project": "orbit",
+      "source": "内容资料/02_项目/P03_Orbit/images/旧站素材/07_41972b2e4dd0.png",
+      "sourceSha256": "41972b2e4dd03c6bbc4be1548e63901d7c4b64aed1fa5167fa9b00eaafeefceb",
+      "sourceSize": [
+        1100,
+        712
+      ],
+      "derivatives": [
+        {
+          "file": "orbit-800.webp",
+          "width": 800,
+          "height": 518,
+          "bytes": 19144,
+          "sha256": "4dcab5259f8a5134ee3efae21bcd33b119ff48e29c700a41434c87051d829927"
+        },
+        {
+          "file": "orbit-1100.webp",
+          "width": 1100,
+          "height": 712,
+          "bytes": 28856,
+          "sha256": "acc0706e7508f2bbdbb7b04900355fd06e300c6acd166e502234cb2ab1ab5c57"
+        }
+      ]
+    },
+    {
+      "project": "m-box",
+      "source": "内容资料/02_项目/P13_M-box/images/旧站素材/08_766234f23232.jpg",
+      "sourceSha256": "766234f23232f333d0f4753ef6d73471f470195d37ee4cb9a8c80799cdbaaa18",
+      "sourceSize": [
+        1100,
+        500
+      ],
+      "derivatives": [
+        {
+          "file": "m-box-800.webp",
+          "width": 800,
+          "height": 364,
+          "bytes": 20934,
+          "sha256": "36d08965e2b45c94a00ac77e528854f7a9c3b6cb6ae0cbaa2cf43416405d4a96"
+        },
+        {
+          "file": "m-box-1100.webp",
+          "width": 1100,
+          "height": 500,
+          "bytes": 34692,
+          "sha256": "ebcc6cb65501049d2b2faff931a4ec28d5795b6ac8dbe5b75689a8484405cb18"
+        }
+      ]
+    },
+    {
+      "project": "shotflow",
+      "source": "内容资料/02_项目/P20_ShotFlow/images/原始补充/project-workspace.png",
+      "sourceSha256": "b6ce3418db03c369074410e5bec305bf5f0e5f2c9ee5afc2cff42b69833f02ce",
+      "sourceSize": [
+        1290,
+        2796
+      ],
+      "derivatives": [
+        {
+          "file": "shotflow-800.webp",
+          "width": 800,
+          "height": 1734,
+          "bytes": 58098,
+          "sha256": "87ebbad00478957639990c19e519d5960a896320b4c79c400c0ec6a75c1ca588"
+        },
+        {
+          "file": "shotflow-1290.webp",
+          "width": 1290,
+          "height": 2796,
+          "bytes": 99122,
+          "sha256": "a615cc1f2303ce4bd8b2c636e72cf6da18ea77a20fbbe1eded48d7a9586f105c"
+        }
+      ]
+    },
+    {
+      "project": "shotflow-storyboard",
+      "source": "内容资料/02_项目/P20_ShotFlow/images/原始补充/storyboard-by-source.png",
+      "sourceSha256": "0f9fd412ee238709795ba921ec6acf60cae16913ff06ac72f4dce1458f049d94",
+      "sourceSize": [
+        1290,
+        2796
+      ],
+      "derivatives": [
+        {
+          "file": "shotflow-storyboard-800.webp",
+          "width": 800,
+          "height": 1734,
+          "bytes": 58476,
+          "sha256": "46d6df07c9fdd685d8defcaaeb56c265503a2f54721e196f5c93c63614292db3"
+        },
+        {
+          "file": "shotflow-storyboard-1290.webp",
+          "width": 1290,
+          "height": 2796,
+          "bytes": 102048,
+          "sha256": "35c25e3e1e1cfc4d6247e94b1f52f4083aee85068982857f8daa9222e69da3a5"
+        }
+      ]
+    }
+  ]
+}

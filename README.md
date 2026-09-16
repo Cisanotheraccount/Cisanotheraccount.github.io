@@ -1,0 +1,38 @@
+# Gala X Ci — Ci Song
+
+Personal portfolio of Ci Song: interfaces, experiments, environments and photography.
+
+**Website:** https://cisanotheraccount.github.io/  
+**Contact:** galaxci.song@gmail.com
+
+## Run locally
+
+Requires Node.js 20 or newer.
+
+```sh
+npm ci
+npm run dev
+```
+
+Open `/v-next/` for the current design. The development root retains the earlier design.
+
+## Production
+
+```sh
+npm run build
+npm run preview
+```
+
+The production root serves the current glass-and-starlight portfolio. `/v-next/` remains available, alongside `/photography/`, the earlier `/legacy/` design and existing project URLs.
+
+React, TypeScript, Vite, Three.js, Motion and Lenis. Seven project details use hash routing, so direct links and refresh work on GitHub Pages. The starfield and project colors use the original photographs and portfolio material.
+
+## Publishing
+
+The `main` branch contains the source. The `gh-pages` branch contains the built contents of `dist/` and a `.nojekyll` file. GitHub Pages publishes that branch at the root URL above. To update, build the current source, commit it to `main`, then publish the matching `dist/` output to `gh-pages`.
+
+The original content archive, local review screenshots/recordings and machine-specific hosting configuration stay outside this public repository. Prepared website images and fonts are included so the production build is reproducible.
+
+## Credits
+
+Portfolio text, photographs and project artwork by Ci Song. Third-party font and glass-material licenses are retained with their respective assets and modules. Publishing the source does not grant a new license to the portfolio artwork or photographs.

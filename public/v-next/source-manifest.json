@@ -1,0 +1,114 @@
+{
+  "text": "galaxci",
+  "source_font": "Pacifico Regular",
+  "source_url": "https://raw.githubusercontent.com/google/fonts/main/ofl/pacifico/Pacifico-Regular.ttf",
+  "license": "SIL Open Font License 1.1; see OFL.txt",
+  "geometry": "Shaped with HarfBuzz kern/liga/calt; optical pair spacing [-4,+2,-3,+3,-4,-2] font units; 10% ascender and 9% descender compression; 0.022 extra x/y lean; flattened font contours; unioned script letters; 1.75 font-unit contour closing, 0.35 font-unit topology-preserving simplification. Centered, y-up, normalized height 10.",
+  "font_upem": 1000,
+  "glyph_positions": [
+    {
+      "glyph": "g",
+      "cluster": 0,
+      "origin": 0,
+      "advance": 469,
+      "bounds": [
+        -2.0,
+        -455.0,
+        588.0,
+        468.0
+      ]
+    },
+    {
+      "glyph": "a",
+      "cluster": 1,
+      "origin": 465,
+      "advance": 470,
+      "bounds": [
+        500.0,
+        -5.0,
+        1064.0,
+        468.0
+      ]
+    },
+    {
+      "glyph": "l",
+      "cluster": 2,
+      "origin": 937,
+      "advance": 316,
+      "bounds": [
+        992.0,
+        -5.0,
+        1392.0,
+        940.0
+      ]
+    },
+    {
+      "glyph": "a",
+      "cluster": 3,
+      "origin": 1250,
+      "advance": 470,
+      "bounds": [
+        1285.0,
+        -5.0,
+        1849.0,
+        468.0
+      ]
+    },
+    {
+      "glyph": "x",
+      "cluster": 4,
+      "origin": 1723,
+      "advance": 529,
+      "bounds": [
+        1740.0,
+        -5.0,
+        2381.0,
+        470.0
+      ]
+    },
+    {
+      "glyph": "c",
+      "cluster": 5,
+      "origin": 2248,
+      "advance": 368,
+      "bounds": [
+        2280.0,
+        -5.0,
+        2745.0,
+        466.0
+      ]
+    },
+    {
+      "glyph": "i.fina",
+      "cluster": 6,
+      "origin": 2614,
+      "advance": 222,
+      "bounds": [
+        2648.0,
+        -5.0,
+        2895.0,
+        688.0
+      ]
+    }
+  ],
+  "components": 2,
+  "holes": [
+    5,
+    0
+  ],
+  "points": [
+    1054,
+    51
+  ],
+  "bounds": [
+    -11.165168700397697,
+    -5.0,
+    11.165168700397698,
+    5.0
+  ],
+  "dependencies": {
+    "fontTools": "4.65.0",
+    "shapely": "2.1.2",
+    "uharfbuzz": "0.56.1"
+  }
+}

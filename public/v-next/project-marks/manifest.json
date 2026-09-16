@@ -1,0 +1,38 @@
+{
+  "status": "provisional-original-designs",
+  "created": "2026-09-15",
+  "purpose": "Small, replaceable links to real portfolio projects in the homepage sky.",
+  "provenance": "Original vector sketches made for this local portfolio iteration, following the user-approved symbols. These are temporary designs, not official project logos. No external logo artwork was copied.",
+  "format": "SVG; 40 x 40 viewBox; silver-white 1.45-unit rounded strokes",
+  "files": [
+    {
+      "file": "hypnos.svg",
+      "description": "Cockpit arc and reclining center line"
+    },
+    {
+      "file": "introme.svg",
+      "description": "Person and conversation"
+    },
+    {
+      "file": "shotflow.svg",
+      "description": "Camera framing and storyboard cells"
+    },
+    {
+      "file": "psytrain.svg",
+      "description": "Conversation and connected nodes"
+    },
+    {
+      "file": "deal-points.svg",
+      "description": "Connected reward points"
+    },
+    {
+      "file": "orbit.svg",
+      "description": "Orbital paths"
+    },
+    {
+      "file": "m-box.svg",
+      "description": "Simple cube"
+    }
+  ],
+  "replacement": "Replace the SVG for any project with approved artwork, keeping its filename or updating projectMarks in src/v-next/meteorsConfig.ts."
+}

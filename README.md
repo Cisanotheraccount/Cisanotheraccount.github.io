@@ -50,7 +50,7 @@ The importer preserves source bytes, records hashes, and updates public artwork 
 
 ## Current presentation
 
-All ten selected projects use equal 3:2 preview frames, with two columns on larger screens and one on phones. Detail covers follow a shared responsive size. ShotFlow uses English native simulator captures from development build 15 with staged English demonstration data; the app is not presented as publicly released.
+All ten selected projects use equal 3:2 preview frames, with two columns on larger screens and one on phones. Most detail covers follow a shared responsive size. ShotFlow uses a dedicated portrait case with six English native interfaces and a nine-step guided walkthrough from development build 15. The example data are staged; the native app is not presented as publicly released.
 
 ## Photographic star light
 
@@ -59,3 +59,13 @@ The homepage and work section place small, independently timed light cores over 
 The homepage uses a broader pool of measured photo stars for narrow crops, with a faster rise, small brighter cores and soft local halos. Positions remain tied to the original photograph; work-section timing and artwork are unchanged.
 
 The current homepage density preview supports up to 80 desktop or 40 phone pulses, with per-star size and blue/warm-yellow temperature variation, independent brightness, and mixed 1.8–5.4 second lifetimes. A photo-UV tile index keeps the glass-transmission backdrop efficient at the higher density.
+
+## ShotFlow case and walkthrough
+
+ShotFlow follows references, analysis, shot review and professional-camera use. The case uses complete portrait captures with image enlargement. The homepage retains a matching 3:2 project card with two equal-height captures.
+
+The free guided walkthrough connects nine captured states with measured hotspots and keyboard-accessible actions. Two short recordings play only after a user action; media pause when changing steps, opening image zoom, hiding the page or leaving the project. Previous, restart and exit stay within the walkthrough. It does not run the native app, analyze new footage or offer arbitrary editing.
+
+The isolated capture fixture contains two illustrative videos made from existing bundled sample images, six shots and two initially completed. Completing the demonstrated shot changes progress to three of six. See [capture provenance and media notes](public/portfolio/shotflow-walkthrough-v1/README.md).
+
+Current-only capture mapping lives in `src/v-next/shotflowCaseContent.ts`; `ShotFlowDemo.tsx`, `shotflowWalkthrough.ts` and `shotflowDemo.css` own the guided states and interactions. Existing shared project metadata, legacy content and image archives remain intact.

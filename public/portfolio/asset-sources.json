@@ -407,5 +407,15 @@
       "selection": "Original project-index cover showing the gallery’s black-hole opening.",
       "publicationAuthorization": "User-approved ten-project implementation plan, 2026-09-16."
     }
+  ],
+  "versionedCaptureSets": [
+    {
+      "id": "shotflow-walkthrough-v1",
+      "project": "shotflow",
+      "manifest": "shotflow-walkthrough-v1/provenance.json",
+      "notes": "shotflow-walkthrough-v1/README.md",
+      "status": "Development build 0.1.0 (15); demonstration data; guided capture, not a live iOS app.",
+      "purpose": "Six native narrative interfaces and a nine-state guided walkthrough, captured from an isolated source copy with existing bundled sample images. Historical images remain unchanged."
+    }
   ]
 }

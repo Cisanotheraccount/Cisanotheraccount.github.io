@@ -13,6 +13,9 @@ import { HeroTwinkles } from './HeroTwinkles';
 import { WorkCanvas } from './WorkCanvas';
 import { WorkBackdrop } from './WorkBackdrop';
 import type { WorkScene } from './workScene';
+import { shotFlowCaseCover, shotFlowCaseScreens } from './shotflowCaseContent';
+
+import ShotFlowDemo from './ShotFlowDemo';
 
 type Rect = { x: number; y: number; width: number; height: number };
 type Study = { image: string; alt: string; caption: string; width?: number; height?: number };
@@ -200,11 +203,12 @@ export function NextPortfolio() {
 }
 
 function ProjectCard({ item, index, pending, onOpen }: { item: PortfolioProject; index: number; pending: boolean; onOpen: (e: MouseEvent<HTMLAnchorElement>, p: PortfolioProject) => void }) {
+  const media = item.slug === 'shotflow' ? shotFlowCaseCover : item;
   return <article className={'gxc-project gxc-project-' + item.slug} data-layout="uniform">
     <a href={'#/work/' + item.slug} onClick={e => onOpen(e, item)} data-opening={pending ? 'true' : undefined} aria-busy={pending || undefined} aria-label={'Explore ' + item.title}>
       <div className="gxc-project-picture" data-fit={item.imageFit ?? 'cover'}>
-        <img src={item.image} srcSet={item.imageSmall + ' 800w, ' + item.image + ' ' + item.imageWidth + 'w'} sizes="(max-width: 760px) calc(100vw - 44px), (max-width: 1000px) calc((100vw - 88px) / 2), (min-width: 1600px) calc((100vw - 200px) / 2), calc((100vw - 144px) / 2)" alt={item.imageAlt} width={item.imageWidth} height={item.imageHeight} loading="lazy" decoding="async"/>
-        {item.slug === 'shotflow' && <img className="gxc-shotflow-second" src="/portfolio/shotflow-en-storyboard-1290.webp" alt="ShotFlow English native storyboard capture" width="1290" height="2796" loading="lazy"/>}
+        <img src={media.image} srcSet={media.imageSmall + ' 800w, ' + media.image + ' ' + media.imageWidth + 'w'} sizes="(max-width: 760px) calc(100vw - 44px), (max-width: 1000px) calc((100vw - 88px) / 2), (min-width: 1600px) calc((100vw - 200px) / 2), calc((100vw - 144px) / 2)" alt={media.imageAlt} width={media.imageWidth} height={media.imageHeight} loading="lazy" decoding="async"/>
+        {item.slug === 'shotflow' && <img className="gxc-shotflow-second" src={shotFlowCaseScreens[2].image} alt="ShotFlow English native storyboard capture" width="1290" height="2796" loading="lazy"/>}
         <span className="gxc-project-index gxc-mono">{number(index)} / {index < 3 ? 'IN FOCUS' : 'EXPLORATION'}</span><span className="gxc-project-open"><ArrowUpRight size={22}/></span>
       </div>
       <div className="gxc-project-caption"><div><h3>{item.title}</h3><p>{item.category}</p></div><span className="gxc-mono">{item.tags[0]}</span></div>
@@ -260,6 +264,79 @@ const introSections = [
   { title: 'The work around the interface.', paragraphs: ['I embedded a HeyGen avatar into my existing Weebly portfolio. Its integration is preserved in the project archive.', 'Choosing an avatar service was only one part of the project. Preparing useful project material, writing clear instructions and refining the output became central design tasks. The representation could extend the portfolio, while its limits also needed to be designed.'], image: '/portfolio/cases/introme-23.webp', caption: 'A reflection on AI as a tool for extending the portfolio; a conceptual diagram.' },
 ];
 
+function ShotFlowCase({ item, heading, slot, onZoom, active }: { item: PortfolioProject; heading: RefObject<HTMLHeadingElement | null>; slot: RefObject<HTMLDivElement | null>; onZoom(study: Study): void; active: boolean }) {
+  const screens = shotFlowCaseScreens;
+  const demo = useRef<HTMLDivElement>(null);
+  const demoHeading = useRef<HTMLHeadingElement>(null);
+  const visitDemo = () => {
+    demo.current?.scrollIntoView({ block: 'start', behavior: 'instant' });
+    demoHeading.current?.focus({ preventScroll: true });
+  };
+  return <div className="gxc-shotflow-case">
+    <section className="gxc-shotflow-hero" aria-labelledby="gxc-detail-title">
+      <div className="gxc-shotflow-intro">
+        <header className="gxc-detail-heading"><span className="gxc-mono">{item.category}</span><h2 ref={heading} id="gxc-detail-title" tabIndex={-1}>{item.title}</h2><p>{item.summary}</p></header>
+        <p className="gxc-shotflow-context">A saved reference is only the beginning. Preparing a shoot means finding the useful moments, understanding how they work and deciding what to capture. ShotFlow brings those decisions into a phone-based companion for working with a professional camera.</p>
+        <p className="gxc-shotflow-tags gxc-mono">{item.tags.join(' / ')}</p>
+        <button className="gxc-text-link gxc-shotflow-demo-link" onClick={visitDemo}>Try the interactive walkthrough<ArrowDown size={17}/></button>
+        <div className="gxc-shotflow-step">
+          <span className="gxc-mono">01 / PROJECT WORKSPACE</span>
+          <h3>{item.highlights[0].title}</h3>
+          <p>A project gives references a shared purpose. Several source videos can belong to one shoot while keeping their own identities. The workspace brings source material, resulting shots and completion progress together, with direct routes to storyboard review and the on-set checklist.</p>
+          <p>The unit of planning becomes the individual shot: a specific moment to study, adapt and eventually mark complete. Keeping the next unfinished shot within reach connects preparation to the work still ahead.</p>
+        </div>
+      </div>
+      <div ref={slot} className="gxc-shotflow-screen"><StudyImage study={screens[0]} onZoom={onZoom}/></div>
+    </section>
+    <ol className="gxc-shotflow-flow gxc-shotflow-overview-flow" aria-label="From reference to on-set checklist">{['References', 'Analysis', 'Review & refine', 'On-set checklist'].map((step, i) => <li key={step}><span>{step}</span>{i < 3 && <ArrowRight size={20} aria-hidden="true"/>}</li>)}</ol>
+    <section className="gxc-shotflow-row gxc-shotflow-analysis" aria-labelledby="gxc-shotflow-analysis-title">
+      <div className="gxc-shotflow-step">
+        <span className="gxc-mono">FROM SOURCES TO SHOTS</span>
+        <h3 id="gxc-shotflow-analysis-title">Keep the process visible.</h3>
+        <p>Each video moves through its own import and analysis state. One failed source should not hide the results from another. The analysis view keeps progress and recovery actions attached to the item that needs attention.</p>
+        <p>Local analysis saves checkpoints so interrupted work can resume. Progress describes the current stage, rather than promising an exact time remaining. Together, these choices make the transition from a collection of videos to a working shot list easier to follow. Pausing, resuming or retrying stays connected to a named source, so the person preparing the project can see which material is ready to review and which still needs attention.</p>
+      </div>
+      <div className="gxc-shotflow-screen"><StudyImage study={screens[1]} onZoom={onZoom}/></div>
+    </section>
+    <section className="gxc-shotflow-review" aria-labelledby="gxc-shotflow-review-title">
+      <div className="gxc-shotflow-step">
+        <span className="gxc-mono">02 / STORYBOARD</span>
+        <h3 id="gxc-shotflow-review-title">{item.highlights[1].title}</h3>
+        <p>A reference has an original sequence; a shoot has a practical order. Grouping shots by source preserves the context of the video they came from. A separate shooting-order view supports planning across the whole project without rearranging the original footage.</p>
+        <p>Shot size, camera movement and suggested focal ranges sit alongside the reference. These are prompts for judgment: a suggested matching angle of view cannot recover the exact lens or physical camera movement from an image. The reference remains available for comparison. Source names belong to group headings, leaving individual rows to communicate timing, shot details and completion. The two views organize the same material around different decisions.</p>
+      </div>
+      <div className="gxc-shotflow-screen"><StudyImage study={screens[2]} onZoom={onZoom}/></div>
+    </section>
+    <section className="gxc-shotflow-refine" aria-labelledby="gxc-shotflow-refine-title">
+      <div className="gxc-shotflow-step">
+        <span className="gxc-mono">AUTOMATIC SUGGESTIONS, HUMAN DECISIONS</span>
+        <h3 id="gxc-shotflow-refine-title">Look closer. Make the cut.</h3>
+        <p>Play the individual reference clip to inspect its timing, movement and framing. A still image can identify the shot; playback reveals how it unfolds. Moving between the list and the clip keeps those details close to the planning decision.</p>
+        <p>When a boundary needs correction, manual editing changes the selected time range while retaining the source video. The walkthrough shows one shorter opening. That small adjustment illustrates the wider relationship: automatic analysis offers a starting point, and the person preparing the shoot decides what belongs in the plan. Reanalysis follows the same principle of preserving decisions: applying a newer model creates a project copy, keeping existing manual edits, recorded takes and comments in the original.</p>
+      </div>
+      <div className="gxc-shotflow-pair">
+        <div className="gxc-shotflow-screen"><StudyImage study={screens[3]} onZoom={onZoom}/></div>
+        <div className="gxc-shotflow-screen"><StudyImage study={screens[4]} onZoom={onZoom}/></div>
+      </div>
+    </section>
+    <section className="gxc-shotflow-onset gxc-shotflow-row" aria-labelledby="gxc-shotflow-onset-title">
+      <div className="gxc-shotflow-step">
+        <span className="gxc-mono">03 / ON SET</span>
+        <h3 id="gxc-shotflow-onset-title">{item.highlights[2].title}</h3>
+        <p>On set, the phone serves as a reference beside the camera. The professional workflow prioritizes the shot to review, its guidance and the remaining checklist. Reference imagery, movement guidance and a timer can support preparation before recording on the external camera.</p>
+        <p>After the shot is filmed, marking it complete saves progress and brings the next unfinished shot forward. The phone tracks the plan; completing a checklist item does not record footage or remotely operate the camera. This keeps the handoff between reference, physical shooting and progress explicit. A separate phone-recording workflow can save and review a take. Here, the emphasis stays on the professional-camera sequence, where the useful action on the phone is moving the plan forward.</p>
+        <ol className="gxc-shotflow-onset-steps" aria-label="On-set workflow">{['Review', 'Shoot', 'Mark complete', 'Next shot'].map((step, i) => <li key={step}><span>{step}</span>{i < 3 && <ArrowRight size={15} aria-hidden="true"/>}</li>)}</ol>
+      </div>
+      <div className="gxc-shotflow-screen"><StudyImage study={screens[5]} onZoom={onZoom}/></div>
+    </section>
+    <section ref={demo} className="gxc-shotflow-walkthrough" aria-labelledby="gxc-shotflow-demo-title">
+      <header className="gxc-shotflow-step"><span className="gxc-mono">AN INTERACTIVE WALKTHROUGH</span><h3 ref={demoHeading} id="gxc-shotflow-demo-title" tabIndex={-1}>Try the workflow.</h3><p>Follow one shot from reference to the next item on the checklist. Tap the highlighted controls or use the step-by-step buttons.</p></header>
+      <ShotFlowDemo active={active}/>
+    </section>
+    <aside className="gxc-shotflow-status"><span className="gxc-mono">IN DEVELOPMENT</span><p>Native interfaces captured from development version 0.1.0 (15), using an English sample project and illustrative videos made from bundled sample images. The walkthrough connects captured states and recordings; it does not run the iOS app or analyze new footage. Earlier captures without their original videos remain in the project archive.</p></aside>
+  </div>;
+}
+
 function ProjectDialog({ project, entrySource, source, instant, onClose, onLock, onPrepareRestore, onRestored, onOpen }: { project: PortfolioProject | null; entrySource: 'hero' | 'work'; source: Rect | null; instant: boolean; onClose(): void; onLock(): void; onPrepareRestore(): Promise<void>; onRestored(): void; onOpen(e: MouseEvent<HTMLAnchorElement>, item: PortfolioProject): void }) {
   const dialog = useRef<HTMLDialogElement>(null);
   const scroller = useRef<HTMLDivElement>(null);
@@ -311,8 +388,10 @@ function ProjectDialog({ project, entrySource, source, instant, onClose, onLock,
   }, [project, instant, progress]);
   useLayoutEffect(() => {
     if (!shown) return;
-    const measure = () => { const r = slot.current?.getBoundingClientRect(); if (r) setTarget({ x: r.x, y: r.y, width: r.width, height: r.height }); };
-    measure(); const observer = new ResizeObserver(measure); if (slot.current) observer.observe(slot.current);
+    // ShotFlow transitions into the portrait media itself, excluding its caption and copy.
+    const media = shown.slug === 'shotflow' ? slot.current?.querySelector('button') : slot.current;
+    const measure = () => { const r = media?.getBoundingClientRect(); if (r) setTarget({ x: r.x, y: r.y, width: r.width, height: r.height }); };
+    measure(); const observer = new ResizeObserver(measure); if (media) observer.observe(media);
     heading.current?.focus({ preventScroll: true });
     const resize = () => setMorph(false); window.addEventListener('resize', resize);
     return () => { observer.disconnect(); window.removeEventListener('resize', resize); };
@@ -324,14 +403,16 @@ function ProjectDialog({ project, entrySource, source, instant, onClose, onLock,
     {shown && <div ref={scroller} className="gxc-detail-scroll" data-native-scroll>
       <motion.div className="gxc-detail-toolbar" style={{ opacity }}><button onClick={onClose}><ArrowLeft size={17}/>{entrySource === 'hero' ? 'Back to home' : 'Back to work'}</button><span className="gxc-mono">GALA X CI / {number(workProjects.indexOf(shown))}</span><button onClick={onClose} aria-label="Close project"><X size={20}/></button></motion.div>
       <motion.article className="gxc-detail-content" style={{ opacity: contentOpacity }}>
+        {shown.slug === 'shotflow' ? <ShotFlowCase item={shown} heading={heading} slot={slot} onZoom={setZoom} active={project?.slug === 'shotflow' && !zoom}/> : <>
         <header className="gxc-detail-heading"><span className="gxc-mono">{shown.category}</span><h2 ref={heading} id="gxc-detail-title" tabIndex={-1}>{shown.title}</h2><p>{shown.summary}</p></header>
         <div ref={slot} className={'gxc-detail-cover cover-' + shown.slug} data-fit={shown.imageFit ?? 'cover'}><img src={shown.image} alt={shown.imageAlt} width={shown.imageWidth} height={shown.imageHeight}/></div>
         <div className="gxc-detail-overview"><aside><span className="gxc-mono">PROJECT OVERVIEW</span>{shown.role && <p><small>ROLE</small>{shown.role}</p>}{shown.period && <p><small>PERIOD</small>{shown.period}</p>}<p><small>EXPLORING</small>{shown.tags.join(' / ')}</p></aside><div>{shown.overview.map(text => <p key={text}>{text}</p>)}{shown.externalLinks.length > 0 && <div className="gxc-material-links">{shown.externalLinks.map(link => <a key={link.url} className="gxc-text-link" href={link.url} target="_blank" rel="noreferrer">{link.label}<ArrowUpRight size={17}/></a>)}</div>}</div></div>
         {shown.slug === 'introme' ? <div className="gxc-case-narrative">{introSections.map((section, i) => <section key={section.title}><div className="gxc-case-writing"><span className="gxc-mono">{number(i)} / INSIDE THE PROJECT</span><div><h3>{section.title}</h3>{section.paragraphs.map(p => <p key={p}>{p}</p>)}</div></div>{section.image && <StudyImage study={{ image: section.image, caption: section.caption!, alt: section.caption!, width: 1600, height: 900 }} onZoom={setZoom}/>}</section>)}</div> : <><div className="gxc-detail-highlights">{shown.highlights.map((h, i) => <section key={h.title}><span className="gxc-mono">{number(i)}</span><h3>{h.title}</h3><p>{h.body}</p></section>)}</div>{studies.length > 0 && <div className="gxc-studies"><div className="gxc-studies-heading"><span className="gxc-mono">PROCESS & DESIGN STUDIES</span><h3>A closer look.</h3></div>{studies.map(study => <StudyImage study={study} key={study.image} onZoom={setZoom}/>)}</div>}</>}
+        </>}
         {shown.liveDemo && <div className="gxc-live-status"><span className="gxc-mono">LIVE EXPERIENCE</span><p>{shown.liveDemo.description}</p></div>}
         <a className="gxc-next-project" href={'#/work/' + next.slug} onClick={e => onOpen(e, next)}><div><span className="gxc-mono">NEXT EXPLORATION</span><h3>{next.title}</h3></div><ArrowRight size={38}/></a>
       </motion.article>
-      {morph && target && source && <motion.div className={'gxc-transition-cover cover-' + shown.slug} data-fit={shown.imageFit ?? 'cover'} style={{ x, y, width: coverWidth, height: coverHeight, opacity: cloneOpacity }}><img src={shown.image} alt=""/></motion.div>}
+      {morph && target && source && <motion.div className={'gxc-transition-cover cover-' + shown.slug} data-fit={shown.imageFit ?? 'cover'} style={{ x, y, width: coverWidth, height: coverHeight, opacity: cloneOpacity }}><img src={shown.slug === 'shotflow' ? shotFlowCaseCover.image : shown.image} alt=""/></motion.div>}
     </div>}
     <ZoomImage study={zoom} close={() => setZoom(null)}/>
   </dialog>, document.body);

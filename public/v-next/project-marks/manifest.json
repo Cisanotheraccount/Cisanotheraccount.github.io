@@ -1,38 +1,110 @@
 {
-  "status": "provisional-original-designs",
-  "created": "2026-09-15",
-  "purpose": "Small, replaceable links to real portfolio projects in the homepage sky.",
-  "provenance": "Original vector sketches made for this local portfolio iteration, following the user-approved symbols. These are temporary designs, not official project logos. No external logo artwork was copied.",
-  "format": "SVG; 40 x 40 viewBox; silver-white 1.45-unit rounded strokes",
-  "files": [
-    {
-      "file": "hypnos.svg",
-      "description": "Cockpit arc and reclining center line"
-    },
-    {
-      "file": "introme.svg",
-      "description": "Person and conversation"
-    },
-    {
-      "file": "shotflow.svg",
-      "description": "Camera framing and storyboard cells"
-    },
-    {
+  "schemaVersion": 1,
+  "purpose": "Stable slug-to-artwork registry for the six homepage project entrances. Imported assets retain original colors and aspect ratio.",
+  "projects": {
+    "psytrain": {
       "file": "psytrain.svg",
-      "description": "Conversation and connected nodes"
+      "fallbackFile": "psytrain.svg",
+      "shortName": "PsytrAIn",
+      "status": "provisional-original-design",
+      "sha256": "1070774ff5d0b2022002d3f7fb7127e7bfdd53133b0a1e50543b3289cf7395a1",
+      "format": "svg",
+      "width": 40,
+      "height": 40,
+      "description": "Conversation and connected nodes",
+      "provenance": {
+        "kind": "provisional",
+        "created": "2026-09-15",
+        "note": "Original temporary vector sketch for this portfolio; not an official project logo."
+      }
     },
-    {
+    "shotflow": {
+      "file": "shotflow.svg",
+      "fallbackFile": "shotflow.svg",
+      "shortName": "ShotFlow",
+      "status": "provisional-original-design",
+      "sha256": "040a89c7bc784590e896130fdb4606fd31a275a8faa3acd8da87314efb2ef076",
+      "format": "svg",
+      "width": 40,
+      "height": 40,
+      "description": "Camera framing and storyboard cells",
+      "provenance": {
+        "kind": "provisional",
+        "created": "2026-09-15",
+        "note": "Original temporary vector sketch for this portfolio; not an official project logo."
+      }
+    },
+    "introme": {
+      "file": "introme.svg",
+      "fallbackFile": "introme.svg",
+      "shortName": "IntroMe",
+      "status": "provisional-original-design",
+      "sha256": "b620123a6149ba99f3f91e46dea9f8cdb014bf134c8b3bca8fb037685f053755",
+      "format": "svg",
+      "width": 40,
+      "height": 40,
+      "description": "Person and conversation",
+      "provenance": {
+        "kind": "provisional",
+        "created": "2026-09-15",
+        "note": "Original temporary vector sketch for this portfolio; not an official project logo."
+      }
+    },
+    "hypnos-cockpit": {
+      "file": "hypnos.svg",
+      "fallbackFile": "hypnos.svg",
+      "shortName": "Hýpnos",
+      "status": "provisional-original-design",
+      "sha256": "449db9c0a84c42dd744db88204aa4dbfe1a1d77e643561a5cfd897108462c56c",
+      "format": "svg",
+      "width": 40,
+      "height": 40,
+      "description": "Cockpit arc and reclining center line",
+      "provenance": {
+        "kind": "provisional",
+        "created": "2026-09-15",
+        "note": "Original temporary vector sketch for this portfolio; not an official project logo."
+      }
+    },
+    "deal-points": {
       "file": "deal-points.svg",
-      "description": "Connected reward points"
+      "fallbackFile": "deal-points.svg",
+      "shortName": "Deal Points",
+      "status": "provisional-original-design",
+      "sha256": "a21b9a2a635ff8bd9d68a464cc762a080393b7c42df40c4d83eddf555986af23",
+      "format": "svg",
+      "width": 40,
+      "height": 40,
+      "description": "Connected reward points",
+      "provenance": {
+        "kind": "provisional",
+        "created": "2026-09-15",
+        "note": "Original temporary vector sketch for this portfolio; not an official project logo."
+      }
     },
-    {
+    "orbit": {
       "file": "orbit.svg",
-      "description": "Orbital paths"
-    },
+      "fallbackFile": "orbit.svg",
+      "shortName": "Orbit",
+      "status": "provisional-original-design",
+      "sha256": "6573867420ea2a931d85d77ccc3a3fb27124df1d648ffd5c7995d5019900ba84",
+      "format": "svg",
+      "width": 40,
+      "height": 40,
+      "description": "Orbital paths",
+      "provenance": {
+        "kind": "provisional",
+        "created": "2026-09-15",
+        "note": "Original temporary vector sketch for this portfolio; not an official project logo."
+      }
+    }
+  },
+  "archived": [
     {
+      "slug": "m-box",
       "file": "m-box.svg",
-      "description": "Simple cube"
+      "status": "hidden-project-provisional-artwork-retained"
     }
   ],
-  "replacement": "Replace the SVG for any project with approved artwork, keeping its filename or updating projectMarks in src/v-next/meteorsConfig.ts."
+  "replacement": "Place icon.svg or icon.png in the matching content-library folder; run npm run assets:icons -- --dry-run, then npm run assets:icons. Normal builds use this public manifest and never require the private content library."
 }

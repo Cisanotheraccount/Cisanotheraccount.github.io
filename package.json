@@ -6,7 +6,8 @@
   "scripts": {
     "dev": "vite --host 127.0.0.1",
     "build": "tsc -p tsconfig.json && vite build && node scripts/build-pages.mjs",
-    "preview": "vite preview --host 127.0.0.1"
+    "preview": "vite preview --host 127.0.0.1",
+    "assets:icons": "node scripts/import-project-icons.mjs"
   },
   "dependencies": {
     "lenis": "1.3.26",

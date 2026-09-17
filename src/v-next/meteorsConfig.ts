@@ -1,24 +1,19 @@
 import { skyMotion } from './meteorSky';
-/** Small, replaceable portfolio marks; these are provisional designs, not official logos. */
-export const projectMarks: Record<string, { file: string; shortName: string }> = {
-  'hypnos-cockpit': { file: 'hypnos.svg', shortName: 'Hýpnos' },
-  introme: { file: 'introme.svg', shortName: 'IntroMe' },
-  shotflow: { file: 'shotflow.svg', shortName: 'ShotFlow' },
-  psytrain: { file: 'psytrain.svg', shortName: 'PsytrAIn' },
-  'deal-points': { file: 'deal-points.svg', shortName: 'Deal Points' },
-  orbit: { file: 'orbit.svg', shortName: 'Orbit' },
-  'm-box': { file: 'm-box.svg', shortName: 'M-box' },
-};
+import { floatingProjects } from '../portfolioData';
+import markManifest from '../../public/v-next/project-marks/manifest.json';
+/** The catalog controls selection; the public manifest controls replaceable artwork. */
+export const heroProjectSlugs = floatingProjects.map(project => project.slug);
+export const projectMarks: Record<string, { file: string; fallbackFile: string; shortName: string }> = markManifest.projects;
 
 export const meteorArt = {
   breakpoint: 760,
   marks: {
-    desktopCount: 7, tabletCount: 4, mobileCount: 3,
+    desktopCount: 6, tabletCount: 4, mobileCount: 3,
     desktopBreakpoint: 1100,
     duration: [60, 90], mobileDuration: [30, 45],
     baseDuration: 74, mobileBaseDuration: 37,
     // Each project keeps a recognisable, modest speed difference (about ±9%).
-    projectSpeed: [.92, 1.04, .98, 1.09, .95, 1.06, 1.01],
+    projectSpeed: { 'hypnos-cockpit': .92, introme: 1.04, shotflow: .98, psytrain: 1.09, 'deal-points': .95, orbit: 1.06 } as Record<string, number>,
     durationJitter: .025, laneJitter: .008,
     // Horizontal spacing of the vertical columns.
     band: [.12, .88], mobileBand: [.18, .82], landscapeBand: [.18, .82],

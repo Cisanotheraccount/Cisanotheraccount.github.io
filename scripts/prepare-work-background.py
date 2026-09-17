@@ -18,7 +18,7 @@ OUTPUT = ROOT / 'public/v-next/work-background'
 CATALOG = ROOT / 'public/v-next/background/star-points.json'
 WIDTHS = (1536, 2560, 3072, 4096)
 CROP = (0, 0, 8192, 3000)
-ORDER = ('hypnos-cockpit', 'introme', 'shotflow', 'psytrain', 'deal-points', 'orbit', 'm-box')
+ORDER = ('psytrain', 'shotflow', 'introme', 'hypnos-cockpit', 'deal-points', 'orbit', 'cyber-city', 'crystal-city', 'last-one', 'gala-x-ci-vr-gallery')
 
 
 def digest(path):
@@ -132,7 +132,7 @@ def main():
     palettes = {slug: palette_for(ROOT / 'public' / paths[slug].lstrip('/')) for slug in ORDER}
     write_json('palettes.json', palettes)
     # Compact review sheet only; not loaded by the website.
-    sheet = Image.new('RGB', (1200, 210 * 4), '#15171c')
+    sheet = Image.new('RGB', (1200, 210 * ((len(ORDER) + 1) // 2)), '#15171c')
     draw = ImageDraw.Draw(sheet)
     for i, (slug, palette) in enumerate(palettes.items()):
         x, y = (i % 2)*600, (i//2)*210
@@ -147,7 +147,7 @@ def main():
     assert before == digest(SOURCE), 'Original changed unexpectedly'
     assert all(digest(Path(path)) == value for path, value in existing.items()), 'Existing hero asset changed'
     assert all(0 < p['u'] < 1 and 0 < p['v'] < 1 for p in points)
-    assert len(palettes) == 7
+    assert len(palettes) == len(ORDER)
     print(json.dumps({'originalUnchanged':True,'heroUnchanged':True,'crop':CROP,'points':len(points),'variants':variants,'palettes':palettes}, ensure_ascii=False,indent=2))
 
 

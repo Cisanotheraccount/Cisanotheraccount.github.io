@@ -1,5 +1,5 @@
-import { useEffect, useId, useLayoutEffect, useRef, type MouseEvent } from 'react';
-import { workProjects, type PortfolioProject } from '../portfolioData';
+import { useEffect, useId, useLayoutEffect, useRef, type MouseEvent, type SyntheticEvent } from 'react';
+import { floatingProjects, type PortfolioProject } from '../portfolioData';
 import { getFrameSnapshot, requestFrame, scrollToPage, subscribeFrame } from './runtime';
 import { meteorArt, projectMarks } from './meteorsConfig';
 import { RandomSky } from './meteorSky';
@@ -11,6 +11,12 @@ import './meteors.css';
 
 type Mark = { index: number; slot: number; flight: ProjectCrossing | null; elapsed: number; x: number; y: number; size: number; opacity: number; labelOpacity: number; tailLength: number; angle: number; focused: boolean; pressed: boolean; hovered: boolean; near: boolean };
 export type HeroMeteorsProps = { paused: boolean; reduced: boolean; suspended: boolean; onOpen(event: MouseEvent<HTMLAnchorElement>, project: PortfolioProject): void };
+function recoverMark(event: SyntheticEvent<HTMLImageElement>, slug: string) {
+  const image = event.currentTarget;
+  if (image.dataset.fallback) { image.style.visibility = 'hidden'; return; }
+  image.dataset.fallback = 'true';
+  image.src = '/v-next/project-marks/' + projectMarks[slug].fallbackFile;
+}
 const range = (a: number, b: number) => a + Math.random() * (b - a);
 const clamp = (value: number, min: number, max: number) => Math.max(min, Math.min(max, value));
 
@@ -20,7 +26,7 @@ export function HeroMeteors({ paused, reduced, suspended, onOpen }: HeroMeteorsP
   const anchors = useRef<(HTMLAnchorElement | null)[]>([]);
   const fallbackMarks = useRef<(HTMLDivElement | null)[]>([]);
   const streaks = useRef<(SVGSVGElement | null)[]>([]);
-  const marks = useRef<Mark[]>(workProjects.map((_, index) => ({ index, slot: -1, flight: null, elapsed: 0, x: 0, y: 0, size: 38, opacity: .86, labelOpacity: 0, tailLength: 30, angle: 0, focused: false, pressed: false, hovered: false, near: false })));
+  const marks = useRef<Mark[]>(floatingProjects.map((_, index) => ({ index, slot: -1, flight: null, elapsed: 0, x: 0, y: 0, size: 38, opacity: .86, labelOpacity: 0, tailLength: 30, angle: 0, focused: false, pressed: false, hovered: false, near: false })));
   const props = useRef({ paused, reduced, suspended }); props.current = { paused, reduced, suspended };
   const gradient = useId().replace(/:/g, '');
   const omitted = new URLSearchParams(location.search).has('no-meteors');
@@ -33,7 +39,7 @@ export function HeroMeteors({ paused, reduced, suspended, onOpen }: HeroMeteorsP
     let mobile = width <= meteorArt.breakpoint, wordTop = Math.min(height, innerHeight) * .3, wordHeight = Math.min(height, innerHeight) * .4;
     let dirty = true, visible = false, revealFocus = true, wasReduced = props.current.reduced, oldScroll = -1, oldWidth = 0, oldHeight = 0, wordData = '', count = 0;
     let nextProjectIndex = 0, previousLimit = 0, previousLayout = '';
-    const primed = Array.from({ length: workProjects.length }, () => false);
+    const primed = Array.from({ length: floatingProjects.length }, () => false);
     const sky = new RandomSky();
     const wake = () => { dirty = true; requestFrame(); };
     const release = () => { for (const mark of marks.current) { mark.pressed = false; mark.hovered = false; mark.near = false; } requestFrame(); };
@@ -60,15 +66,15 @@ export function HeroMeteors({ paused, reduced, suspended, onOpen }: HeroMeteorsP
     const retire = (mark: Mark) => { mark.slot = -1; mark.flight = null; };
     // Fair catalog order: every available project gets a turn before a repeat.
     const nextProject = () => {
-      for (let attempt = 0; attempt < workProjects.length; attempt++) {
+      for (let attempt = 0; attempt < floatingProjects.length; attempt++) {
         const mark = marks.current[nextProjectIndex];
-        nextProjectIndex = (nextProjectIndex + 1) % workProjects.length;
+        nextProjectIndex = (nextProjectIndex + 1) % floatingProjects.length;
         if (!mark.flight && !mark.focused && !mark.pressed) return mark;
       }
     };
-    const projectLimit = () => width >= meteorArt.marks.desktopBreakpoint ? workProjects.length : mobile ? meteorArt.marks.mobileCount : meteorArt.marks.tabletCount;
+    const projectLimit = () => Math.min(floatingProjects.length, width >= meteorArt.marks.desktopBreakpoint ? meteorArt.marks.desktopCount : mobile ? meteorArt.marks.mobileCount : meteorArt.marks.tabletCount);
     const assign = (mark: Mark, slot: number, phase: number | null, secondsUntilEntry?: number) => {
-      mark.flight = createCrossing(mobile, mark.index, slot, projectLimit(), mobile && width > innerHeight); mark.slot = slot;
+      mark.flight = createCrossing(mobile, floatingProjects[mark.index].slug, slot, projectLimit(), mobile && width > innerHeight); mark.slot = slot;
       mark.elapsed = phase === null ? -(secondsUntilEntry ?? (meteorArt.marks.tailRange[1] + 70) / height * mark.flight.duration) : phase * mark.flight.duration;
       primed[slot] = true;
       mark.size = range(...meteorArt.marks.sizeRange); mark.opacity = range(...meteorArt.marks.opacityRange); mark.tailLength = range(...meteorArt.marks.tailRange);
@@ -92,7 +98,7 @@ export function HeroMeteors({ paused, reduced, suspended, onOpen }: HeroMeteorsP
         publishSky(hero, []); publishProjectSky(hero, []); el.dataset.skyCount = '0'; el.dataset.sky = '[]'; wasReduced = true; return false;
       }
       if (wasReduced) { wasReduced = false; revealFocus = true; }
-      if (limit === workProjects.length && limit !== previousLimit) {
+      if (limit === floatingProjects.length && limit !== previousLimit) {
         for (const mark of marks.current) if (mark.flight) mark.slot = mark.index;
       }
       for (const mark of marks.current) {
@@ -116,15 +122,15 @@ export function HeroMeteors({ paused, reduced, suspended, onOpen }: HeroMeteorsP
       }
       const opening = mobile ? (width > innerHeight ? meteorArt.marks.landscapeOpeningPhases : meteorArt.marks.mobileOpeningPhases) : meteorArt.marks.openingPhases;
       // Reserve each wide-screen track for its own project. On smaller screens,
-      // a fair queue rotates all seven through the separated tracks.
+      // a fair queue rotates the six projects through the separated tracks.
       for (let slot = 0; slot < limit; slot++) {
         const occupants = marks.current.filter(mark => mark.slot === slot && mark.flight);
         const head = occupants.find(mark => mark.elapsed < mark.flight!.duration);
         if (!head) {
-          const mark = limit === workProjects.length ? marks.current[slot] : nextProject();
+          const mark = limit === floatingProjects.length ? marks.current[slot] : nextProject();
           if (mark && !mark.flight) assign(mark, slot, primed[slot] ? null : opening[slot] * Math.min(1, innerHeight / height));
         }
-        else if (limit < workProjects.length && head.elapsed >= 0 && !occupants.some(mark => mark.elapsed < 0)) {
+        else if (limit < floatingProjects.length && head.elapsed >= 0 && !occupants.some(mark => mark.elapsed < 0)) {
           const remaining = head.flight!.duration - head.elapsed;
           const lead = (meteorArt.marks.tailRange[1] + 70) / height * (mobile ? 45 : 90);
           if (remaining > 0 && remaining <= lead) { const mark = nextProject(); if (mark) assign(mark, slot, null, remaining); }
@@ -180,7 +186,7 @@ export function HeroMeteors({ paused, reduced, suspended, onOpen }: HeroMeteorsP
         }
         fallback.style.display = 'grid'; fallback.style.transform = transform; fallback.style.opacity = String(mark.opacity);
         fallback.style.setProperty('--project-label-opacity', String(mark.labelOpacity));
-        projectFrame.push({ index: mark.index, slug: workProjects[mark.index].slug, x: mark.x, y: mark.y, size: mark.size, opacity: mark.opacity, labelOpacity: mark.labelOpacity, tailLength: mark.tailLength, angle: mark.angle });
+        projectFrame.push({ index: mark.index, slug: floatingProjects[mark.index].slug, x: mark.x, y: mark.y, size: mark.size, opacity: mark.opacity, labelOpacity: mark.labelOpacity, tailLength: mark.tailLength, angle: mark.angle });
       }
       if (revealFocus && !state.suspended) {
         revealFocus = false;
@@ -213,13 +219,13 @@ export function HeroMeteors({ paused, reduced, suspended, onOpen }: HeroMeteorsP
   const freeze = (index: number, key: 'focused' | 'pressed' | 'hovered', value: boolean) => { marks.current[index][key] = value; requestFrame(); };
   if (omitted) return null;
   return <>
-    <div className="gxc-project-fallback" aria-hidden="true" data-reduced={reduced ? 'true' : 'false'}>{workProjects.map((project, index) => <div className="gxc-meteor-visual" data-project={project.slug} key={project.id} ref={node => { fallbackMarks.current[index] = node; }} style={{ display: 'none' }}><span className="gxc-meteor-symbol"><img src={'/v-next/project-marks/' + projectMarks[project.slug].file} width={38} height={38} alt=""/></span><span className="gxc-meteor-label">{projectMarks[project.slug].shortName}</span></div>)}</div>
+    <div className="gxc-project-fallback" aria-hidden="true" data-reduced={reduced ? 'true' : 'false'}>{floatingProjects.map((project, index) => <div className="gxc-meteor-visual" data-project={project.slug} key={project.id} ref={node => { fallbackMarks.current[index] = node; }} style={{ display: 'none' }}><span className="gxc-meteor-symbol"><img src={'/v-next/project-marks/' + projectMarks[project.slug].file} onError={event => recoverMark(event, project.slug)} width={38} height={38} alt=""/></span><span className="gxc-meteor-label">{projectMarks[project.slug].shortName}</span></div>)}</div>
     <div ref={root} className="gxc-meteors" data-reduced={reduced ? 'true' : 'false'} aria-label="Explore projects in the sky" role="navigation">
-      {workProjects.map((project, index) => <a key={project.id} ref={element => { anchors.current[index] = element; }} className="gxc-meteor-mark" data-project={project.slug} data-entry="hero" href={'#/work/' + project.slug} tabIndex={-1} aria-label={'Explore ' + project.title} hidden={initiallyHidden.current}
+      {floatingProjects.map((project, index) => <a key={project.id} ref={element => { anchors.current[index] = element; }} className="gxc-meteor-mark" data-project={project.slug} data-entry="hero" href={'#/work/' + project.slug} tabIndex={-1} aria-label={'Explore ' + project.title} hidden={initiallyHidden.current}
         onFocus={() => freeze(index, 'focused', true)} onBlur={() => { freeze(index, 'focused', false); freeze(index, 'pressed', false); }}
         onPointerEnter={event => { if (event.pointerType === 'mouse') freeze(index, 'hovered', true); }} onPointerLeave={() => freeze(index, 'hovered', false)}
         onPointerDown={() => freeze(index, 'pressed', true)} onPointerCancel={() => freeze(index, 'pressed', false)} onClick={event => onOpen(event, project)}>
-        <span className="gxc-meteor-symbol" aria-hidden="true"><img src={'/v-next/project-marks/' + projectMarks[project.slug].file} width={38} height={38} alt="" draggable={false}/></span>
+        <span className="gxc-meteor-symbol" aria-hidden="true"><img src={'/v-next/project-marks/' + projectMarks[project.slug].file} onError={event => recoverMark(event, project.slug)} width={38} height={38} alt="" draggable={false}/></span>
         <span className="gxc-meteor-label" aria-hidden="true">{projectMarks[project.slug].shortName}</span>
       </a>)}
     </div>

@@ -9,9 +9,9 @@ export function trackCenter(slot: number, count: number, mobile = false, landsca
   const band = landscape ? meteorArt.marks.landscapeBand : mobile ? meteorArt.marks.mobileBand : meteorArt.marks.band;
   return count < 2 ? (band[0] + band[1]) / 2 : band[0] + (band[1] - band[0]) * slot / (count - 1);
 }
-export function createCrossing(mobile: boolean, projectIndex: number, slot: number, count: number, landscape = false, random = Math.random): ProjectCrossing {
+export function createCrossing(mobile: boolean, projectSlug: string, slot: number, count: number, landscape = false, random = Math.random): ProjectCrossing {
   const art = meteorArt.marks, center = trackCenter(slot, count, mobile, landscape);
-  const speed = art.projectSpeed[projectIndex % art.projectSpeed.length];
+  const speed = art.projectSpeed[projectSlug] ?? 1;
   const base = mobile ? art.mobileBaseDuration : art.baseDuration;
   return { axis: 'vertical', x: center, offsetX: (random() - .5) * art.laneJitter, offsetY: 0,
     duration: base / speed * (1 + (random() - .5) * art.durationJitter) };

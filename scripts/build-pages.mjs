@@ -26,6 +26,9 @@ for (const project of workProjects) {
  const content = '<main style="padding:5vw;max-width:1100px;margin:auto"><a href="/">← Gala X Ci / All work</a><h1>'+escape(project.title)+'</h1><p>'+escape(project.summary)+'</p><img src="'+project.image+'" alt="'+escape(project.imageAlt)+'" width="'+project.imageWidth+'" height="'+project.imageHeight+'" style="width:100%;height:auto">'+project.overview.map(p=>'<p>'+escape(p)+'</p>').join('')+project.highlights.map(h=>'<section><h2>'+escape(h.title)+'</h2><p>'+escape(h.body)+'</p></section>').join('')+'</main>';
  await page('work/'+project.slug, project.title+' — Ci Song / Gala X Ci', project.summary, content);
 }
+// Retired project bookmarks go to the live work list; its source archive stays local.
+await mkdir('dist/work/m-box', { recursive: true });
+await writeFile('dist/work/m-box/index.html', '<!doctype html><html lang="en"><head><meta charset="UTF-8"><meta name="viewport" content="width=device-width, initial-scale=1"><title>Gala X Ci — Selected work</title><script>location.replace("/galaxci/" + location.search + "#work");</script><noscript><meta http-equiv="refresh" content="0;url=/galaxci/#work"></noscript></head><body><a href="/galaxci/#work">Browse selected work</a></body></html>');
 await writeFile('dist/404.html', template.replace('<div id="root"></div>', '<main><h1>Page not found</h1><a href="/">Design portfolio</a> · <a href="/photography/">Photography &amp; Film</a></main>').replace(/<script[^>]+src="[^"]+"[^>]*><\/script>/g,''));
 // Publish the approved glass-and-starlight site at its branded entry. Keep the
 // previous design available separately; Photography and direct case URLs retain
@@ -40,4 +43,4 @@ await writeFile('dist/index.html', '<!doctype html><html lang="en"><head><meta c
 // This offline palette contact sheet is a review artifact, not a site asset.
 await rm('dist/v-next/work-background/palette-review.jpg', { force: true });
 await rm('.site-build',{recursive:true,force:true});
-console.log('Published /galaxci/ with root forwarding, legacy design, photography, seven project routes and a 404 page.');
+console.log(`Built /galaxci/, legacy design, photography, ${workProjects.length} project routes, retired-project forwarding and a 404 page.`);

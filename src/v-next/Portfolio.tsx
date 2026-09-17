@@ -18,6 +18,7 @@ type Rect = { x: number; y: number; width: number; height: number };
 type Study = { image: string; alt: string; caption: string; width?: number; height?: number };
 const number = (n: number) => String(n + 1).padStart(2, '0');
 const parseProject = () => workProjects.find(p => location.hash === '#/work/' + p.slug) ?? null;
+const retiredProject = () => /^#\/work\/m-box\/?$/.test(location.hash);
 const modified = (e: MouseEvent) => e.metaKey || e.ctrlKey || e.shiftKey || e.altKey || e.button !== 0;
 
 export function NextPortfolio() {
@@ -49,7 +50,20 @@ export function NextPortfolio() {
   useSmoothScene(disabled, locked || menuVisible);
   useEffect(() => {
     const oldRestoration = history.scrollRestoration; history.scrollRestoration = 'manual';
-    const sync = () => { cancelPending(); const next = parseProject(); if (next) { closing.current = false; setEntrySource(history.state?.gxcEntry === 'hero' ? 'hero' : 'work'); } setProject(next); setMenu(false); };
+    const sync = () => {
+      cancelPending();
+      const retired = retiredProject();
+      if (retired) history.replaceState(null, '', '#work');
+      const next = parseProject();
+      if (next) { closing.current = false; setEntrySource(history.state?.gxcEntry === 'hero' ? 'hero' : 'work'); }
+      setProject(next); setMenu(false);
+      if (retired) {
+        savedScroll.current = Math.max(0, (document.getElementById('work')?.offsetTop ?? 0) - 90);
+        scrollToPage(savedScroll.current, { immediate: true });
+        document.getElementById('work')?.focus({ preventScroll: true });
+      }
+    };
+    if (retiredProject()) sync();
     window.addEventListener('popstate', sync); window.addEventListener('hashchange', sync);
     const key = (event: KeyboardEvent) => {
       setKeyboard(true);
@@ -186,10 +200,11 @@ export function NextPortfolio() {
 }
 
 function ProjectCard({ item, index, pending, onOpen }: { item: PortfolioProject; index: number; pending: boolean; onOpen: (e: MouseEvent<HTMLAnchorElement>, p: PortfolioProject) => void }) {
-  return <article className={'gxc-project gxc-project-' + item.slug}>
+  const layout = index === 0 ? 'lead' : index === 1 ? 'wide' : index === 2 ? 'narrow' : index % 2 ? 'left' : 'right';
+  return <article className={'gxc-project gxc-project-' + item.slug} data-layout={layout}>
     <a href={'#/work/' + item.slug} onClick={e => onOpen(e, item)} data-opening={pending ? 'true' : undefined} aria-busy={pending || undefined} aria-label={'Explore ' + item.title}>
       <div className="gxc-project-picture" data-fit={item.imageFit ?? 'cover'}>
-        <img src={item.image} srcSet={item.imageSmall + ' 800w, ' + item.image + ' ' + item.imageWidth + 'w'} sizes={index === 0 ? '90vw' : '(max-width: 760px) 90vw, 50vw'} alt={item.imageAlt} width={item.imageWidth} height={item.imageHeight} loading="lazy" decoding="async"/>
+        <img src={item.image} srcSet={item.imageSmall + ' 800w, ' + item.image + ' ' + item.imageWidth + 'w'} sizes={index === 0 ? '(max-width: 760px) 90vw, 72vw' : '(max-width: 760px) 90vw, 55vw'} alt={item.imageAlt} width={item.imageWidth} height={item.imageHeight} loading="lazy" decoding="async"/>
         {item.slug === 'shotflow' && <img className="gxc-shotflow-second" src="/portfolio/shotflow-storyboard-1290.webp" alt="ShotFlow shot list development capture" width="1290" height="2796" loading="lazy"/>}
         <span className="gxc-project-index gxc-mono">{number(index)} / {index < 3 ? 'IN FOCUS' : 'EXPLORATION'}</span><span className="gxc-project-open"><ArrowUpRight size={22}/></span>
       </div>
@@ -313,7 +328,7 @@ function ProjectDialog({ project, entrySource, source, instant, onClose, onLock,
         <header className="gxc-detail-heading"><span className="gxc-mono">{shown.category}</span><h2 ref={heading} id="gxc-detail-title" tabIndex={-1}>{shown.title}</h2><p>{shown.summary}</p></header>
         <div ref={slot} className={'gxc-detail-cover cover-' + shown.slug} data-fit={shown.imageFit ?? 'cover'}><img src={shown.image} alt={shown.imageAlt} width={shown.imageWidth} height={shown.imageHeight}/></div>
         <div className="gxc-detail-overview"><aside><span className="gxc-mono">PROJECT OVERVIEW</span>{shown.role && <p><small>ROLE</small>{shown.role}</p>}{shown.period && <p><small>PERIOD</small>{shown.period}</p>}<p><small>EXPLORING</small>{shown.tags.join(' / ')}</p></aside><div>{shown.overview.map(text => <p key={text}>{text}</p>)}{shown.externalLinks.length > 0 && <div className="gxc-material-links">{shown.externalLinks.map(link => <a key={link.url} className="gxc-text-link" href={link.url} target="_blank" rel="noreferrer">{link.label}<ArrowUpRight size={17}/></a>)}</div>}</div></div>
-        {shown.slug === 'introme' ? <div className="gxc-case-narrative">{introSections.map((section, i) => <section key={section.title}><div className="gxc-case-writing"><span className="gxc-mono">{number(i)} / INSIDE THE PROJECT</span><div><h3>{section.title}</h3>{section.paragraphs.map(p => <p key={p}>{p}</p>)}</div></div>{section.image && <StudyImage study={{ image: section.image, caption: section.caption!, alt: section.caption!, width: 1600, height: 900 }} onZoom={setZoom}/>}</section>)}</div> : <><div className="gxc-detail-highlights">{shown.highlights.map((h, i) => <section key={h.title}><span className="gxc-mono">{number(i)}</span><h3>{h.title}</h3><p>{h.body}</p></section>)}</div><div className="gxc-studies"><div className="gxc-studies-heading"><span className="gxc-mono">PROCESS & DESIGN STUDIES</span><h3>A closer look.</h3></div>{studies.map(study => <StudyImage study={study} key={study.image} onZoom={setZoom}/>)}</div></>}
+        {shown.slug === 'introme' ? <div className="gxc-case-narrative">{introSections.map((section, i) => <section key={section.title}><div className="gxc-case-writing"><span className="gxc-mono">{number(i)} / INSIDE THE PROJECT</span><div><h3>{section.title}</h3>{section.paragraphs.map(p => <p key={p}>{p}</p>)}</div></div>{section.image && <StudyImage study={{ image: section.image, caption: section.caption!, alt: section.caption!, width: 1600, height: 900 }} onZoom={setZoom}/>}</section>)}</div> : <><div className="gxc-detail-highlights">{shown.highlights.map((h, i) => <section key={h.title}><span className="gxc-mono">{number(i)}</span><h3>{h.title}</h3><p>{h.body}</p></section>)}</div>{studies.length > 0 && <div className="gxc-studies"><div className="gxc-studies-heading"><span className="gxc-mono">PROCESS & DESIGN STUDIES</span><h3>A closer look.</h3></div>{studies.map(study => <StudyImage study={study} key={study.image} onZoom={setZoom}/>)}</div>}</>}
         {shown.liveDemo && <div className="gxc-live-status"><span className="gxc-mono">LIVE EXPERIENCE</span><p>{shown.liveDemo.description}</p></div>}
         <a className="gxc-next-project" href={'#/work/' + next.slug} onClick={e => onOpen(e, next)}><div><span className="gxc-mono">NEXT EXPLORATION</span><h3>{next.title}</h3></div><ArrowRight size={38}/></a>
       </motion.article>

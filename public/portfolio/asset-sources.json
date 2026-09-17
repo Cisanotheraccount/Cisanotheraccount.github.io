@@ -214,6 +214,138 @@
           "sha256": "35c25e3e1e1cfc4d6247e94b1f52f4083aee85068982857f8daa9222e69da3a5"
         }
       ]
+    },
+    {
+      "project": "cyber-city",
+      "source": "内容资料/02_项目/P08_Cyber-City/images/旧站素材/01_6c7c73328d88.png",
+      "sourceSha256": "6c7c73328d88bf072e3f92856a8389ab760aca50588099eebe94e2368518ae17",
+      "sourceSize": [
+        1100,
+        619
+      ],
+      "sourceBytes": 1157854,
+      "source_urls": [
+        "https://www.galaxci.com/uploads/1/3/7/4/137482580/ci-song-still-image-2_orig.png"
+      ],
+      "derivatives": [
+        {
+          "file": "cyber-city-1100.webp",
+          "width": 1100,
+          "height": 619,
+          "bytes": 154520,
+          "sha256": "d568d53e4bf3933640ba7f6653740521ea02558d45f2c76df9cd9d5d356a3b9c"
+        },
+        {
+          "file": "cyber-city-800.webp",
+          "width": 800,
+          "height": 450,
+          "bytes": 77906,
+          "sha256": "ac8932353cbd88ef67e7a9881148fa08657e2802d9a0e59e0bd9bf679a2f7936"
+        }
+      ],
+      "quality": 92,
+      "processing": "EXIF orientation; proportional Lanczos resize only when smaller; original ICC retained; no crop, recolor, or upscaling.",
+      "selection": "Original project-index cover; only one distinct archived still is available.",
+      "publicationAuthorization": "User-approved ten-project implementation plan, 2026-09-16."
+    },
+    {
+      "project": "crystal-city",
+      "source": "内容资料/02_项目/P09_Crystal-City/images/旧站素材/04_b6aa62c947e4.png",
+      "sourceSha256": "b6aa62c947e43a5e2568cef60bef671f2c4a076e2ffe6ef08f4467011bf22cac",
+      "sourceSize": [
+        1920,
+        1080
+      ],
+      "sourceBytes": 3347620,
+      "source_urls": [
+        "https://www.galaxci.com/uploads/1/3/7/4/137482580/background-images/2062008759.png"
+      ],
+      "derivatives": [
+        {
+          "file": "crystal-city-1600.webp",
+          "width": 1600,
+          "height": 900,
+          "bytes": 335214,
+          "sha256": "3b955611f0fea93ca00f9152936305ed8fe80d6510abcc2d685c7add586c10b4"
+        },
+        {
+          "file": "crystal-city-800.webp",
+          "width": 800,
+          "height": 450,
+          "bytes": 82528,
+          "sha256": "daa745479224ed4e5b546b48bf0404a1d4bd1fe5683bd52641db134f1071ef61"
+        }
+      ],
+      "quality": 92,
+      "processing": "EXIF orientation; proportional Lanczos resize only when smaller; original ICC retained; no crop, recolor, or upscaling.",
+      "selection": "Higher-resolution archived version of the original project-index cover composition. IMG-05 repeats this view and is omitted from the gallery.",
+      "publicationAuthorization": "User-approved ten-project implementation plan, 2026-09-16."
+    },
+    {
+      "project": "last-one",
+      "source": "内容资料/02_项目/P07_Last-One/images/旧站素材/05_743bc48b9f4b.jpeg",
+      "sourceSha256": "743bc48b9f4bc9b7f7b6b50fe74844be21fd7ce8d585edfc78b062786d7de4f0",
+      "sourceSize": [
+        2000,
+        838
+      ],
+      "sourceBytes": 60625,
+      "source_urls": [
+        "https://www.galaxci.com/uploads/1/3/7/4/137482580/background-images/661756799.jpeg"
+      ],
+      "derivatives": [
+        {
+          "file": "last-one-1600.webp",
+          "width": 1600,
+          "height": 670,
+          "bytes": 27608,
+          "sha256": "3fc37af6363463e37b01070bd5e2ca96ef26fd0de5650ee7e5fb09c8f56ef9f9"
+        },
+        {
+          "file": "last-one-800.webp",
+          "width": 800,
+          "height": 335,
+          "bytes": 7220,
+          "sha256": "9db7179672c7d97a32dfe9d127988a403ae21f356f24101dad8f15252c4671d0"
+        }
+      ],
+      "quality": 92,
+      "processing": "EXIF orientation; proportional Lanczos resize only when smaller; original ICC retained; no crop, recolor, or upscaling.",
+      "selection": "2000-pixel archived background version of the character and sphere composition used on the original project index. IMG-06 repeats this view and is omitted.",
+      "publicationAuthorization": "User-approved ten-project implementation plan, 2026-09-16."
+    },
+    {
+      "project": "gala-x-ci-vr-gallery",
+      "source": "内容资料/02_项目/P06_Gala-X-Ci-VR-Gallery/images/旧站素材/01_137f07199324.png",
+      "sourceSha256": "137f07199324c99bd6cfd47caaf460f342b42f2191b60df2728a3e075ccf33cd",
+      "sourceSize": [
+        1100,
+        689
+      ],
+      "sourceBytes": 821585,
+      "source_urls": [
+        "https://www.galaxci.com/uploads/1/3/7/4/137482580/screenshot00006_orig.png"
+      ],
+      "derivatives": [
+        {
+          "file": "gala-x-ci-vr-gallery-1100.webp",
+          "width": 1100,
+          "height": 689,
+          "bytes": 57852,
+          "sha256": "79a8edd459f7e54c4091e2efadb6ac8fc6a3d112feda8ee62e1ea76d72d7ee82"
+        },
+        {
+          "file": "gala-x-ci-vr-gallery-800.webp",
+          "width": 800,
+          "height": 501,
+          "bytes": 35192,
+          "sha256": "96aadd3b09929fe9832674a264e61418f35f2484982e26bdcf7adcaf3bd9aab1"
+        }
+      ],
+      "quality": 92,
+      "processing": "EXIF orientation; proportional Lanczos resize only when smaller; original ICC retained; no crop, recolor, or upscaling.",
+      "selection": "Original project-index cover showing the gallery’s black-hole opening.",
+      "publicationAuthorization": "User-approved ten-project implementation plan, 2026-09-16."
     }
   ]
 }

@@ -25,7 +25,7 @@ npm run preview
 
 The `/galaxci/` route serves the current glass-and-starlight portfolio. The root URL forwards there, preserving bookmarked project hashes and query parameters. `/v-next/` remains available, alongside `/photography/`, the earlier `/legacy/` design and existing project URLs.
 
-React, TypeScript, Vite, Three.js, Motion and Lenis. Seven project details use hash routing, so direct links and refresh work on GitHub Pages. The starfield and project colors use the original photographs and portfolio material.
+React, TypeScript, Vite, Three.js, Motion and Lenis. Ten project details use hash routing, so direct links and refresh work on GitHub Pages. The starfield and project colors use the original photographs and portfolio material.
 
 ## Publishing
 
@@ -36,3 +36,14 @@ The original content archive, local review screenshots/recordings and machine-sp
 ## Credits
 
 Portfolio text, photographs and project artwork by Ci Song. Third-party font and glass-material licenses are retained with their respective assets and modules. Publishing the source does not grant a new license to the portfolio artwork or photographs.
+
+## Project icons
+
+Six selected projects float in the homepage. The artwork registry is `public/v-next/project-marks/manifest.json`; current marks are provisional. To import your SVG or transparent PNG artwork, place `icon.svg` or `icon.png` in folders named `psytrain`, `shotflow`, `introme`, `hypnos-cockpit`, `deal-points`, and `orbit`, then run:
+
+```sh
+npm run assets:icons -- --source /absolute/path/to/icons --dry-run
+npm run assets:icons -- --source /absolute/path/to/icons
+```
+
+The importer preserves source bytes, records hashes, and updates public artwork without stretching or recoloring. Normal builds use the exported assets and do not access a private source archive.

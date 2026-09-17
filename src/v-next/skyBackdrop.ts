@@ -2,7 +2,7 @@ import * as THREE from 'three';
 import type { SkyFrame } from './skyState';
 import { skyMotion } from './meteorSky';
 import { starCatalog, twinkleArt, type Twinkle } from './twinkle';
-import { projectAtlasLayout } from './projectAtlas';
+import { projectAtlasLayout, projectAtlasCellBySlug } from './projectAtlas';
 import { projectLabelArt } from './projectLabel';
 import type { ProjectSkyFrame } from './projectSkyState';
 
@@ -195,13 +195,14 @@ vec3 skyMeteorLight() {
     },
     updateProjects(frame: ProjectSkyFrame) {
       if (disposed) return;
-      const count = uniforms.uProjectAtlas.value ? Math.min(frame.points.length, projectAtlasLayout.capacity) : 0;
+      const points = frame.points.filter(point => Number.isInteger(projectAtlasCellBySlug[point.slug]));
+      const count = uniforms.uProjectAtlas.value ? Math.min(points.length, projectAtlasLayout.capacity) : 0;
       uniforms.uProjectCount.value = count;
       for (let i = 0; i < count; i++) {
-        const point = frame.points[i], radians = point.angle * Math.PI / 180;
+        const point = points[i], radians = point.angle * Math.PI / 180;
         projects[i].set(point.x, point.y, point.size, Math.max(0, Math.min(1, point.opacity)));
         projectTails[i].set(Math.cos(radians), Math.sin(radians), point.tailLength, Math.max(0, Math.min(1, point.labelOpacity)));
-        projectCells[i] = Math.max(0, Math.min(projectAtlasLayout.capacity - 1, point.index));
+        projectCells[i] = projectAtlasCellBySlug[point.slug];
       }
     },
     updateTwinkles(points: Twinkle[]) {

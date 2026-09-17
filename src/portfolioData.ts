@@ -1,6 +1,7 @@
 /**
- * Preview copy distilled from the content library's project.md files.
- * This is not final editorial approval or a final selection of featured work.
+ * Public copy distilled from the content library's project.md files.
+ * Selection follows the user-approved ten-project plan of 2026-09-16.
+ * M box remains in this source catalog for restoration, outside public lists.
  * Source records and web-export provenance: public/portfolio/asset-sources.json.
  * Unknown dates and individual responsibilities are deliberately omitted.
  */
@@ -311,6 +312,108 @@ export const portfolioProjects: PortfolioProject[] = [
     ],
     "externalLinks": []
   },
+  {
+    id: 'P08',
+    slug: 'cyber-city',
+    title: 'Cyber City',
+    category: '3D environment & moving image',
+    summary: 'A virtual city built in Maya.',
+    image: '/portfolio/cyber-city-1100.webp',
+    imageSmall: '/portfolio/cyber-city-800.webp',
+    imageAlt: 'A narrow virtual city street lit by cyan and magenta signs, with reflections on a dark roadway.',
+    imageWidth: 1100,
+    imageHeight: 619,
+    imageFit: 'contain',
+    tags: ['3D environment', 'Maya', 'Moving image'],
+    overview: [
+      'Cyber City is a virtual city built in Maya and presented through moving image. Neon signs, dense building facades, and reflections define the street-level environment.',
+      'The project video is titled Restart. The still shown here is the original portfolio cover.',
+    ],
+    highlights: [
+      { title: 'A city at street level', body: 'A narrow view between buildings brings the city’s illuminated surfaces and close-set architecture into focus.' },
+      { title: 'Environment in motion', body: 'The video presents the virtual city as a moving-image work.' },
+    ],
+    externalLinks: [
+      { label: 'Watch Restart', url: 'https://www.youtube.com/watch?v=ZXkFvkEzTj0' },
+    ],
+  },
+  {
+    id: 'P09',
+    slug: 'crystal-city',
+    title: 'Crystal City',
+    category: 'Light, space & moving image',
+    summary: 'An imagined city between transparency and light.',
+    image: '/portfolio/crystal-city-1600.webp',
+    imageSmall: '/portfolio/crystal-city-800.webp',
+    imageAlt: 'Crystal City at sunset, with dense dark towers and fine orange lines illuminating the city’s structure.',
+    imageWidth: 1600,
+    imageHeight: 900,
+    imageFit: 'contain',
+    tags: ['3D environment', 'Light and space', 'Moving image'],
+    overview: [
+      'Crystal City is a 3D city study that shifts between transparent daylight and illuminated night. It explores contrasting ideas of an ideal urban environment through a cityscape that is both recognizable and surreal.',
+      'Light and shadow shape the city’s atmosphere. Clear structures and ordered lines give way to glowing buildings and a more vibrant nocturnal world, asking what kind of environment we want to inhabit.',
+    ],
+    highlights: [
+      { title: 'Two states of one city', body: 'Daylight reveals the city’s transparency and structure; night transforms those same forms through illumination.' },
+      { title: 'Light as an environment', body: 'Changing light defines the emotional quality of the space as well as its appearance.' },
+      { title: 'An imagined urban world', body: 'The work considers different possibilities for an ideal city beyond familiar architectural and planning constraints.' },
+    ],
+    externalLinks: [
+      { label: 'Watch Crystal City', url: 'https://www.youtube.com/watch?v=XHEck7ViX74' },
+    ],
+  },
+  {
+    id: 'P07',
+    slug: 'last-one',
+    title: 'Last_One',
+    category: 'Animation & moving image',
+    summary: 'A character moving through imagined worlds.',
+    image: '/portfolio/last-one-1600.webp',
+    imageSmall: '/portfolio/last-one-800.webp',
+    imageAlt: 'A small animated character and a purple sphere suspended against a bright orange background.',
+    imageWidth: 1600,
+    imageHeight: 670,
+    imageFit: 'contain',
+    tags: ['Animation', 'Audiovisual work', 'Moving image'],
+    overview: [
+      'Last_One is an audiovisual work presented through animation and cinematic stills. A stylized character appears among floating worlds, geometric spaces, and vivid orange light.',
+      'The selection below brings together four frames from the project alongside its video.',
+    ],
+    highlights: [
+      { title: 'Character and scale', body: 'Small figures and suspended spherical forms create contrasts of scale across the frames.' },
+      { title: 'A changing visual world', body: 'Dark spaces, bright color, and angular environments give each frame a distinct atmosphere.' },
+    ],
+    externalLinks: [
+      { label: 'Watch Last_One', url: 'https://www.youtube.com/watch?v=359ZBX6A7V8' },
+    ],
+  },
+  {
+    id: 'P06',
+    slug: 'gala-x-ci-vr-gallery',
+    title: 'Gala x Ci VR Gallery',
+    category: 'Virtual exhibition',
+    summary: 'Immersive projects gathered in a shared virtual space.',
+    image: '/portfolio/gala-x-ci-vr-gallery-1100.webp',
+    imageSmall: '/portfolio/gala-x-ci-vr-gallery-800.webp',
+    imageAlt: 'A luminous black hole with a pale blue center and flowing pink light against the virtual gallery’s star-filled background.',
+    imageWidth: 1100,
+    imageHeight: 689,
+    imageFit: 'contain',
+    tags: ['Virtual exhibition', 'Immersive media', 'Spatial experience'],
+    overview: [
+      'Gala x Ci VR Gallery brings Ci Song’s immersive projects into a shared virtual exhibition. The experience begins with a singularity and moves into a sequence of spaces for viewing the work.',
+      'The gallery is presented here through its video and a selection of exhibition views, from the entrance to project displays within a star-filled environment.',
+    ],
+    highlights: [
+      { title: 'Beginning at a singularity', body: 'A black-hole image establishes the gallery’s opening and its celestial setting.' },
+      { title: 'Projects in a shared space', body: 'Displays are arranged within a virtual environment that brings the individual works together.' },
+      { title: 'An exhibition to move through', body: 'Entrances, thresholds, and views along the display sequence give the gallery a spatial progression.' },
+    ],
+    externalLinks: [
+      { label: 'Watch the gallery video', url: 'https://www.youtube.com/watch?v=70033a2SJx0' },
+    ],
+  },
 ];
 
 /** Public email explicitly confirmed by Ci Song; never publish the private email. */
@@ -323,7 +426,7 @@ export const portfolioContact = {
   linkedIn: 'https://www.linkedin.com/in/ci-song-galaxci/',
 } as const;
 
-/** Explicit placement: ShotFlow is a visible project, not a reserved slot. */
+/** Public selection is independent of the preserved source catalog. */
 function selectProjects(slugs: readonly string[]): PortfolioProject[] {
   return slugs.map((slug) => {
     const project = portfolioProjects.find((candidate) => candidate.slug === slug);
@@ -331,6 +434,7 @@ function selectProjects(slugs: readonly string[]): PortfolioProject[] {
     return project;
   });
 }
-export const workProjects = selectProjects(['hypnos-cockpit', 'introme', 'shotflow', 'psytrain', 'deal-points', 'orbit', 'm-box']);
+export const workProjects = selectProjects(['psytrain', 'shotflow', 'introme', 'hypnos-cockpit', 'deal-points', 'orbit', 'cyber-city', 'crystal-city', 'last-one', 'gala-x-ci-vr-gallery']);
+export const floatingProjects = workProjects.slice(0, 6);
 export const heroProjects = workProjects.slice(0, 3);
-export const reelProjects = selectProjects(['deal-points', 'orbit', 'm-box']);
+export const reelProjects = selectProjects(['deal-points', 'orbit']);

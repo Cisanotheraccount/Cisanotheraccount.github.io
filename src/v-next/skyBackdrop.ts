@@ -1,7 +1,8 @@
 import * as THREE from 'three';
 import type { SkyFrame } from './skyState';
 import { skyMotion } from './meteorSky';
-import { starCatalog, twinkleArt, type Twinkle } from './twinkle';
+import { starCatalog, type Twinkle } from './twinkle';
+import { heroTwinkleArt as twinkleArt } from './heroTwinkleArt';
 import { projectAtlasLayout, projectAtlasCellBySlug } from './projectAtlas';
 import { projectLabelArt } from './projectLabel';
 import type { ProjectSkyFrame } from './projectSkyState';
@@ -21,6 +22,7 @@ export function createSkyBackdrop(material: THREE.MeshBasicMaterial) {
   const heads = Array.from({ length: SKY_CAPACITY }, () => new THREE.Vector4());
   const directions = Array.from({ length: SKY_CAPACITY }, () => new THREE.Vector4(1, 0, 1, 0));
   const twinkles = Array.from({ length: twinkleArt.capacity }, () => new THREE.Vector4());
+  const twinkleColors = Array.from({ length: twinkleArt.capacity }, () => new THREE.Vector3(1, 1, 1));
   const projects = Array.from({ length: projectAtlasLayout.capacity }, () => new THREE.Vector4());
   const projectTails = Array.from({ length: projectAtlasLayout.capacity }, () => new THREE.Vector4());
   const projectCells = Array.from({ length: projectAtlasLayout.capacity }, () => 0);
@@ -34,6 +36,7 @@ export function createSkyBackdrop(material: THREE.MeshBasicMaterial) {
     uPhotoStarSize: { value: new THREE.Vector2(starCatalog.source.width, starCatalog.source.height) },
     uPhotoStarCount: { value: 0 },
     uPhotoStars: { value: twinkles },
+    uPhotoStarColors: { value: twinkleColors },
     uProjectAtlas: { value: null as THREE.Texture | null },
     uProjectCount: { value: 0 },
     // Center.x / center.y / CSS size / opacity; atlas cells preserve project identity.
@@ -62,6 +65,7 @@ uniform vec4 uSkyDirections[${SKY_CAPACITY}];
 uniform vec2 uPhotoStarSize;
 uniform int uPhotoStarCount;
 uniform vec4 uPhotoStars[${twinkleArt.capacity}];
+uniform vec3 uPhotoStarColors[${twinkleArt.capacity}];
 uniform sampler2D uProjectAtlas;
 uniform int uProjectCount;
 uniform vec4 uProjects[${projectAtlasLayout.capacity}];
@@ -125,6 +129,12 @@ vec3 projectSkyColor(vec3 background) {
   return result;
 }
 
+vec3 twinkleToSRGB(vec3 value) {
+  return mix(1.055 * pow(max(value, vec3(0.0)), vec3(1.0 / 2.4)) - 0.055, value * 12.92, lessThanEqual(value, vec3(0.0031308)));
+}
+vec3 twinkleToLinear(vec3 value) {
+  return mix(pow((value + 0.055) / 1.055, vec3(2.4)), value / 12.92, lessThanEqual(value, vec3(0.04045)));
+}
 vec3 photoTwinkleLight(vec3 photoColor, vec2 photoUv) {
   vec3 light = vec3(0.0);
   #ifdef USE_MAP
@@ -135,12 +145,16 @@ vec3 photoTwinkleLight(vec3 photoColor, vec2 photoUv) {
     // overscan, camera alignment and every responsive variant are already in it.
     vec2 delta = (photoUv - vec2(star.x, 1.0 - star.y)) * uPhotoStarSize;
     float q = dot(delta, delta) / max(star.z * star.z, 0.01);
-    if (q > 20.0) continue;
+    if (q > ${ (twinkleArt.supportSigma ** 2).toFixed(1) }) continue;
     float core = exp(-0.5 * q);
-    float halo = exp(-0.19 * q) * (1.0 - smoothstep(12.0, 20.0, q));
-    // Amplify the original star's own pixels/color, with only a tiny local glow.
-    light += photoColor * core * star.w * ${twinkleArt.gain.toFixed(2)};
-    light += vec3(0.94, 0.97, 1.0) * halo * star.w * ${twinkleArt.halo.toFixed(4)};
+    float halo = exp(-q / ${(2 * twinkleArt.haloSigma ** 2).toFixed(4)});
+    float taper = 1.0 - smoothstep(16.0, ${(twinkleArt.supportSigma ** 2).toFixed(1)}, q);
+    float alpha = (core * ${twinkleArt.coreOpacity.toFixed(4)} + halo * ${twinkleArt.haloOpacity.toFixed(4)}) * star.w * taper;
+    // An independent screen-blended sRGB light layer, matching the DOM fallback.
+    // Only its local contribution is added; the decoded photograph stays intact.
+    vec3 base = clamp(twinkleToSRGB(photoColor), 0.0, 1.0);
+    vec3 composed = base + (1.0 - base) * uPhotoStarColors[i] * alpha;
+    light += max(vec3(0.0), twinkleToLinear(composed) - photoColor);
   }
   #endif
   return light;
@@ -182,7 +196,7 @@ vec3 skyMeteorLight() {
 }`)
       .replace('#include <opaque_fragment>', 'outgoingLight += skyMeteorLight();\n#ifdef USE_MAP\noutgoingLight += photoTwinkleLight(diffuseColor.rgb, vMapUv);\n#endif\noutgoingLight = projectSkyColor(outgoingLight);\n#include <opaque_fragment>');
   };
-  const cacheKey = () => `${baseCacheKey}:gxc-sky-backdrop-v5-project-labels`;
+  const cacheKey = () => `${baseCacheKey}:gxc-sky-backdrop-v6-star-overlay`;
   material.onBeforeCompile = compile;
   material.customProgramCacheKey = cacheKey;
   material.needsUpdate = true;
@@ -209,6 +223,7 @@ vec3 skyMeteorLight() {
       uniforms.uPhotoStarCount.value = disposed ? 0 : Math.min(points.length, twinkleArt.capacity);
       for (let i = 0; i < uniforms.uPhotoStarCount.value; i++) {
         const point = points[i]; twinkles[i].set(point.u, point.v, point.radiusPx, point.amplitude);
+        twinkleColors[i].fromArray(point.overlay?.color ?? [1, 1, 1]);
       }
     },
     update(frame: SkyFrame, width: number, height: number, overscan: number) {

@@ -1,7 +1,8 @@
 import { useEffect, useLayoutEffect, useRef } from 'react';
 import { requestFrame, subscribeFrame } from './runtime';
 import { photoCover, subscribeHeroPhoto, type LoadedHeroPhoto } from './heroPhoto';
-import { catalogMatchesPhoto, clearTwinkles, publishTwinkles, sampleStar, starCatalog, TwinkleField, twinkleArt, type PhotoStar } from './twinkle';
+import { catalogMatchesPhoto, clearTwinkles, publishTwinkles, sampleStar, starCatalog, TwinkleField, type PhotoStar } from './twinkle';
+import { chooseHeroStar, heroTwinkleArt as art, heroTwinkleGradient, projectHeroTwinkle } from './heroTwinkleArt';
 import './twinkles.css';
 
 declare global { interface Window { __gxcTwinkles?: { points: typeof starCatalog.points; set(ids: string[] | null, amplitude?: number): void } } }
@@ -18,7 +19,7 @@ export function HeroTwinkles({ paused, reduced, suspended }: { paused: boolean; 
     let photo: LoadedHeroPhoto | undefined, dirty = true, visible = false;
     let width = 0, height = 0, cover = photoCover(1, 1, 1, 1), candidates: PhotoStar[] = [];
     let debug: { ids: string[]; amplitude: number } | null = null, frames = 0;
-    const field = new TwinkleField();
+    const field = new TwinkleField(Math.random, art);
     const wake = () => { dirty = true; requestFrame(); };
     const resize = new ResizeObserver(wake); resize.observe(hero);
     const intersection = new IntersectionObserver(entries => { visible = entries.some(entry => entry.isIntersecting); requestFrame(); }); intersection.observe(hero);
@@ -40,33 +41,34 @@ export function HeroTwinkles({ paused, reduced, suspended }: { paused: boolean; 
       const state = props.current;
       const valid = !omitted && catalogMatchesPhoto && !!photo && !photo.fallback;
       const running = valid && visible && !document.hidden && !state.paused && !state.reduced && !state.suspended && !debug;
-      const limit = width <= twinkleArt.mobileBreakpoint ? twinkleArt.mobileCapacity : twinkleArt.capacity;
-      const points = !valid || state.reduced ? [] : debug
-        ? candidates.filter(star => debug!.ids.includes(star.id)).slice(0, twinkleArt.capacity).map(star => sampleStar(star, debug!.amplitude))
-        : field.update(dt, running, candidates, limit);
+      const mobile = width <= art.mobileBreakpoint || (matchMedia('(pointer: coarse)').matches && Math.min(width, window.innerHeight) <= art.mobileBreakpoint);
+      const limit = mobile ? art.mobileCapacity : art.capacity;
+      const rawPoints = !valid || state.reduced ? [] : debug
+        ? candidates.filter(star => debug!.ids.includes(star.id)).slice(0, art.capacity).map(star => sampleStar(star, debug!.amplitude))
+        : field.update(dt, running, candidates, limit, (available, active) => chooseHeroStar(available, active, width, height, cover.width, cover.height));
+      const points = rawPoints.map(point => projectHeroTwinkle(point, cover.width));
       publishTwinkles(hero, points);
       if (running) frames++;
       el.dataset.state = !valid ? 'unavailable' : state.reduced ? 'reduced' : debug ? 'debug' : running ? 'running' : 'paused';
       el.dataset.frames = String(frames); el.dataset.count = String(points.length);
       el.dataset.points = JSON.stringify(points);
-      // The fallback brightens a masked patch of the actual decoded photograph.
-      // No invented dot or viewport-relative background can drift off its star.
+      // Independent transparent light; never duplicate, filter or rewrite the photo.
+      // The fallback uses the same profile and original-photo coordinates as WebGL.
       for (let i = 0; i < patches.current.length; i++) {
         const patch = patches.current[i], star = points[i]; if (!patch) continue;
         if (!star || !photo) { patch.hidden = true; continue; }
         const x = cover.left + star.u * cover.width, y = cover.top + star.v * cover.height;
         const sigma = star.radiusPx * cover.width / starCatalog.source.width;
-        const radius = sigma * 4.5;
-        const placement = `${photo.url}:${x}:${y}:${radius}`;
+        const radius = sigma * art.supportSigma;
+        const placement = `${photo.url}:${x}:${y}:${radius}:${star.id}`;
         if (patch.dataset.placement !== placement) {
           patch.dataset.placement = placement; patch.dataset.star = star.id;
           patch.style.width = `${radius * 2}px`; patch.style.height = `${radius * 2}px`;
           patch.style.transform = `translate3d(${x - radius}px,${y - radius}px,0)`;
-          patch.style.backgroundImage = `url("${photo.url}")`;
-          patch.style.backgroundSize = `${cover.width}px ${cover.height}px`;
-          patch.style.backgroundPosition = `${cover.left - x + radius}px ${cover.top - y + radius}px`;
+          patch.style.backgroundImage = heroTwinkleGradient(star.overlay!.color);
+          patch.dataset.diameter = String(star.overlay!.diameterPx);
         }
-        patch.hidden = false; patch.style.opacity = String(star.amplitude * .82);
+        patch.hidden = false; patch.style.opacity = String(star.amplitude);
       }
       return running;
     }, 'update');
@@ -78,5 +80,5 @@ export function HeroTwinkles({ paused, reduced, suspended }: { paused: boolean; 
       if (window.__gxcTwinkles === debugApi) delete window.__gxcTwinkles;
     };
   }, []);
-  return <div ref={root} className="gxc-twinkles" aria-hidden="true">{Array.from({ length: twinkleArt.capacity }, (_, i) => <span key={i} hidden ref={node => { patches.current[i] = node; }} />)}</div>;
+  return <div ref={root} className="gxc-twinkles" aria-hidden="true">{Array.from({ length: art.capacity }, (_, i) => <span key={i} hidden ref={node => { patches.current[i] = node; }} />)}</div>;
 }

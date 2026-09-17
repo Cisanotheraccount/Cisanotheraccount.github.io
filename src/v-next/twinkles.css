@@ -1,4 +1,4 @@
 .gxc-twinkles { position: absolute; inset: 0; z-index: 0; pointer-events: none; overflow: hidden; mix-blend-mode: screen; }
-.gxc-twinkles > span { position: absolute; top: 0; left: 0; background-repeat: no-repeat; mask-image: radial-gradient(circle closest-side, #000 0, #000b 22%, #0003 50%, transparent 100%); -webkit-mask-image: radial-gradient(circle closest-side, #000 0, #000b 22%, #0003 50%, transparent 100%); }
+.gxc-twinkles > span { position: absolute; top: 0; left: 0; border-radius: 50%; background-repeat: no-repeat; }
 .gxc-twinkles > span[hidden] { display: none; }
 .gxc-hero[data-sky-ready=true] .gxc-twinkles { visibility: hidden; }

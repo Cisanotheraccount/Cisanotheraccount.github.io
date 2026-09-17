@@ -32,6 +32,8 @@ export function useLiquidSurface(ref: RefObject<HTMLDivElement | null>, visible 
     el.classList.add('gxc-liquid-surface');
     el.dataset.glass = supported ? 'refraction' : 'frosted';
     el.dataset.liquidKind = expanded ? 'menu' : 'nav';
+    if (expanded) el.closest('dialog')?.style.setProperty('--liquid-backdrop-opacity', String(uiGlass.menuBackdropOpacity));
+    el.style.setProperty('--liquid-contrast-tint', `rgba(0,0,0,${expanded ? uiGlass.menuTint : uiGlass.tint})`);
     el.style.setProperty('--liquid-press-scale', String(uiGlass.pressScale));
     el.style.setProperty('--liquid-press-duration', uiGlass.pressDuration + 'ms');
     const generator = supported ? createLensMapGenerator(uiGlass.mapSize) : null;
@@ -129,7 +131,7 @@ export function useLiquidSurface(ref: RefObject<HTMLDivElement | null>, visible 
   }, [ref]);
 
   const ready = supported && !!lens.map;
-  const blur = ready ? (expanded ? uiGlass.menuBlur : uiGlass.blur) : uiGlass.fallbackBlur;
+  const blur = ready ? (expanded ? uiGlass.menuBlur : uiGlass.blur) : (expanded ? uiGlass.fallbackMenuBlur : uiGlass.fallbackBlur);
   const backdrop = `blur(${blur}px) ${ready ? `url("#${id}") ` : ''}saturate(${uiGlass.saturation})`;
   const displacement = Math.hypot(lens.width, lens.height) * (expanded ? uiGlass.menuStrength : uiGlass.strength);
   const margin = Math.ceil(displacement + blur * 3 + 2);

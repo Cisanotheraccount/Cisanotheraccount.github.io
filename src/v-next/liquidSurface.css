@@ -20,13 +20,13 @@
   /* One soft lip, with the directional highlight generated from the lens map. */
   box-shadow: inset 0 .8px .9px #ffffff9c, inset 0 -.65px 1px #ffffff40;
 }
-/* One continuous tint preserves the capsule instead of making label backplates. */
+/* A fixed, almost-clear tint. Readability must not turn this into a frosted plate. */
 .gxc-glass.gxc-liquid-surface > .gxc-liquid-optics::after {
   content: ''; position: absolute; inset: 0; border-radius: inherit;
   background: var(--liquid-contrast-tint, transparent); pointer-events: none;
 }
 .gxc-glass.gxc-liquid-surface[data-glass=frosted] > .gxc-liquid-optics {
-  background: linear-gradient(150deg, #f0f4ff1f, #171b231c 52%, #eaf2ff10);
+  background: linear-gradient(150deg, #f0f4ff0a, #ffffff02 52%, #eaf2ff06);
   box-shadow: inset 0 .5px .5px #ffffff73, inset 0 -.5px 1px #ffffff20;
 }
 .gxc-glass.gxc-liquid-surface > .gxc-liquid-feedback {
@@ -43,7 +43,7 @@
 }
 .gxc-glass.gxc-liquid-surface > .gxc-liquid-indicator {
   position: absolute; top: 0; left: 0; z-index: 1; pointer-events: none; border-radius: 24px;
-  opacity: 0; background: linear-gradient(150deg, #ffffff2b, #ffffff13);
+  opacity: 0; background: linear-gradient(150deg, #ffffff19, #ffffff08);
   box-shadow: inset 0 .5px 1px #ffffff40, 0 1px 4px #0000000d;
   transition: transform 220ms cubic-bezier(.23,1,.32,1), width 220ms cubic-bezier(.23,1,.32,1), opacity 160ms ease;
 }
@@ -69,9 +69,12 @@
 .gxc-menu-panel.gxc-liquid-surface > .gxc-mono {
   color: var(--liquid-ink, #fff);
   background-color: transparent;
-  text-shadow: var(--liquid-label-shadow, 0 1px 3px #0006);
+  text-shadow: var(--liquid-label-shadow, 0 1px 2px #000b);
+  -webkit-text-stroke: .35px var(--liquid-ink-edge, #000000d9);
+  paint-order: stroke fill;
   border-radius: 22px;
 }
+.gxc-liquid-surface [data-liquid-ink] svg { filter: drop-shadow(0 0 .7px var(--liquid-ink-edge, #000000d9)); }
 .gxc-menu-panel.gxc-liquid-surface nav a { border-radius: 8px; }
 .gxc-menu-panel.gxc-liquid-surface .gxc-menu-photo,
 .gxc-menu-panel.gxc-liquid-surface .gxc-menu-top > span,
@@ -84,9 +87,9 @@
 .gxc-liquid-surface button:active { transform: scale(var(--liquid-press-scale,.97)); }
 .gxc-liquid-surface a:focus-visible, .gxc-liquid-surface button:focus-visible { outline-color: var(--liquid-ink,#fff); outline-offset: 2px; }
 .gxc-menu-panel.gxc-liquid-surface { border-radius: 32px; box-shadow: 0 22px 64px #00000038, 0 3px 9px #00000020; }
-.gxc-menu-panel.gxc-liquid-surface > .gxc-liquid-optics { background: linear-gradient(155deg,#ffffff14,#ffffff07 48%,#ffffff0a); }
-.gxc-menu-panel.gxc-liquid-surface[data-glass=frosted] > .gxc-liquid-optics { background: linear-gradient(155deg,#171b22ed,#12161de6 48%,#151922e8); }
-.gxc-menu-dialog::backdrop { background: #0305093d; }
+.gxc-menu-panel.gxc-liquid-surface > .gxc-liquid-optics { background: linear-gradient(155deg,#ffffff0c,#ffffff03 48%,#ffffff06); }
+.gxc-menu-panel.gxc-liquid-surface[data-glass=frosted] > .gxc-liquid-optics { background: linear-gradient(155deg,#ffffff0c,#ffffff03 48%,#ffffff06); }
+.gxc-menu-dialog::backdrop { background: rgba(3,5,9,var(--liquid-backdrop-opacity,.48)); }
 .gxc-menu-panel.gxc-liquid-surface .gxc-menu-top button { background: transparent; box-shadow: none; }
 .gxc-menu-panel.gxc-liquid-surface nav a { border-color: #ffffff2b; }
 .gxc-menu-panel.gxc-liquid-surface nav a .gxc-mono,

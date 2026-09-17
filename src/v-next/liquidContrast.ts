@@ -44,11 +44,12 @@ function imageAt(image: HTMLImageElement, x: number, y: number): RGB | null {
 
 /** Native labels adapt only when their underlying image/position changes.
  * This shares the site's measurement phase and never requests another frame
- * just to keep sampling. Any necessary tint belongs to the whole optical surface,
- * never to individual labels or icons.
+ * just to keep sampling. Ink adapts locally; contrast never adds opaque plates
+ * or increases the optical surface tint. Small shadows follow the glyphs only.
  */
 export function observeLiquidContrast(element: HTMLElement) {
-  let dirty = true, previousScroll = -1, previousInk: 'dark' | 'light' | null = null;
+  let dirty = true, previousScroll = -1;
+  const previousInk = new WeakMap<HTMLElement, 'dark' | 'light'>();
   const invalidate = () => { dirty = true; requestFrame(); };
   const measure = () => {
     const snapshot = getFrameSnapshot();
@@ -58,7 +59,6 @@ export function observeLiquidContrast(element: HTMLElement) {
     const images = [...document.querySelectorAll<HTMLImageElement>('main .gxc-project-picture img, main .gxc-hero-image img')];
     const controls = [...element.querySelectorAll<HTMLElement>('nav a, button, .gxc-menu-photo, .gxc-menu-top > span, :scope > .gxc-mono')];
     const menu = !!element.closest('dialog');
-    const menuFallback = menu && element.dataset.glass === 'frosted';
     const backdrop = (x: number, y: number): RGB => {
       let color: RGB | null = null;
       for (const image of images) { color = imageAt(image, x, y); if (color) break; }
@@ -71,46 +71,37 @@ export function observeLiquidContrast(element: HTMLElement) {
           }
         }
       }
-      const behind = menu ? over(color ?? base, [3, 5, 9], .24) : color ?? base;
-      return menuFallback ? over(behind, [18, 22, 29], .9) : behind;
+      const behind = menu ? over(color ?? base, [3, 5, 9], uiGlass.menuBackdropOpacity) : color ?? base;
+      return over(behind, [0, 0, 0], menu ? uiGlass.menuTint : uiGlass.tint);
     };
-    const samples: RGB[] = [];
     for (const control of controls) {
       const rect = control.getBoundingClientRect(); if (!rect.width || !rect.height) continue;
-      for (const fx of [.15, .3, .5, .7, .85]) for (const fy of [.3, .5, .7]) {
-        samples.push(backdrop(rect.x + rect.width * fx, rect.y + rect.height * fy));
+      // Read the glyph area, not the much wider hit target. One bright pixel or
+      // a photo edge at the end of a button must not turn the entire nav white.
+      const node = [...control.childNodes].find(n => n.nodeType === Node.TEXT_NODE && n.textContent?.trim());
+      const range = document.createRange();
+      if (node) range.selectNode(node);
+      const label = node ? range.getBoundingClientRect() : control.querySelector('svg')?.getBoundingClientRect() ?? rect;
+      const samples: RGB[] = [];
+      for (const fx of [.1, .3, .5, .7, .9]) for (const fy of [.2, .5, .8]) {
+        samples.push(backdrop(label.x + label.width * fx, label.y + label.height * fy));
       }
+      const score = (ink: RGB) => {
+        const ratios = samples.map(sample => contrast(ink, sample)).sort((a, b) => a - b);
+        return ratios[Math.floor(ratios.length * .25)];
+      };
+      const darkScore = score(dark), lightScore = score(white);
+      const prior = previousInk.get(control);
+      const useDark = prior === 'dark'
+        ? lightScore <= darkScore * (1 + uiGlass.inkHysteresis)
+        : darkScore > lightScore * (1 + uiGlass.inkHysteresis);
+      previousInk.set(control, useDark ? 'dark' : 'light');
+      control.style.setProperty('--liquid-ink', useDark ? '#14171c' : '#fff');
+      control.style.setProperty('--liquid-ink-edge', useDark ? '#ffffffcc' : '#000000d9');
+      control.style.setProperty('--liquid-label-shadow', useDark ? '0 1px 2px #ffffff66' : '0 1px 2px #000b');
+      control.dataset.liquidInk = useDark ? 'dark' : 'light';
     }
-    if (!samples.length) return;
-    const opacityFor = (ink: RGB, tint: RGB) => {
-      for (let step = 0; step <= uiGlass.contrastMaxTint * 100; step += 2) {
-        const opacity = step / 100;
-        if (samples.every(sample => {
-          // Allow for the lens sheen, plus the existing selected-tab highlight.
-          // The tint is above the lens but below that highlight and all text.
-          const surface = over(over(sample, white, .06), tint, opacity);
-          return contrast(ink, surface) >= uiGlass.contrastTarget
-            && (menu || contrast(ink, over(surface, white, .17)) >= uiGlass.contrastTarget);
-        })) return opacity;
-      }
-      return uiGlass.contrastMaxTint;
-    };
-    const lightTint = opacityFor(white, [0, 0, 0]);
-    const darkTint = opacityFor(dark, white);
-    // A small cost to changing ink prevents flicker at image boundaries.
-    const switchCost = uiGlass.contrastHysteresis;
-    const useDark = previousInk === 'dark'
-      ? darkTint <= lightTint + switchCost
-      : darkTint + switchCost < lightTint;
-    previousInk = useDark ? 'dark' : 'light';
-    // WebKit can leave individual bright stars unblurred. Protect white ink
-    // across the continuous surface, without reinstating label-sized plates.
-    const fallbackFloor = !menu && element.dataset.glass === 'frosted' ? uiGlass.fallbackLightTint : 0;
-    const opacity = useDark ? darkTint : Math.max(lightTint, fallbackFloor);
-    element.style.setProperty('--liquid-ink', useDark ? '#14171c' : '#fff');
-    element.style.setProperty('--liquid-contrast-tint', `rgba(${useDark ? '255,255,255' : '0,0,0'},${opacity.toFixed(2)})`);
-    element.style.setProperty('--liquid-label-shadow', useDark ? '0 1px 2px #ffffff22' : '0 1px 3px #0006');
-    element.dataset.liquidInk = previousInk;
+
   };
   const off = subscribeFrame(measure, 'measure');
   const observer = new ResizeObserver(invalidate); observer.observe(element);

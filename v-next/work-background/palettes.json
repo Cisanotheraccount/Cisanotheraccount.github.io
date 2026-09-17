@@ -55,27 +55,27 @@
   },
   "shotflow": {
     "primary": [
-      82,
-      106,
+      80,
+      102,
       143
     ],
     "secondary": [
-      138,
+      143,
       139,
-      143
+      138
     ],
-    "source": "/portfolio/shotflow-1290.webp",
-    "sourceSha256": "a615cc1f2303ce4bd8b2c636e72cf6da18ea77a20fbbe1eded48d7a9586f105c",
+    "source": "/portfolio/shotflow-en-workspace-1290.webp",
+    "sourceSha256": "53cfcd578ae7bde22b5f5b5c3bf0c811556383842cc76656cc8fed47a62c34f3",
     "extracted": {
       "primary": [
-        18,
-        34,
-        58
+        17,
+        32,
+        59
       ],
       "secondary": [
-        82,
-        83,
-        87
+        123,
+        118,
+        116
       ]
     },
     "method": "64-color median-cut proxy; omit black/white backplates; saturation-weighted hue groups; retain a distinct measured secondary hue or measured neutral; HSV saturation x0.62 capped 0.48, value clamped 0.56–0.74."

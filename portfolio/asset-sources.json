@@ -167,53 +167,113 @@
     },
     {
       "project": "shotflow",
-      "source": "内容资料/02_项目/P20_ShotFlow/images/原始补充/project-workspace.png",
-      "sourceSha256": "b6ce3418db03c369074410e5bec305bf5f0e5f2c9ee5afc2cff42b69833f02ce",
+      "source": "内容资料/02_项目/P20_ShotFlow/images/英文截图_2026-09-16/shotflow-en-workspace.png",
+      "sourceSha256": "b66947b8e6ac7d3d2a216dc9ab4f54a80e653b91f2e877070d3b47fbccd608a1",
       "sourceSize": [
         1290,
         2796
       ],
       "derivatives": [
         {
+          "file": "shotflow-en-workspace-800.webp",
+          "width": 800,
+          "height": 1734,
+          "bytes": 87386,
+          "sha256": "68b4940b91fdaad6519f66aeef107d48f08bb70f4bcc132b7ab9c212aa6b7fb3",
+          "compatibilityAlias": false
+        },
+        {
           "file": "shotflow-800.webp",
           "width": 800,
           "height": 1734,
-          "bytes": 58098,
-          "sha256": "87ebbad00478957639990c19e519d5960a896320b4c79c400c0ec6a75c1ca588"
+          "bytes": 87386,
+          "sha256": "68b4940b91fdaad6519f66aeef107d48f08bb70f4bcc132b7ab9c212aa6b7fb3",
+          "compatibilityAlias": true
+        },
+        {
+          "file": "shotflow-en-workspace-1290.webp",
+          "width": 1290,
+          "height": 2796,
+          "bytes": 160958,
+          "sha256": "53cfcd578ae7bde22b5f5b5c3bf0c811556383842cc76656cc8fed47a62c34f3",
+          "compatibilityAlias": false
         },
         {
           "file": "shotflow-1290.webp",
           "width": 1290,
           "height": 2796,
-          "bytes": 99122,
-          "sha256": "a615cc1f2303ce4bd8b2c636e72cf6da18ea77a20fbbe1eded48d7a9586f105c"
+          "bytes": 160958,
+          "sha256": "53cfcd578ae7bde22b5f5b5c3bf0c811556383842cc76656cc8fed47a62c34f3",
+          "compatibilityAlias": true
         }
-      ]
+      ],
+      "capture": {
+        "date": "2026-09-16",
+        "language": "en",
+        "nativeVersion": "0.1.0",
+        "nativeBuild": "15",
+        "device": "iPhone 15 Pro Max",
+        "runtime": "iOS 26.5 Simulator",
+        "appearance": "dark",
+        "kind": "actual native simulator screenshot with explicitly staged English demonstration data",
+        "scope": "The screenshot preparation copy only changes example text and initial navigation. It is not a new physical-device installation or public app release."
+      },
+      "processing": "Proportional resize and WebP95 export. No text overpainting, UI reconstruction, crop or recoloring."
     },
     {
       "project": "shotflow-storyboard",
-      "source": "内容资料/02_项目/P20_ShotFlow/images/原始补充/storyboard-by-source.png",
-      "sourceSha256": "0f9fd412ee238709795ba921ec6acf60cae16913ff06ac72f4dce1458f049d94",
+      "source": "内容资料/02_项目/P20_ShotFlow/images/英文截图_2026-09-16/shotflow-en-storyboard.png",
+      "sourceSha256": "22128e48d137a3f997c382b71c08ae68836dc0a6a43636b48a2f24139f97a2f7",
       "sourceSize": [
         1290,
         2796
       ],
       "derivatives": [
         {
+          "file": "shotflow-en-storyboard-800.webp",
+          "width": 800,
+          "height": 1734,
+          "bytes": 96654,
+          "sha256": "4106c5850f43a8478da21d65b3e6b34083f8c4930de2701beec06ef0a034c194",
+          "compatibilityAlias": false
+        },
+        {
           "file": "shotflow-storyboard-800.webp",
           "width": 800,
           "height": 1734,
-          "bytes": 58476,
-          "sha256": "46d6df07c9fdd685d8defcaaeb56c265503a2f54721e196f5c93c63614292db3"
+          "bytes": 96654,
+          "sha256": "4106c5850f43a8478da21d65b3e6b34083f8c4930de2701beec06ef0a034c194",
+          "compatibilityAlias": true
+        },
+        {
+          "file": "shotflow-en-storyboard-1290.webp",
+          "width": 1290,
+          "height": 2796,
+          "bytes": 166016,
+          "sha256": "87b231dda530dca08a7eb41b1c3b8c6638ab628f7a8ee0fb98b5c14edf9770f7",
+          "compatibilityAlias": false
         },
         {
           "file": "shotflow-storyboard-1290.webp",
           "width": 1290,
           "height": 2796,
-          "bytes": 102048,
-          "sha256": "35c25e3e1e1cfc4d6247e94b1f52f4083aee85068982857f8daa9222e69da3a5"
+          "bytes": 166016,
+          "sha256": "87b231dda530dca08a7eb41b1c3b8c6638ab628f7a8ee0fb98b5c14edf9770f7",
+          "compatibilityAlias": true
         }
-      ]
+      ],
+      "capture": {
+        "date": "2026-09-16",
+        "language": "en",
+        "nativeVersion": "0.1.0",
+        "nativeBuild": "15",
+        "device": "iPhone 15 Pro Max",
+        "runtime": "iOS 26.5 Simulator",
+        "appearance": "dark",
+        "kind": "actual native simulator screenshot with explicitly staged English demonstration data",
+        "scope": "The screenshot preparation copy only changes example text and initial navigation. It is not a new physical-device installation or public app release."
+      },
+      "processing": "Proportional resize and WebP95 export. No text overpainting, UI reconstruction, crop or recoloring."
     },
     {
       "project": "cyber-city",

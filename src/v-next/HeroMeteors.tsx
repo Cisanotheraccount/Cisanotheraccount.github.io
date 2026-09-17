@@ -34,6 +34,7 @@ export function HeroMeteors({ paused, reduced, suspended, onOpen }: HeroMeteorsP
   useEffect(() => {
     const el = root.current, hero = el?.closest<HTMLElement>('.gxc-hero');
     if (!el || !hero || omitted) return;
+    const diagnostics = import.meta.env.DEV || ['perf', 'qa'].some(key => new URLSearchParams(location.search).get(key) === '1');
     const fine = matchMedia('(hover: hover) and (pointer: fine)');
     let heroRect = hero.getBoundingClientRect(), width = heroRect.width, height = heroRect.height;
     let mobile = width <= meteorArt.breakpoint, wordTop = Math.min(height, innerHeight) * .3, wordHeight = Math.min(height, innerHeight) * .4;
@@ -178,7 +179,7 @@ export function HeroMeteors({ paused, reduced, suspended, onOpen }: HeroMeteorsP
         if (Math.abs(labelTarget - mark.labelOpacity) > .0001) labelsAnimating = true;
         anchor.dataset.labelOpacity = mark.labelOpacity.toFixed(4);
         anchor.dataset.elapsed = mark.elapsed.toFixed(4); anchor.dataset.phase = (mark.elapsed / path.duration).toFixed(5);
-        anchor.dataset.flight = JSON.stringify({ ...path, size: mark.size, opacity: mark.opacity, tailLength: mark.tailLength });
+        if (diagnostics) anchor.dataset.flight = JSON.stringify({ ...path, size: mark.size, opacity: mark.opacity, tailLength: mark.tailLength });
         anchor.dataset.labelSide = 'bottom';
         for (const node of [anchor, fallback]) {
           node.style.setProperty('--meteor-tail-angle', mark.angle + 'deg'); node.style.setProperty('--meteor-tail-length', mark.tailLength + 'px');
@@ -199,7 +200,8 @@ export function HeroMeteors({ paused, reduced, suspended, onOpen }: HeroMeteorsP
         }
       }
       publishProjectSky(hero, projectFrame);
-      el.dataset.projects = JSON.stringify(projectFrame); el.dataset.lanes = String(limit);
+      if (diagnostics) el.dataset.projects = JSON.stringify(projectFrame);
+      el.dataset.lanes = String(limit);
       if (running && frozenSlots.size) el.dataset.state = 'frozen';
       const skyFrame = sky.update(delta, running, { width, height: heroRect.height, wordTop, wordHeight, mobile, visibleTop: Math.max(0, -heroRect.top), visibleBottom: Math.min(heroRect.height, innerHeight - heroRect.top) });
       for (let i = 0; i < streaks.current.length; i++) {
@@ -208,7 +210,9 @@ export function HeroMeteors({ paused, reduced, suspended, onOpen }: HeroMeteorsP
         node.style.display = 'block'; node.style.width = star.length + 'px';
         node.style.transform = `translate3d(${star.x.toFixed(2)}px,${(star.y - 7).toFixed(2)}px,0) rotate(${star.angle.toFixed(2)}deg)`; node.style.opacity = star.opacity.toFixed(3);
       }
-      publishSky(hero, skyFrame); el.dataset.skyCount = String(skyFrame.filter(s => s.x >= 0 && s.x <= width && s.y >= Math.max(0, -heroRect.top) && s.y <= Math.min(heroRect.height, innerHeight - heroRect.top)).length); el.dataset.sky = JSON.stringify(skyFrame);
+      publishSky(hero, skyFrame);
+      el.dataset.skyCount = String(skyFrame.filter(s => s.x >= 0 && s.x <= width && s.y >= Math.max(0, -heroRect.top) && s.y <= Math.min(heroRect.height, innerHeight - heroRect.top)).length);
+      if (diagnostics) el.dataset.sky = JSON.stringify(skyFrame);
       return running || (labelsAnimating && visible && !document.hidden && !state.suspended);
     }, 'update');
     return () => {

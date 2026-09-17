@@ -1,5 +1,6 @@
 import * as THREE from 'three';
 import { visual } from './config';
+import { getPerformanceSnapshot } from './runtime';
 
 const vertex = `varying vec2 vUv;
 void main() { vUv = position.xy * .5 + .5; gl_Position = vec4(position.xy, 0., 1.); }`;
@@ -44,7 +45,7 @@ export class HeroPost {
   private energy = 0;
   private stale = true;
   private backgroundDirty = true;
-  private cadence = 0;
+  private nextFlareAt = -Infinity;
   private flareAllowed = true;
   private disposed = false;
   private width = 1;
@@ -173,11 +174,12 @@ export class HeroPost {
     this.pixel.set(1 / cssWidth, 1 / cssHeight);
     this.composite.uniforms.uMaxDisplacement.value = Math.min(visual.fluid.maxPixels, cssWidth * visual.fluid.widthRatio);
     this.star.uniforms.uPixel.value.set(1 / cssWidth, 1 / cssHeight);
-    this.reset(); this.cadence = 0;
+    this.reset(); this.nextFlareAt = -Infinity;
   }
 
-  setFlare(value: boolean) { this.flareAllowed = value; this.composite.uniforms.uFlareEnabled.value = +value; this.cadence = 0; }
-  invalidateBackground() { this.backgroundDirty = true; this.cadence = 0; }
+  setFlare(value: boolean) { this.flareAllowed = value; this.composite.uniforms.uFlareEnabled.value = +value; }
+  // Sky updates invalidate only their buffer, never the independent highlight clock.
+  invalidateBackground() { this.backgroundDirty = true; }
   async warm() {
     const original = this.renderer.getRenderTarget();
     const passes: [THREE.ShaderMaterial, THREE.WebGLRenderTarget | null][] = [
@@ -237,7 +239,15 @@ export class HeroPost {
       glass.material = this.maskMaterial; backdrop.visible = false;
       r.setClearColor(0, 1); r.setRenderTarget(this.mask); r.render(scene, camera);
       glass.material = savedMaterial; backdrop.visible = savedBackdrop;
-      if (this.flareAllowed && this.cadence++ % visual.flare.stride === 0) this.draw(this.star, this.flare);
+      const now = performance.now();
+      if (this.flareAllowed && now + .5 >= this.nextFlareAt) {
+        this.draw(this.star, this.flare);
+        const flareFps = getPerformanceSnapshot().targetFps > 60 ? visual.flare.highRefreshFps : visual.flare.standardFps;
+        const interval = 1000 / flareFps;
+        // Preserve the phase through scheduling jitter, but never replay stale work.
+        const late = Number.isFinite(this.nextFlareAt) ? Math.max(0, now - this.nextFlareAt) % interval : 0;
+        this.nextFlareAt = now + interval - late;
+      }
       this.composite.uniforms.uVelocity.value = this.velocity.texture;
       const tail = Math.min(1, this.energy / visual.fluid.tailThreshold);
       this.composite.uniforms.uFluid.value = fluidAllowed && this.active ? tail * tail * (3 - 2 * tail) : 0;

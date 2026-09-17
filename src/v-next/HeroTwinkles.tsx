@@ -1,7 +1,7 @@
 import { useEffect, useLayoutEffect, useRef } from 'react';
 import { getFrameSnapshot, requestFrame, subscribeFrame } from './runtime';
 import { photoCover, subscribeHeroPhoto, type LoadedHeroPhoto } from './heroPhoto';
-import { catalogMatchesPhoto, clearTwinkles, publishTwinkles, sampleStar, starCatalog, TwinkleField, type PhotoStar } from './twinkle';
+import { catalogMatchesPhoto, clearTwinkles, publishTwinkles, sampleStar, starCatalog, TwinkleField, type PhotoStar, type Twinkle } from './twinkle';
 import { heroTwinkleArt as art, heroTwinkleGradient, projectHeroTwinkle } from './heroTwinkleArt';
 import { singlePeakEnvelope } from './starLight';
 import { combinedHeroStars, heroSupplementValid } from './heroStarCatalog';
@@ -18,6 +18,7 @@ export function HeroTwinkles({ paused, reduced, suspended }: { paused: boolean; 
   useEffect(() => {
     const el = root.current, hero = el?.closest<HTMLElement>('.gxc-hero');
     if (!el || !hero) return;
+    const diagnostics = import.meta.env.DEV || ['perf', 'qa'].some(key => new URLSearchParams(location.search).get(key) === '1');
     const omitted = new URLSearchParams(location.search).has('no-twinkles');
     let photo: LoadedHeroPhoto | undefined, dirty = true, visible = false, disposed = false;
     let width = 0, height = 0, cover = photoCover(1, 1, 1, 1), candidates: PhotoStar[] = [];
@@ -26,6 +27,7 @@ export function HeroTwinkles({ paused, reduced, suspended }: { paused: boolean; 
     const obstacles = [...document.querySelectorAll<HTMLElement>('.gxc-brand, .gxc-nav, .gxc-hero-top > p, .gxc-hero-bottom p, .gxc-hero-bottom .gxc-mono, .gxc-round-link')];
     let debug: { ids: string[]; amplitude: number } | null = null, frames = 0;
     const slots = new Map<string, number>();
+    let latestPoints: Twinkle[] = [];
     const field = new TwinkleField(Math.random, art, singlePeakEnvelope(art.rise, art.hold));
     const wake = () => { dirty = true; requestFrame(); };
     const resize = new ResizeObserver(wake); resize.observe(hero);
@@ -51,7 +53,7 @@ export function HeroTwinkles({ paused, reduced, suspended }: { paused: boolean; 
       el.dataset.source = photo?.url ?? ''; el.dataset.candidates = String(candidates.length);
       el.dataset.catalogCount = String(combinedHeroStars.length);
       el.dataset.supplementValid = String(heroSupplementValid);
-      el.dataset.cover = JSON.stringify(cover);
+      if (diagnostics) el.dataset.cover = JSON.stringify(cover);
       const blocked = obstacles.map(node => node.getBoundingClientRect()).filter(r => r.width && r.height)
         .map(r => ({ left: r.left - 8, right: r.right + 8, top: r.top - 8, bottom: r.bottom + 8 }));
       // The glass is transparent scenery, not a text obstacle. Its entire
@@ -61,7 +63,8 @@ export function HeroTwinkles({ paused, reduced, suspended }: { paused: boolean; 
         return x > 8 && x < snapshot.width - 8 && y > 8 && y < snapshot.height - 8
           && !blocked.some(r => x >= r.left && x <= r.right && y >= r.top && y <= r.bottom);
       }).map(star => star.id));
-      el.dataset.exposed = String(exposed.size); el.dataset.exposedIds = JSON.stringify([...exposed]);
+      el.dataset.exposed = String(exposed.size);
+      if (diagnostics) el.dataset.exposedIds = JSON.stringify([...exposed]);
       const left = Math.max(0, -rect.left), top = Math.max(0, -rect.top);
       const visibleWidth = Math.max(1, Math.min(width, snapshot.width - rect.left) - left);
       const visibleHeight = Math.max(1, Math.min(height, snapshot.height - rect.top) - top);
@@ -71,34 +74,19 @@ export function HeroTwinkles({ paused, reduced, suspended }: { paused: boolean; 
         { left, top, width: visibleWidth, height: visibleHeight }, { ...art.distribution, columns });
       el.dataset.grid = `${distribution.columns}x${distribution.rows}`;
     }, 'measure');
-    const offUpdate = subscribeFrame((_, dt) => {
-      const state = props.current;
-      const valid = !omitted && catalogMatchesPhoto && !!photo && !photo.fallback;
-      const running = valid && visible && !document.hidden && !state.paused && !state.reduced && !state.suspended && !debug;
-      const mobile = width <= art.mobileBreakpoint || (matchMedia('(pointer: coarse)').matches && Math.min(width, window.innerHeight) <= art.mobileBreakpoint);
-      const limit = mobile ? art.mobileCapacity : art.capacity;
-      const rawPoints = !valid || state.reduced ? [] : debug
-        ? candidates.filter(star => debug!.ids.includes(star.id)).slice(0, art.capacity).map(star => sampleStar(star, debug!.amplitude))
-        : field.update(dt, running, candidates, limit, (available, active) => distribution?.choose(available, active,
-          Math.max(12, Math.min(width, window.innerHeight) * art.separation)));
-      const points = rawPoints.map(point => projectHeroTwinkle(point, cover.width, mobile));
-      publishTwinkles(hero, points);
-      if (running) frames++;
-      el.dataset.state = !valid ? 'unavailable' : state.reduced ? 'reduced' : debug ? 'debug' : running ? 'running' : 'paused';
-      el.dataset.frames = String(frames); el.dataset.count = String(points.length);
-      el.dataset.points = JSON.stringify(points);
-      el.dataset.distribution = JSON.stringify(distribution?.summarize(points) ?? []);
+    const syncFallback = () => {
+      if (hero.dataset.skyReady === 'true') return;
       // Independent transparent light; never duplicate, filter or rewrite the photo.
       // The fallback uses the same profile and original-photo coordinates as WebGL.
       // Keep each light in its own DOM slot until its pulse ends. Removing one
       // star must not rebuild the gradients of the other 79 fallback lights.
-      const activeIds = new Set(points.map(point => point.id));
+      const activeIds = new Set(latestPoints.map(point => point.id));
       for (const [id, index] of slots) if (!activeIds.has(id)) {
         const patch = patches.current[index]; if (patch) patch.hidden = true;
         slots.delete(id);
       }
       const occupied = new Set(slots.values());
-      for (const star of points) {
+      for (const star of latestPoints) {
         let index = slots.get(star.id);
         if (index === undefined) {
           index = patches.current.findIndex((_, i) => !occupied.has(i));
@@ -119,12 +107,38 @@ export function HeroTwinkles({ paused, reduced, suspended }: { paused: boolean; 
         }
         patch.hidden = false; patch.style.opacity = String(star.amplitude);
       }
+    };
+    // Attribute mutations deliver before paint; loss of the WebGL owner restores
+    // the latest complete point snapshot without waiting for another scene frame.
+    const ownership = new MutationObserver(syncFallback);
+    ownership.observe(hero, { attributes: true, attributeFilter: ['data-sky-ready'] });
+    const offUpdate = subscribeFrame((_, dt) => {
+      const state = props.current;
+      const valid = !omitted && catalogMatchesPhoto && !!photo && !photo.fallback;
+      const running = valid && visible && !document.hidden && !state.paused && !state.reduced && !state.suspended && !debug;
+      const mobile = width <= art.mobileBreakpoint || (matchMedia('(pointer: coarse)').matches && Math.min(width, window.innerHeight) <= art.mobileBreakpoint);
+      const limit = mobile ? art.mobileCapacity : art.capacity;
+      const rawPoints = !valid || state.reduced ? [] : debug
+        ? candidates.filter(star => debug!.ids.includes(star.id)).slice(0, art.capacity).map(star => sampleStar(star, debug!.amplitude))
+        : field.update(dt, running, candidates, limit, (available, active) => distribution?.choose(available, active,
+          Math.max(12, Math.min(width, window.innerHeight) * art.separation)));
+      const points = rawPoints.map(point => projectHeroTwinkle(point, cover.width, mobile));
+      publishTwinkles(hero, points);
+      if (running) frames++;
+      el.dataset.state = !valid ? 'unavailable' : state.reduced ? 'reduced' : debug ? 'debug' : running ? 'running' : 'paused';
+      el.dataset.frames = String(frames); el.dataset.count = String(points.length);
+      if (diagnostics) {
+        el.dataset.points = JSON.stringify(points);
+        el.dataset.distribution = JSON.stringify(distribution?.summarize(points) ?? []);
+      }
+      latestPoints = points;
+      syncFallback();
       return running;
     }, 'update');
     const debugApi = { points: combinedHeroStars, set(ids: string[] | null, amplitude = .8) { debug = ids ? { ids, amplitude: Math.max(0, Math.min(1, amplitude)) } : null; requestFrame(); } };
-    if (import.meta.env.DEV) window.__gxcTwinkles = debugApi;
+    if (diagnostics) window.__gxcTwinkles = debugApi;
     return () => {
-      disposed = true;
+      disposed = true; ownership.disconnect();
       offMeasure(); offUpdate(); offPhoto(); resize.disconnect(); intersection.disconnect(); clearTwinkles(hero);
       document.removeEventListener('visibilitychange', wake);
       window.removeEventListener('resize', wake);

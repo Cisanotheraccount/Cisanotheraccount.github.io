@@ -32,5 +32,5 @@ export const visual = {
     dissipation: 5.8, displacement: .095, maxPixels: 16, widthRatio: .014,
     chroma: .035, tailThreshold: .012, settle: .001,
   },
-  flare: { resolutionScale: .5, stride: 2, threshold: .9, power: 4, intensity: .11, length: 16 },
+  flare: { resolutionScale: .5, highRefreshFps: 60, standardFps: 30, threshold: .9, power: 4, intensity: .11, length: 16 },
 } as const;

@@ -6,13 +6,14 @@ import { getSky } from './skyState';
 import { getTwinkles } from './twinkle';
 import { getProjectSky } from './projectSkyState';
 import { createProjectAtlas } from './projectAtlas';
-import { getFrameSnapshot, requestFrame, subscribeFrame } from './runtime';
+import { getFrameSnapshot, getPerformanceSnapshot, reportGpuTime, requestFrame, subscribeFrame, subscribeViewportChange } from './runtime';
+import { createGpuTimer } from './gpuTiming';
 import { photoCover, subscribeHeroPhoto, type LoadedHeroPhoto } from './heroPhoto';
 
 declare global { interface Window { __gxcCapturePoster?: () => string } }
 
 type Wordmark = { positions: number[]; normals: number[]; indices: number[] };
-export interface GlassScene { setMotion(value: boolean): void; dispose(): void }
+export interface GlassScene { setMotion(value: boolean): void; setSuspended(value: boolean): void; dispose(): void }
 
 export async function mountGlass(host: HTMLElement, area: HTMLElement, disabled: boolean, onLost: () => void): Promise<GlassScene> {
   const renderer = new THREE.WebGLRenderer({ alpha: true, antialias: true, powerPreference: 'high-performance', preserveDrawingBuffer: import.meta.env.DEV });
@@ -33,6 +34,8 @@ export async function mountGlass(host: HTMLElement, area: HTMLElement, disabled:
     renderer.debug.onShaderError = () => { throw new Error('Glass shader could not compile'); };
     renderer.domElement.setAttribute('aria-hidden', 'true');
     host.appendChild(renderer.domElement);
+    const gpu = createGpuTimer(renderer.getContext() as WebGL2RenderingContext, ms => reportGpuTime('hero', ms));
+    cleanup.push(() => gpu.dispose());
     const scene = new THREE.Scene();
     const camera = new THREE.OrthographicCamera(-20, 20, 10, -10, .1, 150);
     camera.position.set(0, 0, 40);
@@ -147,7 +150,7 @@ export async function mountGlass(host: HTMLElement, area: HTMLElement, disabled:
     const noPost = flags.has('no-postfx'), noFluid = flags.has('no-fluid'), noFlare = flags.has('no-flare');
     let post: HeroPost | undefined;
     let postFailed = !renderer.extensions.has('EXT_color_buffer_float');
-    let enabled = !disabled, visible = true, dirty = true, inside = false;
+    let enabled = !disabled, visible = true, dirty = true, inside = false, suspended = false;
     let pointerX = 0, pointerY = 0, angle: number = visual.rimLight.angle, targetAngle: number = visual.rimLight.angle;
     let rx = .07, ry = -.07, cameraX = 0, cameraY = 0;
     let lastWidth = 0, lastHeight = 0, lastDpr = 0, documentTop = 0, left = 0;
@@ -254,15 +257,16 @@ export async function mountGlass(host: HTMLElement, area: HTMLElement, disabled:
         skyBackdrop.update(sky, lastWidth, lastHeight, visual.cameraMotion.overscan);
         post?.invalidateBackground();
       }
-      if (post) {
+      gpu.begin();
+      try { if (post) {
         try { post.render(scene, camera, mesh, backdrop, dt, enabled && !noFluid); }
         catch {
           post.dispose(); post = undefined; postFailed = true; renderer.domElement.dataset.postfx = 'failed';
           renderer.setRenderTarget(null); renderer.render(scene, camera);
         }
-      } else renderer.render(scene, camera);
+      } else renderer.render(scene, camera); } finally { gpu.end(); }
       renderer.domElement.dataset.frames = String(++frames);
-      hero.dataset.skyReady = 'true';
+      if (hero.dataset.skyReady !== 'true') hero.dataset.skyReady = 'true';
       if (projectAtlas && projects.points.length) hero.dataset.projectSkyReady = 'true';
       else delete hero.dataset.projectSkyReady;
       renderer.domElement.dataset.skyCount = String(sky.streaks.length);
@@ -290,6 +294,7 @@ export async function mountGlass(host: HTMLElement, area: HTMLElement, disabled:
       window.removeEventListener('blur', blur); document.removeEventListener('visibilitychange', visibility); finePointer.removeEventListener('change', pointerMode);
     });
     const ro = new ResizeObserver(resize); ro.observe(host); ro.observe(area); cleanup.push(() => ro.disconnect());
+    cleanup.push(subscribeViewportChange(resize));
     const io = new IntersectionObserver(entries => {
       visible = entries[0].isIntersecting;
       reset(true);
@@ -304,7 +309,8 @@ export async function mountGlass(host: HTMLElement, area: HTMLElement, disabled:
     render(1 / 60);
     let pendingRender = false;
     const offUpdate = subscribeFrame((_time, dt) => {
-      if (!visible || disposed || contextLost || document.hidden) return false;
+      if (!visible || disposed || contextLost || document.hidden || suspended) return false;
+      if (getPerformanceSnapshot('hero').staticFallback) { host.dataset.failed = 'performance'; onLost(); dispose(); return false; }
       const snapshot = getFrameSnapshot(), pointer = snapshot.pointer;
       const top = documentTop - snapshot.scrollY;
       const canPoint = enabled && finePointer.matches && pointer.kind !== 'touch' && pointer.inside
@@ -339,7 +345,7 @@ export async function mountGlass(host: HTMLElement, area: HTMLElement, disabled:
       return moving || !!post?.active;
     }, 'update');
     const offRender = subscribeFrame((_time, dt) => {
-      if (!visible || disposed || contextLost || document.hidden) { pendingRender = false; return false; }
+      if (!visible || disposed || contextLost || document.hidden || suspended) { pendingRender = false; return false; }
       // The meteor scheduler runs in update; read it here after all updates so
       // the photographed sky and the glass transmission share the same instant.
       if (getSky(hero).revision !== skyRevision || getTwinkles(hero).revision !== twinkleRevision
@@ -351,6 +357,10 @@ export async function mountGlass(host: HTMLElement, area: HTMLElement, disabled:
     if (import.meta.env.DEV) import('./capturePoster').then(({ capturePoster }) => {
       if (!disposed) window.__gxcCapturePoster = () => capturePoster(renderer, scene, camera, mesh, backdrop);
     });
-    return { setMotion(value) { if (disposed || contextLost) return; enabled = value; reset(true); updatePost(); }, dispose };
+    return {
+      setMotion(value) { if (disposed || contextLost) return; enabled = value; reset(true); updatePost(); },
+      setSuspended(value) { suspended = value; if (!value) { dirty = true; requestFrame(); } },
+      dispose,
+    };
   } catch (error) { dispose(); throw error; }
 }

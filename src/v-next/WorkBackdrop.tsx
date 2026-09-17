@@ -4,7 +4,7 @@ import metadata from '../../public/v-next/work-background/yellowstone/provenance
 import catalog from '../../public/v-next/work-background/yellowstone/star-points.json';
 import palettes from '../../public/v-next/work-background/palettes.json';
 import { photoCover } from './heroPhoto';
-import { getFrameSnapshot, requestFrame, subscribeFrame } from './runtime';
+import { getFrameSnapshot, requestFrame, subscribeFrame, subscribeViewportChange } from './runtime';
 import { sampleStar, TwinkleField, type PhotoStar } from './twinkle';
 import { chooseExposedStar, projectStarLight, singlePeakEnvelope, starLightGradient } from './starLight';
 import { workBackdropArt as art } from './workBackdropConfig';
@@ -33,6 +33,7 @@ export function WorkBackdrop({ root, paused, reduced, suspended }: {
   useEffect(() => {
     const el = layer.current, section = root.current, photoElement = photograph.current;
     if (!el || !section || !photoElement) return;
+    const diagnostics = import.meta.env.DEV || ['perf', 'qa'].some(key => new URLSearchParams(location.search).get(key) === '1');
     const omitted = new URLSearchParams(location.search).has('no-work-background');
     if (omitted) { el.dataset.state = 'omitted'; return; }
     let disposed = false, dirty = true, visible = false;
@@ -83,6 +84,7 @@ export function WorkBackdrop({ root, paused, reduced, suspended }: {
     section.addEventListener('focusout', focusOut);
     const hero = document.getElementById('top'); if (hero) resize.observe(hero);
     window.addEventListener('resize', wake);
+    const offViewport = subscribeViewportChange(wake);
     document.addEventListener('visibilitychange', wake);
     section.addEventListener('load', wake, true);
     void document.fonts.ready.then(() => { if (!disposed) wake(); });
@@ -114,7 +116,7 @@ export function WorkBackdrop({ root, paused, reduced, suspended }: {
     const setColors = (value: Palette) => {
       el.style.setProperty('--work-primary', value.primary.map(v => v.toFixed(2)).join(', '));
       el.style.setProperty('--work-secondary', value.secondary.map(v => v.toFixed(2)).join(', '));
-      el.dataset.colors = JSON.stringify(value);
+      if (diagnostics) el.dataset.colors = JSON.stringify(value);
     };
     setColors(current);
 
@@ -142,9 +144,11 @@ export function WorkBackdrop({ root, paused, reduced, suspended }: {
             return x > 8 && x < width - 8 && y > 8 && y < height - 8;
           }) : [];
         }
-        el.dataset.cover = JSON.stringify(cover); el.dataset.candidates = String(candidates.length);
+        if (diagnostics) el.dataset.cover = JSON.stringify(cover);
+        el.dataset.candidates = String(candidates.length);
         el.dataset.source = photo?.url ?? ''; el.dataset.sourceWidth = String(metadata.width); el.dataset.sourceHeight = String(metadata.height);
-        el.dataset.viewport = JSON.stringify({ width, height }); lastScroll = NaN;
+        if (diagnostics) el.dataset.viewport = JSON.stringify({ width, height });
+        lastScroll = NaN;
       }
       const curl = workCanvas?.dataset.curl ?? '';
       if (lastScroll === frame.scrollY && curl === lastCurl) return;
@@ -183,7 +187,8 @@ export function WorkBackdrop({ root, paused, reduced, suspended }: {
         return y > Math.max(8, start + art.entryFade) && y < Math.min(height - 8, end - art.exitFade)
           && !obstacles.some(box => x >= box.left && x <= box.right && y >= box.top && y <= box.bottom);
       }).map(star => star.id));
-      el.dataset.exposed = String(exposed.size); el.dataset.exposedIds = JSON.stringify([...exposed]);
+      el.dataset.exposed = String(exposed.size);
+      if (diagnostics) el.dataset.exposedIds = JSON.stringify([...exposed]);
     }, 'measure');
 
     const offUpdate = subscribeFrame((_, dt) => {
@@ -231,7 +236,8 @@ export function WorkBackdrop({ root, paused, reduced, suspended }: {
       if (running) frames++;
       el.dataset.state = state.reduced ? 'reduced' : failed ? 'photo-failed' : debug ? 'debug' : running ? 'running' : 'paused';
       el.dataset.frames = String(frames); el.dataset.activeProject = active;
-      el.dataset.tween = String(elapsed); el.dataset.points = JSON.stringify(points);
+      el.dataset.tween = String(elapsed);
+      if (diagnostics) el.dataset.points = JSON.stringify(points);
       el.dataset.count = String(points.length);
       for (let i = 0; i < patches.current.length; i++) {
         const patch = patches.current[i], star = points[i]; if (!patch) continue;
@@ -257,9 +263,9 @@ export function WorkBackdrop({ root, paused, reduced, suspended }: {
       debug = ids ? { ids, amplitude: Math.max(0, Math.min(1, amplitude)) } : null;
       debugVersion++; requestFrame();
     } };
-    if (import.meta.env.DEV) window.__gxcWorkTwinkles = debugApi;
+    if (diagnostics) window.__gxcWorkTwinkles = debugApi;
     return () => {
-      disposed = true; generation++; offMeasure(); offUpdate(); resize.disconnect();
+      disposed = true; generation++; offMeasure(); offUpdate(); resize.disconnect(); offViewport();
       window.removeEventListener('resize', wake); document.removeEventListener('visibilitychange', wake);
       section.removeEventListener('load', wake, true);
       section.removeEventListener('pointerover', pointerOver); section.removeEventListener('pointerout', pointerOut);

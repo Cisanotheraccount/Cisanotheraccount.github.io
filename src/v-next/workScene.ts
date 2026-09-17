@@ -1,5 +1,6 @@
 import * as THREE from 'three';
-import { getFrameSnapshot, requestFrame, subscribeFrame } from './runtime';
+import { getFrameSnapshot, getPerformanceSnapshot, nativeScrollNeedsFallback, reportGpuTime, requestFrame, setPerformanceReady, subscribeFrame, subscribeViewportChange } from './runtime';
+import { createGpuTimer } from './gpuTiming';
 import { visual } from './config';
 
 const WORK_VISUAL = visual.work;
@@ -71,6 +72,7 @@ void main() {
 
 function plainHandle(host: HTMLElement): WorkScene {
   host.dataset.state = 'fallback'; host.style.visibility = 'hidden';
+  setPerformanceReady('work', true);
   return { setMotion() {}, flatten: async () => {}, restore: async () => {}, setSuspended() {}, dispose() {} };
 }
 
@@ -87,6 +89,7 @@ export async function mountWorkScene(host: HTMLElement, root: HTMLElement, disab
   renderer.domElement.setAttribute('aria-hidden', 'true');
   renderer.domElement.style.cssText = 'display:block;width:100%;height:100%;pointer-events:none';
   host.append(renderer.domElement); host.style.visibility = 'hidden';
+  const gpu = createGpuTimer(renderer.getContext() as WebGL2RenderingContext, ms => reportGpuTime('work', ms));
   const scene = new THREE.Scene(), camera = new THREE.Camera();
   const geometry = new THREE.PlaneGeometry(2, 2);
   const empty = new THREE.DataTexture(new Uint8Array([0, 0, 0, 0]), 1, 1); empty.needsUpdate = true;
@@ -106,7 +109,13 @@ export async function mountWorkScene(host: HTMLElement, root: HTMLElement, disab
   const fallbackAll = () => { surfaces.forEach(fallback); host.style.visibility = 'hidden'; };
   const finishPending = () => { if (!pending) return; const task = pending; pending = null; task.off(); task.resolve(); };
   const drain = () => { const queue = afterRender; afterRender = []; queue.forEach(fn => fn()); };
-  const fail = () => { failed = true; host.dataset.state = 'fallback'; fallbackAll(); finishPending(); drain(); };
+  const fail = () => { failed = true; gpu.dispose(); setPerformanceReady('work', true); host.dataset.state = 'fallback'; fallbackAll(); finishPending(); drain(); };
+  const nativeScroll = () => {
+    // Reveal native images immediately in the scroll event, before a capped
+    // scene frame could leave the fixed canvas behind the browser's scrolling.
+    if (nativeScrollNeedsFallback()) { fallbackAll(); host.dataset.state = 'native-scroll'; finishPending(); drain(); }
+    invalidate();
+  };
 
   for (const frame of root.querySelectorAll<HTMLElement>('.gxc-project-picture')) {
     const anchor = frame.closest('a'); if (!anchor) continue;
@@ -182,6 +191,8 @@ export async function mountWorkScene(host: HTMLElement, root: HTMLElement, disab
   const vectorBox = (value: THREE.Vector4, box: Box) => value.set(box.x, box.y, box.width, box.height);
   function measure() {
     if (disposed || failed || !enabled || suspended || document.hidden) return false;
+    if (getPerformanceSnapshot('work').staticFallback) { fail(); return false; }
+    if (nativeScrollNeedsFallback()) { fallbackAll(); needsMeasure = true; return false; }
     const snapshot = getFrameSnapshot();
     if (previousScroll !== snapshot.scrollY) { previousScroll = snapshot.scrollY; needsMeasure = true; dirty = true; }
     if (!needsMeasure) return false;
@@ -208,6 +219,7 @@ export async function mountWorkScene(host: HTMLElement, root: HTMLElement, disab
   }
   function update(time: number, delta: number) {
     if (disposed || failed || !enabled || suspended || document.hidden) return false;
+    if (nativeScrollNeedsFallback()) { strength = 0; activity = 0; return true; }
     if (!surfaces.some(surface => surface.visible)) {
       strength = 0; activity = 0; moving = false;
       if (pending) pending.complete = true;
@@ -260,6 +272,7 @@ export async function mountWorkScene(host: HTMLElement, root: HTMLElement, disab
   }
   function render() {
     if (disposed || failed || !enabled || suspended || document.hidden) return false;
+    if (nativeScrollNeedsFallback()) return true;
     if (!dirty && !pending?.complete && !afterRender.length) return false;
     // With no visible, decoded surface the DOM remains the complete fallback.
     // Hiding the canvas avoids even a GPU clear while another section is scrolling.
@@ -270,8 +283,11 @@ export async function mountWorkScene(host: HTMLElement, root: HTMLElement, disab
       return false;
     }
     try {
-      renderer.setScissorTest(false); renderer.clear(); renderer.setScissorTest(true);
-      renderer.render(scene, camera); renderer.setScissorTest(false);
+      gpu.begin();
+      try {
+        renderer.setScissorTest(false); renderer.clear(); renderer.setScissorTest(true);
+        renderer.render(scene, camera); renderer.setScissorTest(false);
+      } finally { gpu.end(); }
       if (renderer.getContext().isContextLost()) { fail(); return false; }
       for (const surface of surfaces) {
         if (!surface.mesh.visible) continue;
@@ -279,6 +295,7 @@ export async function mountWorkScene(host: HTMLElement, root: HTMLElement, disab
         surface.anchor.dataset.workHit = 'true';
       }
       host.style.visibility = 'visible'; host.dataset.state = 'ready';
+      setPerformanceReady('work', true);
       host.dataset.curl = strength.toFixed(6); renderer.domElement.dataset.frames = String(renderer.info.render.frame);
       dirty = false;
       if (pending?.complete) finishPending();
@@ -294,8 +311,9 @@ export async function mountWorkScene(host: HTMLElement, root: HTMLElement, disab
     else invalidate();
   };
   const ro = new ResizeObserver(invalidate); ro.observe(root); ro.observe(host);
+  const offViewport = subscribeViewportChange(invalidate);
   for (const surface of surfaces) { ro.observe(surface.frame); surface.images.forEach(layer => ro.observe(layer.element)); }
-  window.addEventListener('scroll', invalidate, { passive: true }); window.addEventListener('resize', invalidate, { passive: true });
+  window.addEventListener('scroll', nativeScroll, { passive: true }); window.addEventListener('resize', invalidate, { passive: true });
   document.addEventListener('visibilitychange', visibility); coarse.addEventListener('change', invalidate);
   renderer.domElement.addEventListener('webglcontextlost', lost);
   const offMeasure = subscribeFrame(measure, 'measure'), offUpdate = subscribeFrame(update, 'update'), offRender = subscribeFrame(render, 'render');
@@ -322,11 +340,11 @@ export async function mountWorkScene(host: HTMLElement, root: HTMLElement, disab
     dispose() {
       disposed = true;
       if (pending) { pending.off(); pending.reject(abortError()); pending = null; }
-      drain(); fallbackAll(); offMeasure(); offUpdate(); offRender(); ro.disconnect();
-      window.removeEventListener('scroll', invalidate); window.removeEventListener('resize', invalidate); document.removeEventListener('visibilitychange', visibility); coarse.removeEventListener('change', invalidate);
+      drain(); fallbackAll(); offMeasure(); offUpdate(); offRender(); ro.disconnect(); offViewport();
+      window.removeEventListener('scroll', nativeScroll); window.removeEventListener('resize', invalidate); document.removeEventListener('visibilitychange', visibility); coarse.removeEventListener('change', invalidate);
       renderer.domElement.removeEventListener('webglcontextlost', lost);
       for (const surface of surfaces) { surface.off(); delete surface.anchor.dataset.workNeutral; surface.images.forEach(layer => { layer.off(); layer.texture?.dispose(); }); surface.material.dispose(); for (const key of ['left', 'top', 'width', 'height', 'path']) surface.anchor.style.removeProperty('--work-hit-' + key); }
-      geometry.dispose(); empty.dispose(); renderer.dispose(); renderer.domElement.remove();
+      gpu.dispose(); geometry.dispose(); empty.dispose(); renderer.dispose(); renderer.domElement.remove();
     },
   };
 }

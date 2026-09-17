@@ -1,4 +1,5 @@
 import { visual } from './config';
+import { subscribeViewportChange } from './runtime';
 import metadata from '../../public/v-next/background/provenance.json';
 
 export const heroPhoto = { width: metadata.width, height: metadata.height, variants: metadata.derivatives };
@@ -20,11 +21,13 @@ class HeroPhotoController {
   private generation = 0;
   private disposed = false;
   private readonly observer: ResizeObserver;
+  private readonly offViewport: () => void;
 
   constructor(private readonly hero: HTMLElement) {
     this.observer = new ResizeObserver(() => this.select());
     this.observer.observe(hero);
     window.addEventListener('resize', this.select);
+    this.offViewport = subscribeViewportChange(this.select);
     this.select();
   }
 
@@ -36,6 +39,7 @@ class HeroPhotoController {
       if (!this.listeners.size) {
         this.disposed = true; this.generation++;
         this.observer.disconnect(); window.removeEventListener('resize', this.select);
+        this.offViewport();
         controllers.delete(this.hero);
       }
     };

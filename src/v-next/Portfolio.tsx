@@ -16,6 +16,7 @@ import type { WorkScene } from './workScene';
 import { shotFlowCaseCover, shotFlowCaseScreens } from './shotflowCaseContent';
 
 import ShotFlowDemo from './ShotFlowDemo';
+import { PerformancePanel } from './PerformancePanel';
 
 type Rect = { x: number; y: number; width: number; height: number };
 type Study = { image: string; alt: string; caption: string; width?: number; height?: number };
@@ -171,7 +172,7 @@ export function NextPortfolio() {
           <p className="gxc-mono gxc-hero-photo-credit">PHOTOGRAPHED BY<br/>CI SONG · <time dateTime="2022">2022</time></p>
         </div>
         <h1 className="gxc-sr">Gala X Ci — Ci Song</h1>
-        <GlassHero disabled={disabled} />
+        <GlassHero disabled={disabled} suspended={locked || menuVisible || !!project} />
         <div className="gxc-hero-bottom gxc-gutter">
           <p>Designing experiences across<br/><span>digital and physical worlds.</span></p>
           <div><span className="gxc-mono">INTERFACES, EXPERIMENTS,<br/>AND ENVIRONMENTS.</span><a className="gxc-round-link" href="#work" onClick={e => { e.preventDefault(); jump('work', e.detail === 0); }} aria-label="Explore selected work"><ArrowDown size={22}/></a></div>
@@ -196,7 +197,8 @@ export function NextPortfolio() {
       </section>
     </main>
     <WorkBackdrop root={workRoot} paused={paused} reduced={reduce} suspended={locked || menuVisible || !!project}/>
-    <WorkCanvas root={workRoot} scene={workScene} disabled={disabled} suspended={!!project}/>
+    <WorkCanvas root={workRoot} scene={workScene} disabled={disabled} suspended={!!project || menuVisible}/>
+    <PerformancePanel />
     <MobileMenu open={menu} close={() => setMenu(false)} jump={jump} instant={disabled || keyboard} onPresenceChange={setMenuVisible} returnFocus={menuTrigger} />
     <ProjectDialog project={project} entrySource={entrySource} source={origin.current} instant={disabled || keyboard} onClose={close} onLock={() => setLocked(true)} onPrepareRestore={prepareRestore} onRestored={restore} onOpen={open}/>
   </div>;

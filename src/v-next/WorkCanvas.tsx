@@ -1,5 +1,6 @@
 import { useEffect, useRef, type MutableRefObject, type RefObject } from 'react';
 import type { WorkScene } from './workScene';
+import { registerPerformanceScene, setPerformanceReady } from './runtime';
 
 export function WorkCanvas({ root, scene, disabled, suspended }: {
   root: RefObject<HTMLElement | null>;
@@ -9,6 +10,7 @@ export function WorkCanvas({ root, scene, disabled, suspended }: {
 }) {
   const host = useRef<HTMLDivElement>(null);
   const state = useRef({ disabled, suspended }); state.current = { disabled, suspended };
+  useEffect(() => root.current ? registerPerformanceScene('work', root.current) : undefined, [root]);
   useEffect(() => {
     let disposed = false;
     import('./workScene').then(async module => {
@@ -17,7 +19,7 @@ export function WorkCanvas({ root, scene, disabled, suspended }: {
       if (disposed) { instance.dispose(); return; }
       scene.current = instance;
       instance.setMotion(!state.current.disabled); instance.setSuspended(state.current.suspended);
-    }).catch(() => { if (host.current) host.current.dataset.failed = 'initialization'; });
+    }).catch(() => { if (host.current) host.current.dataset.failed = 'initialization'; setPerformanceReady('work', true); });
     return () => { disposed = true; scene.current?.dispose(); scene.current = null; };
   }, [root, scene]);
   useEffect(() => { scene.current?.setMotion(!disabled); }, [disabled, scene]);

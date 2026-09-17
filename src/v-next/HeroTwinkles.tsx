@@ -24,6 +24,7 @@ export function HeroTwinkles({ paused, reduced, suspended }: { paused: boolean; 
     const obstacles = [...document.querySelectorAll<HTMLElement>('.gxc-brand, .gxc-nav, .gxc-hero-top > p, .gxc-hero-bottom p, .gxc-hero-bottom .gxc-mono, .gxc-round-link')];
     const canvas = hero.querySelector<HTMLElement>('.gxc-canvas');
     let debug: { ids: string[]; amplitude: number } | null = null, frames = 0;
+    const slots = new Map<string, number>();
     const field = new TwinkleField(Math.random, art, singlePeakEnvelope(art.rise, art.hold));
     const wake = () => { dirty = true; requestFrame(); };
     const resize = new ResizeObserver(wake); resize.observe(hero);
@@ -73,7 +74,7 @@ export function HeroTwinkles({ paused, reduced, suspended }: { paused: boolean; 
       const rawPoints = !valid || state.reduced ? [] : debug
         ? candidates.filter(star => debug!.ids.includes(star.id)).slice(0, art.capacity).map(star => sampleStar(star, debug!.amplitude))
         : field.update(dt, running, candidates, limit, (available, active) => chooseExposedStar(available, active, exposed,
-          cover.width, cover.height, Math.max(48, Math.min(width, window.innerHeight) * art.separation)));
+          cover.width, cover.height, Math.max(12, Math.min(width, window.innerHeight) * art.separation)));
       const points = rawPoints.map(point => projectHeroTwinkle(point, cover.width, mobile));
       publishTwinkles(hero, points);
       if (running) frames++;
@@ -82,9 +83,22 @@ export function HeroTwinkles({ paused, reduced, suspended }: { paused: boolean; 
       el.dataset.points = JSON.stringify(points);
       // Independent transparent light; never duplicate, filter or rewrite the photo.
       // The fallback uses the same profile and original-photo coordinates as WebGL.
-      for (let i = 0; i < patches.current.length; i++) {
-        const patch = patches.current[i], star = points[i]; if (!patch) continue;
-        if (!star || !photo) { patch.hidden = true; continue; }
+      // Keep each light in its own DOM slot until its pulse ends. Removing one
+      // star must not rebuild the gradients of the other 79 fallback lights.
+      const activeIds = new Set(points.map(point => point.id));
+      for (const [id, index] of slots) if (!activeIds.has(id)) {
+        const patch = patches.current[index]; if (patch) patch.hidden = true;
+        slots.delete(id);
+      }
+      const occupied = new Set(slots.values());
+      for (const star of points) {
+        let index = slots.get(star.id);
+        if (index === undefined) {
+          index = patches.current.findIndex((_, i) => !occupied.has(i));
+          if (index < 0) continue;
+          slots.set(star.id, index); occupied.add(index);
+        }
+        const patch = patches.current[index]; if (!patch || !photo) continue;
         const x = cover.left + star.u * cover.width, y = cover.top + star.v * cover.height;
         const sigma = star.radiusPx * cover.width / starCatalog.source.width;
         const radius = sigma * art.supportSigma;

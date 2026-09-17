@@ -17,6 +17,8 @@ export type PulseEnvelope = (duration: number, random: () => number) => Pulse['k
 export type TwinkleTiming = {
   interval: readonly [number, number]; duration: readonly [number, number];
   cooldown: readonly [number, number]; strength: readonly [number, number];
+  /** Preserve dense emission rates across frame intervals; opt-in for the hero. */
+  catchUp?: boolean;
 };
 const smooth = (value: number) => { const t = Math.max(0, Math.min(1, value)); return t * t * (3 - 2 * t); };
 
@@ -36,22 +38,27 @@ export class TwinkleField {
       this.clock += dt;
       for (const pulse of this.pulses) pulse.age += dt;
       this.pulses = this.pulses.filter(pulse => pulse.age < pulse.duration);
-      if (this.clock >= this.next) {
-        const available = candidates.filter(star => !this.pulses.some(pulse => pulse.star.id === star.id) && (this.cooldown.get(star.id) ?? 0) <= this.clock);
+      const activeIds = new Set(this.pulses.map(pulse => pulse.star.id));
+      const emissions = this.timing.catchUp ? 8 : 1;
+      for (let attempt = 0; attempt < emissions && this.clock >= this.next; attempt++) {
+        const available = candidates.filter(star => !activeIds.has(star.id) && (this.cooldown.get(star.id) ?? 0) <= this.clock);
         if (this.pulses.length < limit && available.length) {
           const star = choose ? choose(available, this.pulses.map(pulse => pulse.star)) : available[Math.floor(this.random() * available.length)];
           if (star) {
             const duration = this.range(this.timing.duration);
-            this.pulses.push({ star, age: 0, duration, strength: this.range(this.timing.strength), knots: this.envelope?.(duration, this.random) ?? [
+            this.pulses.push({ star, age: this.timing.catchUp ? Math.min(this.clock - this.next, .05) : 0, duration, strength: this.range(this.timing.strength), knots: this.envelope?.(duration, this.random) ?? [
               { time: 0, value: 0 }, { time: this.range([.14, .25]), value: this.range([.55, 1]) },
               { time: this.range([.34, .49]), value: this.range([.12, .5]) },
               { time: this.range([.59, .77]), value: this.range([.5, 1]) }, { time: 1, value: 0 },
             ] });
+            activeIds.add(star.id);
             this.cooldown.set(star.id, this.clock + duration + this.range(this.timing.cooldown));
           }
         }
-        this.next = this.clock + this.range(this.timing.interval);
+        this.next = (this.timing.catchUp ? this.next : this.clock) + this.range(this.timing.interval);
       }
+      // Never replay a long backlog after a stalled frame. Paused time is not accrued.
+      if (this.timing.catchUp && this.clock >= this.next) this.next = this.clock + this.range(this.timing.interval);
     }
     return this.pulses.slice(0, limit).map(pulse => {
       const progress = pulse.age / pulse.duration;

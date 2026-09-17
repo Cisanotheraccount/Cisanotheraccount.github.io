@@ -6,6 +6,7 @@ import { heroTwinkleArt as twinkleArt } from './heroTwinkleArt';
 import { projectAtlasLayout, projectAtlasCellBySlug } from './projectAtlas';
 import { projectLabelArt } from './projectLabel';
 import type { ProjectSkyFrame } from './projectSkyState';
+import { fillStarSpatialIndex, starSpatialGrid, starSpatialTextureSize } from './starSpatialIndex';
 
 const SKY_CAPACITY = skyMotion.capacity;
 
@@ -23,6 +24,11 @@ export function createSkyBackdrop(material: THREE.MeshBasicMaterial) {
   const directions = Array.from({ length: SKY_CAPACITY }, () => new THREE.Vector4(1, 0, 1, 0));
   const twinkles = Array.from({ length: twinkleArt.capacity }, () => new THREE.Vector4());
   const twinkleColors = Array.from({ length: twinkleArt.capacity }, () => new THREE.Vector3(1, 1, 1));
+  const starIndexBytes = new Uint8Array(starSpatialTextureSize.width * starSpatialTextureSize.height * 4);
+  const starIndex = new THREE.DataTexture(starIndexBytes, starSpatialTextureSize.width, starSpatialTextureSize.height, THREE.RGBAFormat, THREE.UnsignedByteType);
+  starIndex.minFilter = starIndex.magFilter = THREE.NearestFilter;
+  starIndex.generateMipmaps = false; starIndex.flipY = false;
+  starIndex.colorSpace = THREE.NoColorSpace; starIndex.needsUpdate = true;
   const projects = Array.from({ length: projectAtlasLayout.capacity }, () => new THREE.Vector4());
   const projectTails = Array.from({ length: projectAtlasLayout.capacity }, () => new THREE.Vector4());
   const projectCells = Array.from({ length: projectAtlasLayout.capacity }, () => 0);
@@ -37,6 +43,7 @@ export function createSkyBackdrop(material: THREE.MeshBasicMaterial) {
     uPhotoStarCount: { value: 0 },
     uPhotoStars: { value: twinkles },
     uPhotoStarColors: { value: twinkleColors },
+    uPhotoStarIndex: { value: starIndex },
     uProjectAtlas: { value: null as THREE.Texture | null },
     uProjectCount: { value: 0 },
     // Center.x / center.y / CSS size / opacity; atlas cells preserve project identity.
@@ -66,6 +73,7 @@ uniform vec2 uPhotoStarSize;
 uniform int uPhotoStarCount;
 uniform vec4 uPhotoStars[${twinkleArt.capacity}];
 uniform vec3 uPhotoStarColors[${twinkleArt.capacity}];
+uniform sampler2D uPhotoStarIndex;
 uniform sampler2D uProjectAtlas;
 uniform int uProjectCount;
 uniform vec4 uProjects[${projectAtlasLayout.capacity}];
@@ -135,11 +143,25 @@ vec3 twinkleToSRGB(vec3 value) {
 vec3 twinkleToLinear(vec3 value) {
   return mix(pow((value + 0.055) / 1.055, vec3(2.4)), value / 12.92, lessThanEqual(value, vec3(0.04045)));
 }
+int photoStarIndexAt(ivec2 cell, int slot) {
+  ivec2 address = ivec2(cell.x * ${starSpatialGrid.texelsPerCell} + slot / 4, cell.y);
+  vec4 packedIndices = texelFetch(uPhotoStarIndex, address, 0);
+  return int(floor(packedIndices[slot % 4] * 255.0 + 0.5));
+}
 vec3 photoTwinkleLight(vec3 photoColor, vec2 photoUv) {
   vec3 light = vec3(0.0);
   #ifdef USE_MAP
-  for (int i = 0; i < ${twinkleArt.capacity}; i++) {
-    if (i >= uPhotoStarCount) break;
+  // Lookup uses top-left original-photo UV, independent of viewport/DPR/crop.
+  ivec2 cell = ivec2(clamp(floor(vec2(photoUv.x, 1.0 - photoUv.y)
+    * vec2(${starSpatialGrid.columns.toFixed(1)}, ${starSpatialGrid.rows.toFixed(1)})), vec2(0.0),
+    vec2(${(starSpatialGrid.columns - 1).toFixed(1)}, ${(starSpatialGrid.rows - 1).toFixed(1)})));
+  int storedCount = photoStarIndexAt(cell, 0);
+  bool overflow = storedCount == ${starSpatialGrid.overflow};
+  int count = overflow ? uPhotoStarCount : storedCount;
+  if (count == 0) return light;
+  for (int entry = 0; entry < ${twinkleArt.capacity}; entry++) {
+    if (entry >= count) break;
+    int i = overflow ? entry : photoStarIndexAt(cell, entry + 1) - 1;
     vec4 star = uPhotoStars[i];
     // vMapUv is the exact transformed UV used to sample the photograph: cover,
     // overscan, camera alignment and every responsive variant are already in it.
@@ -196,7 +218,7 @@ vec3 skyMeteorLight() {
 }`)
       .replace('#include <opaque_fragment>', 'outgoingLight += skyMeteorLight();\n#ifdef USE_MAP\noutgoingLight += photoTwinkleLight(diffuseColor.rgb, vMapUv);\n#endif\noutgoingLight = projectSkyColor(outgoingLight);\n#include <opaque_fragment>');
   };
-  const cacheKey = () => `${baseCacheKey}:gxc-sky-backdrop-v8-hero-presence`;
+  const cacheKey = () => `${baseCacheKey}:gxc-sky-backdrop-v9-indexed-stars`;
   material.onBeforeCompile = compile;
   material.customProgramCacheKey = cacheKey;
   material.needsUpdate = true;
@@ -220,10 +242,19 @@ vec3 skyMeteorLight() {
       }
     },
     updateTwinkles(points: Twinkle[]) {
+      const previousCount = uniforms.uPhotoStarCount.value;
       uniforms.uPhotoStarCount.value = disposed ? 0 : Math.min(points.length, twinkleArt.capacity);
+      let indexDirty = previousCount !== uniforms.uPhotoStarCount.value;
       for (let i = 0; i < uniforms.uPhotoStarCount.value; i++) {
-        const point = points[i]; twinkles[i].set(point.u, point.v, point.radiusPx, point.amplitude);
+        const point = points[i], old = twinkles[i];
+        if (old.x !== point.u || old.y !== point.v || old.z !== point.radiusPx) indexDirty = true;
+        old.set(point.u, point.v, point.radiusPx, point.amplitude);
         twinkleColors[i].fromArray(point.overlay?.color ?? [1, 1, 1]);
+      }
+      if (!disposed && indexDirty) {
+        fillStarSpatialIndex(starIndexBytes, points.slice(0, uniforms.uPhotoStarCount.value),
+          starCatalog.source.width, starCatalog.source.height, twinkleArt.supportSigma);
+        starIndex.needsUpdate = true;
       }
     },
     update(frame: SkyFrame, width: number, height: number, overscan: number) {
@@ -244,6 +275,8 @@ vec3 skyMeteorLight() {
       uniforms.uSkyCount.value = 0;
       uniforms.uProjectCount.value = 0;
       uniforms.uProjectAtlas.value = null;
+      uniforms.uPhotoStarCount.value = 0;
+      starIndex.dispose();
       // Avoid removing any newer hooks installed by the scene owner.
       if (material.onBeforeCompile === compile) material.onBeforeCompile = previousCompile;
       if (material.customProgramCacheKey === cacheKey) material.customProgramCacheKey = previousCacheKey;

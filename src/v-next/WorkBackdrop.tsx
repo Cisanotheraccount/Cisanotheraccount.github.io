@@ -31,7 +31,8 @@ export function WorkBackdrop({ root, paused, reduced, suspended }: {
     if (omitted) { el.dataset.state = 'omitted'; return; }
     let disposed = false, dirty = true, visible = false;
     let width = 0, height = 0, top = 0, bottom = 0, lastScroll = NaN, lastClip = '';
-    let centers: { slug: string; y: number }[] = [], candidates: PhotoStar[] = [];
+    let centers: { slug: string; y: number; top: number; bottom: number }[] = [], candidates: PhotoStar[] = [];
+    let hoveredSlug: string | undefined, focusedSlug: string | undefined;
     let cover = photoCover(1, 1, 1, 1);
     let photo: { url: string; width: number; height: number } | undefined;
     let pending = '', generation = 0, failed = false;
@@ -46,6 +47,19 @@ export function WorkBackdrop({ root, paused, reduced, suspended }: {
     const pictures = workProjects.map(project => ({ slug: project.slug,
       el: section.querySelector<HTMLElement>(`.gxc-project-${project.slug} .gxc-project-picture`)! }));
     for (const picture of pictures) if (picture.el) resize.observe(picture.el);
+    const interactionSlug = (target: EventTarget | null) => {
+      const card = target instanceof Element ? target.closest('.gxc-project') : null;
+      return card && section.contains(card)
+        ? pictures.find(picture => card.contains(picture.el))?.slug : undefined;
+    };
+    const pointerOver = (event: PointerEvent) => { hoveredSlug = interactionSlug(event.target); requestFrame(); };
+    const pointerOut = (event: PointerEvent) => { hoveredSlug = interactionSlug(event.relatedTarget); requestFrame(); };
+    const focusIn = (event: FocusEvent) => { focusedSlug = interactionSlug(event.target); requestFrame(); };
+    const focusOut = (event: FocusEvent) => { focusedSlug = interactionSlug(event.relatedTarget); requestFrame(); };
+    section.addEventListener('pointerover', pointerOver);
+    section.addEventListener('pointerout', pointerOut);
+    section.addEventListener('focusin', focusIn);
+    section.addEventListener('focusout', focusOut);
     const hero = document.getElementById('top'); if (hero) resize.observe(hero);
     window.addEventListener('resize', wake);
     document.addEventListener('visibilitychange', wake);
@@ -92,7 +106,8 @@ export function WorkBackdrop({ root, paused, reduced, suspended }: {
         top = rect.top + frame.scrollY; bottom = rect.bottom + frame.scrollY;
         centers = pictures.filter(p => p.el).map(p => {
           const bounds = p.el.getBoundingClientRect();
-          return { slug: p.slug, y: bounds.top + frame.scrollY + bounds.height / 2 };
+          return { slug: p.slug, y: bounds.top + frame.scrollY + bounds.height / 2,
+            top: bounds.top + frame.scrollY, bottom: bounds.bottom + frame.scrollY };
         });
         selectPhoto();
         if (photo) {
@@ -131,13 +146,19 @@ export function WorkBackdrop({ root, paused, reduced, suspended }: {
         needsPalette = true;
         if (!wasReduced) { current = art.neutral; from = current; target = current; elapsed = art.transitionSeconds; setColors(current); }
       } else if (running) {
-        const viewCenter = getFrameSnapshot().scrollY + height / 2;
-        const nearest = centers.reduce<{ slug: string; y: number } | undefined>((best, item) =>
+        const scrollY = getFrameSnapshot().scrollY, viewCenter = scrollY + height / 2;
+        const nearest = centers.reduce<(typeof centers)[number] | undefined>((best, item) =>
           !best || Math.abs(item.y - viewCenter) < Math.abs(best.y - viewCenter) ? item : best, undefined);
         const selected = centers.find(item => item.slug === active);
+        // Equal-height cards share a row. Interaction chooses a sibling without
+        // allowing a distant row to steal the color; otherwise keep a tied choice.
+        const inNearestRow = (item: (typeof centers)[number]) => !!nearest && Math.abs(item.y - nearest.y) <= 2;
+        const preferred = [focusedSlug, hoveredSlug].map(slug => centers.find(item => item.slug === slug))
+          .find(item => item && inNearestRow(item) && item.bottom > scrollY && item.top < scrollY + height);
         const beforeFirst = centers.length && viewCenter < centers[0].y;
-        const next = beforeFirst ? workProjects[0].slug : nearest?.slug ?? active;
-        const shouldChange = next !== active && (beforeFirst || !selected ||
+        const next = preferred?.slug ?? (selected && inNearestRow(selected) ? active
+          : beforeFirst ? workProjects[0].slug : nearest?.slug ?? active);
+        const shouldChange = next !== active && (preferred || beforeFirst || !selected ||
           Math.abs(selected.y - viewCenter) - Math.abs(nearest!.y - viewCenter) > height * art.selectionHysteresis);
         if (shouldChange || needsPalette) {
           active = next; from = current; target = colorsFor(active); elapsed = 0; needsPalette = false;
@@ -180,6 +201,8 @@ export function WorkBackdrop({ root, paused, reduced, suspended }: {
       disposed = true; generation++; offMeasure(); offUpdate(); resize.disconnect();
       window.removeEventListener('resize', wake); document.removeEventListener('visibilitychange', wake);
       section.removeEventListener('load', wake, true);
+      section.removeEventListener('pointerover', pointerOver); section.removeEventListener('pointerout', pointerOut);
+      section.removeEventListener('focusin', focusIn); section.removeEventListener('focusout', focusOut);
     };
   }, [root]);
 

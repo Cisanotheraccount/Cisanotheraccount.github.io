@@ -47,3 +47,7 @@ npm run assets:icons -- --source /absolute/path/to/icons
 ```
 
 The importer preserves source bytes, records hashes, and updates public artwork without stretching or recoloring. Normal builds use the exported assets and do not access a private source archive.
+
+## Current presentation
+
+All ten selected projects use equal 3:2 preview frames, with two columns on larger screens and one on phones. Detail covers follow a shared responsive size. ShotFlow uses English native simulator captures from development build 15 with staged English demonstration data; the app is not presented as publicly released.

@@ -274,9 +274,9 @@ export const portfolioProjects: PortfolioProject[] = [
     "title": "ShotFlow",
     "category": "Storyboarding & on-set workflow",
     "summary": "From reference footage to a shoot-ready shot list.",
-    "image": "/portfolio/shotflow-1290.webp",
-    "imageSmall": "/portfolio/shotflow-800.webp",
-    "imageAlt": "ShotFlow development screenshot showing a project workspace with reference-video analysis and shot progress.",
+    "image": "/portfolio/shotflow-en-workspace-1290.webp",
+    "imageSmall": "/portfolio/shotflow-en-workspace-800.webp",
+    "imageAlt": "ShotFlow English native interface showing a project workspace, storyboard actions and shooting progress.",
     "imageWidth": 1290,
     "imageHeight": 2796,
     "imageFit": "contain",
@@ -305,9 +305,14 @@ export const portfolioProjects: PortfolioProject[] = [
     ],
     "gallery": [
       {
-        "image": "/portfolio/shotflow-storyboard-1290.webp",
-        "alt": "ShotFlow development screenshot showing shots grouped by source video with timing and completion status.",
-        "caption": "Development capture: shots grouped by their source video. The pictured project is demonstration data."
+        "image": "/portfolio/shotflow-en-workspace-1290.webp",
+        "alt": "ShotFlow English project workspace with storyboard review and an on-set checklist.",
+        "caption": "English native interface: project workspace and on-set workflow. Captured from the development app with demonstration data."
+      },
+      {
+        "image": "/portfolio/shotflow-en-storyboard-1290.webp",
+        "alt": "ShotFlow English native storyboard showing reference shots grouped by source video with timing and completion status.",
+        "caption": "English native interface: shots grouped by source video. Demonstration data; the reference videos are not attached to this screenshot fixture."
       }
     ],
     "externalLinks": []

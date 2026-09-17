@@ -200,12 +200,11 @@ export function NextPortfolio() {
 }
 
 function ProjectCard({ item, index, pending, onOpen }: { item: PortfolioProject; index: number; pending: boolean; onOpen: (e: MouseEvent<HTMLAnchorElement>, p: PortfolioProject) => void }) {
-  const layout = index === 0 ? 'lead' : index === 1 ? 'wide' : index === 2 ? 'narrow' : index % 2 ? 'left' : 'right';
-  return <article className={'gxc-project gxc-project-' + item.slug} data-layout={layout}>
+  return <article className={'gxc-project gxc-project-' + item.slug} data-layout="uniform">
     <a href={'#/work/' + item.slug} onClick={e => onOpen(e, item)} data-opening={pending ? 'true' : undefined} aria-busy={pending || undefined} aria-label={'Explore ' + item.title}>
       <div className="gxc-project-picture" data-fit={item.imageFit ?? 'cover'}>
-        <img src={item.image} srcSet={item.imageSmall + ' 800w, ' + item.image + ' ' + item.imageWidth + 'w'} sizes={index === 0 ? '(max-width: 760px) 90vw, 72vw' : '(max-width: 760px) 90vw, 55vw'} alt={item.imageAlt} width={item.imageWidth} height={item.imageHeight} loading="lazy" decoding="async"/>
-        {item.slug === 'shotflow' && <img className="gxc-shotflow-second" src="/portfolio/shotflow-storyboard-1290.webp" alt="ShotFlow shot list development capture" width="1290" height="2796" loading="lazy"/>}
+        <img src={item.image} srcSet={item.imageSmall + ' 800w, ' + item.image + ' ' + item.imageWidth + 'w'} sizes="(max-width: 760px) calc(100vw - 44px), (max-width: 1000px) calc((100vw - 88px) / 2), (min-width: 1600px) calc((100vw - 200px) / 2), calc((100vw - 144px) / 2)" alt={item.imageAlt} width={item.imageWidth} height={item.imageHeight} loading="lazy" decoding="async"/>
+        {item.slug === 'shotflow' && <img className="gxc-shotflow-second" src="/portfolio/shotflow-en-storyboard-1290.webp" alt="ShotFlow English native storyboard capture" width="1290" height="2796" loading="lazy"/>}
         <span className="gxc-project-index gxc-mono">{number(index)} / {index < 3 ? 'IN FOCUS' : 'EXPLORATION'}</span><span className="gxc-project-open"><ArrowUpRight size={22}/></span>
       </div>
       <div className="gxc-project-caption"><div><h3>{item.title}</h3><p>{item.category}</p></div><span className="gxc-mono">{item.tags[0]}</span></div>

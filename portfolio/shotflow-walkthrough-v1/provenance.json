@@ -1,0 +1,313 @@
+{
+  "schemaVersion": 1,
+  "project": "ShotFlow",
+  "captureDate": "2026-09-17",
+  "nativeApp": {
+    "version": "0.1.0",
+    "build": "15",
+    "platform": "iOS Simulator",
+    "device": "iPhone 15 Pro Max",
+    "runtime": "iOS 26.5 (23F77)",
+    "language": "English",
+    "appearance": "Dark",
+    "screenPixels": [
+      1290,
+      2796
+    ]
+  },
+  "captureKind": "Authentic native screenshots and continuous screen recordings with staged example data; not a live browser emulator.",
+  "sourceMedia": {
+    "kind": "Existing bundled sample images turned into two illustrative reference videos",
+    "relativeResourceBase": "ShotFlowIOS/ShotFlowApp/Resources/",
+    "images": [
+      {
+        "filename": "reference-portrait.png",
+        "height": 1672,
+        "sha256": "a5569945e335e82d6d4732a6c6c2beda40a9a54d5371b9b4c5b9e05f79d2c9ed",
+        "width": 941
+      },
+      {
+        "filename": "thumb-corridor.png",
+        "height": 1448,
+        "sha256": "d6ac7c23d0c8a95032034807bcc4041b39ff563a409960e6839ad286c5c20d42",
+        "width": 1086
+      },
+      {
+        "filename": "thumb-product.png",
+        "height": 1448,
+        "sha256": "5407d31d7740b0ecd2a688a5ca5eb4a598f028cfae50398d2356e269af533e89",
+        "width": 1086
+      },
+      {
+        "filename": "thumb-sunset.png",
+        "height": 1448,
+        "sha256": "5d41840941c315b71d1d314846344fae071f5b4aa086dae683bf645622d3e073",
+        "width": 1086
+      }
+    ],
+    "processing": "Aspect-fill crop; 1.02 to 1.055 zoom; 10px horizontal and 8px vertical movement. No newly drawn visuals, overlays, titles, color adjustments or outside assets.",
+    "referenceVideos": [
+      {
+        "name": "Nightfall / Reference study",
+        "durationSeconds": 12,
+        "size": [
+          1280,
+          720
+        ],
+        "fps": 30,
+        "sha256": "8db533047b2d978e4e92457d23785b35ec9f031531264d12f08c86d602804bf0",
+        "shots": [
+          {
+            "order": 1,
+            "rangeSeconds": [
+              0,
+              4
+            ],
+            "sourceImage": "thumb-sunset.png"
+          },
+          {
+            "order": 2,
+            "rangeSeconds": [
+              4,
+              8
+            ],
+            "sourceImage": "thumb-corridor.png"
+          },
+          {
+            "order": 3,
+            "rangeSeconds": [
+              8,
+              12
+            ],
+            "sourceImage": "reference-portrait.png"
+          }
+        ]
+      },
+      {
+        "name": "Nightfall / Product study",
+        "durationSeconds": 12,
+        "size": [
+          1280,
+          720
+        ],
+        "fps": 30,
+        "sha256": "f5868823a83410054a1ef59f5f8afde46f0eb29eaa9c6fe6403d1d11f0e51868",
+        "shots": [
+          {
+            "order": 4,
+            "rangeSeconds": [
+              0,
+              4
+            ],
+            "sourceImage": "thumb-product.png"
+          },
+          {
+            "order": 5,
+            "rangeSeconds": [
+              4,
+              8
+            ],
+            "sourceImage": "thumb-corridor.png"
+          },
+          {
+            "order": 6,
+            "rangeSeconds": [
+              8,
+              12
+            ],
+            "sourceImage": "thumb-sunset.png"
+          }
+        ]
+      }
+    ]
+  },
+  "exampleData": {
+    "projectName": "Nightfall",
+    "sourceVideos": 2,
+    "shots": 6,
+    "initialCompletedShots": [
+      1,
+      2
+    ],
+    "initialSelectedShot": 3,
+    "afterCompletionCompletedShots": [
+      1,
+      2,
+      3
+    ],
+    "nextSelectedShot": 4,
+    "stagedFields": "Project names, source completion, six shot ranges, guidance values, and initial completion status are demonstration data; they are not evidence of a new analysis run or model accuracy."
+  },
+  "verifiedInteraction": {
+    "trimmedShot": 3,
+    "originalRangeSeconds": [
+      8,
+      12
+    ],
+    "recordedAdjustedRangeSeconds": [
+      9.163,
+      12
+    ],
+    "nativeKeepLabel": "2.84 s",
+    "sourceVideoPreserved": true,
+    "reviewWarningPreserved": true,
+    "completionAction": "Mark this shot complete",
+    "nativeCompletionNotice": "Shot 3 completed. Now on shot 4.",
+    "nextShotProgress": "3/6 shots completed",
+    "execution": "Native playback, manual range save, professional-guide completion and returning to the next-shot checklist were exercised with XCTest."
+  },
+  "exports": {
+    "images": "Proportional WebP quality 95 export; no UI redrawing, text overpainting, recoloring or image-content substitution. 800px versions preserve the original aspect ratio.",
+    "screenRecordings": "Continuous native recordings, with only inactive leading/trailing time removed. MP4/H.264 passthrough remux with moov before mdat; no audio tracks.",
+    "guideCapture": "field and completed show the native full-screen professional-camera guide; next-shot shows the native checklist after closing that guide.",
+    "storyboardCapture": "storyboard-overview shows the source-group list from the top for the case study; storyboard is scrolled to shot 3 for the guided demo."
+  },
+  "assets": [
+    {
+      "file": "analysis-1290.webp",
+      "width": 1290,
+      "height": 2796,
+      "bytes": 98274,
+      "sha256": "fd4a92d7939ca121e062a0f75d8dfef33ebab62e4eec8bd5141f5622a6794427",
+      "captureTimestamp": 1789622219.235
+    },
+    {
+      "file": "completed-1290.webp",
+      "width": 1290,
+      "height": 2796,
+      "bytes": 230700,
+      "sha256": "7a42c279434ad4296934cf50495e49f7c48cb820e6df55b0c9d801ec0352f78a",
+      "captureTimestamp": 1789622658.737
+    },
+    {
+      "file": "field-1290.webp",
+      "width": 1290,
+      "height": 2796,
+      "bytes": 252554,
+      "sha256": "a64992ef44a68f62b5ad88f4a99b6b3da3cdb4c0d47a43f538b67fba064fa75c",
+      "captureTimestamp": 1789622655.059
+    },
+    {
+      "file": "next-shot-1290.webp",
+      "width": 1290,
+      "height": 2796,
+      "bytes": 194882,
+      "sha256": "beefb93ba185f527ed457fd4d349a484eb5e946532560274cde201e11bf7f215",
+      "captureTimestamp": 1789622662.05
+    },
+    {
+      "file": "player-1290.webp",
+      "width": 1290,
+      "height": 2796,
+      "bytes": 112400,
+      "sha256": "227c75c40353ec01d5ee53f5237709e2261c39608639f1d38d8850cf4281de35",
+      "captureTimestamp": 1789622255.12
+    },
+    {
+      "file": "reference-playback.mp4",
+      "width": 1290,
+      "height": 2796,
+      "bytes": 7362689,
+      "sha256": "673e3ec28fa8d48028d0a380a4ae97c9effd1cafe5c6cf13b685b1c38837ac88",
+      "durationSeconds": 4.65,
+      "codec": "H.264",
+      "container": "MP4",
+      "fastStart": true,
+      "audioTracks": 0,
+      "decodedFrames": 219
+    },
+    {
+      "file": "storyboard-1290.webp",
+      "width": 1290,
+      "height": 2796,
+      "bytes": 184434,
+      "sha256": "fa1069b5bbe2a35ba9f01dd207ef54989e52599e937c7c9d871b633d978a9723",
+      "captureTimestamp": 1789622239.237
+    },
+    {
+      "file": "storyboard-800.webp",
+      "width": 800,
+      "height": 1734,
+      "bytes": 107504,
+      "sha256": "f14e83457c7344d8979de526cac460d1eb0d0b1905f9a863dc09a78f67eb25a6",
+      "captureTimestamp": 1789622239.237
+    },
+    {
+      "file": "storyboard-overview-1290.webp",
+      "width": 1290,
+      "height": 2796,
+      "bytes": 159164,
+      "sha256": "684df4e8de5da483c6f835ff1b75de84b01aa6000df50465e953a42e610a601f",
+      "captureTimestamp": 1789622625.956
+    },
+    {
+      "file": "storyboard-overview-800.webp",
+      "width": 800,
+      "height": 1734,
+      "bytes": 92920,
+      "sha256": "c74686e09a7bc8c8f1122fdb6bc828b3ba935db7f4c0efc58f3681400e19143c",
+      "captureTimestamp": 1789622625.956
+    },
+    {
+      "file": "storyboard-updated-1290.webp",
+      "width": 1290,
+      "height": 2796,
+      "bytes": 191264,
+      "sha256": "f772d70e7974e2f22deee9a8944621ea8a844b807a5c07bb6dd86d1eaf6ae597",
+      "captureTimestamp": 1789622308.356
+    },
+    {
+      "file": "trim-adjustment.mp4",
+      "width": 1290,
+      "height": 2796,
+      "bytes": 3187530,
+      "sha256": "8e1192ab16731ec432aba3dd96f06ad15c8219edba8ce5c15536d11ee18704d2",
+      "durationSeconds": 6.4,
+      "codec": "H.264",
+      "container": "MP4",
+      "fastStart": true,
+      "audioTracks": 0,
+      "decodedFrames": 139
+    },
+    {
+      "file": "trim-after-1290.webp",
+      "width": 1290,
+      "height": 2796,
+      "bytes": 177470,
+      "sha256": "fb4a1632deba5491ad88dda391f742776cefa1bd5971d73cd45dc35cc31fb059",
+      "captureTimestamp": 1789622288.981
+    },
+    {
+      "file": "trim-before-1290.webp",
+      "width": 1290,
+      "height": 2796,
+      "bytes": 176140,
+      "sha256": "702edd293824335a7ad5225b4e47c1877318dbfbbfde6545a965afa5a097573b",
+      "captureTimestamp": 1789622273.26
+    },
+    {
+      "file": "trim-confirmation-1290.webp",
+      "width": 1290,
+      "height": 2796,
+      "bytes": 180552,
+      "sha256": "d1c09d549fe67fcb9705b2c6520d84ee041907072df2f94e2bc9161d24e9e1d0",
+      "captureTimestamp": 1789622297.273
+    },
+    {
+      "file": "workspace-1290.webp",
+      "width": 1290,
+      "height": 2796,
+      "bytes": 178958,
+      "sha256": "44dc29226c1e7b57620764843cf5ca78f12fa4a5e25abdcf837979103efa139f",
+      "captureTimestamp": 1789622209.825
+    },
+    {
+      "file": "workspace-800.webp",
+      "width": 800,
+      "height": 1734,
+      "bytes": 96116,
+      "sha256": "038582f218136450569f77635028550deaa5aa725d122b2c9f5eb2b1d9aeaff0",
+      "captureTimestamp": 1789622209.825
+    }
+  ]
+}

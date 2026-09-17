@@ -2,12 +2,21 @@ import { useEffect, useLayoutEffect, useRef, type RefObject, type CSSProperties 
 import { workProjects } from '../portfolioData';
 import metadata from '../../public/v-next/work-background/provenance.json';
 import catalog from '../../public/v-next/work-background/star-points.json';
+import extraCatalog from '../../public/v-next/work-background/star-points-extra.json';
 import palettes from '../../public/v-next/work-background/palettes.json';
 import { photoCover } from './heroPhoto';
 import { getFrameSnapshot, requestFrame, subscribeFrame } from './runtime';
-import { TwinkleField, type PhotoStar } from './twinkle';
+import { sampleStar, TwinkleField, type PhotoStar } from './twinkle';
+import { chooseExposedStar, projectStarLight, singlePeakEnvelope, starLightGradient } from './starLight';
 import { workBackdropArt as art } from './workBackdropConfig';
 import './workBackdrop.css';
+
+const extraCatalogMatches = extraCatalog.source.sha256 === metadata.sourceSha256
+  && extraCatalog.source.width === metadata.width && extraCatalog.source.height === metadata.height
+  && extraCatalog.source.crop.x === metadata.crop.x && extraCatalog.source.crop.y === metadata.crop.y
+  && extraCatalog.source.crop.width === metadata.crop.width && extraCatalog.source.crop.height === metadata.crop.height;
+const workStars = [...catalog.points, ...(extraCatalogMatches ? extraCatalog.points : [])];
+declare global { interface Window { __gxcWorkTwinkles?: { points: typeof workStars; set(ids: string[] | null, amplitude?: number): void } } }
 
 type Palette = { primary: readonly number[]; secondary: readonly number[] };
 const colorsFor = (slug: string): Palette => palettes[slug as keyof typeof palettes] ?? art.neutral;
@@ -30,22 +39,29 @@ export function WorkBackdrop({ root, paused, reduced, suspended }: {
     const omitted = new URLSearchParams(location.search).has('no-work-background');
     if (omitted) { el.dataset.state = 'omitted'; return; }
     let disposed = false, dirty = true, visible = false;
-    let width = 0, height = 0, top = 0, bottom = 0, lastScroll = NaN, lastClip = '';
+    let width = 0, height = 0, top = 0, bottom = 0, lastScroll = NaN, lastClip = '', lastCurl = '';
     let centers: { slug: string; y: number; top: number; bottom: number }[] = [], candidates: PhotoStar[] = [];
+    let exposed = new Set<string>(), debug: { ids: string[]; amplitude: number } | null = null, debugVersion = 0;
+    const starsById = new Map(workStars.map(star => [star.id, star]));
     let hoveredSlug: string | undefined, focusedSlug: string | undefined;
     let cover = photoCover(1, 1, 1, 1);
     let photo: { url: string; width: number; height: number } | undefined;
     let pending = '', generation = 0, failed = false;
     let active = workProjects[0].slug, current = colorsFor(active), from = current, target = current;
     let elapsed: number = art.transitionSeconds, frames = 0, wasReduced = false, needsPalette = false, lastIdle = '';
-    const field = new TwinkleField(Math.random, art.twinkles);
+    const field = new TwinkleField(Math.random, art.twinkles, singlePeakEnvelope(art.twinkles.rise, art.twinkles.hold));
     const validCatalog = catalog.source.sha256 === metadata.sourceSha256
       && catalog.source.width === metadata.width && catalog.source.height === metadata.height;
+    el.dataset.catalogCount = String(validCatalog ? workStars.length : 0);
+    el.dataset.supplementValid = String(extraCatalogMatches);
     const wake = () => { dirty = true; requestFrame(); };
     const resize = new ResizeObserver(wake);
     resize.observe(section);
     const pictures = workProjects.map(project => ({ slug: project.slug,
       el: section.querySelector<HTMLElement>(`.gxc-project-${project.slug} .gxc-project-picture`)! }));
+    const blockers = [...section.querySelectorAll<HTMLElement>('.gxc-project, .gxc-section-heading > *, .gxc-work-end > *'),
+      ...document.querySelectorAll<HTMLElement>('.gxc-header > *')];
+    const workCanvas = document.querySelector<HTMLElement>('.gxc-work-canvas');
     for (const picture of pictures) if (picture.el) resize.observe(picture.el);
     const interactionSlug = (target: EventTarget | null) => {
       const card = target instanceof Element ? target.closest('.gxc-project') : null;
@@ -113,7 +129,7 @@ export function WorkBackdrop({ root, paused, reduced, suspended }: {
         if (photo) {
           cover = photoCover(width, height, photo.width, photo.height);
           Object.assign(photoElement.style, { width: `${cover.width}px`, height: `${cover.height}px`, left: `${cover.left}px`, top: `${cover.top}px` });
-          candidates = validCatalog ? catalog.points.filter(star => {
+          candidates = validCatalog ? workStars.filter(star => {
             const x = cover.left + star.u * cover.width, y = cover.top + star.v * cover.height;
             return x > 8 && x < width - 8 && y > 8 && y < height - 8;
           }) : [];
@@ -122,24 +138,50 @@ export function WorkBackdrop({ root, paused, reduced, suspended }: {
         el.dataset.source = photo?.url ?? ''; el.dataset.sourceWidth = String(metadata.width); el.dataset.sourceHeight = String(metadata.height);
         el.dataset.viewport = JSON.stringify({ width, height }); lastScroll = NaN;
       }
-      if (lastScroll === frame.scrollY) return;
+      const curl = workCanvas?.dataset.curl ?? '';
+      if (lastScroll === frame.scrollY && curl === lastCurl) return;
       lastScroll = frame.scrollY;
+      lastCurl = curl;
       const start = top - frame.scrollY, end = bottom - frame.scrollY;
       visible = end > 0 && start < height;
       el.dataset.visible = String(visible);
-      if (!visible) return;
+      if (!visible) { exposed.clear(); el.dataset.exposed = '0'; el.dataset.exposedIds = '[]'; return; }
       const clip = `inset(${Math.max(0, start)}px 0px ${Math.max(0, height - end)}px)`;
       if (clip !== lastClip) { el.style.clipPath = clip; lastClip = clip; }
       // Pixel positions may be outside the viewport; fades stay attached to the
       // section's entrance/exit, while the photograph always keeps a cover crop.
       const mask = `linear-gradient(to bottom, transparent ${start}px, #000 ${start + art.entryFade}px, #000 ${end - art.exitFade}px, transparent ${end}px)`;
       el.style.maskImage = mask; el.style.webkitMaskImage = mask;
+      const padding = art.twinkles.obstructionPadding;
+      const obstacles = blockers.flatMap(element => {
+        const rect = element.getBoundingClientRect();
+        if (!rect.width || !rect.height || rect.bottom < 0 || rect.top > height) return [];
+        let left = rect.left, right = rect.right;
+        // Include the curved image's expanded hit bounds as well as its flat DOM card.
+        const anchor = element.querySelector<HTMLElement>('a[data-work-hit=true]');
+        if (anchor) {
+          const anchorRect = anchor.getBoundingClientRect();
+          const hitLeft = parseFloat(anchor.style.getPropertyValue('--work-hit-left'));
+          const hitWidth = parseFloat(anchor.style.getPropertyValue('--work-hit-width'));
+          if (Number.isFinite(hitLeft) && Number.isFinite(hitWidth)) {
+            left = Math.min(left, anchorRect.left + hitLeft);
+            right = Math.max(right, anchorRect.left + hitLeft + hitWidth);
+          }
+        }
+        return [{ left: left - padding, right: right + padding, top: rect.top - padding, bottom: rect.bottom + padding }];
+      });
+      exposed = new Set(candidates.filter(star => {
+        const x = cover.left + star.u * cover.width, y = cover.top + star.v * cover.height;
+        return y > Math.max(8, start + art.entryFade) && y < Math.min(height - 8, end - art.exitFade)
+          && !obstacles.some(box => x >= box.left && x <= box.right && y >= box.top && y <= box.bottom);
+      }).map(star => star.id));
+      el.dataset.exposed = String(exposed.size); el.dataset.exposedIds = JSON.stringify([...exposed]);
     }, 'measure');
 
     const offUpdate = subscribeFrame((_, dt) => {
       const state = props.current;
       const running = visible && !document.hidden && !state.paused && !state.reduced && !state.suspended;
-      const idle = `${visible}:${document.hidden}:${state.paused}:${state.reduced}:${state.suspended}:${photo?.url}:${failed}:${width}:${height}`;
+      const idle = `${visible}:${document.hidden}:${state.paused}:${state.reduced}:${state.suspended}:${photo?.url}:${failed}:${width}:${height}:${debugVersion}`;
       if (!running && idle === lastIdle) return;
       lastIdle = running ? '' : idle;
       if (state.reduced) {
@@ -172,9 +214,14 @@ export function WorkBackdrop({ root, paused, reduced, suspended }: {
       wasReduced = state.reduced;
       const mobile = width <= art.mobileBreakpoint || (matchMedia('(pointer: coarse)').matches && Math.min(width, height) <= art.mobileBreakpoint);
       const limit = mobile ? art.twinkles.mobileCapacity : art.twinkles.capacity;
-      const points = !photo || state.reduced ? [] : field.update(dt, running, candidates, limit);
+      const rawPoints = !photo || state.reduced ? [] : debug
+        ? candidates.filter(star => debug!.ids.includes(star.id)).slice(0, limit).map(star => sampleStar(star, debug!.amplitude))
+        : field.update(dt, running, candidates, limit, (available, activeStars) =>
+          chooseExposedStar(available, activeStars, exposed, cover.width, cover.height, Math.max(32, Math.min(width, height) * art.twinkles.separation)));
+      const diameter = mobile ? art.twinkles.mobileDiameter : art.twinkles.diameter;
+      const points = rawPoints.map(point => projectStarLight(point, starsById.get(point.id)!, metadata.width, cover.width, diameter));
       if (running) frames++;
-      el.dataset.state = state.reduced ? 'reduced' : failed ? 'photo-failed' : running ? 'running' : 'paused';
+      el.dataset.state = state.reduced ? 'reduced' : failed ? 'photo-failed' : debug ? 'debug' : running ? 'running' : 'paused';
       el.dataset.frames = String(frames); el.dataset.activeProject = active;
       el.dataset.tween = String(elapsed); el.dataset.points = JSON.stringify(points);
       el.dataset.count = String(points.length);
@@ -182,27 +229,34 @@ export function WorkBackdrop({ root, paused, reduced, suspended }: {
         const patch = patches.current[i], star = points[i]; if (!patch) continue;
         if (!star || !photo) { patch.hidden = true; continue; }
         const x = cover.left + star.u * cover.width, y = cover.top + star.v * cover.height;
-        const radius = star.radiusPx * cover.width / metadata.width * 4.5;
-        const placement = `${photo.url}:${x}:${y}:${radius}`;
+        const radius = star.radiusPx * cover.width / metadata.width * art.twinkles.supportSigma;
+        const placement = `${photo.url}:${x}:${y}:${radius}:${star.id}`;
         if (patch.dataset.placement !== placement) {
           patch.dataset.placement = placement; patch.dataset.star = star.id;
           Object.assign(patch.style, {
             width: `${radius * 2}px`, height: `${radius * 2}px`,
             transform: `translate3d(${x - radius}px,${y - radius}px,0)`,
-            backgroundImage: `url("${photo.url}")`, backgroundSize: `${cover.width}px ${cover.height}px`,
-            backgroundPosition: `${cover.left - x + radius}px ${cover.top - y + radius}px`,
+            backgroundImage: starLightGradient(star.overlay!.color, art.twinkles),
+            backgroundSize: '100% 100%', backgroundPosition: 'center',
           });
+          patch.dataset.diameter = String(star.overlay!.diameterPx);
         }
-        patch.hidden = false; patch.style.opacity = String(star.amplitude * art.photoOpacity);
+        patch.hidden = false; patch.style.opacity = String(star.amplitude);
       }
       return running && (!!photo || elapsed < art.transitionSeconds);
     }, 'update');
+    const debugApi = { points: workStars, set(ids: string[] | null, amplitude = .85) {
+      debug = ids ? { ids, amplitude: Math.max(0, Math.min(1, amplitude)) } : null;
+      debugVersion++; requestFrame();
+    } };
+    if (import.meta.env.DEV) window.__gxcWorkTwinkles = debugApi;
     return () => {
       disposed = true; generation++; offMeasure(); offUpdate(); resize.disconnect();
       window.removeEventListener('resize', wake); document.removeEventListener('visibilitychange', wake);
       section.removeEventListener('load', wake, true);
       section.removeEventListener('pointerover', pointerOver); section.removeEventListener('pointerout', pointerOut);
       section.removeEventListener('focusin', focusIn); section.removeEventListener('focusout', focusOut);
+      if (window.__gxcWorkTwinkles === debugApi) delete window.__gxcWorkTwinkles;
     };
   }, [root]);
 

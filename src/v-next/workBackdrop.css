@@ -18,7 +18,7 @@
 .gxc-work-backdrop-twinkles { position: absolute; inset: 0; mix-blend-mode: screen; }
 .gxc-work-backdrop-twinkles > span {
   position: absolute; top: 0; left: 0; background-repeat: no-repeat;
-  -webkit-mask-image: radial-gradient(ellipse, #000 0%, #000b 24%, transparent 70%);
-  mask-image: radial-gradient(ellipse, #000 0%, #000b 24%, transparent 70%);
+  border-radius: 50%;
   will-change: opacity;
 }
+.gxc-work-backdrop-twinkles > span[hidden] { display: none; }

@@ -149,7 +149,7 @@ vec3 photoTwinkleLight(vec3 photoColor, vec2 photoUv) {
     float core = exp(-0.5 * q);
     float halo = exp(-q / ${(2 * twinkleArt.haloSigma ** 2).toFixed(4)});
     float taper = 1.0 - smoothstep(16.0, ${(twinkleArt.supportSigma ** 2).toFixed(1)}, q);
-    float alpha = (core * ${twinkleArt.coreOpacity.toFixed(4)} + halo * ${twinkleArt.haloOpacity.toFixed(4)}) * star.w * taper;
+    float alpha = clamp(core * ${twinkleArt.coreOpacity.toFixed(4)} + halo * ${twinkleArt.haloOpacity.toFixed(4)}, 0.0, 1.0) * star.w * taper;
     // An independent screen-blended sRGB light layer, matching the DOM fallback.
     // Only its local contribution is added; the decoded photograph stays intact.
     vec3 base = clamp(twinkleToSRGB(photoColor), 0.0, 1.0);
@@ -196,7 +196,7 @@ vec3 skyMeteorLight() {
 }`)
       .replace('#include <opaque_fragment>', 'outgoingLight += skyMeteorLight();\n#ifdef USE_MAP\noutgoingLight += photoTwinkleLight(diffuseColor.rgb, vMapUv);\n#endif\noutgoingLight = projectSkyColor(outgoingLight);\n#include <opaque_fragment>');
   };
-  const cacheKey = () => `${baseCacheKey}:gxc-sky-backdrop-v6-star-overlay`;
+  const cacheKey = () => `${baseCacheKey}:gxc-sky-backdrop-v7-visible-stars`;
   material.onBeforeCompile = compile;
   material.customProgramCacheKey = cacheKey;
   material.needsUpdate = true;

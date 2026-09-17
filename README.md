@@ -51,3 +51,7 @@ The importer preserves source bytes, records hashes, and updates public artwork 
 ## Current presentation
 
 All ten selected projects use equal 3:2 preview frames, with two columns on larger screens and one on phones. Detail covers follow a shared responsive size. ShotFlow uses English native simulator captures from development build 15 with staged English demonstration data; the app is not presented as publicly released.
+
+## Photographic star light
+
+The homepage and work section place small, independently timed light cores over measured stars in the original photographs. The photograph exports, exposure and color stay unchanged. Responsive cover coordinates keep the light aligned; new pulses prefer unobstructed sky. The hero uses WebGL transmission with a transparent DOM fallback, while work-section lights remain DOM overlays. Motion pause, reduced-motion preferences and hidden/offscreen suspension are supported.

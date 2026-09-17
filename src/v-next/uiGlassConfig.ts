@@ -1,6 +1,10 @@
 // Interface glass only. These controls are independent from the Three.js wordmark.
 export const uiGlass = {
   mapSize: 512,
+  contrastTarget: 5.2,
+  contrastHysteresis: .08,
+  contrastMaxTint: .8,
+  fallbackLightTint: .46,
   blur: 2,
   menuBlur: 6,
   fallbackBlur: 16,

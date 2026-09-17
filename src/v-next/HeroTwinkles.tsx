@@ -3,8 +3,9 @@ import { getFrameSnapshot, requestFrame, subscribeFrame } from './runtime';
 import { photoCover, subscribeHeroPhoto, type LoadedHeroPhoto } from './heroPhoto';
 import { catalogMatchesPhoto, clearTwinkles, publishTwinkles, sampleStar, starCatalog, TwinkleField, type PhotoStar } from './twinkle';
 import { heroTwinkleArt as art, heroTwinkleGradient, projectHeroTwinkle } from './heroTwinkleArt';
-import { chooseExposedStar, singlePeakEnvelope } from './starLight';
+import { singlePeakEnvelope } from './starLight';
 import { combinedHeroStars, heroSupplementValid } from './heroStarCatalog';
+import { createHeroStarDistribution } from './heroStarDistribution';
 import './twinkles.css';
 
 declare global { interface Window { __gxcTwinkles?: { points: typeof starCatalog.points; set(ids: string[] | null, amplitude?: number): void } } }
@@ -20,9 +21,9 @@ export function HeroTwinkles({ paused, reduced, suspended }: { paused: boolean; 
     const omitted = new URLSearchParams(location.search).has('no-twinkles');
     let photo: LoadedHeroPhoto | undefined, dirty = true, visible = false, disposed = false;
     let width = 0, height = 0, cover = photoCover(1, 1, 1, 1), candidates: PhotoStar[] = [];
-    let exposed = new Set<string>(), lastScroll = NaN, lastWord = '';
+    let exposed = new Set<string>(), lastScroll = NaN;
+    let distribution: ReturnType<typeof createHeroStarDistribution> | undefined;
     const obstacles = [...document.querySelectorAll<HTMLElement>('.gxc-brand, .gxc-nav, .gxc-hero-top > p, .gxc-hero-bottom p, .gxc-hero-bottom .gxc-mono, .gxc-round-link')];
-    const canvas = hero.querySelector<HTMLElement>('.gxc-canvas');
     let debug: { ids: string[]; amplitude: number } | null = null, frames = 0;
     const slots = new Map<string, number>();
     const field = new TwinkleField(Math.random, art, singlePeakEnvelope(art.rise, art.hold));
@@ -37,15 +38,15 @@ export function HeroTwinkles({ paused, reduced, suspended }: { paused: boolean; 
     hero.addEventListener('animationend', wake, true);
     void document.fonts.ready.then(() => { if (!disposed) wake(); });
     const offMeasure = subscribeFrame(() => {
-      const snapshot = getFrameSnapshot(), word = canvas?.dataset.wordRect ?? '';
-      if (!dirty && lastScroll === snapshot.scrollY && lastWord === word) return;
+      const snapshot = getFrameSnapshot();
+      if (!dirty && lastScroll === snapshot.scrollY) return;
       dirty = false;
-      lastScroll = snapshot.scrollY; lastWord = word;
+      lastScroll = snapshot.scrollY;
       const rect = hero.getBoundingClientRect(); width = rect.width; height = rect.height;
       if (photo) cover = photoCover(width, height, photo.width, photo.height);
       candidates = !catalogMatchesPhoto || !photo || photo.fallback ? [] : combinedHeroStars.filter(star => {
         const x = cover.left + star.u * cover.width, y = cover.top + star.v * cover.height;
-        return x > 5 && x < width - 5 && y > 5 && y < height * .89;
+        return x > 5 && x < width - 5 && y > 5 && y < height - 5;
       });
       el.dataset.source = photo?.url ?? ''; el.dataset.candidates = String(candidates.length);
       el.dataset.catalogCount = String(combinedHeroStars.length);
@@ -53,17 +54,22 @@ export function HeroTwinkles({ paused, reduced, suspended }: { paused: boolean; 
       el.dataset.cover = JSON.stringify(cover);
       const blocked = obstacles.map(node => node.getBoundingClientRect()).filter(r => r.width && r.height)
         .map(r => ({ left: r.left - 8, right: r.right + 8, top: r.top - 8, bottom: r.bottom + 8 }));
-      if (word) {
-        const r = JSON.parse(word) as { left: number; top: number; width: number; height: number };
-        blocked.push({ left: rect.left + r.left - 6, right: rect.left + r.left + r.width + 6,
-          top: rect.top + r.top - 6, bottom: rect.top + r.top + r.height + 6 });
-      }
+      // The glass is transparent scenery, not a text obstacle. Its entire
+      // footprint remains eligible so stars can light up through transmission.
       exposed = new Set(candidates.filter(star => {
         const x = rect.left + cover.left + star.u * cover.width, y = rect.top + cover.top + star.v * cover.height;
         return x > 8 && x < snapshot.width - 8 && y > 8 && y < snapshot.height - 8
           && !blocked.some(r => x >= r.left && x <= r.right && y >= r.top && y <= r.bottom);
       }).map(star => star.id));
       el.dataset.exposed = String(exposed.size); el.dataset.exposedIds = JSON.stringify([...exposed]);
+      const left = Math.max(0, -rect.left), top = Math.max(0, -rect.top);
+      const visibleWidth = Math.max(1, Math.min(width, snapshot.width - rect.left) - left);
+      const visibleHeight = Math.max(1, Math.min(height, snapshot.height - rect.top) - top);
+      const columns = visibleWidth > art.distribution.wideBreakpoint ? art.distribution.wideColumns
+        : visibleWidth > art.mobileBreakpoint ? art.distribution.mediumColumns : art.distribution.narrowColumns;
+      distribution = createHeroStarDistribution(candidates, exposed, cover,
+        { left, top, width: visibleWidth, height: visibleHeight }, { ...art.distribution, columns });
+      el.dataset.grid = `${distribution.columns}x${distribution.rows}`;
     }, 'measure');
     const offUpdate = subscribeFrame((_, dt) => {
       const state = props.current;
@@ -73,14 +79,15 @@ export function HeroTwinkles({ paused, reduced, suspended }: { paused: boolean; 
       const limit = mobile ? art.mobileCapacity : art.capacity;
       const rawPoints = !valid || state.reduced ? [] : debug
         ? candidates.filter(star => debug!.ids.includes(star.id)).slice(0, art.capacity).map(star => sampleStar(star, debug!.amplitude))
-        : field.update(dt, running, candidates, limit, (available, active) => chooseExposedStar(available, active, exposed,
-          cover.width, cover.height, Math.max(12, Math.min(width, window.innerHeight) * art.separation)));
+        : field.update(dt, running, candidates, limit, (available, active) => distribution?.choose(available, active,
+          Math.max(12, Math.min(width, window.innerHeight) * art.separation)));
       const points = rawPoints.map(point => projectHeroTwinkle(point, cover.width, mobile));
       publishTwinkles(hero, points);
       if (running) frames++;
       el.dataset.state = !valid ? 'unavailable' : state.reduced ? 'reduced' : debug ? 'debug' : running ? 'running' : 'paused';
       el.dataset.frames = String(frames); el.dataset.count = String(points.length);
       el.dataset.points = JSON.stringify(points);
+      el.dataset.distribution = JSON.stringify(distribution?.summarize(points) ?? []);
       // Independent transparent light; never duplicate, filter or rewrite the photo.
       // The fallback uses the same profile and original-photo coordinates as WebGL.
       // Keep each light in its own DOM slot until its pulse ends. Removing one

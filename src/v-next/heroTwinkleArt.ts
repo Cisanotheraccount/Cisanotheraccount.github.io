@@ -12,6 +12,7 @@ export const heroTwinkleArt = {
   color: { cool: [.48, .72, 1], warm: [1, .78, .42], tint: [.35, .78], neutralThreshold: .08 },
   coreOpacity: .98, haloOpacity: .38, haloSigma: 2.1, supportSigma: 5,
   separation: .035,
+  distribution: { wideColumns: 6, mediumColumns: 4, narrowColumns: 3, wideBreakpoint: 1100, minRows: 3, maxRows: 6 },
 } as const;
 
 const starsById = new Map(combinedHeroStars.map(star => [star.id, star]));

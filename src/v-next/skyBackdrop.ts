@@ -216,9 +216,11 @@ vec3 skyMeteorLight() {
   }
   return light;
 }`)
-      .replace('#include <opaque_fragment>', 'outgoingLight += skyMeteorLight();\n#ifdef USE_MAP\noutgoingLight += photoTwinkleLight(diffuseColor.rgb, vMapUv);\n#endif\noutgoingLight = projectSkyColor(outgoingLight);\n#include <opaque_fragment>');
+      // Visual order: photograph → registered starlight → meteors → project
+      // artwork/labels. Three's transmission pass then places glass above them.
+      .replace('#include <opaque_fragment>', '#ifdef USE_MAP\noutgoingLight += photoTwinkleLight(diffuseColor.rgb, vMapUv);\n#endif\noutgoingLight += skyMeteorLight();\noutgoingLight = projectSkyColor(outgoingLight);\n#include <opaque_fragment>');
   };
-  const cacheKey = () => `${baseCacheKey}:gxc-sky-backdrop-v9-indexed-stars`;
+  const cacheKey = () => `${baseCacheKey}:gxc-sky-backdrop-v10-layered-stars`;
   material.onBeforeCompile = compile;
   material.customProgramCacheKey = cacheKey;
   material.needsUpdate = true;

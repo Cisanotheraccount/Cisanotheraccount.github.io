@@ -219,6 +219,11 @@ export function HeroMeteors({ paused, reduced, suspended, onOpen }: HeroMeteorsP
   const freeze = (index: number, key: 'focused' | 'pressed' | 'hovered', value: boolean) => { marks.current[index][key] = value; requestFrame(); };
   if (omitted) return null;
   return <>
+    {/* Match the scene: meteors behind project artwork, with both below glass. */}
+    <div className="gxc-sky-fallback" data-reduced={reduced ? 'true' : 'false'} aria-hidden="true">{Array.from({ length: meteorArt.stars.capacity }, (_, index) => <svg key={index} ref={element => { streaks.current[index] = element; }} className="gxc-fast-meteor" viewBox="0 0 500 14" preserveAspectRatio="none" aria-hidden="true" style={{ display: 'none' }}>
+      <defs><linearGradient id={`${gradient}-${index}`}><stop offset="0" stopColor="#f5f7ff" stopOpacity=".85"/><stop offset=".13" stopColor="#e9efff" stopOpacity=".55"/><stop offset="1" stopColor="#d2e1ff" stopOpacity="0"/></linearGradient></defs>
+      <path d="M4 7 L500 5.8 L500 8.2 Z" fill={`url(#${gradient}-${index})`}/><circle cx="4" cy="7" r="1.9" fill="#f8faff"/>
+    </svg>)}</div>
     <div className="gxc-project-fallback" aria-hidden="true" data-reduced={reduced ? 'true' : 'false'}>{floatingProjects.map((project, index) => <div className="gxc-meteor-visual" data-project={project.slug} key={project.id} ref={node => { fallbackMarks.current[index] = node; }} style={{ display: 'none' }}><span className="gxc-meteor-symbol"><img src={'/v-next/project-marks/' + projectMarks[project.slug].file} onError={event => recoverMark(event, project.slug)} width={38} height={38} alt=""/></span><span className="gxc-meteor-label">{projectMarks[project.slug].shortName}</span></div>)}</div>
     <div ref={root} className="gxc-meteors" data-reduced={reduced ? 'true' : 'false'} aria-label="Explore projects in the sky" role="navigation">
       {floatingProjects.map((project, index) => <a key={project.id} ref={element => { anchors.current[index] = element; }} className="gxc-meteor-mark" data-project={project.slug} data-entry="hero" href={'#/work/' + project.slug} tabIndex={-1} aria-label={'Explore ' + project.title} hidden={initiallyHidden.current}
@@ -229,9 +234,5 @@ export function HeroMeteors({ paused, reduced, suspended, onOpen }: HeroMeteorsP
         <span className="gxc-meteor-label" aria-hidden="true">{projectMarks[project.slug].shortName}</span>
       </a>)}
     </div>
-    <div className="gxc-sky-fallback" data-reduced={reduced ? 'true' : 'false'} aria-hidden="true">{Array.from({ length: meteorArt.stars.capacity }, (_, index) => <svg key={index} ref={element => { streaks.current[index] = element; }} className="gxc-fast-meteor" viewBox="0 0 500 14" preserveAspectRatio="none" aria-hidden="true" style={{ display: 'none' }}>
-      <defs><linearGradient id={`${gradient}-${index}`}><stop offset="0" stopColor="#f5f7ff" stopOpacity=".85"/><stop offset=".13" stopColor="#e9efff" stopOpacity=".55"/><stop offset="1" stopColor="#d2e1ff" stopOpacity="0"/></linearGradient></defs>
-      <path d="M4 7 L500 5.8 L500 8.2 Z" fill={`url(#${gradient}-${index})`}/><circle cx="4" cy="7" r="1.9" fill="#f8faff"/>
-    </svg>)}</div>
   </>;
 }

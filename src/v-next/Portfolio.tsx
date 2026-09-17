@@ -164,6 +164,7 @@ export function NextPortfolio() {
     <main>
       <section className="gxc-hero" id="top" tabIndex={-1} data-section>
         <HeroPhoto />
+        <HeroTwinkles paused={paused} reduced={reduce} suspended={locked || menuVisible || !!project} />
         <div className="gxc-hero-top gxc-gutter">
           <p className="gxc-mono">CI SONG<br/><span>DESIGN & EXPLORATION</span></p>
           <p className="gxc-hero-statement">Between people,<br/>interfaces & environments.</p>
@@ -177,7 +178,6 @@ export function NextPortfolio() {
         </div>
         <div className="gxc-hero-rule gxc-gutter" aria-hidden="true"><Plus/><span/><Plus/></div>
         <HeroMeteors paused={paused} reduced={reduce} suspended={locked || menuVisible || !!project} onOpen={(e, item) => open(e, item, 'hero')} />
-        <HeroTwinkles paused={paused} reduced={reduce} suspended={locked || menuVisible || !!project} />
       </section>
       <section ref={workRoot} className="gxc-work gxc-gutter" id="work" tabIndex={-1} data-section aria-labelledby="work-title">
         <div className="gxc-section-heading"><span className="gxc-mono">01 / SELECTED EXPLORATIONS</span><h2 id="work-title">Ideas, made<br/><em>tangible.</em></h2><p>Conversation. Environments.<br/>New ways to interact.</p></div>

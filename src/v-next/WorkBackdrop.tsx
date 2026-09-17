@@ -88,7 +88,7 @@ export function WorkBackdrop({ root, paused, reduced, suspended }: {
     void document.fonts.ready.then(() => { if (!disposed) wake(); });
 
     const selectPhoto = () => {
-      const needed = Math.max(width, height * metadata.width / metadata.height) * Math.min(devicePixelRatio || 1, art.maxDpr);
+      const needed = Math.max(width, height * metadata.width / metadata.height) * art.photoScale * Math.min(devicePixelRatio || 1, art.maxDpr);
       const variants = metadata.variants;
       const selected = variants.find(item => item.width >= needed) ?? variants[variants.length - 1];
       if (pending === selected.url) return;
@@ -133,6 +133,9 @@ export function WorkBackdrop({ root, paused, reduced, suspended }: {
         selectPhoto();
         if (photo) {
           cover = photoCover(width, height, photo.width, photo.height);
+          cover.width *= art.photoScale; cover.height *= art.photoScale;
+          cover.left = (width - cover.width) / 2;
+          cover.top = (height - cover.height) * art.photoAnchorY;
           Object.assign(photoElement.style, { width: `${cover.width}px`, height: `${cover.height}px`, left: `${cover.left}px`, top: `${cover.top}px` });
           candidates = validCatalog ? workStars.filter(star => {
             const x = cover.left + star.u * cover.width, y = cover.top + star.v * cover.height;

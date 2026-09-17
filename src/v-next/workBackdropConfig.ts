@@ -1,6 +1,9 @@
 /** Work-only art direction. Hero exposure, timing and colors stay independent. */
 export const workBackdropArt = {
   photoOpacity: .56,
+  // Lift the lower Milky Way into view; overscan keeps portrait edges covered.
+  photoScale: 1.10,
+  photoAnchorY: 1,
   primaryOpacity: .16,
   secondaryOpacity: .08,
   transitionSeconds: 1.1,

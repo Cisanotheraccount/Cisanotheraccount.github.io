@@ -55,3 +55,5 @@ All ten selected projects use equal 3:2 preview frames, with two columns on larg
 ## Photographic star light
 
 The homepage and work section place small, independently timed light cores over measured stars in the original photographs. The photograph exports, exposure and color stay unchanged. Responsive cover coordinates keep the light aligned; new pulses prefer unobstructed sky. The hero uses WebGL transmission with a transparent DOM fallback, while work-section lights remain DOM overlays. Motion pause, reduced-motion preferences and hidden/offscreen suspension are supported.
+
+The homepage uses a broader pool of measured photo stars for narrow crops, with a faster rise, small brighter cores and soft local halos. Positions remain tied to the original photograph; work-section timing and artwork are unchanged.

@@ -4,6 +4,7 @@ import { photoCover, subscribeHeroPhoto, type LoadedHeroPhoto } from './heroPhot
 import { catalogMatchesPhoto, clearTwinkles, publishTwinkles, sampleStar, starCatalog, TwinkleField, type PhotoStar } from './twinkle';
 import { heroTwinkleArt as art, heroTwinkleGradient, projectHeroTwinkle } from './heroTwinkleArt';
 import { chooseExposedStar, singlePeakEnvelope } from './starLight';
+import { combinedHeroStars, heroSupplementValid } from './heroStarCatalog';
 import './twinkles.css';
 
 declare global { interface Window { __gxcTwinkles?: { points: typeof starCatalog.points; set(ids: string[] | null, amplitude?: number): void } } }
@@ -41,11 +42,13 @@ export function HeroTwinkles({ paused, reduced, suspended }: { paused: boolean; 
       lastScroll = snapshot.scrollY; lastWord = word;
       const rect = hero.getBoundingClientRect(); width = rect.width; height = rect.height;
       if (photo) cover = photoCover(width, height, photo.width, photo.height);
-      candidates = !catalogMatchesPhoto || !photo || photo.fallback ? [] : starCatalog.points.filter(star => {
+      candidates = !catalogMatchesPhoto || !photo || photo.fallback ? [] : combinedHeroStars.filter(star => {
         const x = cover.left + star.u * cover.width, y = cover.top + star.v * cover.height;
         return x > 5 && x < width - 5 && y > 5 && y < height * .89;
       });
       el.dataset.source = photo?.url ?? ''; el.dataset.candidates = String(candidates.length);
+      el.dataset.catalogCount = String(combinedHeroStars.length);
+      el.dataset.supplementValid = String(heroSupplementValid);
       el.dataset.cover = JSON.stringify(cover);
       const blocked = obstacles.map(node => node.getBoundingClientRect()).filter(r => r.width && r.height)
         .map(r => ({ left: r.left - 8, right: r.right + 8, top: r.top - 8, bottom: r.bottom + 8 }));
@@ -97,7 +100,7 @@ export function HeroTwinkles({ paused, reduced, suspended }: { paused: boolean; 
       }
       return running;
     }, 'update');
-    const debugApi = { points: starCatalog.points, set(ids: string[] | null, amplitude = .8) { debug = ids ? { ids, amplitude: Math.max(0, Math.min(1, amplitude)) } : null; requestFrame(); } };
+    const debugApi = { points: combinedHeroStars, set(ids: string[] | null, amplitude = .8) { debug = ids ? { ids, amplitude: Math.max(0, Math.min(1, amplitude)) } : null; requestFrame(); } };
     if (import.meta.env.DEV) window.__gxcTwinkles = debugApi;
     return () => {
       disposed = true;

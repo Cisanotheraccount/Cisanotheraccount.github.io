@@ -196,7 +196,7 @@ vec3 skyMeteorLight() {
 }`)
       .replace('#include <opaque_fragment>', 'outgoingLight += skyMeteorLight();\n#ifdef USE_MAP\noutgoingLight += photoTwinkleLight(diffuseColor.rgb, vMapUv);\n#endif\noutgoingLight = projectSkyColor(outgoingLight);\n#include <opaque_fragment>');
   };
-  const cacheKey = () => `${baseCacheKey}:gxc-sky-backdrop-v7-visible-stars`;
+  const cacheKey = () => `${baseCacheKey}:gxc-sky-backdrop-v8-hero-presence`;
   material.onBeforeCompile = compile;
   material.customProgramCacheKey = cacheKey;
   material.needsUpdate = true;

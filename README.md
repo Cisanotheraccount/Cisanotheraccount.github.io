@@ -69,3 +69,7 @@ The free guided walkthrough connects nine captured states with measured hotspots
 The isolated capture fixture contains two illustrative videos made from existing bundled sample images, six shots and two initially completed. Completing the demonstrated shot changes progress to three of six. See [capture provenance and media notes](public/portfolio/shotflow-walkthrough-v1/README.md).
 
 Current-only capture mapping lives in `src/v-next/shotflowCaseContent.ts`; `ShotFlowDemo.tsx`, `shotflowWalkthrough.ts` and `shotflowDemo.css` own the guided states and interactions. Existing shared project metadata, legacy content and image archives remain intact.
+
+## Work-section photograph
+
+The work section has an independent Yellowstone star photograph. Prepared sRGB JPEG95/4:4:4 variants and 350 measured star positions live in `public/v-next/work-background/yellowstone/`; its source crop excludes the car and trees. The original 2022 silhouette hero and its 80/40 pulse limits remain unchanged. Older work assets are retained because the hero still uses their measured-star supplement. Normal builds use exported files without requiring the private photo archive.

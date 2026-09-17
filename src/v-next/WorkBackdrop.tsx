@@ -1,8 +1,7 @@
 import { useEffect, useLayoutEffect, useRef, type RefObject, type CSSProperties } from 'react';
 import { workProjects } from '../portfolioData';
-import metadata from '../../public/v-next/work-background/provenance.json';
-import catalog from '../../public/v-next/work-background/star-points.json';
-import extraCatalog from '../../public/v-next/work-background/star-points-extra.json';
+import metadata from '../../public/v-next/work-background/yellowstone/provenance.json';
+import catalog from '../../public/v-next/work-background/yellowstone/star-points.json';
 import palettes from '../../public/v-next/work-background/palettes.json';
 import { photoCover } from './heroPhoto';
 import { getFrameSnapshot, requestFrame, subscribeFrame } from './runtime';
@@ -11,11 +10,9 @@ import { chooseExposedStar, projectStarLight, singlePeakEnvelope, starLightGradi
 import { workBackdropArt as art } from './workBackdropConfig';
 import './workBackdrop.css';
 
-const extraCatalogMatches = extraCatalog.source.sha256 === metadata.sourceSha256
-  && extraCatalog.source.width === metadata.width && extraCatalog.source.height === metadata.height
-  && extraCatalog.source.crop.x === metadata.crop.x && extraCatalog.source.crop.y === metadata.crop.y
-  && extraCatalog.source.crop.width === metadata.crop.width && extraCatalog.source.crop.height === metadata.crop.height;
-const workStars = [...catalog.points, ...(extraCatalogMatches ? extraCatalog.points : [])];
+// Work has its own photograph and measured coordinates. The archived 2022
+// work supplement still supplies the hero catalog and must remain unchanged.
+const workStars = catalog.points;
 declare global { interface Window { __gxcWorkTwinkles?: { points: typeof workStars; set(ids: string[] | null, amplitude?: number): void } } }
 
 type Palette = { primary: readonly number[]; secondary: readonly number[] };
@@ -51,9 +48,17 @@ export function WorkBackdrop({ root, paused, reduced, suspended }: {
     let elapsed: number = art.transitionSeconds, frames = 0, wasReduced = false, needsPalette = false, lastIdle = '';
     const field = new TwinkleField(Math.random, art.twinkles, singlePeakEnvelope(art.twinkles.rise, art.twinkles.hold));
     const validCatalog = catalog.source.sha256 === metadata.sourceSha256
-      && catalog.source.width === metadata.width && catalog.source.height === metadata.height;
+      && catalog.source.width === metadata.width && catalog.source.height === metadata.height
+      && catalog.source.originalWidth === metadata.sourceWidth && catalog.source.originalHeight === metadata.sourceHeight
+      && catalog.source.crop.x === metadata.crop.x && catalog.source.crop.y === metadata.crop.y
+      && catalog.source.crop.width === metadata.crop.width && catalog.source.crop.height === metadata.crop.height
+      && catalog.count === workStars.length && new Set(workStars.map(star => star.id)).size === workStars.length
+      && workStars.every(star => Number.isFinite(star.x) && Number.isFinite(star.y)
+        && star.x >= 0 && star.y >= 0 && star.x < metadata.width && star.y < metadata.height
+        && Math.abs(star.u - (star.x + .5) / metadata.width) < .000001
+        && Math.abs(star.v - (star.y + .5) / metadata.height) < .000001);
     el.dataset.catalogCount = String(validCatalog ? workStars.length : 0);
-    el.dataset.supplementValid = String(extraCatalogMatches);
+    el.dataset.catalogValid = String(validCatalog);
     const wake = () => { dirty = true; requestFrame(); };
     const resize = new ResizeObserver(wake);
     resize.observe(section);

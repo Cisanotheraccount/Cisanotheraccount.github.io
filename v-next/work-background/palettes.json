@@ -187,5 +187,113 @@
       ]
     },
     "method": "64-color median-cut proxy; omit black/white backplates; saturation-weighted hue groups; retain a distinct measured secondary hue or measured neutral; HSV saturation x0.62 capped 0.48, value clamped 0.56–0.74."
+  },
+  "cyber-city": {
+    "primary": [
+      79,
+      135,
+      143
+    ],
+    "secondary": [
+      139,
+      111,
+      143
+    ],
+    "source": "/portfolio/cyber-city-1100.webp",
+    "sourceSha256": "d568d53e4bf3933640ba7f6653740521ea02558d45f2c76df9cd9d5d356a3b9c",
+    "extracted": {
+      "primary": [
+        24,
+        78,
+        86
+      ],
+      "secondary": [
+        48,
+        32,
+        50
+      ]
+    },
+    "method": "64-color median-cut proxy; omit black/white backplates; saturation-weighted hue groups; retain a distinct measured secondary hue or measured neutral; HSV saturation x0.62 capped 0.48, value clamped 0.56–0.74."
+  },
+  "crystal-city": {
+    "primary": [
+      143,
+      117,
+      107
+    ],
+    "secondary": [
+      143,
+      143,
+      142
+    ],
+    "source": "/portfolio/crystal-city-1600.webp",
+    "sourceSha256": "3b955611f0fea93ca00f9152936305ed8fe80d6510abcc2d685c7add586c10b4",
+    "extracted": {
+      "primary": [
+        101,
+        71,
+        60
+      ],
+      "secondary": [
+        98,
+        98,
+        97
+      ]
+    },
+    "method": "64-color median-cut proxy; omit black/white backplates; saturation-weighted hue groups; retain a distinct measured secondary hue or measured neutral; HSV saturation x0.62 capped 0.48, value clamped 0.56–0.74."
+  },
+  "last-one": {
+    "primary": [
+      189,
+      153,
+      98
+    ],
+    "secondary": [
+      189,
+      152,
+      98
+    ],
+    "source": "/portfolio/last-one-1600.webp",
+    "sourceSha256": "3fc37af6363463e37b01070bd5e2ca96ef26fd0de5650ee7e5fb09c8f56ef9f9",
+    "extracted": {
+      "primary": [
+        236,
+        148,
+        14
+      ],
+      "secondary": [
+        236,
+        152,
+        26
+      ]
+    },
+    "method": "64-color median-cut proxy; omit black/white backplates; saturation-weighted hue groups; retain a distinct measured secondary hue or measured neutral; HSV saturation x0.62 capped 0.48, value clamped 0.56–0.74."
+  },
+  "gala-x-ci-vr-gallery": {
+    "primary": [
+      99,
+      117,
+      143
+    ],
+    "secondary": [
+      143,
+      120,
+      130
+    ],
+    "source": "/portfolio/gala-x-ci-vr-gallery-1100.webp",
+    "sourceSha256": "79a8edd459f7e54c4091e2efadb6ac8fc6a3d112feda8ee62e1ea76d72d7ee82",
+    "extracted": {
+      "primary": [
+        26,
+        37,
+        52
+      ],
+      "secondary": [
+        128,
+        95,
+        110
+      ]
+    },
+    "method": "64-color median-cut proxy; omit black/white backplates; saturation-weighted hue groups; retain a distinct measured secondary hue or measured neutral; HSV saturation x0.62 capped 0.48, value clamped 0.56–0.74."
   }
 }

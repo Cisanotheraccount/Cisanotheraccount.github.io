@@ -204,10 +204,17 @@ export function NextPortfolio() {
 
 function ProjectCard({ item, index, pending, onOpen }: { item: PortfolioProject; index: number; pending: boolean; onOpen: (e: MouseEvent<HTMLAnchorElement>, p: PortfolioProject) => void }) {
   const media = item.slug === 'shotflow' ? shotFlowCaseCover : item;
-  return <article className={'gxc-project gxc-project-' + item.slug} data-layout="uniform">
+  const layout = index === 0 ? 'lead' : index === 1 ? 'wide' : index === 2 ? 'narrow' : index % 2 ? 'left' : 'right';
+  const desktopSpan = { lead: 9, wide: 7, narrow: 4, left: 6, right: 5 }[layout];
+  const tabletSpan = layout === 'lead' ? 11 : 6;
+  // Match the twelve-column grid, gutters and gaps at each breakpoint.
+  const gridSize = (span: number, gutter: number, gap: number) => `calc(${span / 12 * 100}vw - ${(2 * gutter * span + gap * (12 - span)) / 12}px)`;
+  const sizes = `(max-width: 760px) calc(100vw - 44px), (max-width: 1000px) ${gridSize(tabletSpan, 32, 24)}, (min-width: 1600px) ${gridSize(desktopSpan, 80, 40)}, ${gridSize(desktopSpan, 56, 32)}`;
+  const pictureStyle = { '--project-image-ratio': `${media.imageWidth} / ${media.imageHeight}` } as CSSProperties;
+  return <article className={'gxc-project gxc-project-' + item.slug} data-layout={layout}>
     <a href={'#/work/' + item.slug} onClick={e => onOpen(e, item)} data-opening={pending ? 'true' : undefined} aria-busy={pending || undefined} aria-label={'Explore ' + item.title}>
-      <div className="gxc-project-picture" data-fit={item.imageFit ?? 'cover'}>
-        <img src={media.image} srcSet={media.imageSmall + ' 800w, ' + media.image + ' ' + media.imageWidth + 'w'} sizes="(max-width: 760px) calc(100vw - 44px), (max-width: 1000px) calc((100vw - 88px) / 2), (min-width: 1600px) calc((100vw - 200px) / 2), calc((100vw - 144px) / 2)" alt={media.imageAlt} width={media.imageWidth} height={media.imageHeight} loading="lazy" decoding="async"/>
+      <div className="gxc-project-picture" data-fit={item.imageFit ?? 'cover'} style={pictureStyle}>
+        <img src={media.image} srcSet={media.imageSmall + ' 800w, ' + media.image + ' ' + media.imageWidth + 'w'} sizes={sizes} alt={media.imageAlt} width={media.imageWidth} height={media.imageHeight} loading="lazy" decoding="async"/>
         {item.slug === 'shotflow' && <img className="gxc-shotflow-second" src={shotFlowCaseScreens[2].image} alt="ShotFlow English native storyboard capture" width="1290" height="2796" loading="lazy"/>}
         <span className="gxc-project-index gxc-mono">{number(index)} / {index < 3 ? 'IN FOCUS' : 'EXPLORATION'}</span><span className="gxc-project-open"><ArrowUpRight size={22}/></span>
       </div>

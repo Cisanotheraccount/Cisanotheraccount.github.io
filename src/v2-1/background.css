@@ -1,0 +1,4 @@
+/* The source photograph carries its own brightness. No tinted layer covers it. */
+.gxc-hero-image { background: none; opacity: 1; }
+.gxc-hero-image > img { display: block; width: 100%; height: 100%; object-fit: cover; object-position: center; }
+.gxc-hero::after { background: linear-gradient(180deg, transparent 88%, #090a0c 100%); }

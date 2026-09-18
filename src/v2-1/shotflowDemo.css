@@ -1,0 +1,64 @@
+.gxc-shotflow-demo { margin-top: 28px; min-width: 0; }
+.gxc-shotflow-demo-label { color: #9398a5; font-size: 9px; }
+.gxc-shotflow-demo-layout { display: grid; grid-template-columns: minmax(0,1.1fr) minmax(0,.9fr); column-gap: clamp(40px,7vw,112px); padding-top: 28px; }
+.gxc-shotflow-demo-writing, .gxc-shotflow-demo-actions { grid-column: 1; min-width: 0; width: 100%; max-width: 490px; }
+.gxc-shotflow-demo-writing { grid-row: 1; align-self: end; }
+.gxc-shotflow-demo-actions { grid-row: 2; align-self: start; }
+.gxc-shotflow-demo-position { display: flex; justify-content: space-between; gap: 16px; color: #a1a6b1; font-size: 9px; }
+.gxc-shotflow-demo-position > span:first-child { flex-shrink: 0; }
+.gxc-shotflow-demo-position > span:last-child { text-align: right; }
+.gxc-shotflow-demo-progress { height: 1px; background: var(--line); margin: 16px 0 30px; }
+.gxc-shotflow-demo-progress > span { display: block; height: 1px; background: #d8dce3; }
+.gxc-shotflow-demo-writing h4 { min-height: 90px; margin: 0 0 16px; font: 400 clamp(30px,2.8vw,40px)/1.14 var(--font-display); letter-spacing: -.035em; }
+.gxc-shotflow-demo-writing h4:focus { outline: none; }
+.gxc-shotflow-demo-description { min-height: 104px; margin: 0 0 24px; color: #a6aab4; font-size: 15px; line-height: 1.85; }
+.gxc-shotflow-demo button { min-height: 44px; min-width: 44px; font-family: var(--font-body); }
+.gxc-shotflow-demo-primary { display: flex; align-items: center; justify-content: center; gap: 12px; width: 100%; border: 1px solid #e4e5e7; padding: 12px 18px; background: #e4e5e7; color: #121417; font-size: 13px; font-weight: 500; line-height: 1.4; transition: background 160ms ease, border-color 160ms ease; }
+.gxc-shotflow-demo-primary > svg { flex-shrink: 0; }
+.gxc-shotflow-demo button:disabled { opacity: .4; cursor: default; }
+.gxc-shotflow-demo-helper { min-height: 112px; padding: 16px 0 14px; }
+.gxc-shotflow-demo-helper p { color: #959ba8; font-size: 11px; line-height: 1.7; }
+.gxc-shotflow-demo-text-action { display: flex; align-items: center; justify-content: start; gap: 9px; padding: 8px 0; color: #ced2da; font-size: 11px; }
+.gxc-shotflow-demo-navigation { display: grid; grid-template-columns: repeat(3,minmax(0,1fr)); gap: 8px; min-height: 44px; }
+.gxc-shotflow-demo-navigation > button { display: flex; align-items: center; justify-content: center; gap: 7px; padding: 8px 6px; border: 1px solid var(--line); color: #c3c7d0; font-size: 11px; transition: background 160ms ease; }
+.gxc-shotflow-demo-navigation > button > svg { flex-shrink: 0; }
+.gxc-shotflow-demo-media { grid-column: 2; grid-row: 1 / span 2; align-self: center; width: 100%; max-width: 360px; min-width: 0; justify-self: center; }
+.gxc-shotflow-demo-screen { position: relative; width: 100%; border-radius: 10px; background: #060708; isolation: isolate; }
+.gxc-shotflow-demo-screen > img, .gxc-shotflow-demo-screen > video { display: block; position: absolute; inset: 0; width: 100%; height: 100%; max-height: none; object-fit: contain; border-radius: inherit; }
+.gxc-shotflow-demo-screen > video { visibility: hidden; }
+.gxc-shotflow-demo-screen > video[data-visible=true] { visibility: visible; }
+.gxc-shotflow-demo-hotspot { position: absolute; z-index: 1; transform: translate(-50%,-50%); padding: 0; background: #f1f0ed0a; border: 1px solid #f1f0eda6; border-radius: 8px; box-shadow: 0 0 0 3px #0b0d1080; }
+.gxc-shotflow-demo-hotspot > span { position: absolute; right: -7px; top: -7px; width: 24px; height: 24px; border-radius: 50%; display: grid; place-items: center; background: #e4e5e7; color: #121417; box-shadow: 0 0 0 3px #0b0d10; pointer-events: none; }
+.gxc-shotflow-demo-load-state { position: absolute; inset: 0; border-radius: inherit; display: flex; flex-direction: column; justify-content: center; align-items: center; gap: 16px; padding: 24px; background: #0c0e11; color: #a6aab4; font-size: 12px; line-height: 1.8; text-align: center; }
+.gxc-shotflow-demo-load-state > button { padding: 8px 16px; border: 1px solid var(--line); color: #f1f0ed; font-size: 12px; }
+.gxc-shotflow-demo-placeholder { position: absolute; inset: 0; padding: 36px 26px; border: 1px solid var(--line); border-radius: inherit; display: flex; flex-direction: column; justify-content: space-between; color: #a6aab4; }
+.gxc-shotflow-demo-placeholder > p { font: 400 clamp(30px,3vw,44px)/1.12 var(--font-display); letter-spacing: -.045em; color: #e1e3e7; }
+.gxc-shotflow-demo-placeholder > .gxc-mono:last-child { display: flex; justify-content: space-between; gap: 12px; font-size: 9px; }
+.gxc-shotflow-demo-caption { display: flex; align-items: center; gap: 8px; min-height: 48px; padding: 14px 0 0; color: #959ba8; font-size: 10px; line-height: 1.7; }
+.gxc-shotflow-demo-caption > span { display: inline-flex; font-variant-numeric: tabular-nums; color: #c4c9d3; }
+@media (hover:hover) and (pointer:fine) {
+  .gxc-shotflow-demo-primary:not(:disabled):hover { background: #fff; border-color: #fff; }
+  .gxc-shotflow-demo-navigation > button:not(:disabled):hover, .gxc-shotflow-demo-load-state > button:hover { background: #ffffff0c; }
+  .gxc-shotflow-demo-text-action:not(:disabled):hover { color: #fff; }
+  .gxc-shotflow-demo-hotspot:not(:disabled):hover { background: #f1f0ed20; border-color: #fff; }
+}
+@media (max-width:1000px) {
+  .gxc-shotflow-demo-layout { grid-template-columns: minmax(0,1fr) 280px; column-gap: 32px; }
+  .gxc-shotflow-demo-media { max-width: 280px; }
+  .gxc-shotflow-demo-writing h4 { font-size: 32px; }
+}
+@media (max-width:760px) {
+  .gxc-shotflow-demo { margin-top: 24px; }
+  .gxc-shotflow-demo-layout { grid-template-columns: minmax(0,1fr); gap: 24px; padding-top: 28px; }
+  .gxc-shotflow-demo-writing, .gxc-shotflow-demo-actions { max-width: none; }
+  .gxc-shotflow-demo-writing h4 { min-height: 76px; font-size: 32px; scroll-margin-top: 84px; }
+  .gxc-shotflow-demo-description { min-height: 104px; margin-bottom: 0; font-size: 14px; }
+  .gxc-shotflow-demo-helper { min-height: 120px; }
+  .gxc-shotflow-demo-media { grid-column: 1; grid-row: 2; max-width: 320px; }
+  .gxc-shotflow-demo-actions { grid-row: 3; }
+  .gxc-shotflow-demo[data-started=false] .gxc-shotflow-demo-actions { grid-row: 2; }
+  .gxc-shotflow-demo[data-started=false] .gxc-shotflow-demo-media { grid-row: 3; }
+  .gxc-shotflow-demo-placeholder { padding: 28px 24px; }
+  .gxc-shotflow-demo-placeholder > p { font-size: 36px; }
+}
+@media (prefers-reduced-motion:reduce) { .gxc-shotflow-demo button { transition: none; } }

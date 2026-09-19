@@ -7,6 +7,7 @@ import { projectAtlasLayout, projectAtlasCellBySlug } from './projectAtlas';
 import { projectLabelArt } from './projectLabel';
 import type { ProjectSkyFrame } from './projectSkyState';
 import { fillStarSpatialIndex, starSpatialGrid, starSpatialTextureSize } from './starSpatialIndex';
+import { nativePhotoComposite } from './nativePhotoComposite';
 
 const SKY_CAPACITY = skyMotion.capacity;
 
@@ -15,7 +16,7 @@ const SKY_CAPACITY = skyMotion.capacity;
  * the actual scene background, Three's transmission pass sees it through the
  * wordmark as well as around it. This module owns no render loop or textures.
  */
-export function createSkyBackdrop(material: THREE.MeshBasicMaterial) {
+export function createSkyBackdrop(material: THREE.MeshBasicMaterial, nativePhoto = true) {
   const previousCompile = material.onBeforeCompile;
   const previousCacheKey = material.customProgramCacheKey;
   const baseCacheKey = previousCacheKey.call(material);
@@ -33,6 +34,7 @@ export function createSkyBackdrop(material: THREE.MeshBasicMaterial) {
   const projectTails = Array.from({ length: projectAtlasLayout.capacity }, () => new THREE.Vector4());
   const projectCells = Array.from({ length: projectAtlasLayout.capacity }, () => 0);
   const uniforms = {
+    uNativePhoto: { value: false },
     uSkyViewport: { value: viewport },
     uSkyCount: { value: 0 },
     // head.x / head.y / tail length / opacity, all positions in CSS pixels.
@@ -65,6 +67,8 @@ export function createSkyBackdrop(material: THREE.MeshBasicMaterial) {
     shader.fragmentShader = shader.fragmentShader
       .replace('#include <common>', `#include <common>
 varying vec2 vSkyUv;
+uniform bool uNativePhoto;
+${nativePhotoComposite}
 uniform vec3 uSkyViewport;
 uniform int uSkyCount;
 uniform vec4 uSkyHeads[${SKY_CAPACITY}];
@@ -218,14 +222,23 @@ vec3 skyMeteorLight() {
 }`)
       // Visual order: photograph → registered starlight → meteors → project
       // artwork/labels. Three's transmission pass then places glass above them.
-      .replace('#include <opaque_fragment>', '#ifdef USE_MAP\noutgoingLight += photoTwinkleLight(diffuseColor.rgb, vMapUv);\n#endif\noutgoingLight += skyMeteorLight();\noutgoingLight = projectSkyColor(outgoingLight);\n#include <opaque_fragment>');
+      .replace('#include <opaque_fragment>', 'vec3 originalPhotograph = outgoingLight;\n#ifdef USE_MAP\noutgoingLight += photoTwinkleLight(diffuseColor.rgb, vMapUv);\n#endif\noutgoingLight += skyMeteorLight();\noutgoingLight = projectSkyColor(outgoingLight);\n#include <opaque_fragment>')
+      .replace('#include <dithering_fragment>', `#include <dithering_fragment>
+if (uNativePhoto) {
+  gl_FragColor = photoOverlay(gl_FragColor.rgb, linearToOutputTexel(vec4(originalPhotograph, 1.0)).rgb, 0.0);
+}`);
   };
-  const cacheKey = () => `${baseCacheKey}:gxc-sky-backdrop-v10-layered-stars`;
+  const cacheKey = () => `${baseCacheKey}:gxc-sky-backdrop-v11-native-photo`;
   material.onBeforeCompile = compile;
   material.customProgramCacheKey = cacheKey;
   material.needsUpdate = true;
 
   return {
+    // Retain the complete opaque sky in transmission/offscreen buffers. The
+    // final screen pass alone becomes an overlay over the native photograph.
+    beforeDraw(renderer: THREE.WebGLRenderer) {
+      uniforms.uNativePhoto.value = nativePhoto && renderer.getRenderTarget() === null;
+    },
     setProjectAtlas(texture: THREE.Texture | null) {
       if (disposed) return;
       uniforms.uProjectAtlas.value = texture;

@@ -1,6 +1,7 @@
 import { useEffect, useLayoutEffect, useRef, type RefObject, type CSSProperties } from 'react';
 import { workProjects } from './content/portfolioData';
 import metadata from '../../public/v-next/work-background/yellowstone/provenance.json';
+import backgrounds from '../../public/v2-1/backgrounds/manifest.json';
 import catalog from '../../public/v-next/work-background/yellowstone/star-points.json';
 import palettes from '../../public/v-next/work-background/palettes.json';
 import { photoCover } from './heroPhoto';
@@ -11,11 +12,15 @@ import { workBackdropArt as art } from './workBackdropConfig';
 import { getLayoutRect, getLayoutRevision } from './layoutSnapshot';
 import { getInputState } from './inputState';
 import { recordTouchMetric } from './touchDiagnostics';
+import { selectBackgroundVariant } from './backgroundQuality';
 import './workBackdrop.css';
 
 // Work has its own photograph and measured coordinates. The archived 2022
 // work supplement still supplies the hero catalog and must remain unchanged.
 const workStars = catalog.points;
+const manifestMatches = backgrounds.work.sourceSha256 === metadata.sourceSha256
+  && backgrounds.work.width === metadata.width && backgrounds.work.height === metadata.height;
+const photoVariants = manifestMatches ? backgrounds.work.variants : metadata.variants;
 declare global { interface Window { __gxcWorkTwinkles?: { points: typeof workStars; set(ids: string[] | null, amplitude?: number): void } } }
 
 type Palette = { primary: readonly number[]; secondary: readonly number[] };
@@ -49,9 +54,12 @@ export function WorkBackdrop({ root, paused, reduced, suspended }: {
     let photo: { url: string; width: number; height: number } | undefined;
     let pending = '', generation = 0, failed = false;
     let readyPhoto: typeof photo, photoChanged = false, geometryChanged = true, visibilityChanged = true;
+    let readyRequestWidth = 0;
     let nextClip = '', nextMask = '', lastMask = '', layoutRevision = -1;
     let lastScrollAt = -Infinity, lastViewportAt = -Infinity, viewportKey = '', photoTimer = 0;
     const failedRequests = new Set<string>();
+    const failedUrls = new Set<string>();
+    let quality: ReturnType<typeof selectBackgroundVariant> | undefined, qualityChanged = false, qualityKey = '';
     let active = workProjects[0].slug, current = colorsFor(active), from = current, target = current;
     let elapsed: number = art.transitionSeconds, frames = 0, wasReduced = false, needsPalette = false, lastIdle = '';
     const field = new TwinkleField(Math.random, art.twinkles, singlePeakEnvelope(art.twinkles.rise, art.twinkles.hold));
@@ -97,13 +105,17 @@ export function WorkBackdrop({ root, paused, reduced, suspended }: {
     void document.fonts.ready.then(() => { if (!disposed) wake(); });
 
     const selectPhoto = (time: number) => {
+      quality = selectBackgroundVariant({ width, height, imageWidth: metadata.width, imageHeight: metadata.height,
+        dpr: devicePixelRatio || 1, overscan: art.photoScale, variants: photoVariants });
+      const nextQualityKey = `${quality.desiredWidth}:${quality.dpr}:${quality.variant?.url}`;
+      if (qualityKey !== nextQualityKey) { qualityKey = nextQualityKey; qualityChanged = true; }
       // Wait until the section is approaching the viewport. The hero should not
       // compete with a multi-megabyte work photograph that is still far below it.
       const near = bottom > getFrameSnapshot().scrollY - height && top < getFrameSnapshot().scrollY + height * 2;
       if (!near || document.hidden || props.current.suspended || pending || readyPhoto) return;
-      const needed = Math.max(width, height * metadata.width / metadata.height) * art.photoScale * Math.min(devicePixelRatio || 1, art.maxDpr);
-      const variants = metadata.variants;
-      const selected = variants.find(item => item.width >= needed) ?? variants[variants.length - 1];
+      const variants = photoVariants;
+      const selected = quality.variant;
+      if (!selected) return;
       // Never alternate between two resolutions as Safari's address bar moves.
       // Keep the decoded source, and upgrade only after size AND scroll settle.
       if ((photo && photo.width >= selected.width) || selected.url === photo?.url || failedRequests.has(selected.url)) return;
@@ -116,8 +128,9 @@ export function WorkBackdrop({ root, paused, reduced, suspended }: {
       const request = ++generation;
       // Keep a decoded photo visible during resize; an older request cannot replace it.
       void (async () => {
-        for (const item of [selected, ...variants.filter(v => v.width < selected.width).reverse()]) {
+        for (const item of [selected, ...variants.filter(v => v.width < selected.width).sort((a, b) => b.width - a.width)]) {
           if (disposed || request !== generation) return;
+          if (failedUrls.has(item.url)) continue;
           try {
             recordTouchMetric('workBackgroundRequests');
             const image = new Image(); image.decoding = 'async'; image.src = item.url;
@@ -125,11 +138,14 @@ export function WorkBackdrop({ root, paused, reduced, suspended }: {
             if (disposed || request !== generation) return;
             // Stage the resource. Its cover and star coordinates are measured
             // before the shared update phase makes the replacement visible.
-            if (!photo || image.naturalWidth > photo.width) readyPhoto = { url: item.url, width: image.naturalWidth, height: image.naturalHeight };
+            if (!photo || image.naturalWidth > photo.width) {
+              readyPhoto = { url: item.url, width: image.naturalWidth, height: image.naturalHeight };
+              readyRequestWidth = selected.width;
+            }
             if (item.url !== selected.url) failedRequests.add(selected.url);
             pending = ''; failed = false;
             wake(); return;
-          } catch { /* Smaller derivatives remain a complete fallback. */ }
+          } catch { failedUrls.add(item.url); /* Smaller derivatives remain a complete fallback. */ }
         }
         if (!disposed && request === generation) { pending = ''; failedRequests.add(selected.url); failed = !photo; wake(); }
       })();
@@ -150,7 +166,10 @@ export function WorkBackdrop({ root, paused, reduced, suspended }: {
       if (revision !== layoutRevision) { layoutRevision = revision; dirty = true; }
       if (readyPhoto) {
         const due = Math.max(lastScrollAt, lastViewportAt) + 300;
-        if (!photo || time >= due) { photo = readyPhoto; readyPhoto = undefined; photoChanged = true; dirty = true; }
+        const latest = selectBackgroundVariant({ width: frame.width, height: frame.height,
+          imageWidth: metadata.width, imageHeight: metadata.height, dpr: devicePixelRatio || 1, overscan: art.photoScale, variants: photoVariants });
+        if (latest.variant && readyRequestWidth < latest.variant.width) readyPhoto = undefined;
+        else if (!photo || time >= due) { photo = readyPhoto; readyPhoto = undefined; photoChanged = true; dirty = true; }
         else if (!photoTimer) photoTimer = window.setTimeout(() => { photoTimer = 0; requestFrame(); }, Math.max(1, due - time));
       }
       if (dirty) {
@@ -212,6 +231,11 @@ export function WorkBackdrop({ root, paused, reduced, suspended }: {
     }, 'measure');
 
     const offUpdate = subscribeFrame((_, dt) => {
+      if (qualityChanged && quality) {
+        el.dataset.photoDesiredWidth = quality.desiredWidth.toFixed(2); el.dataset.photoDpr = String(quality.dpr);
+        el.dataset.photoDesiredSource = quality.variant?.url ?? ''; el.dataset.photoSourceLimited = String(quality.sourceLimited);
+        qualityChanged = false;
+      }
       // Keep every layout read above, then publish geometry and source together.
       if (geometryChanged) {
         if (photo) Object.assign(photoElement.style, { width: `${cover.width}px`, height: `${cover.height}px`, left: `${cover.left}px`, top: `${cover.top}px` });
@@ -220,7 +244,7 @@ export function WorkBackdrop({ root, paused, reduced, suspended }: {
         el.dataset.source = photo?.url ?? ''; el.dataset.sourceWidth = String(metadata.width); el.dataset.sourceHeight = String(metadata.height);
         geometryChanged = false;
       }
-      if (photoChanged && photo) { photoElement.src = photo.url; photoElement.hidden = false; photoChanged = false; recordTouchMetric('workBackgroundCommits'); }
+      if (photoChanged && photo) { photoElement.src = photo.url; photoElement.hidden = false; photoChanged = false; el.dataset.photoWidth = String(photo.width); recordTouchMetric('workBackgroundCommits'); }
       if (visibilityChanged) {
         el.dataset.visible = String(visible); el.dataset.exposed = String(exposed.size);
         if (diagnostics) el.dataset.exposedIds = JSON.stringify([...exposed]);

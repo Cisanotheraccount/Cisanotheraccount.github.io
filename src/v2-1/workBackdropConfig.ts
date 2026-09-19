@@ -10,7 +10,6 @@ export const workBackdropArt = {
   selectionHysteresis: .065,
   entryFade: 220,
   exitFade: 300,
-  maxDpr: 1.5,
   mobileBreakpoint: 760,
   neutral: { primary: [102, 114, 132], secondary: [119, 112, 108] },
   twinkles: {

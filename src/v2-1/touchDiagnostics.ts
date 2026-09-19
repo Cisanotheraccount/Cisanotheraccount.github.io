@@ -1,4 +1,4 @@
-export const touchRelease = 'touch-v31-20260918';
+export const touchRelease = 'adaptive-photo-v32-20260918';
 export const touchDiagnosticsEnabled = ['perf', 'qa'].some(key => new URLSearchParams(location.search).get(key) === '1');
 const counters: Record<string, number> = {};
 const samples: Record<string, number[]> = {};

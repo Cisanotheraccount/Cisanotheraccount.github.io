@@ -1,4 +1,5 @@
 import * as THREE from 'three';
+import { nativePhotoComposite } from './nativePhotoComposite';
 import { visual } from './config';
 import { getPerformanceSnapshot } from './runtime';
 
@@ -86,7 +87,7 @@ export class HeroPost {
   private width = 1;
   private height = 1;
 
-  constructor(private readonly renderer: THREE.WebGLRenderer) {
+  constructor(private readonly renderer: THREE.WebGLRenderer, private readonly nativePhoto = true) {
     (this.quad.material as THREE.Material).dispose();
     const samples = Math.min(4, renderer.capabilities.maxSamples);
     this.color.samples = samples;
@@ -190,9 +191,13 @@ export class HeroPost {
       }`, { uColor: { value: this.color.texture }, uMask: { value: this.mask.texture }, uPixel: { value: new THREE.Vector2(1, 1) }, toneMappingExposure: { value: visual.lighting.exposure } });
     this.composite = shader(`
       varying vec2 vUv; uniform sampler2D uColor,uMask,uBackground,uFlare,uVelocity;
+      uniform sampler2D uPhotograph;
+      uniform vec4 uPhotoCover;
+      uniform bool uNativePhoto;
       uniform float uFluid,uFlareEnabled,uMaxDisplacement;
       uniform vec2 uPixel;
       ${aces}
+      ${nativePhotoComposite}
       vec3 glassAt(vec2 uv,float coverage) {
         vec3 c=texture2D(uColor,uv).rgb;
         // Unmix edge coverage before tone mapping; do not bake the backdrop into the matte.
@@ -229,7 +234,11 @@ export class HeroPost {
         }
         gl_FragColor=vec4(result,1.);
         #include <colorspace_fragment>
-      }`, { uColor: { value: this.color.texture }, uMask: { value: this.mask.texture }, uBackground: { value: this.background.texture }, uFlare: { value: this.flare.texture }, uVelocity: { value: this.velocity.texture }, uPixel: { value: this.pixel }, uMaxDisplacement: { value: visual.fluid.maxPixels }, uFluid: { value: 0 }, uFlareEnabled: { value: 1 }, toneMappingExposure: { value: visual.lighting.exposure } });
+        if(uNativePhoto) {
+          vec3 photograph=texture2D(uPhotograph,vUv*uPhotoCover.xy+uPhotoCover.zw).rgb;
+          gl_FragColor=photoOverlay(gl_FragColor.rgb,linearToOutputTexel(vec4(photograph,1.)).rgb,coverage);
+        }
+      }`, { uColor: { value: this.color.texture }, uMask: { value: this.mask.texture }, uBackground: { value: this.background.texture }, uFlare: { value: this.flare.texture }, uVelocity: { value: this.velocity.texture }, uPixel: { value: this.pixel }, uMaxDisplacement: { value: visual.fluid.maxPixels }, uFluid: { value: 0 }, uFlareEnabled: { value: 1 }, toneMappingExposure: { value: visual.lighting.exposure }, uNativePhoto: { value: nativePhoto }, uPhotograph: { value: null }, uPhotoCover: { value: new THREE.Vector4(1,1,0,0) } });
     if (import.meta.env.DEV && new URLSearchParams(location.search).has('glass-mask')) {
       this.composite.fragmentShader = this.composite.fragmentShader.replace('vec4(result,1.)', 'vec4(vec3(coverage),1.)');
     }
@@ -249,6 +258,11 @@ export class HeroPost {
     this.composite.uniforms.uMaxDisplacement.value = Math.min(visual.fluid.maxPixels, cssWidth * visual.fluid.widthRatio);
     this.star.uniforms.uPixel.value.set(1 / cssWidth, 1 / cssHeight);
     this.reset(); this.nextFlareAt = -Infinity;
+  }
+
+  setPhotograph(texture: THREE.Texture, repeatX: number, repeatY: number) {
+    this.composite.uniforms.uPhotograph.value = texture;
+    this.composite.uniforms.uPhotoCover.value.set(repeatX, repeatY, (1-repeatX)/2, (1-repeatY)/2);
   }
 
   private sizeFlare() {

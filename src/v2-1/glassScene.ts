@@ -36,6 +36,8 @@ export async function mountGlass(host: HTMLElement, area: HTMLElement, disabled:
     renderer.domElement.setAttribute('aria-hidden', 'true');
     host.appendChild(renderer.domElement);
     const diagnostics = new URLSearchParams(location.search);
+    const nativePhoto = !(diagnostics.get('qa') === '1' && diagnostics.has('opaque-photo'));
+    host.dataset.photoPresentation = nativePhoto ? 'native' : 'opaque-control';
     const gpu = createHeroGpuProfiler(renderer.getContext() as WebGL2RenderingContext,
       ms => reportGpuTime('hero', ms), diagnostics.get('perf') === '1' && diagnostics.get('passes') === '1');
     cleanup.push(() => gpu.dispose());
@@ -77,7 +79,8 @@ export async function mountGlass(host: HTMLElement, area: HTMLElement, disabled:
     cleanup.push(() => backdropGeometry.dispose(), () => backdropMaterial.dispose());
     const backdrop = new THREE.Mesh(backdropGeometry, backdropMaterial);
     backdrop.position.z = -6; scene.add(backdrop);
-    const skyBackdrop = createSkyBackdrop(backdropMaterial);
+    const skyBackdrop = createSkyBackdrop(backdropMaterial, nativePhoto);
+    backdrop.onBeforeRender = currentRenderer => skyBackdrop.beforeDraw(currentRenderer);
     let skyRevision = -1, twinkleRevision = -1, projectRevision = -1;
     let projectAtlas: THREE.CanvasTexture | undefined;
     let invalidateProjects = () => {};
@@ -180,7 +183,9 @@ export async function mountGlass(host: HTMLElement, area: HTMLElement, disabled:
       if (wanted && !post) {
         const started = performance.now();
         try {
-          post = new HeroPost(renderer); post.setFlare(!noFlare); post.setSize(lastWidth || 1, lastHeight || 1, lastDpr || 1);
+          post = new HeroPost(renderer, nativePhoto); post.setFlare(!noFlare); post.setSize(lastWidth || 1, lastHeight || 1, lastDpr || 1);
+          const cover = photoCover(lastWidth || 1, lastHeight || 1, currentPhoto!.width, currentPhoto!.height);
+          post.setPhotograph(photo, (lastWidth || 1) / cover.width, (lastHeight || 1) / cover.height);
           recordTouchMetric('heroPostAllocations');
           sampleTouchMetric('heroPostCreateMs', performance.now() - started);
           recordTouchEvent('hero-post-created', { input: touchInteracting ? 'touch' : 'fine-pointer' });
@@ -209,6 +214,7 @@ export async function mountGlass(host: HTMLElement, area: HTMLElement, disabled:
       const overscan = visual.cameraMotion.overscan;
       backdrop.scale.set(viewWidth * overscan, viewHeight * overscan, 1);
       const cover = photoCover(width, height, currentPhoto!.width, currentPhoto!.height);
+      post?.setPhotograph(photo, width / cover.width, height / cover.height);
       photo.repeat.set(width / cover.width, height / cover.height);
       photo.repeat.multiplyScalar(overscan); photo.offset.set((1 - photo.repeat.x) / 2, (1 - photo.repeat.y) / 2);
       skyBackdrop.update(getSky(hero), width, height, overscan);

@@ -415,11 +415,19 @@ export async function mountWorkScene(host: HTMLElement, root: HTMLElement, disab
     if (document.hidden) { fallbackAll(); finishPending(); drain(); }
     else { retryImages(); invalidate(); }
   };
-  const ro = new ResizeObserver(invalidate); ro.observe(root); ro.observe(host);
-  const offViewport = subscribeViewportChange(invalidate);
+  const layoutChanged = () => {
+    // A document tile can follow scrolling without repainting, but it cannot
+    // follow a reflow. Reveal the newly laid-out DOM immediately; the capped
+    // render loop may not draw its replacement until a later browser frame.
+    fallbackAll(); paintedScroll = NaN; setState('layout-change'); invalidate();
+  };
+  // The host is an output of drawing. Observing its display/size changes would
+  // feed synchronous fallback writes back into ResizeObserver delivery.
+  const ro = new ResizeObserver(layoutChanged); ro.observe(root);
+  const offViewport = subscribeViewportChange(layoutChanged);
   for (const surface of surfaces) { ro.observe(surface.frame); surface.images.forEach(layer => ro.observe(layer.element)); }
-  window.addEventListener('scroll', nativeScroll, { passive: true }); window.addEventListener('resize', invalidate, { passive: true });
-  document.addEventListener('visibilitychange', visibility); coarse.addEventListener('change', invalidate);
+  window.addEventListener('scroll', nativeScroll, { passive: true }); window.addEventListener('resize', layoutChanged, { passive: true });
+  document.addEventListener('visibilitychange', visibility); coarse.addEventListener('change', layoutChanged);
   window.addEventListener('online', retryImages);
   renderer.domElement.addEventListener('webglcontextlost', lost);
   const offMeasure = subscribeFrame(measure, 'measure'), offUpdate = subscribeFrame(update, 'update'), offRender = subscribeFrame(render, 'render');
@@ -447,7 +455,7 @@ export async function mountWorkScene(host: HTMLElement, root: HTMLElement, disab
       disposed = true;
       if (pending) { pending.off(); pending.reject(abortError()); pending = null; }
       drain(); fallbackAll(); offMeasure(); offUpdate(); offRender(); ro.disconnect(); offViewport();
-      window.removeEventListener('scroll', nativeScroll); window.removeEventListener('resize', invalidate); document.removeEventListener('visibilitychange', visibility); coarse.removeEventListener('change', invalidate); window.removeEventListener('online', retryImages);
+      window.removeEventListener('scroll', nativeScroll); window.removeEventListener('resize', layoutChanged); document.removeEventListener('visibilitychange', visibility); coarse.removeEventListener('change', layoutChanged); window.removeEventListener('online', retryImages);
       renderer.domElement.removeEventListener('webglcontextlost', lost);
       for (const surface of surfaces) { surface.off(); delete surface.anchor.dataset.workNeutral; surface.images.forEach(layer => { layer.off(); layer.texture?.dispose(); }); surface.material.dispose(); for (const key of ['left', 'top', 'width', 'height', 'path']) surface.anchor.style.removeProperty('--work-hit-' + key); }
       gpu.dispose(); geometry.dispose(); empty.dispose(); renderer.dispose(); renderer.domElement.remove();

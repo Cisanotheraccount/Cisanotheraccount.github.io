@@ -1,0 +1,18 @@
+{
+  "version": 1,
+  "files": [
+    {
+      "path": "v2-1/entry/mobius.webp",
+      "sha256": "24728d370b591871b8a926698d53f1d7988958655735513e8941ca83ff180fb4",
+      "bytes": 36522,
+      "width": 1408,
+      "height": 728
+    }
+  ],
+  "source": {
+    "kind": "Authored procedural 3D render",
+    "module": "src/v2-1/entryRing.ts",
+    "description": "Transparent still capture of the live Mobius glass; fallback only. Existing licensed hero photo sampled inside the glass. No AI mockup background included.",
+    "date": "2026-09-19"
+  }
+}

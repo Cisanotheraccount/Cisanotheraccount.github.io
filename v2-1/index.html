@@ -1,5 +1,201 @@
 <!doctype html>
-<html lang="en"><head><meta charset="UTF-8"/><meta name="viewport" content="width=device-width, initial-scale=1.0"/><meta name="theme-color" content="#090a0c"/><meta name="description" content="Ci Song — interfaces, experiments, and environments. Explore work across digital and physical worlds."/><title>Gala X Ci 2.1 — Ci Song / Design & exploration</title><link rel="preload" as="image" href="/v-next/galaxci-glass-poster.webp"/>
-    <link rel="icon" href="/v-next/favicon.svg" type="image/svg+xml"/><link rel="preload" href="/fonts/space-grotesk-latin.woff2" as="font" type="font/woff2" crossorigin/>  <script type="module" crossorigin src="/assets/2-1/version21-WRVejNhl.js"></script>
-  <link rel="stylesheet" crossorigin href="/assets/2-1/version21-qo3upYRr.css">
-</head><body><div id="root"></div></body></html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8"/>
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <meta name="theme-color" content="#090a0c"/>
+  <meta name="description" content="Ci Song — interfaces, experiments, and environments. Explore work across digital and physical worlds."/>
+  <title>Gala X Ci 2.1 — Ci Song / Design & exploration</title>
+  <link rel="preload" as="image" href="/v-next/galaxci-glass-poster.webp"/>
+  <link rel="icon" href="/v-next/favicon.svg" type="image/svg+xml"/>
+  <link rel="preload" href="/fonts/space-grotesk-latin.woff2" as="font" type="font/woff2" crossorigin/>
+  <style>
+    @font-face { font-family: 'Inter'; font-style: normal; font-weight: 300 700; font-display: swap; src: url('/fonts/inter-latin.woff2') format('woff2'); }
+    @font-face { font-family: 'Space Grotesk'; font-style: normal; font-weight: 300 700; font-display: swap; src: url('/fonts/space-grotesk-latin.woff2') format('woff2'); }
+    html, body { margin: 0; background: #090a0c; color: #f1f0ed; }
+    html.gxc-entry-lock, html.gxc-entry-lock body { overflow: hidden; }
+    #gxc-entry { position: fixed; inset: 0; z-index: 90; display: grid; place-items: center; padding: 24px; box-sizing: border-box; pointer-events: none; opacity: 1; background: transparent; font-family: Inter, sans-serif; transition: opacity 300ms ease; }
+    #gxc-entry[hidden] { display: none; }
+    .gxc-entry-composition { display: flex; flex-direction: column; align-items: center; width: 100%; }
+    #gxc-entry-visual { position: relative; width: min(82vw, 680px); aspect-ratio: 2 / 1; pointer-events: auto; touch-action: pinch-zoom; user-select: none; -webkit-user-select: none; -webkit-tap-highlight-color: transparent; }
+    #gxc-entry-visual:focus-visible { outline: 1px solid #edf2ffb3; outline-offset: 8px; border-radius: 44%; }
+    #gxc-entry-fallback { position: absolute; inset: 0; width: 100%; height: 100%; object-fit: contain; pointer-events: none; animation: gxc-entry-float 2.4s ease-in-out infinite; }
+    #gxc-entry-name { position: absolute; inset: 0; display: grid; place-items: center; margin: 0; font: 500 38px/1.05 'Space Grotesk', sans-serif; letter-spacing: -.05em; color: #f1f0ed; pointer-events: none; }
+    .gxc-entry-brand { margin: 16px 0 0; font: 500 10px/1.5 Inter, sans-serif; letter-spacing: .24em; color: #d4d7dc; }
+    #gxc-entry-status { min-height: 1.5em; margin: 22px 0 0; font: 400 12px/1.5 Inter, sans-serif; color: #c3c8d0; text-align: center; opacity: 0; transition: opacity 180ms ease; }
+    #gxc-entry[data-status-visible=true] #gxc-entry-status { opacity: 1; }
+    .gxc-entry-actions { min-height: 44px; margin-top: 8px; display: flex; justify-content: center; gap: 16px; pointer-events: auto; }
+    .gxc-entry-actions button { min-width: 88px; min-height: 44px; border: 1px solid #ffffff38; border-radius: 24px; padding: 0 18px; font: 500 12px/1 Inter, sans-serif; color: #f1f0ed; background: #090a0c36; cursor: pointer; touch-action: manipulation; }
+    .gxc-entry-actions button[hidden] { display: none; }
+    .gxc-entry-actions button:focus-visible { outline: 2px solid #f1f0ed; outline-offset: 4px; }
+    .gxc-entry-actions button:active { transform: scale(.97); }
+    html[data-gxc-entry=preparing] #root * { visibility: hidden !important; }
+    html[data-gxc-entry=preparing] #root .gxc-hero::after,
+    html[data-gxc-entry=preparing] #root .gxc-hero-image,
+    html[data-gxc-entry=preparing] #root .gxc-hero-image *,
+    html[data-gxc-entry=preparing] #root .gxc-canvas[data-entry-ring=true],
+    html[data-gxc-entry=preparing] #root .gxc-canvas[data-entry-ring=true] canvas { visibility: visible !important; }
+    html[data-gxc-entry=preparing] #root .gxc-canvas[data-entry-ring=true] { opacity: 1 !important; transition: none !important; }
+    html:has(.gxc-canvas[data-entry-ring=true]) #gxc-entry-fallback { visibility: hidden; }
+    html.gxc-entry-played #root .gxc-hero-top,
+    html.gxc-entry-played #root .gxc-hero-bottom { animation: none !important; }
+    html[data-gxc-entry=revealing] #gxc-entry { opacity: 0; }
+    html[data-gxc-entry=revealing] #gxc-entry-visual,
+    html[data-gxc-entry=revealing] .gxc-entry-actions { pointer-events: none; }
+    html[data-gxc-entry=revealing] #root .gxc-canvas[data-entry-handoff=out] { visibility: visible !important; opacity: 0 !important; transition: opacity 300ms ease !important; }
+    html[data-gxc-entry=revealing] #root .gxc-canvas[data-entry-handoff=in] { visibility: visible !important; opacity: 1 !important; transition: opacity 350ms ease !important; }
+    html[data-gxc-entry=revealing] #root .gxc-header,
+    html[data-gxc-entry=revealing] #root .gxc-hero-top,
+    html[data-gxc-entry=revealing] #root .gxc-hero-bottom,
+    html[data-gxc-entry=revealing] #root .gxc-hero-rule,
+    html[data-gxc-entry=revealing] #root .gxc-meteors,
+    html[data-gxc-entry=revealing] #root .gxc-wordmark-fallback { animation: gxc-entry-foreground 350ms 300ms cubic-bezier(.23,1,.32,1) both !important; }
+    html[data-gxc-entry-hidden=true] #gxc-entry-fallback,
+    html[data-gxc-entry-hidden=true][data-gxc-entry=revealing] #root * { animation-play-state: paused !important; }
+    #gxc-entry[data-error=true] { opacity: 1; background: #090a0cbd; }
+    #gxc-entry[data-error=true] #gxc-entry-visual { pointer-events: none; }
+    #gxc-entry[data-error=true] #gxc-entry-fallback { animation: none; opacity: .5; }
+    @keyframes gxc-entry-float { 0%,100% { transform: translateY(3px) rotate(-.7deg); } 50% { transform: translateY(-3px) rotate(.7deg); } }
+    @keyframes gxc-entry-foreground { from { opacity: 0; } to { opacity: 1; } }
+    @media (max-width: 760px) { #gxc-entry-visual { width: min(82vw, 520px); } #gxc-entry-name { font-size: 24px; } .gxc-entry-brand { margin-top: 12px; font-size: 9px; } }
+    @media (max-height: 520px) {
+      #gxc-entry { padding: 16px; }
+      #gxc-entry-visual { width: min(82vw, 680px, calc((100svh - 152px) * 2)); }
+      .gxc-entry-brand { margin-top: 8px; }
+      #gxc-entry-status { margin-top: 12px; }
+      .gxc-entry-actions { margin-top: 4px; }
+    }
+    @media (prefers-reduced-motion: reduce) {
+      #gxc-entry { transition-duration: 100ms; }
+      #gxc-entry-fallback { animation: none; }
+      html[data-gxc-entry=revealing] #root .gxc-header,
+      html[data-gxc-entry=revealing] #root .gxc-hero-top,
+      html[data-gxc-entry=revealing] #root .gxc-hero-bottom,
+      html[data-gxc-entry=revealing] #root .gxc-hero-rule,
+      html[data-gxc-entry=revealing] #root .gxc-meteors,
+      html[data-gxc-entry=revealing] #root .gxc-wordmark-fallback { animation-duration: 100ms !important; animation-delay: 0ms !important; }
+      html[data-gxc-entry=revealing] #root .gxc-canvas[data-entry-handoff] { transition-duration: 100ms !important; }
+    }
+  </style>
+  <script type="module" crossorigin src="/assets/2-1/version21-CzkI9xz1.js"></script>
+  <link rel="stylesheet" crossorigin href="/assets/2-1/version21-BSAQRWNx.css">
+</head>
+<body>
+  <div id="root"></div>
+  <div id="gxc-entry" hidden data-state="preparing" data-status-visible="false" aria-label="Opening Ci Song's portfolio">
+    <div class="gxc-entry-composition">
+      <div id="gxc-entry-visual" role="group" tabindex="0" aria-label="Interactive glass ring. Drag or use arrow keys to turn.">
+        <img id="gxc-entry-fallback" src="/v2-1/entry/mobius.webp" width="1200" height="600" alt="" decoding="async"/>
+        <p id="gxc-entry-name">Ci Song</p>
+      </div>
+      <p class="gxc-entry-brand">GALA X CI</p>
+      <p id="gxc-entry-status" role="status" aria-live="polite">Preparing your experience</p>
+      <div class="gxc-entry-actions">
+        <button id="gxc-entry-skip" hidden type="button">Continue to site</button>
+        <button id="gxc-entry-retry" hidden type="button">Try again</button>
+      </div>
+    </div>
+  </div>
+  <script id="gxc-entry-runtime">
+  (() => {
+    const root = document.getElementById('root'), shell = document.getElementById('gxc-entry');
+    const status = document.getElementById('gxc-entry-status'), skip = document.getElementById('gxc-entry-skip'), retry = document.getElementById('gxc-entry-retry');
+    const html = document.documentElement, startedAt = performance.now(), listeners = new Set();
+    const reduce = matchMedia('(prefers-reduced-motion: reduce)');
+    const timers = new Set(); let releaseTimer = 0, minimumTimer = 0, fontTimer = 0, fontStarted = false;
+    const bridge = window.__gxcEntry = {
+      version: 'entry-v33', phase: 'preparing', startedAt, milestones: { started: 0 }, parts: { photo: 'pending', glass: 'pending' },
+      appReady: false, fontsReady: false, reason: '', error: false,
+      subscribe(listener) { listeners.add(listener); return () => listeners.delete(listener); },
+      markAppReady, settlePart, release, fail,
+    };
+    const elapsed = () => Math.max(0, performance.now() - startedAt);
+    const milestone = name => { if (!(name in bridge.milestones)) bridge.milestones[name] = elapsed(); shell.dataset[name] = String(bridge.milestones[name]); };
+    const later = (fn, delay) => { const id = setTimeout(() => { timers.delete(id); fn(); }, delay); timers.add(id); return id; };
+    const cancel = id => { clearTimeout(id); timers.delete(id); };
+    const notify = () => { html.dataset.gxcEntry = bridge.phase; shell.dataset.state = bridge.phase; shell.dataset.reason = bridge.reason; for (const fn of listeners) fn(); };
+    function unlock() { root.inert = false; root.removeAttribute('inert'); html.classList.remove('gxc-entry-lock'); }
+    function complete(reason) {
+      const restoreFocus = shell.contains(document.activeElement);
+      cancel(releaseTimer); cancel(minimumTimer); cancel(fontTimer);
+      bridge.phase = 'complete'; bridge.reason = reason || bridge.reason; bridge.error = false;
+      shell.dataset.error = 'false'; shell.hidden = true; unlock(); milestone('complete'); notify();
+      if (restoreFocus) document.querySelector('#root .gxc-brand, #root a[href], #root button')?.focus({ preventScroll: true });
+    }
+    function fail(reason) {
+      if (bridge.appReady) { release('app-fallback'); return; }
+      if (bridge.error) return;
+      cancel(releaseTimer); cancel(minimumTimer); cancel(fontTimer);
+      bridge.phase = 'complete'; bridge.reason = reason || 'module-error'; bridge.error = true;
+      shell.hidden = false; shell.dataset.error = 'true'; shell.dataset.statusVisible = 'true';
+      status.textContent = reason === 'deadline' || reason === 'skip' ? 'The page is taking longer than expected. You can try again.' : 'Some page files could not be loaded. Please try again.';
+      skip.hidden = true; retry.hidden = false; unlock(); milestone('failed'); notify();
+    }
+    function release(reason = 'released') {
+      if (bridge.phase === 'complete') return;
+      if (reason === 'hashchange' || reason === 'bfcache' || reason === 'deep-link' || reason === 'history') { complete(reason); return; }
+      if (!bridge.appReady) { fail(reason); return; }
+      if (bridge.phase === 'revealing') return;
+      bridge.phase = 'revealing'; bridge.reason = reason; skip.hidden = true;
+      milestone('revealing'); notify();
+      releaseTimer = later(() => complete(reason), reduce.matches ? 100 : 650);
+    }
+    function check() {
+      if (bridge.phase !== 'preparing' || !bridge.appReady || !bridge.fontsReady || bridge.parts.photo === 'pending' || bridge.parts.glass === 'pending') return;
+      const remaining = (reduce.matches ? 0 : 800) - elapsed();
+      if (remaining <= 0) release('ready');
+      else if (!minimumTimer) minimumTimer = later(() => { minimumTimer = 0; check(); }, remaining);
+    }
+    function settleFonts(reason) {
+      if (bridge.fontsReady) return;
+      bridge.fontsReady = true; shell.dataset.fontResult = reason; cancel(fontTimer); milestone('fontsReady'); check();
+    }
+    function markAppReady() {
+      if (bridge.appReady) return;
+      bridge.appReady = true; milestone('appReady');
+      if (bridge.error) { complete('recovered'); return; }
+      if (!fontStarted) {
+        fontStarted = true;
+        // Wait after React/CSS are ready; fonts.ready at initial parse can resolve
+        // before any face has been requested. Keep the total font gate bounded.
+        fontTimer = later(() => settleFonts('timeout'), Math.max(0, 1500 - elapsed()));
+        try {
+          if (document.fonts?.load) Promise.allSettled([document.fonts.load('500 16px Inter'), document.fonts.load('500 38px "Space Grotesk"')]).then(() => settleFonts('settled'));
+          else settleFonts('unsupported');
+        } catch { settleFonts('fallback'); }
+      }
+      check();
+    }
+    function settlePart(part, result) {
+      if ((part !== 'photo' && part !== 'glass') || (result !== 'ready' && result !== 'fallback')) return;
+      bridge.parts[part] = result; shell.dataset[part] = result; milestone(part + 'Settled'); check();
+    }
+    skip.addEventListener('click', () => release('skip'));
+    retry.addEventListener('click', () => location.reload());
+    const visibility = () => { html.dataset.gxcEntryHidden = String(document.hidden); };
+    document.addEventListener('visibilitychange', visibility); visibility();
+    window.addEventListener('hashchange', () => release('hashchange'));
+    window.addEventListener('pageshow', event => { if (event.persisted) release('bfcache'); });
+    window.addEventListener('error', event => {
+      const target = event.target;
+      if (!bridge.appReady && (target?.tagName === 'SCRIPT' && target.type === 'module'
+        || event.filename && /(?:\/src\/v2-1\/|\/assets\/2-1\/)/.test(event.filename))) fail('module-error');
+    }, true);
+    window.addEventListener('vite:preloadError', () => { if (!bridge.appReady) fail('module-error'); });
+    const changedMotion = () => { if (reduce.matches && bridge.phase === 'revealing') { cancel(releaseTimer); releaseTimer = later(() => complete(bridge.reason), 100); } else check(); };
+    reduce.addEventListener?.('change', changedMotion);
+    const navigation = performance.getEntriesByType?.('navigation')[0];
+    if (location.hash && location.hash !== '#' && location.hash !== '#top') complete('deep-link');
+    else if (navigation?.type === 'back_forward') complete('history');
+    else {
+      html.classList.add('gxc-entry-lock', 'gxc-entry-played'); root.inert = true; root.setAttribute('inert', ''); shell.hidden = false; notify();
+      later(() => { if (bridge.phase === 'preparing') { shell.dataset.statusVisible = 'true'; milestone('statusShown'); } }, 3000);
+      later(() => { if (bridge.phase === 'preparing') { skip.hidden = false; milestone('skipShown'); } }, 4000);
+    }
+    // This survives a missing main bundle, including deep links which skip the intro.
+    later(() => { if (!bridge.appReady) fail('deadline'); else if (bridge.phase === 'preparing') release('deadline'); }, 8000);
+  })();
+  </script>
+  <noscript><style>#gxc-entry { display: none !important; }</style><p style="max-width:34rem;margin:20vh auto;padding:24px;font:16px/1.6 sans-serif">This portfolio needs JavaScript. Please enable it and reload the page.</p></noscript>
+</body>
+</html>

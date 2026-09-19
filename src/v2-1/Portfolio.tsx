@@ -18,6 +18,8 @@ import { mobileThumbnail, useMobileThumbnailMode, workImageSizes, workLayout } f
 
 import ShotFlowDemo from './ShotFlowDemo';
 import { PerformancePanel } from './PerformancePanel';
+import { markEntryAppReady, useEntryPhase } from './entry';
+import { useDeferredImage } from './deferredMedia';
 
 type Rect = { x: number; y: number; width: number; height: number };
 type Study = { image: string; alt: string; caption: string; width?: number; height?: number };
@@ -27,6 +29,9 @@ const retiredProject = () => /^#\/work\/m-box\/?$/.test(location.hash);
 const modified = (e: MouseEvent) => e.metaKey || e.ctrlKey || e.shiftKey || e.altKey || e.button !== 0;
 
 export function NextPortfolio() {
+  const entryPhase = useEntryPhase();
+  const entering = entryPhase !== 'complete';
+  useEffect(() => { markEntryAppReady(); }, []);
   const mobileThumbnails = useMobileThumbnailMode();
   const [reduce, setReduce] = useState(() => matchMedia('(prefers-reduced-motion: reduce)').matches);
   useEffect(() => {
@@ -53,7 +58,7 @@ export function NextPortfolio() {
   const pendingOpen = useRef<AbortController | null>(null);
   const [openingSlug, setOpeningSlug] = useState<string | null>(null);
   const projectRef = useRef(project); projectRef.current = project;
-  useSmoothScene(disabled, locked || menuVisible);
+  useSmoothScene(disabled, locked || menuVisible || entering);
   useEffect(() => {
     const oldRestoration = history.scrollRestoration; history.scrollRestoration = 'manual';
     const sync = () => {
@@ -167,7 +172,7 @@ export function NextPortfolio() {
     <main>
       <section className="gxc-hero" id="top" tabIndex={-1} data-section>
         <HeroPhoto />
-        <HeroTwinkles paused={paused} reduced={reduce} suspended={locked || menuVisible || !!project} />
+        <HeroTwinkles paused={paused} reduced={reduce} suspended={entering || locked || menuVisible || !!project} />
         <div className="gxc-hero-top gxc-gutter">
           <p className="gxc-mono">CI SONG<br/><span>DESIGN & EXPLORATION</span></p>
           <p className="gxc-hero-statement">Between people,<br/>interfaces & environments.</p>
@@ -180,7 +185,7 @@ export function NextPortfolio() {
           <div><span className="gxc-mono">INTERFACES, EXPERIMENTS,<br/>AND ENVIRONMENTS.</span><a className="gxc-round-link" href="#work" onClick={e => { e.preventDefault(); jump('work', e.detail === 0); }} aria-label="Explore selected work"><ArrowDown size={22}/></a></div>
         </div>
         <div className="gxc-hero-rule gxc-gutter" aria-hidden="true"><Plus/><span/><Plus/></div>
-        <HeroMeteors paused={paused} reduced={reduce} suspended={locked || menuVisible || !!project} onOpen={(e, item) => open(e, item, 'hero')} />
+        <HeroMeteors paused={paused} reduced={reduce} suspended={entering || locked || menuVisible || !!project} onOpen={(e, item) => open(e, item, 'hero')} />
       </section>
       <section ref={workRoot} className="gxc-work gxc-gutter" id="work" tabIndex={-1} data-section aria-labelledby="work-title">
         <div className="gxc-section-heading"><span className="gxc-mono">01 / SELECTED EXPLORATIONS</span><h2 id="work-title">Ideas, made<br/><em>tangible.</em></h2><p>Conversation. Environments.<br/>New ways to interact.</p></div>
@@ -198,8 +203,8 @@ export function NextPortfolio() {
         <footer><span className="gxc-mono">GALA X CI / CI SONG</span><div><a href={portfolioContact.linkedIn} target="_blank" rel="noreferrer">LinkedIn <ArrowUpRight size={13}/></a><a href="/photography/">Photography & Film <ArrowUpRight size={13}/></a><a href="#top" onClick={e => { e.preventDefault(); jump('top', e.detail === 0); }}>Back to top <ArrowUpRight size={13}/></a></div></footer>
       </section>
     </main>
-    <WorkBackdrop root={workRoot} paused={paused} reduced={reduce} suspended={locked || menuVisible || !!project}/>
-    <WorkCanvas root={workRoot} scene={workScene} disabled={disabled} suspended={!!project || menuVisible}/>
+    <WorkBackdrop root={workRoot} paused={paused} reduced={reduce} suspended={locked || menuVisible || !!project} enabled={!entering}/>
+    <WorkCanvas root={workRoot} scene={workScene} disabled={disabled} suspended={!!project || menuVisible} enabled={!entering}/>
     <PerformancePanel />
     <MobileMenu open={menu} close={() => setMenu(false)} jump={jump} instant={disabled || keyboard} onPresenceChange={setMenuVisible} returnFocus={menuTrigger} />
     <ProjectDialog project={project} entrySource={entrySource} source={origin.current} instant={disabled || keyboard} onClose={close} onLock={() => setLocked(true)} onPrepareRestore={prepareRestore} onRestored={restore} onOpen={open}/>
@@ -207,6 +212,9 @@ export function NextPortfolio() {
 }
 
 function ProjectThumbnail({ slug, id, mobile, src, desktopSrcSet, sizes, alt, width, height, className }: { slug: string; id: string; mobile: boolean; src: string; desktopSrcSet?: string; sizes: string; alt: string; width: number; height: number; className?: string }) {
+  const imageRef = useRef<HTMLImageElement>(null);
+  const entryPhase = useEntryPhase();
+  const admitted = useDeferredImage(imageRef, entryPhase === 'complete');
   const light = mobile ? mobileThumbnail(slug, id) : undefined;
   const sourceKey = [src, desktopSrcSet, light?.srcSet ?? 'desktop'].join('|');
   const [failedKey, setFailedKey] = useState('');
@@ -221,7 +229,7 @@ function ProjectThumbnail({ slug, id, mobile, src, desktopSrcSet, sizes, alt, wi
     window.addEventListener('resize', retry);
     return () => window.removeEventListener('resize', retry);
   }, [fallback]);
-  return <img className={className} src={fallback ? src : light?.src ?? src} srcSet={fallback ? undefined : light?.srcSet ?? desktopSrcSet} sizes={sizes} alt={alt} width={width} height={height} loading="lazy" decoding="async" data-thumbnail-id={id} data-thumbnail-mode={fallback ? 'fallback' : light ? 'mobile' : 'desktop'} onError={() => { if (!fallback) setFailedKey(sourceKey); }}/>
+  return <img ref={imageRef} className={className} src={admitted ? fallback ? src : light?.src ?? src : undefined} srcSet={admitted && !fallback ? light?.srcSet ?? desktopSrcSet : undefined} sizes={sizes} alt={alt} width={width} height={height} loading="lazy" decoding="async" data-load={admitted ? 'admitted' : 'pending'} data-thumbnail-id={id} data-thumbnail-mode={fallback ? 'fallback' : light ? 'mobile' : 'desktop'} onError={() => { if (!fallback) setFailedKey(sourceKey); }}/>
 }
 
 function ProjectCard({ item, index, pending, mobileThumbnails, onOpen }: { item: PortfolioProject; index: number; pending: boolean; mobileThumbnails: boolean; onOpen: (e: MouseEvent<HTMLAnchorElement>, p: PortfolioProject) => void }) {

@@ -3,6 +3,7 @@ import type { GlassScene } from './glassScene';
 import { heroPhoto, subscribeHeroPhoto } from './heroPhoto';
 import { registerPerformanceScene, setPerformanceReady } from './runtime';
 import { bindHeroTouch } from './heroTouch';
+import { settleEntryPart } from './entry';
 
 export function HeroPhoto() {
   const host = useRef<HTMLDivElement>(null);
@@ -16,7 +17,8 @@ export function HeroPhoto() {
       image.alt = ''; image.width = photo.width; image.height = photo.height;
       element.replaceChildren(image);
       element.dataset.source = photo.url;
-    });
+      settleEntryPart('photo', photo.fallback ? 'fallback' : 'ready');
+    }, () => settleEntryPart('photo', 'fallback'));
     return () => { unsubscribe(); unregister(); };
   }, []);
   return <div ref={host} className="gxc-hero-image" aria-hidden="true" data-original-size={`${heroPhoto.width}×${heroPhoto.height}`} />;
@@ -47,18 +49,25 @@ export function GlassHero({ disabled, suspended }: { disabled: boolean; suspende
   }, [ready]);
   useEffect(() => {
     let disposed = false; setReady(false);
-    if (new URLSearchParams(location.search).has('no-webgl')) { setPerformanceReady('hero', true); return; }
+    const fallback = async () => {
+      const poster = new Image(); poster.src = '/v-next/galaxci-glass-poster.webp';
+      try { await poster.decode(); } catch { /* The accessible DOM signature remains available. */ }
+      if (!disposed) settleEntryPart('glass', 'fallback');
+    };
+    if (new URLSearchParams(location.search).has('no-webgl')) { setPerformanceReady('hero', true); void fallback(); return () => { disposed = true; }; }
     import('./glassScene').then(async module => {
       if (disposed || !host.current || !area.current) return;
-      const instance = await module.mountGlass(host.current, area.current, disabledRef.current, () => { if (!disposed) setReady(false); });
+      const instance = await module.mountGlass(host.current, area.current, disabledRef.current, () => { if (!disposed) { setReady(false); void fallback(); } });
       if (disposed) { instance.dispose(); return; }
       instance.setMotion(!disabledRef.current); instance.setSuspended(suspendedRef.current); scene.current = instance; setReady(true);
       setPerformanceReady('hero', true);
+      settleEntryPart('glass', 'ready');
     }).catch(error => {
       if (!disposed) {
         setReady(false);
         setPerformanceReady('hero', true);
         if (host.current) host.current.dataset.failed = 'initialization';
+        void fallback();
         if (import.meta.env.DEV) console.error('Glass initialization failed', error);
       }
     });

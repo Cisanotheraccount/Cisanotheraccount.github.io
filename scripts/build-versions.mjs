@@ -6,6 +6,7 @@ import path from 'node:path';
 import { projectRoot, restoreBaseline, verifyBaseline } from './release-baseline.mjs';
 import { verifyThumbnailRelease } from './thumbnail-release.mjs';
 import { verifyBackgroundRelease } from './background-release.mjs';
+import { verifyEntryRelease } from './entry-release.mjs';
 
 // Each version has a separate Rollup graph. The approved 2.0 graph is an exact
 // published snapshot, including old immutable bundles still used by cached tabs.
@@ -14,8 +15,10 @@ const staging = path.join(projectRoot, '.site-build/version-2-1');
 const baseline = await verifyBaseline();
 const thumbnails = await verifyThumbnailRelease(path.join(projectRoot, 'public'));
 const backgrounds = await verifyBackgroundRelease(path.join(projectRoot, 'public'));
+const entry = await verifyEntryRelease(path.join(projectRoot, 'public'));
 const baselinePaths = new Set(baseline.files.map(file => file.path));
 for (const file of backgrounds.files) assert(!baselinePaths.has(file), '2.1 backgrounds cannot replace a frozen 2.0 asset');
+for (const file of entry.files) assert(!baselinePaths.has(file), '2.1 entry assets cannot replace a frozen 2.0 asset');
 await rm(staging, { recursive: true, force: true });
 try {
   await build({
@@ -39,10 +42,12 @@ try {
   await verifyBaseline();
   assert.deepEqual((await verifyBackgroundRelease(path.join(projectRoot, 'public'))).manifest, backgrounds.manifest,
     'Background assets changed during compilation; retry with a consistent manifest');
+  assert.deepEqual((await verifyEntryRelease(path.join(projectRoot, 'public'))).manifest, entry.manifest,
+    'Entry assets changed during compilation; retry with a consistent manifest');
   await rm(output, { recursive: true, force: true });
   await restoreBaseline(output);
   await cp(path.join(staging, 'assets/2-1'), path.join(output, 'assets/2-1'), { recursive: true });
-  for (const file of [...thumbnails.files, ...backgrounds.files]) {
+  for (const file of [...thumbnails.files, ...backgrounds.files, ...entry.files]) {
     await mkdir(path.dirname(path.join(output, file)), { recursive: true });
     await cp(path.join(projectRoot, 'public', file), path.join(output, file));
   }
@@ -55,7 +60,9 @@ try {
   await verifyThumbnailRelease(output);
   assert.deepEqual((await verifyBackgroundRelease(output)).manifest, backgrounds.manifest,
     'Packaged background assets must match the manifest used during compilation');
-  console.log(`Built independent 2.1 at /galaxci/2.1/ and /v2-1/ with ${thumbnails.files.length - 1} verified mobile thumbnails and ${backgrounds.files.length - 1} new responsive backgrounds. All 240 published 2.0 files remain byte-identical.`);
+  assert.deepEqual((await verifyEntryRelease(output)).manifest, entry.manifest,
+    'Packaged entry assets must match the manifest used during compilation');
+  console.log(`Built independent 2.1 at /galaxci/2.1/ and /v2-1/ with ${thumbnails.files.length - 1} verified mobile thumbnails, ${backgrounds.files.length - 1} new responsive backgrounds and ${entry.files.length - 1} entry assets. All ${baseline.files.length} published 2.0 files remain byte-identical.`);
 } finally {
   await rm(staging, { recursive: true, force: true });
 }

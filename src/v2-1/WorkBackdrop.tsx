@@ -30,17 +30,23 @@ const blend = (a: Palette, b: Palette, t: number): Palette => ({
   secondary: a.secondary.map((v, i) => v + (b.secondary[i] - v) * t),
 });
 
-export function WorkBackdrop({ root, paused, reduced, suspended }: {
-  root: RefObject<HTMLElement | null>; paused: boolean; reduced: boolean; suspended: boolean;
+export function WorkBackdrop({ root, paused, reduced, suspended, enabled = true }: {
+  root: RefObject<HTMLElement | null>; paused: boolean; reduced: boolean; suspended: boolean; enabled?: boolean;
 }) {
   const layer = useRef<HTMLDivElement>(null);
   const photograph = useRef<HTMLImageElement>(null);
   const patches = useRef<(HTMLSpanElement | null)[]>([]);
   const props = useRef({ paused, reduced, suspended }); props.current = { paused, reduced, suspended };
-  useLayoutEffect(() => { requestFrame(); }, [paused, reduced, suspended]);
+  useLayoutEffect(() => { if (enabled) requestFrame(); }, [enabled, paused, reduced, suspended]);
   useEffect(() => {
     const el = layer.current, section = root.current, photoElement = photograph.current;
     if (!el || !section || !photoElement) return;
+    if (!enabled) {
+      el.dataset.state = 'deferred'; el.dataset.visible = 'false';
+      photoElement.hidden = true;
+      for (const patch of patches.current) if (patch) patch.hidden = true;
+      return;
+    }
     const diagnostics = import.meta.env.DEV || ['perf', 'qa'].some(key => new URLSearchParams(location.search).get(key) === '1');
     const omitted = new URLSearchParams(location.search).has('no-work-background');
     if (omitted) { el.dataset.state = 'omitted'; return; }
@@ -333,7 +339,7 @@ export function WorkBackdrop({ root, paused, reduced, suspended }: {
       section.removeEventListener('focusin', focusIn); section.removeEventListener('focusout', focusOut);
       if (window.__gxcWorkTwinkles === debugApi) delete window.__gxcWorkTwinkles;
     };
-  }, [root]);
+  }, [enabled, root]);
 
   return <div ref={layer} className="gxc-work-backdrop" aria-hidden="true" style={{
     '--work-primary-alpha': art.primaryOpacity, '--work-secondary-alpha': art.secondaryOpacity,

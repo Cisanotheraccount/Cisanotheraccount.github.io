@@ -398,3 +398,4 @@ em { font-style: normal; color: #87888a; }
 @keyframes gxc-arrive { from { opacity: 0; transform: translateY(12px); } to { opacity: 1; transform: translateY(0); } }
 .gxc-hero-top { animation: gxc-arrive var(--entry-duration,.72s) var(--ease) both; }
 .gxc-hero-bottom { animation: gxc-arrive var(--entry-duration,.72s) .08s var(--ease) both; }
+.gxc-project-picture img[data-load=pending] { visibility: hidden; }

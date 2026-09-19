@@ -10,11 +10,29 @@ import { getFrameSnapshot, getPerformanceSnapshot, reportGpuTime, requestFrame, 
 import { createHeroGpuProfiler } from './gpuTiming';
 import { photoCover, subscribeHeroPhoto, type LoadedHeroPhoto } from './heroPhoto';
 import { recordTouchEvent, recordTouchMetric, sampleTouchMetric } from './touchDiagnostics';
+import { createEntryRing, type EntryRing } from './entryRing';
 
 declare global { interface Window { __gxcCapturePoster?: () => string } }
 
 type Wordmark = { positions: number[]; normals: number[]; indices: number[] };
 export interface GlassScene { setMotion(value: boolean): void; setSuspended(value: boolean): void; dispose(): void }
+
+function createStudio(renderer: THREE.WebGLRenderer) {
+  const studio = new THREE.Scene(); studio.background = new THREE.Color(0x111216);
+  const panels: THREE.Mesh<THREE.PlaneGeometry, THREE.MeshBasicMaterial>[] = [];
+  const pmrem = new THREE.PMREMGenerator(renderer);
+  try {
+    for (const p of visual.lighting.panels) {
+      const material = new THREE.MeshBasicMaterial({ color: new THREE.Color(p.color).multiplyScalar(p.strength), side: THREE.DoubleSide });
+      const panel = new THREE.Mesh(new THREE.PlaneGeometry(...p.size), material);
+      panel.position.set(p.position[0], p.position[1], p.position[2]); panel.lookAt(0, 0, 0); studio.add(panel); panels.push(panel);
+    }
+    return pmrem.fromScene(studio, .06);
+  } finally {
+    for (const panel of panels) { panel.geometry.dispose(); panel.material.dispose(); }
+    pmrem.dispose();
+  }
+}
 
 export async function mountGlass(host: HTMLElement, area: HTMLElement, disabled: boolean, onLost: () => void): Promise<GlassScene> {
   const renderer = new THREE.WebGLRenderer({ alpha: true, antialias: true, powerPreference: 'high-performance', preserveDrawingBuffer: import.meta.env.DEV });
@@ -35,6 +53,11 @@ export async function mountGlass(host: HTMLElement, area: HTMLElement, disabled:
     renderer.debug.onShaderError = () => { throw new Error('Glass shader could not compile'); };
     renderer.domElement.setAttribute('aria-hidden', 'true');
     host.appendChild(renderer.domElement);
+    const contextUnavailable = (event: Event) => {
+      event.preventDefault(); contextLost = true; host.dataset.failed = 'context-lost'; onLost(); dispose();
+    };
+    renderer.domElement.addEventListener('webglcontextlost', contextUnavailable);
+    cleanup.push(() => renderer.domElement.removeEventListener('webglcontextlost', contextUnavailable));
     const diagnostics = new URLSearchParams(location.search);
     const nativePhoto = !(diagnostics.get('qa') === '1' && diagnostics.has('opaque-photo'));
     host.dataset.photoPresentation = nativePhoto ? 'native' : 'opaque-control';
@@ -47,33 +70,57 @@ export async function mountGlass(host: HTMLElement, area: HTMLElement, disabled:
 
     const hero = host.closest<HTMLElement>('.gxc-hero') ?? host;
     let currentPhoto: LoadedHeroPhoto | undefined;
-    let replacePhoto: ((asset: LoadedHeroPhoto) => void) | undefined;
+    // One GPU photograph belongs to this renderer. The opening borrows it;
+    // its identity UVs stay separate from the signature's texture crop.
+    let photo!: THREE.Texture;
+    const makePhotoTexture = (asset: LoadedHeroPhoto) => {
+      const texture = new THREE.Texture(asset.image);
+      texture.colorSpace = THREE.SRGBColorSpace;
+      texture.anisotropy = Math.min(8, renderer.capabilities.getMaxAnisotropy());
+      texture.needsUpdate = true;
+      return texture;
+    };
+    cleanup.push(() => photo?.dispose());
+    let entryRing: EntryRing | undefined;
+    let replacePhoto: ((asset: LoadedHeroPhoto, texture: THREE.Texture) => void) | undefined;
     let resolvePhoto!: (asset: LoadedHeroPhoto) => void;
     let rejectPhoto!: (reason: Error) => void;
     const photoReady = new Promise<LoadedHeroPhoto>((resolve, reject) => { resolvePhoto = resolve; rejectPhoto = reject; });
+    cleanup.push(() => rejectPhoto(new Error('Glass initialization cancelled')));
     cleanup.push(subscribeHeroPhoto(hero, asset => {
-      currentPhoto = asset; resolvePhoto(asset); replacePhoto?.(asset);
+      if (disposed || contextLost) return;
+      if (currentPhoto?.image === asset.image && currentPhoto.url === asset.url && photo) { resolvePhoto(asset); return; }
+      const previous = photo;
+      photo = makePhotoTexture(asset); currentPhoto = asset;
+      // Switch both borrowers before retiring the old texture. The same image
+      // must never be uploaded independently by the ring and signature.
+      entryRing?.setPhoto(asset, photo); replacePhoto?.(asset, photo);
+      previous?.dispose(); resolvePhoto(asset);
     }, () => rejectPhoto(new Error('Background photograph could not load'))));
     // Share the responsive decoded resource with the DOM rather than independently
     // loading a fixed low-resolution backdrop after the wordmark module arrives.
-    const [wordResult, photoResult] = await Promise.allSettled([
-      fetch('/v-next/galaxci-inflated-mesh.json').then(response => {
+    const wordAbort = new AbortController(); cleanup.push(() => wordAbort.abort());
+    const wordReady = fetch('/v-next/galaxci-inflated-mesh.json', { signal: wordAbort.signal }).then(response => {
         if (!response.ok) throw new Error('Wordmark could not load');
         return response.json() as Promise<Wordmark>;
-      }),
-      photoReady,
-    ]);
+      });
+    // Attach rejection handlers before studio/ring creation can throw. A lost
+    // context also cancels both pending initialization resources through cleanup.
+    const assetsReady = Promise.allSettled([wordReady, photoReady]);
+    // The opening and signature share one context, environment and transmission
+    // pipeline. The small procedural ring can draw while the signature downloads.
+    const environment = createStudio(renderer);
+    cleanup.push(() => environment.dispose()); scene.environment = environment.texture;
+    try { entryRing = createEntryRing(renderer, hero, host, environment.texture, disabled); }
+    catch { host.dataset.entryRingFailure = 'initialization'; }
+    cleanup.push(() => entryRing?.dispose());
+    if (currentPhoto) entryRing?.setPhoto(currentPhoto, photo);
+    const [wordResult, photoResult] = await assetsReady;
+    if (disposed || contextLost) throw new Error('Glass context unavailable');
     if (wordResult.status === 'rejected') throw wordResult.reason;
     if (photoResult.status === 'rejected') throw photoResult.reason;
     const data = wordResult.value;
     currentPhoto = currentPhoto ?? photoResult.value;
-    const makePhotoTexture = (asset: LoadedHeroPhoto) => {
-      const texture = new THREE.Texture(asset.image);
-      texture.colorSpace = THREE.SRGBColorSpace; texture.needsUpdate = true;
-      return texture;
-    };
-    let photo = makePhotoTexture(currentPhoto);
-    cleanup.push(() => photo.dispose());
     const backdropGeometry = new THREE.PlaneGeometry(1, 1);
     const backdropMaterial = new THREE.MeshBasicMaterial({ map: photo, color: visual.lighting.backdropTint, toneMapped: false });
     cleanup.push(() => backdropGeometry.dispose(), () => backdropMaterial.dispose());
@@ -97,22 +144,7 @@ export async function mountGlass(host: HTMLElement, area: HTMLElement, disabled:
       delete hero.dataset.skyReady; delete hero.dataset.projectSkyReady;
     });
 
-    // The original studio and Three's internal transmission capture stay intact.
-    const studio = new THREE.Scene(); studio.background = new THREE.Color(0x111216);
-    const panels: THREE.Mesh<THREE.PlaneGeometry, THREE.MeshBasicMaterial>[] = [];
-    const pmrem = new THREE.PMREMGenerator(renderer);
-    try {
-      for (const p of visual.lighting.panels) {
-        const mat = new THREE.MeshBasicMaterial({ color: new THREE.Color(p.color).multiplyScalar(p.strength), side: THREE.DoubleSide });
-        const panel = new THREE.Mesh(new THREE.PlaneGeometry(...p.size), mat);
-        panel.position.set(p.position[0], p.position[1], p.position[2]); panel.lookAt(0, 0, 0); studio.add(panel); panels.push(panel);
-      }
-      const environment = pmrem.fromScene(studio, .06);
-      cleanup.push(() => environment.dispose()); scene.environment = environment.texture;
-    } finally {
-      for (const panel of panels) { panel.geometry.dispose(); panel.material.dispose(); }
-      pmrem.dispose();
-    }
+    // Keep the existing signature material and lighting unchanged.
     const material = new THREE.MeshPhysicalMaterial({
       color: visual.glass.tint, metalness: 0, roughness: visual.glass.roughness,
       transmission: 1, thickness: visual.glass.thickness, ior: visual.glass.ior,
@@ -251,16 +283,16 @@ export async function mountGlass(host: HTMLElement, area: HTMLElement, disabled:
       // to recompute its reserved wordmark area on every pointer movement.
       if (host.dataset.touchRect !== next) host.dataset.touchRect = next;
     };
-    replacePhoto = asset => {
+    replacePhoto = (asset, texture) => {
       if (disposed || contextLost) return;
-      const previous = photo;
-      photo = makePhotoTexture(asset); backdropMaterial.map = photo;
+      backdropMaterial.map = texture;
       skyBackdrop.updateTwinkles(asset.fallback ? [] : getTwinkles(hero).points);
       renderer.domElement.dataset.photoSource = asset.url;
-      resize(); previous.dispose();
+      resize();
     };
     renderer.domElement.dataset.photoSource = currentPhoto.url;
     const render = (dt: number) => {
+      renderer.setClearColor(0x090a0c, 1);
       const renderStarted = performance.now();
       if (lastDrawAt) {
         sampleTouchMetric('heroFrameIntervalMs', renderStarted - lastDrawAt);
@@ -321,18 +353,14 @@ export async function mountGlass(host: HTMLElement, area: HTMLElement, disabled:
       }
       dirty = false;
     };
-    const lost = (event: Event) => {
-      event.preventDefault(); contextLost = true; visible = false; host.dataset.failed = 'context-lost'; onLost(); dispose();
-    };
     const blur = () => reset();
     const visibility = () => { if (document.hidden) reset(true); else { dirty = true; requestFrame(); } };
     const pointerMode = () => { reset(true); updatePost(); };
     const leave = () => { if (!getFrameSnapshot().pointer.glassTouch) reset(); };
-    renderer.domElement.addEventListener('webglcontextlost', lost);
     parent.addEventListener('pointerleave', leave); window.addEventListener('blur', blur);
     document.addEventListener('visibilitychange', visibility); finePointer.addEventListener('change', pointerMode);
     cleanup.push(() => {
-      renderer.domElement.removeEventListener('webglcontextlost', lost); parent.removeEventListener('pointerleave', leave);
+      parent.removeEventListener('pointerleave', leave);
       window.removeEventListener('blur', blur); document.removeEventListener('visibilitychange', visibility); finePointer.removeEventListener('change', pointerMode);
     });
     const ro = new ResizeObserver(resize); ro.observe(host); ro.observe(area); cleanup.push(() => ro.disconnect());
@@ -349,8 +377,15 @@ export async function mountGlass(host: HTMLElement, area: HTMLElement, disabled:
     }
     if (disposed || contextLost) throw new Error('Glass context unavailable');
     render(1 / 60);
+    entryRing?.setOnHandoff(() => {
+      if (disposed || contextLost) return;
+      resize(); render(1 / 60); requestFrame();
+    });
+    // Do not flash the prepared signature over a still-active opening.
+    if (entryRing?.active) entryRing.redraw();
     let pendingRender = false;
     const offUpdate = subscribeFrame((_time, dt) => {
+      if (entryRing?.active) return false;
       if (!visible || disposed || contextLost || document.hidden || suspended) return false;
       if (getPerformanceSnapshot('hero').staticFallback) { host.dataset.failed = 'performance'; onLost(); dispose(); return false; }
       const snapshot = getFrameSnapshot(), pointer = snapshot.pointer;
@@ -399,6 +434,7 @@ export async function mountGlass(host: HTMLElement, area: HTMLElement, disabled:
       return moving || !!post?.active;
     }, 'update');
     const offRender = subscribeFrame((_time, dt) => {
+      if (entryRing?.active) return false;
       if (!visible || disposed || contextLost || document.hidden || suspended) { pendingRender = false; return false; }
       // The meteor scheduler runs in update; read it here after all updates so
       // the photographed sky and the glass transmission share the same instant.

@@ -350,7 +350,7 @@ function ShotFlowCase({ item, heading, slot, onZoom, active }: { item: Portfolio
       <div className="gxc-shotflow-step">
         <span className="gxc-mono">03 / REVIEW & USE</span><h3 id="gxc-shotflow-playback-title">Understand how a shot unfolds.</h3>
         <p>A thumbnail helps identify a shot; playback reveals its movement and rhythm. Open an individual segment to study the original footage at the boundaries produced by the analysis. Returning to the list keeps the surrounding sequence within reach, making it easy to connect one camera decision with the next.</p>
-        <p>The guided example offers one representative shot for playback. Its image, timing and original audio come from the same reference video used for the analysis. Sound starts muted and can be enabled when you choose.</p>
+        <p>The guided example offers three consecutive shots for playback and a small checklist to try. Their images, timing and original audio come from the same reference video used for the analysis. Sound starts muted and can be enabled when you choose.</p>
       </div>
       <div className="gxc-shotflow-screen"><StudyImage study={screens[3]} onZoom={onZoom}/></div>
     </section>

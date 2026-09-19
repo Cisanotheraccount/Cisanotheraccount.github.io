@@ -4,6 +4,7 @@ import { readFile } from 'node:fs/promises';
 import path from 'node:path';
 
 export const shotFlowNamespace = 'v2-1/shotflow-import-v2/';
+export const shotFlowThreeNamespace = 'v2-1/shotflow-three-v3/';
 const mimeTypes = {
   '.webp': 'image/webp', '.png': 'image/png', '.jpg': 'image/jpeg', '.jpeg': 'image/jpeg',
   '.mp4': 'video/mp4', '.json': 'application/json', '.md': 'text/markdown',
@@ -11,8 +12,8 @@ const mimeTypes = {
 
 // Only registered dependencies are packaged. Native source, capture logs and
 // private inputs are never discovered or copied from the directory.
-export async function verifyShotFlowRelease(directory) {
-  const manifestPath = shotFlowNamespace + 'manifest.json';
+async function verifyCapture(directory, namespace) {
+  const manifestPath = namespace + 'manifest.json';
   const manifest = JSON.parse(await readFile(path.join(directory, manifestPath), 'utf8'));
   assert.equal(manifest.schemaVersion, 1, 'Unsupported ShotFlow asset manifest version');
   assert(Array.isArray(manifest.assets) && manifest.assets.length > 0, 'ShotFlow manifest must list its dependencies');
@@ -20,7 +21,8 @@ export async function verifyShotFlowRelease(directory) {
   for (const asset of manifest.assets) {
     assert(asset && typeof asset === 'object', 'Invalid ShotFlow asset record');
     assert.equal(typeof asset.path, 'string', 'ShotFlow dependency path is required');
-    assert.match(asset.path, /^\/v2-1\/shotflow-import-v2\/(?:[a-z0-9][a-z0-9-]*\/)*[a-z0-9][a-z0-9-]*\.(?:webp|png|jpe?g|mp4|json|md)$/, 'ShotFlow dependencies must stay in their reviewed namespace');
+    assert(asset.path.startsWith('/' + namespace), 'ShotFlow dependencies must stay in their reviewed namespace');
+    assert.match(asset.path.slice(namespace.length + 1), /^(?:[a-z0-9][a-z0-9-]*\/)*[a-z0-9][a-z0-9-]*\.(?:webp|png|jpe?g|mp4|json|md)$/, 'Invalid ShotFlow dependency path');
     assert(!seen.has(asset.path), 'Duplicate ShotFlow dependency: ' + asset.path);
     assert(Number.isSafeInteger(asset.bytes) && asset.bytes > 0, 'Invalid ShotFlow byte count: ' + asset.path);
     assert.match(asset.sha256, /^[a-f0-9]{64}$/, 'Invalid ShotFlow SHA-256: ' + asset.path);
@@ -46,4 +48,26 @@ export async function verifyShotFlowRelease(directory) {
     seen.add(asset.path); files.push(file);
   }
   return { manifest, files };
+}
+
+export async function verifyShotFlowRelease(directory) {
+  const [original, three] = await Promise.all([
+    verifyCapture(directory, shotFlowNamespace), verifyCapture(directory, shotFlowThreeNamespace),
+  ]);
+  assert.deepEqual(three.manifest.shots.map(shot => shot.order), [5, 6, 7], 'The interactive demo contains exactly the three approved shots');
+  const paths = new Set(three.files.map(file => '/' + file));
+  for (const reference of [three.manifest.ui.workspaceCounter.background, three.manifest.ui.workspaceProgress.background, ...Object.values(three.manifest.ui.workspaceCounter.images || {})]) {
+    assert(paths.has(reference), 'Every native counter patch must be hash-registered: ' + reference);
+  }
+  for (const shot of three.manifest.shots) {
+    const actual = original.manifest.storyboard.rows.find(row => row.shotId === shot.shotId);
+    assert(actual && actual.order === shot.order && actual.start === shot.start && actual.end === shot.end, 'Demo shots must preserve the real analysis identities and boundaries');
+    for (const reference of [shot.media, shot.poster, shot.playerImage, shot.checkbox.checkedImage, shot.checkbox.uncheckedImage]) {
+      assert(paths.has(reference), 'Every new demo media reference must be hash-registered: ' + reference);
+    }
+    const [x, y, width, height] = shot.checkbox.rectInContent;
+    const content = original.manifest.storyboard.scrollContent;
+    assert([x, y, width, height].every(Number.isFinite) && x >= 0 && y >= 0 && width > 0 && height > 0 && x + width <= content.width && y + height <= content.height, 'Checkbox must stay inside measured native scroll content');
+  }
+  return { manifest: { original: original.manifest, three: three.manifest }, files: [...original.files, ...three.files] };
 }

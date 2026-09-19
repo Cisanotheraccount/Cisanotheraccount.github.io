@@ -1,0 +1,312 @@
+{
+  "schemaVersion": 1,
+  "baseCapture": "/v2-1/shotflow-import-v2/manifest.json",
+  "capture": {
+    "device": "iPhone 15 Pro Max simulator",
+    "os": "iOS 26.5",
+    "appBuild": 15,
+    "reanalyzed": false
+  },
+  "shots": [
+    {
+      "shotId": "E236DDD7-484E-4FB2-9289-AC74FAB6ADE3",
+      "order": 5,
+      "start": 14.566666666666666,
+      "end": 18.666666666666668,
+      "media": "/v2-1/shotflow-three-v3/shot-05.mp4",
+      "poster": "/v2-1/shotflow-three-v3/shot-05-poster.webp",
+      "playerImage": "/v2-1/shotflow-three-v3/shot-05-player-stopped.webp",
+      "videoRectPercent": [
+        0,
+        33.02262160228898,
+        100,
+        25.95225321888412
+      ],
+      "checkbox": {
+        "rectInContent": [
+          74.4186,
+          2373.9535,
+          213.3333,
+          81.8605
+        ],
+        "checkedImage": "/v2-1/shotflow-three-v3/shot-05-checkbox-checked.webp",
+        "uncheckedImage": "/v2-1/shotflow-three-v3/shot-05-checkbox-unchecked.webp"
+      }
+    },
+    {
+      "shotId": "D14089CB-2922-4E46-9BDA-1A16FF8177B1",
+      "order": 6,
+      "start": 18.666666666666668,
+      "end": 21.433333333333334,
+      "media": "/v2-1/shotflow-three-v3/shot-06.mp4",
+      "poster": "/v2-1/shotflow-three-v3/shot-06-poster.webp",
+      "playerImage": "/v2-1/shotflow-three-v3/shot-06-player-stopped.webp",
+      "videoRectPercent": [
+        0,
+        33.02262160228898,
+        100,
+        25.95225321888412
+      ],
+      "checkbox": {
+        "rectInContent": [
+          74.4186,
+          2786.3566,
+          213.3333,
+          81.8605
+        ],
+        "checkedImage": "/v2-1/shotflow-three-v3/shot-06-checkbox-checked.webp",
+        "uncheckedImage": "/v2-1/shotflow-three-v3/shot-06-checkbox-unchecked.webp"
+      }
+    },
+    {
+      "shotId": "2679C7DD-CC96-4FB2-81BC-7FB30A73F3C8",
+      "order": 7,
+      "start": 21.433333333333334,
+      "end": 23.433333333333334,
+      "media": "/v2-1/shotflow-three-v3/shot-07.mp4",
+      "poster": "/v2-1/shotflow-three-v3/shot-07-poster.webp",
+      "playerImage": "/v2-1/shotflow-three-v3/shot-07-player-stopped.webp",
+      "videoRectPercent": [
+        0,
+        33.02262160228898,
+        100,
+        25.95225321888412
+      ],
+      "checkbox": {
+        "rectInContent": [
+          74.4186,
+          3198.7597,
+          213.3333,
+          81.8605
+        ],
+        "checkedImage": "/v2-1/shotflow-three-v3/shot-07-checkbox-checked.webp",
+        "uncheckedImage": "/v2-1/shotflow-three-v3/shot-07-checkbox-unchecked.webp"
+      }
+    }
+  ],
+  "ui": {
+    "workspaceCounter": {
+      "rectPercent": [
+        67.744186,
+        28.036481,
+        22.953488,
+        1.684549
+      ],
+      "background": "/v2-1/shotflow-three-v3/workspace-counter-background.webp",
+      "images": {
+        "1": "/v2-1/shotflow-three-v3/workspace-counter-1.webp",
+        "2": "/v2-1/shotflow-three-v3/workspace-counter-2.webp",
+        "3": "/v2-1/shotflow-three-v3/workspace-counter-3.webp"
+      }
+    },
+    "workspaceProgress": {
+      "rectPercent": [
+        9.302326,
+        30.793991,
+        81.395349,
+        0.429185
+      ],
+      "background": "/v2-1/shotflow-three-v3/workspace-progress-background.webp"
+    },
+    "player": {
+      "play": [
+        16.744186,
+        84.334764,
+        53.488372,
+        6.223176
+      ],
+      "previous": [
+        3.72093,
+        91.630901,
+        25.116279,
+        4.72103
+      ],
+      "next": [
+        77.44186,
+        91.630901,
+        18.837209,
+        4.72103
+      ],
+      "close": [
+        5.581395,
+        9.978541,
+        15.581395,
+        3.862661
+      ],
+      "elapsed": [
+        3.72093,
+        81.942061,
+        8.767442,
+        1.534335
+      ],
+      "progress": [
+        3.72093,
+        77.757511,
+        92.55814,
+        3.32618
+      ]
+    }
+  },
+  "assets": [
+    {
+      "path": "/v2-1/shotflow-three-v3/shot-05.mp4",
+      "sha256": "e1b6e49e4beda12224db24da66bbe3d0f66742e94dbcbd8a4b2c90e850c499d7",
+      "bytes": 1678109,
+      "mime": "video/mp4",
+      "width": 1280,
+      "height": 720
+    },
+    {
+      "path": "/v2-1/shotflow-three-v3/shot-05-poster.webp",
+      "sha256": "2e00f8e005b2f0719b7386c5b9d7ee3a273fef95a2f7fe3d47a3fac4eac95f93",
+      "bytes": 89212,
+      "mime": "image/webp",
+      "width": 1280,
+      "height": 720
+    },
+    {
+      "path": "/v2-1/shotflow-three-v3/shot-05-player-stopped.webp",
+      "sha256": "6cd3fc3b0a4bf67eccf85878d44e52704a39a2ef58ac47f797b1c254b8fa0fd4",
+      "bytes": 161634,
+      "mime": "image/webp",
+      "width": 1290,
+      "height": 2796
+    },
+    {
+      "path": "/v2-1/shotflow-three-v3/shot-05-checkbox-checked.webp",
+      "sha256": "b1971b7e74e09a60d9bc75807df4ac5fb3c818cef3ecb3b7e73becba3927b774",
+      "bytes": 3406,
+      "mime": "image/webp",
+      "width": 344,
+      "height": 132
+    },
+    {
+      "path": "/v2-1/shotflow-three-v3/shot-05-checkbox-unchecked.webp",
+      "sha256": "84ab212a8ddea983a342495e8cbc3b1774d2d07d93d4682d1f659b3f4de384bd",
+      "bytes": 3432,
+      "mime": "image/webp",
+      "width": 344,
+      "height": 132
+    },
+    {
+      "path": "/v2-1/shotflow-three-v3/shot-06.mp4",
+      "sha256": "35ee269f548a86711ba6080df37858c88682f08d1a70b2be748da2bf2519b10e",
+      "bytes": 1117728,
+      "mime": "video/mp4",
+      "width": 1280,
+      "height": 720
+    },
+    {
+      "path": "/v2-1/shotflow-three-v3/shot-06-poster.webp",
+      "sha256": "b499d0d9ba3c82c41eaa46bad57950de488fd06a7d379bc774f9afa8fb435964",
+      "bytes": 82536,
+      "mime": "image/webp",
+      "width": 1280,
+      "height": 720
+    },
+    {
+      "path": "/v2-1/shotflow-three-v3/shot-06-player-stopped.webp",
+      "sha256": "ae9b67b0ccdaa39c84edd5fcc403cea9316a9c521d89d6fa1167ccf7c0fec761",
+      "bytes": 151964,
+      "mime": "image/webp",
+      "width": 1290,
+      "height": 2796
+    },
+    {
+      "path": "/v2-1/shotflow-three-v3/shot-06-checkbox-checked.webp",
+      "sha256": "b1971b7e74e09a60d9bc75807df4ac5fb3c818cef3ecb3b7e73becba3927b774",
+      "bytes": 3406,
+      "mime": "image/webp",
+      "width": 344,
+      "height": 132
+    },
+    {
+      "path": "/v2-1/shotflow-three-v3/shot-06-checkbox-unchecked.webp",
+      "sha256": "84ab212a8ddea983a342495e8cbc3b1774d2d07d93d4682d1f659b3f4de384bd",
+      "bytes": 3432,
+      "mime": "image/webp",
+      "width": 344,
+      "height": 132
+    },
+    {
+      "path": "/v2-1/shotflow-three-v3/shot-07.mp4",
+      "sha256": "ed0d2c79b3a12af72278b9129c0677a2c20ab7f0e4d9e44cf96e13faa818e0bc",
+      "bytes": 803633,
+      "mime": "video/mp4",
+      "width": 1280,
+      "height": 720
+    },
+    {
+      "path": "/v2-1/shotflow-three-v3/shot-07-poster.webp",
+      "sha256": "dfaa35fdbc5f13948434cf53f13c1e8587aeba7f5b442fccde0af8ceeace3789",
+      "bytes": 54416,
+      "mime": "image/webp",
+      "width": 1280,
+      "height": 720
+    },
+    {
+      "path": "/v2-1/shotflow-three-v3/shot-07-player-stopped.webp",
+      "sha256": "39f112719078e4522e82e72dbfd81b54122715dc51d51bdac19023247e106026",
+      "bytes": 118182,
+      "mime": "image/webp",
+      "width": 1290,
+      "height": 2796
+    },
+    {
+      "path": "/v2-1/shotflow-three-v3/shot-07-checkbox-checked.webp",
+      "sha256": "b1971b7e74e09a60d9bc75807df4ac5fb3c818cef3ecb3b7e73becba3927b774",
+      "bytes": 3406,
+      "mime": "image/webp",
+      "width": 344,
+      "height": 132
+    },
+    {
+      "path": "/v2-1/shotflow-three-v3/shot-07-checkbox-unchecked.webp",
+      "sha256": "84ab212a8ddea983a342495e8cbc3b1774d2d07d93d4682d1f659b3f4de384bd",
+      "bytes": 3432,
+      "mime": "image/webp",
+      "width": 344,
+      "height": 132
+    },
+    {
+      "path": "/v2-1/shotflow-three-v3/workspace-counter-1.webp",
+      "sha256": "d1089e0ef9268004990086cf101e1fbf2e57c9b06c52bbd92ccba92f812085e9",
+      "bytes": 4336,
+      "mime": "image/webp",
+      "width": 296,
+      "height": 47
+    },
+    {
+      "path": "/v2-1/shotflow-three-v3/workspace-counter-2.webp",
+      "sha256": "9762d9d939ac20955f9daad853a689bcf66e555804048361f4877c21f4953190",
+      "bytes": 4504,
+      "mime": "image/webp",
+      "width": 296,
+      "height": 47
+    },
+    {
+      "path": "/v2-1/shotflow-three-v3/workspace-counter-3.webp",
+      "sha256": "33d6b943f427c9fad12f62f78c888d5f49b544fbe65c5ad2d10d74b13d1a1434",
+      "bytes": 4552,
+      "mime": "image/webp",
+      "width": 296,
+      "height": 47
+    },
+    {
+      "path": "/v2-1/shotflow-three-v3/workspace-counter-background.webp",
+      "sha256": "4ec1914b126f4563b62b2e849ae802a3315684554c9e56f4b54fa809773c3a53",
+      "bytes": 1076,
+      "mime": "image/webp",
+      "width": 296,
+      "height": 47
+    },
+    {
+      "path": "/v2-1/shotflow-three-v3/workspace-progress-background.webp",
+      "sha256": "3c787cb0e5227b63158d91eb907e695e6788f6cf1a695137208520763508617a",
+      "bytes": 436,
+      "mime": "image/webp",
+      "width": 1050,
+      "height": 12
+    }
+  ]
+}

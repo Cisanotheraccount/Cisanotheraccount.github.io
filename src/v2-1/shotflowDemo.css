@@ -91,3 +91,66 @@
 
 /* Screenshot hotspots follow native coordinates; their text equivalents retain 44px targets. */
 .gxc-shotflow-demo .gxc-shotflow-demo-hotspot { min-width: 0; min-height: 0; }
+
+/* The decorative black handset belongs to this demo, never to card/zoom geometry. */
+.gxc-shotflow-phone { position: relative; padding: 3%; border: 1px solid #686a6d; border-radius: 13% / 6%; background: linear-gradient(110deg,#303236 0%,#090a0b 8%,#16181a 48%,#040506 88%,#393b3e 100%); box-shadow: 0 0 0 2px #090a0b, inset 0 0 0 2px #0a0b0d, 0 22px 48px #0009; }
+.gxc-shotflow-phone-display { position: relative; isolation: isolate; container-type: inline-size; background: #000; border-radius: 10.7% / 5%; }
+.gxc-shotflow-phone-display .gxc-shotflow-demo-screen { border-radius: 10.7% / 5%; }
+.gxc-shotflow-phone-display .gxc-shotflow-demo-preview .gxc-study > button { border-radius: 10.7% / 5%; }
+.gxc-shotflow-phone-display .gxc-shotflow-demo-preview .gxc-study img { display: block; }
+.gxc-shotflow-phone-display .gxc-study figcaption { display: none; }
+.gxc-shotflow-phone-island { position: absolute; z-index: 4; pointer-events: none; width: 24%; height: 3%; left: 38%; top: 1.35%; border-radius: 999px; background: #000; box-shadow: inset 0 0 0 1px #141519; }
+.gxc-shotflow-phone-island::after { content: ''; position: absolute; width: 8%; aspect-ratio: 1; top: 50%; right: 10%; transform: translateY(-50%); border-radius: 50%; background: radial-gradient(circle at 40% 35%,#132333,#080a0e 55%,#030405 75%); }
+.gxc-shotflow-phone-keys { position: absolute; inset: 0; pointer-events: none; }
+.gxc-shotflow-phone-keys i { position: absolute; width: 3px; left: -3px; border-radius: 2px 0 0 2px; background: linear-gradient(90deg,#17191b,#5f6265,#1a1c1e); }
+.gxc-shotflow-phone-keys i:nth-child(1) { top: 16%; height: 3.2%; }
+.gxc-shotflow-phone-keys i:nth-child(2) { top: 23%; height: 6.3%; }
+.gxc-shotflow-phone-keys i:nth-child(3) { top: 31%; height: 6.3%; }
+.gxc-shotflow-phone-keys i:nth-child(4) { left: auto; right: -3px; top: 25.5%; height: 9%; border-radius: 0 2px 2px 0; }
+.gxc-shotflow-demo-live { inset: 0; }
+.gxc-shotflow-demo-screen > video { border-radius: 0; }
+.gxc-shotflow-demo-row-controls { display: contents; }
+.gxc-shotflow-demo-shot-target { border-color: #ffffff70; background: #fff00000; }
+.gxc-shotflow-demo-shot-target[data-selected=true] { border-color: #b9d4ff; box-shadow: 0 0 0 2px #478ef866; }
+.gxc-shotflow-demo .gxc-shotflow-demo-check-target { border-radius: 6px; padding: 0; box-shadow: 0 0 0 2px #0b0d1080; overflow: hidden; }
+.gxc-shotflow-demo-check-target img { display: block; width: 100%; height: 100%; object-fit: fill; }
+.gxc-shotflow-demo-check-target[aria-pressed=true] { border-color: #57c97b; }
+.gxc-shotflow-demo-check-target > .gxc-shotflow-sr-only { display: none; }
+.gxc-shotflow-native-counter { position: absolute; font: 400 3.05cqw/1 -apple-system,BlinkMacSystemFont,sans-serif; color: #ddd; display: flex; justify-content: flex-end; align-items: center; white-space: nowrap; }
+.gxc-shotflow-native-progress { position: absolute; border-radius: 10px; overflow: hidden; }
+.gxc-shotflow-native-progress > span { display: block; height: 100%; background: #3487f8; }
+.gxc-shotflow-demo .gxc-shotflow-native-nav { border: 0; border-radius: 0; box-shadow: none; background: #1c1c1e; color: #529aff; display: flex; justify-content: center; align-items: center; gap: 1cqw; font: 400 3.1cqw/1 -apple-system,BlinkMacSystemFont,sans-serif; white-space: nowrap; }
+.gxc-shotflow-demo .gxc-shotflow-native-nav:disabled { opacity: 1; color: #62646c; cursor: default; }
+.gxc-shotflow-native-nav svg { width: 3.2cqw; height: 3.2cqw; }
+.gxc-shotflow-demo .gxc-shotflow-native-play { background: #3487ff; border-radius: 999px; border: 0; box-shadow: none; }
+.gxc-shotflow-native-play > span { position: static; width: auto; height: 100%; background: none; color: white; box-shadow: none; border-radius: 0; display: flex; align-items: center; justify-content: center; gap: 2cqw; font: 600 4cqw/1 -apple-system,BlinkMacSystemFont,sans-serif; }
+.gxc-shotflow-native-play svg { width: 3.8cqw; height: 3.8cqw; fill: currentColor; }
+.gxc-shotflow-demo-clip-navigation { display: grid; grid-template-columns: 1fr 1fr; gap: 8px; margin-top: 10px; }
+.gxc-shotflow-demo-clip-navigation button, .gxc-shotflow-demo-shot-picker button, .gxc-shotflow-demo-complete-action { display: flex; align-items: center; justify-content: center; gap: 7px; padding: 10px 8px; color: #c9ced7; font-size: 12px; border: 1px solid var(--line); line-height: 1.3; }
+.gxc-shotflow-demo-clip-navigation button:disabled { opacity: .35; }
+.gxc-shotflow-demo-actions [data-emphasis=true] { color: #fff; background: #ffffff12; border-color: #a8adb6; }
+.gxc-shotflow-demo-checklist { padding-top: 20px; }
+.gxc-shotflow-demo-completion { margin: 0 0 12px; font-size: 12px; color: #dce1e9; font-variant-numeric: tabular-nums; }
+.gxc-shotflow-demo-shot-picker { display: grid; grid-template-columns: repeat(3,minmax(0,1fr)); gap: 8px; }
+.gxc-shotflow-demo-shot-picker button[aria-pressed=true] { border-color: #bcc4d0; background: #ffffff0b; color: #f1f0ed; }
+.gxc-shotflow-demo-complete-action { width: 100%; margin-top: 8px; }
+.gxc-shotflow-demo-complete-action[aria-pressed=true] { color: #90d7a5; }
+.gxc-shotflow-demo-notice { min-height: 36px; margin: 10px 0 0; color: #9fa6b2; font-size: 11px; line-height: 1.65; }
+.gxc-shotflow-demo button:focus-visible { outline: 2px solid #e0e6ef; outline-offset: 3px; }
+.gxc-shotflow-demo-check-target:focus-visible { outline-offset: 1px; }
+@media (hover:hover) and (pointer:fine) {
+  .gxc-shotflow-demo-clip-navigation button:not(:disabled):hover, .gxc-shotflow-demo-shot-picker button:not(:disabled):hover, .gxc-shotflow-demo-complete-action:not(:disabled):hover { background: #ffffff12; border-color: #8d96a4; }
+}
+.gxc-shotflow-native-timeline { position: absolute; display: flex; align-items: center; padding: 0 4cqw; background: #1c1c1e; pointer-events: none; }
+.gxc-shotflow-native-timeline > div { position: relative; width: 100%; height: 1cqw; border-radius: 999px; background: #353537; }
+.gxc-shotflow-native-timeline span { display: block; height: 100%; background: #ccc; border-radius: inherit; }
+.gxc-shotflow-native-timeline i { position: absolute; top: 50%; width: 8cqw; height: 5.5cqw; transform: translate(-50%,-50%); border-radius: 999px; background: white; }
+.gxc-shotflow-native-elapsed { position: absolute; background: #1c1c1e; display: flex; align-items: center; color: #aaa; font: 400 2.7cqw/1 -apple-system,BlinkMacSystemFont,sans-serif; pointer-events: none; font-variant-numeric: tabular-nums; }
+@media (hover:hover) and (pointer:fine) {
+  .gxc-shotflow-demo .gxc-shotflow-native-play:not(:disabled):hover { background: #4a95ff; }
+  .gxc-shotflow-demo .gxc-shotflow-native-nav:not(:disabled):hover { background: #252528; }
+}
+
+.gxc-shotflow-native-counter > img { width: 100%; height: 100%; object-fit: fill; }
+
+.gxc-shotflow-native-counter, .gxc-shotflow-native-progress { background-size: 100% 100%; background-repeat: no-repeat; }

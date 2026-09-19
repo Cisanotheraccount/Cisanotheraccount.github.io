@@ -2,6 +2,10 @@ import * as THREE from 'three';
 import { getFrameSnapshot, getPerformanceSnapshot, nativeScrollNeedsFallback, reportGpuTime, requestFrame, setPerformanceReady, subscribeFrame, subscribeViewportChange } from './runtime';
 import { createGpuTimer } from './gpuTiming';
 import { visual } from './config';
+import { getInputState, subscribeInputChange } from './inputState';
+import { getLayoutRect, getLayoutStyle, getLayoutRevision, invalidateLayout } from './layoutSnapshot';
+import { recordTouchEvent, recordTouchMetric, sampleTouchMetric } from './touchDiagnostics';
+import { createWorkTextureQueue } from './workTextureQueue';
 
 const WORK_VISUAL = visual.work;
 
@@ -14,8 +18,8 @@ export interface WorkScene {
 }
 
 type Box = { x: number; y: number; width: number; height: number };
-type ImageLayer = { element: HTMLImageElement; texture: THREE.Texture | null; source: string; generation: number; pending: string; retryAt: number; attempts: number; load(): void; box: Box; fit: string; radius: number; position: [number, number]; off(): void };
-type Surface = { frame: HTMLElement; anchor: HTMLElement; images: ImageLayer[]; material: THREE.ShaderMaterial; mesh: THREE.Mesh; box: Box; anchorBox: Box; color: THREE.Color; radius: number; visible: boolean; hovered: boolean; hover: number; ready: boolean; off(): void };
+type ImageLayer = { element: HTMLImageElement; texture: THREE.Texture | null; source: string; generation: number; pending: string; retryAt: number; attempts: number; load(): void; documentBox: Box; box: Box; fit: string; radius: number; position: [number, number]; off(): void };
+type Surface = { frame: HTMLElement; anchor: HTMLElement; images: ImageLayer[]; material: THREE.ShaderMaterial; mesh: THREE.Mesh; documentBox: Box; anchorDocumentBox: Box; box: Box; anchorBox: Box; hitKey: string; color: THREE.Color; radius: number; visible: boolean; hovered: boolean; hover: number; ready: boolean; off(): void };
 type PendingFlatten = { from: number; hoverFrom: Map<Surface, number>; start: number; duration: number; resolve(): void; reject(reason: unknown): void; off(): void; complete: boolean };
 const zeroBox = (): Box => ({ x: 0, y: 0, width: 0, height: 0 });
 const abortError = () => new DOMException('The transition was superseded.', 'AbortError');
@@ -73,18 +77,19 @@ void main() {
   #include <colorspace_fragment>
 }`;
 
-function plainHandle(host: HTMLElement): WorkScene {
+function plainHandle(host: HTMLElement, reason = 'unavailable'): WorkScene {
   host.dataset.state = 'fallback'; host.style.visibility = 'hidden';
+  recordTouchEvent('work.fallback', { reason });
   setPerformanceReady('work', true);
   return { setMotion() {}, flatten: async () => {}, restore: async () => {}, setSuspended() {}, dispose() {} };
 }
 
 export async function mountWorkScene(host: HTMLElement, root: HTMLElement, disabled: boolean): Promise<WorkScene> {
   const query = new URLSearchParams(location.search);
-  if (query.has('no-webgl') || query.has('no-curl') || query.has('no-curve')) return plainHandle(host);
+  if (query.has('no-webgl') || query.has('no-curl') || query.has('no-curve')) return plainHandle(host, 'query');
   let renderer: THREE.WebGLRenderer;
-  try { renderer = new THREE.WebGLRenderer({ alpha: true, antialias: true, powerPreference: 'high-performance' }); }
-  catch { return plainHandle(host); }
+  try { renderer = new THREE.WebGLRenderer({ alpha: true, antialias: true, depth: false, stencil: false, powerPreference: 'high-performance' }); }
+  catch { return plainHandle(host, 'webgl-initialization'); }
   renderer.outputColorSpace = THREE.SRGBColorSpace;
   renderer.toneMapping = THREE.NoToneMapping;
   renderer.autoClear = false;
@@ -96,19 +101,24 @@ export async function mountWorkScene(host: HTMLElement, root: HTMLElement, disab
   const scene = new THREE.Scene(), camera = new THREE.Camera();
   const geometry = new THREE.PlaneGeometry(2, 2);
   const empty = new THREE.DataTexture(new Uint8Array([0, 0, 0, 0]), 1, 1); empty.needsUpdate = true;
-  const coarse = matchMedia('(pointer: coarse)');
+  let documentScroll = getInputState().touchCapable;
+  const contentRoot = root.closest('.gxc-site')?.querySelector('main') ?? root;
   const diagnostics = import.meta.env.DEV || query.get('qa') === '1' || query.get('perf') === '1';
   let enabled = !disabled, suspended = false, disposed = false, failed = false;
   let width = 0, height = 0, hostX = 0, hostY = 0, lastDpr = 0;
-  let bufferHeight = 0, bufferInset = 0, drawTop = 0, overscan = 0;
-  let paintedScroll = NaN, paintedAt = 0;
+  let bufferHeight = 0, bufferCapacity = 0, bufferInset = 0, drawTop = 0, overscan = 0;
+  let paintedScroll = NaN, paintedAt = 0, paintedTop = 0, paintedHeight = 0, metricPaintedAt = 0, allocationGeneration = 0;
+  let contentBottom = 0, layoutRevision = -1, resetCapacity = true;
   let dirty = true, needsMeasure = true, strength = 0, activity = 0, flatHold = false;
   let previousScroll = NaN, moving = false, afterRender: Array<() => void> = [];
   let pending: PendingFlatten | null = null;
   const surfaces: Surface[] = [];
   let nativeFallbacks = 0;
-  const setState = (state: string) => {
-    if (state === host.dataset.state) return;
+  const setState = (state: string, reason = state) => {
+    const fallbackReason = state === 'ready' ? '' : reason;
+    if (state === host.dataset.state && fallbackReason === host.dataset.fallbackReason) return;
+    if (state !== 'ready') recordTouchEvent('work.state', { state, reason });
+    host.dataset.fallbackReason = fallbackReason;
     if (state === 'native-scroll' || state === 'scroll-catchup') nativeFallbacks++;
     host.dataset.state = state;
     if (diagnostics) host.dataset.nativeFallbacks = String(nativeFallbacks);
@@ -118,30 +128,47 @@ export async function mountWorkScene(host: HTMLElement, root: HTMLElement, disab
     && layer.element.naturalWidth > 0 && layer.source === sourceFor(layer);
   const wake = () => { dirty = true; requestFrame(); };
   const invalidate = () => { needsMeasure = true; wake(); };
-  const fallback = (surface: Surface) => {
+  const textureQueue = createWorkTextureQueue(wake);
+  const imagePriority = (surface: Surface) => {
+    const b = surface.box, viewHeight = Math.max(1, height);
+    if (layoutRevision < 0 || b.width <= 0 || b.height <= 0) return Infinity;
+    if (b.y < viewHeight && b.y + b.height > 0) return Math.max(0, b.y) / viewHeight;
+    const below = b.y >= viewHeight;
+    const gap = below ? b.y - viewHeight : -b.y - b.height;
+    if (gap > viewHeight) return Infinity;
+    const next = getFrameSnapshot().scrollSpeed < 0 ? !below : below;
+    return (next ? 2 : 4) + gap / viewHeight;
+  };
+  const fallback = (surface: Surface, reason = 'source-pending') => {
+    if (surface.ready) { recordTouchMetric('work.surfaceFallback'); recordTouchEvent('work.surface-fallback', { reason }); }
     delete surface.frame.dataset.workReady; delete surface.anchor.dataset.workHit;
     surface.ready = false; surface.mesh.visible = false;
   };
-  const fallbackAll = () => {
-    surfaces.forEach(fallback); host.style.visibility = 'hidden';
+  const fallbackAll = (reason = 'unavailable') => {
+    surfaces.forEach(surface => fallback(surface, reason)); host.style.visibility = 'hidden';
     // Hidden absolute boxes still extend scrollable overflow. Removing the tile
     // from layout prevents a paused portrait buffer extending a shorter page
     // after landscape rotation. The next successful paint restores its box.
-    if (coarse.matches) host.style.display = 'none';
+    if (documentScroll) host.style.display = 'none';
   };
   const finishPending = () => { if (!pending) return; const task = pending; pending = null; task.off(); task.resolve(); };
   const drain = () => { const queue = afterRender; afterRender = []; queue.forEach(fn => fn()); };
-  const fail = () => { failed = true; gpu.dispose(); setPerformanceReady('work', true); setState('fallback'); fallbackAll(); finishPending(); drain(); };
+  const fail = (reason = 'webgl-error') => { failed = true; textureQueue.dispose(); gpu.dispose(); setPerformanceReady('work', true); setState('fallback', reason); fallbackAll(reason); finishPending(); drain(); };
   const nativeScroll = () => {
+    if (disposed || failed || !enabled || suspended || document.hidden) return;
     // Touch artwork belongs to the document scroll layer. The compositor moves
     // its last drawing with links/text between capped GPU frames, including on
     // high-refresh screens. Only jumps beyond coverage need a native fallback.
-    if (coarse.matches) {
-      if (!Number.isFinite(paintedScroll) || Math.abs(window.scrollY - paintedScroll) > Math.max(0, overscan - 4)
-        || performance.now() - paintedAt > WORK_VISUAL.scrollStaleMs) {
-        fallbackAll(); setState('scroll-catchup');
+    if (documentScroll) {
+      const top = window.scrollY, bottom = Math.min(contentBottom, top + innerHeight);
+      const uncovered = !Number.isFinite(paintedScroll) || top < paintedTop - 1 || bottom > paintedTop + paintedHeight + 1;
+      const stale = performance.now() - paintedAt > WORK_VISUAL.scrollStaleMs;
+      if (uncovered || stale) {
+        const reason = uncovered ? 'tile-coverage' : 'stale-paint';
+        fallbackAll(reason); setState('scroll-catchup', reason);
       }
-    } else if (nativeScrollNeedsFallback()) { fallbackAll(); setState('native-scroll'); finishPending(); drain(); }
+    } else if (nativeScrollNeedsFallback()) { fallbackAll('native-cadence'); setState('native-scroll'); finishPending(); drain(); }
+    // No layout invalidation: the cached document geometry moves with scrollY.
     invalidate();
   };
 
@@ -149,68 +176,85 @@ export async function mountWorkScene(host: HTMLElement, root: HTMLElement, disab
     const anchor = frame.closest('a'); if (!anchor) continue;
     const elements = [...frame.querySelectorAll<HTMLImageElement>(':scope > img')];
     if (!elements.length || elements.length > 2) continue;
-    const style = getComputedStyle(frame);
+    const style = getLayoutStyle(frame);
     const color = new THREE.Color(style.backgroundColor === 'rgba(0, 0, 0, 0)' ? '#181a1d' : style.backgroundColor);
     const material = new THREE.ShaderMaterial({
       vertexShader, fragmentShader, transparent: true, depthTest: false, depthWrite: false, toneMapped: false,
       uniforms: { uViewport: { value: new THREE.Vector2(1, 1) }, uBuffer: { value: new THREE.Vector2(1, 0) }, uCurl: { value: 0 }, uFrame: { value: new THREE.Vector4() }, uBackground: { value: color }, uFrameRadius: { value: 0 }, uMap0: { value: empty }, uMap1: { value: empty }, uImage0: { value: new THREE.Vector4() }, uImage1: { value: new THREE.Vector4() }, uClip0: { value: new THREE.Vector4() }, uClip1: { value: new THREE.Vector4() }, uRadii: { value: new THREE.Vector2() }, uCount: { value: elements.length } },
     });
     const mesh = new THREE.Mesh(geometry, material); mesh.frustumCulled = false; mesh.visible = false; mesh.renderOrder = surfaces.length;
-    const surface: Surface = { frame, anchor, images: [], material, mesh, box: zeroBox(), anchorBox: zeroBox(), color, radius: parseFloat(style.borderTopLeftRadius) || 0, visible: false, hovered: false, hover: 0, ready: false, off() {} };
+    const surface: Surface = { frame, anchor, images: [], material, mesh, documentBox: zeroBox(), anchorDocumentBox: zeroBox(), box: zeroBox(), anchorBox: zeroBox(), hitKey: '', color, radius: parseFloat(style.borderTopLeftRadius) || 0, visible: false, hovered: false, hover: 0, ready: false, off() {} };
     const enter = (event: PointerEvent) => { if (event.pointerType === 'mouse') { surface.hovered = true; wake(); } };
     const leave = () => { surface.hovered = false; wake(); };
     anchor.addEventListener('pointerenter', enter); anchor.addEventListener('pointerleave', leave);
     surface.off = () => { anchor.removeEventListener('pointerenter', enter); anchor.removeEventListener('pointerleave', leave); };
     for (const element of elements) {
-      const layer: ImageLayer = { element, texture: null, source: '', generation: 0, pending: '', retryAt: 0, attempts: 0, load() {}, box: zeroBox(), fit: 'cover', radius: 0, position: [.5, .5], off() {} };
+      const layer: ImageLayer = { element, texture: null, source: '', generation: 0, pending: '', retryAt: 0, attempts: 0, load() {}, documentBox: zeroBox(), box: zeroBox(), fit: 'cover', radius: 0, position: [.5, .5], off() {} };
       let retryTimer: ReturnType<typeof setTimeout> | undefined;
-      const load = async () => {
+      const load = () => {
         if (disposed || failed || !element.complete || !element.naturalWidth) return;
         const source = sourceFor(layer); if (currentTexture(layer) || source === layer.pending || performance.now() < layer.retryAt) return;
-        // A stale responsive-image texture must not cover a newer DOM selection.
+        // A stale responsive-image texture must never cover a newer DOM selection.
         fallback(surface); wake();
         const generation = ++layer.generation;
         layer.pending = source;
-        // Upload an undecorated image source. Responsive DOM images can expose density-corrected
-        // natural sizes, which do not necessarily match the underlying decoded upload dimensions.
-        const sourceImage = new Image(); sourceImage.decoding = 'async'; sourceImage.src = source;
-        try { await sourceImage.decode(); } catch {
-          if (disposed || failed || generation !== layer.generation) return;
-          layer.pending = ''; layer.attempts++;
-          const delay = layer.attempts === 1 ? 250 : 1000;
-          layer.retryAt = layer.attempts <= 2 ? performance.now() + delay : Infinity;
-          if (layer.attempts <= 2) retryTimer = setTimeout(() => { retryTimer = undefined; layer.retryAt = 0; void load(); }, delay);
-          fallback(surface); invalidate(); return;
-        }
-        if (disposed || failed || generation !== layer.generation) return;
-        layer.pending = '';
-        if (!element.complete || !element.naturalWidth || source !== sourceFor(layer)) { invalidate(); return; }
-        const texture = new THREE.Texture(sourceImage); texture.colorSpace = THREE.SRGBColorSpace;
-        texture.minFilter = THREE.LinearMipmapLinearFilter; texture.magFilter = THREE.LinearFilter;
-        texture.anisotropy = Math.min(4, renderer.capabilities.getMaxAnisotropy());
-        // Screen coordinates run downward; the shader deliberately samples image V downward too.
-        texture.flipY = false; texture.needsUpdate = true;
-        layer.texture?.dispose(); layer.texture = texture; layer.source = source;
-        layer.attempts = 0; layer.retryAt = 0;
-        if (diagnostics) {
-          element.dataset.workTextureSource = source;
-          element.dataset.workTextureWidth = String(sourceImage.naturalWidth);
-          element.dataset.workTextureHeight = String(sourceImage.naturalHeight);
-        }
-        invalidate();
+        const valid = () => !disposed && !failed && generation === layer.generation
+          && element.complete && element.naturalWidth > 0 && source === sourceFor(layer);
+        textureQueue.enqueue({
+          key: layer, valid, priority: () => imagePriority(surface),
+          async decode() {
+            // Keep raw decoded dimensions; DOM naturalWidth may be density-corrected.
+            const image = new Image(); image.decoding = 'async'; image.src = source;
+            await image.decode(); return image;
+          },
+          upload(image) {
+            if (!valid()) return;
+            const texture = new THREE.Texture(image); texture.colorSpace = THREE.SRGBColorSpace;
+            texture.minFilter = THREE.LinearMipmapLinearFilter; texture.magFilter = THREE.LinearFilter;
+            texture.anisotropy = Math.min(4, renderer.capabilities.getMaxAnisotropy());
+            texture.flipY = false; texture.needsUpdate = true;
+            try {
+              // Move upload and mipmap preparation out of the card's first draw.
+              // The queue admits at most one image per actual render phase.
+              renderer.initTexture(texture);
+              if (renderer.getContext().isContextLost()) throw new Error('Work WebGL context lost');
+            } catch (error) { texture.dispose(); throw error; }
+            if (!valid()) { texture.dispose(); return; }
+            layer.texture?.dispose(); layer.texture = texture; layer.source = source; layer.pending = '';
+            layer.attempts = 0; layer.retryAt = 0;
+            if (diagnostics) {
+              element.dataset.workTextureSource = source;
+              element.dataset.workTextureWidth = String(image.naturalWidth);
+              element.dataset.workTextureHeight = String(image.naturalHeight);
+              element.dataset.workTextureGeneration = String(generation);
+            }
+            sampleTouchMetric('work.upload.pixels', image.naturalWidth * image.naturalHeight);
+            invalidate();
+          },
+          discarded() { if (generation === layer.generation && layer.pending === source) layer.pending = ''; },
+          failed(stage) {
+            if (!valid()) return;
+            layer.pending = ''; layer.attempts++;
+            const delay = layer.attempts === 1 ? 250 : 1000;
+            layer.retryAt = layer.attempts <= 2 ? performance.now() + delay : Infinity;
+            if (layer.attempts <= 2) retryTimer = setTimeout(() => { retryTimer = undefined; layer.retryAt = 0; load(); }, delay);
+            recordTouchEvent('work.texture-retry', { stage, attempt: layer.attempts });
+            fallback(surface, stage + '-failed'); invalidate();
+          },
+        });
       };
       layer.load = () => { void load(); };
       const reset = () => {
-        layer.generation++; layer.pending = ''; layer.attempts = 0; layer.retryAt = 0;
+        textureQueue.cancel(layer); layer.generation++; layer.pending = ''; layer.attempts = 0; layer.retryAt = 0;
         if (retryTimer !== undefined) { clearTimeout(retryTimer); retryTimer = undefined; }
-        fallback(surface); invalidate();
+        invalidateLayout('work-image-source'); fallback(surface); invalidate();
       };
       const loaded = () => { reset(); void load(); };
       const error = () => { reset(); layer.texture?.dispose(); layer.texture = null; layer.source = ''; };
       const changed = new MutationObserver(() => { reset(); void load(); });
       changed.observe(element, { attributes: true, attributeFilter: ['src', 'srcset', 'sizes'] });
       element.addEventListener('load', loaded); element.addEventListener('error', error);
-      layer.off = () => { layer.generation++; if (retryTimer !== undefined) clearTimeout(retryTimer); changed.disconnect(); element.removeEventListener('load', loaded); element.removeEventListener('error', error); };
+      layer.off = () => { textureQueue.cancel(layer); layer.generation++; if (retryTimer !== undefined) clearTimeout(retryTimer); changed.disconnect(); element.removeEventListener('load', loaded); element.removeEventListener('error', error); };
       surface.images.push(layer); void load();
     }
     mesh.onBeforeRender = () => {
@@ -234,71 +278,106 @@ export async function mountWorkScene(host: HTMLElement, root: HTMLElement, disab
     return { x: Math.min(...xs), y: box.y, width: Math.max(...xs) - Math.min(...xs), height: box.height };
   }
   function setHit(surface: Surface) {
-    const b = surface.box, bounds = warpedBounds(b), anchor = surface.anchorBox;
+    const b = surface.box, anchor = surface.anchorBox;
+    const key = [b.x, b.y, b.width, b.height, anchor.x, anchor.y, width, height, strength].join(':');
+    if (key === surface.hitKey) return;
+    surface.hitKey = key;
+    const bounds = warpedBounds(b);
     const left = Math.min(bounds.x, b.x) - 1, right = Math.max(bounds.x + bounds.width, b.x + b.width) + 1;
     const points: string[] = [];
     for (let i = 0; i <= 32; i++) { const y = b.y + b.height * i / 32; points.push(`${(screenX(b.x, y) - left).toFixed(2)}px ${(y - b.y).toFixed(2)}px`); }
     for (let i = 32; i >= 0; i--) { const y = b.y + b.height * i / 32; points.push(`${(screenX(b.x + b.width, y) - left).toFixed(2)}px ${(y - b.y).toFixed(2)}px`); }
     const css = surface.anchor.style;
-    css.setProperty('--work-hit-left', `${left - anchor.x}px`); css.setProperty('--work-hit-top', `${b.y - anchor.y}px`);
-    css.setProperty('--work-hit-width', `${right - left}px`); css.setProperty('--work-hit-height', `${b.height}px`);
-    css.setProperty('--work-hit-path', `polygon(${points.join(',')})`);
+    const properties = { left: `${left - anchor.x}px`, top: `${b.y - anchor.y}px`, width: `${right - left}px`, height: `${b.height}px`, path: `polygon(${points.join(',')})` };
+    for (const [name, value] of Object.entries(properties)) {
+      const property = '--work-hit-' + name;
+      if (css.getPropertyValue(property) !== value) css.setProperty(property, value);
+    }
+    recordTouchMetric('work.hitPath.updated');
   }
-  const boxFor = (element: Element): Box => { const b = element.getBoundingClientRect(); return { x: b.left - hostX, y: b.top - hostY, width: b.width, height: b.height }; };
+  const documentBoxFor = (element: Element): Box => {
+    const b = getLayoutRect(element);
+    return { x: b.left + window.scrollX, y: b.top + window.scrollY, width: b.width, height: b.height };
+  };
+  const viewportBox = (box: Box): Box => ({ x: box.x - window.scrollX - hostX, y: box.y - getFrameSnapshot().scrollY - hostY, width: box.width, height: box.height });
   const vectorBox = (value: THREE.Vector4, box: Box) => value.set(box.x, box.y, box.width, box.height);
   function measure() {
     if (disposed || failed || !enabled || suspended || document.hidden) return false;
-    if (getPerformanceSnapshot('work').staticFallback) { fail(); return false; }
-    if (!coarse.matches && nativeScrollNeedsFallback()) { fallbackAll(); setState('native-scroll'); needsMeasure = true; return false; }
-    const snapshot = getFrameSnapshot();
+    if (getPerformanceSnapshot('work').staticFallback) { fail('performance'); return false; }
+    if (!documentScroll && nativeScrollNeedsFallback()) { fallbackAll('native-cadence'); setState('native-scroll'); needsMeasure = true; return false; }
+    const snapshot = getFrameSnapshot(), revision = getLayoutRevision();
     if (previousScroll !== snapshot.scrollY) { previousScroll = snapshot.scrollY; needsMeasure = true; dirty = true; }
+    if (revision !== layoutRevision) { needsMeasure = true; dirty = true; }
     if (!needsMeasure) return false;
-    const touch = coarse.matches;
-    host.dataset.scrollLayer = touch ? 'document' : 'viewport';
-    if (!touch) { host.style.removeProperty('width'); host.style.removeProperty('height'); host.style.removeProperty('transform'); host.style.removeProperty('display'); }
-    const hostBox = host.getBoundingClientRect();
-    hostX = touch ? 0 : hostBox.left; hostY = touch ? 0 : hostBox.top;
-    const w = touch ? snapshot.width : hostBox.width || snapshot.width;
-    const h = touch ? snapshot.height : hostBox.height || snapshot.height;
-    overscan = touch ? Math.ceil(Math.min(WORK_VISUAL.scrollOverscanMax, Math.max(WORK_VISUAL.scrollOverscanMin, h * WORK_VISUAL.scrollOverscan))) : 0;
-    // Read the content extent, not scrollHeight: the absolute buffer must never
-    // extend the document and create its own additional scrollable space.
-    const contentBottom = (root.closest('.gxc-site')?.querySelector('main')?.getBoundingClientRect().bottom ?? h) + window.scrollY;
-    const drawHeight = touch ? Math.ceil(Math.min(contentBottom, h + 2 * overscan)) : h;
-    drawTop = touch ? Math.min(Math.max(0, snapshot.scrollY - overscan), Math.max(0, contentBottom - drawHeight)) : snapshot.scrollY;
-    bufferInset = touch ? snapshot.scrollY - drawTop : 0;
-    const dpr = Math.min(devicePixelRatio, touch ? WORK_VISUAL.touchDpr : WORK_VISUAL.maxDpr);
-    if (w !== width || h !== height || drawHeight !== bufferHeight || dpr !== lastDpr) {
-      width = w; height = h; bufferHeight = Math.max(1, drawHeight); lastDpr = dpr;
-      renderer.setPixelRatio(dpr); renderer.setSize(width, bufferHeight, false);
-    }
-    if (diagnostics) host.dataset.dpr = String(dpr);
-    for (const surface of surfaces) {
-      surface.box = boxFor(surface.frame); surface.anchorBox = boxFor(surface.anchor);
-      const b = surface.box; surface.visible = b.height > 0 && b.width > 0 && b.y < bufferHeight - bufferInset + 1 && b.y + b.height > -bufferInset - 1;
-      if (!surface.visible) { surface.mesh.visible = false; delete surface.anchor.dataset.workHit; continue; }
-      for (const layer of surface.images) {
-        layer.box = boxFor(layer.element);
-        const style = getComputedStyle(layer.element); layer.fit = style.objectFit; layer.radius = parseFloat(style.borderTopLeftRadius) || 0;
-        const position = style.objectPosition.split(' '); layer.position = position.slice(0, 2).map(p => Number.isFinite(parseFloat(p)) ? parseFloat(p) / 100 : .5) as [number, number];
-        // Before takeover a CSS hover may have already scaled the source element. Recover its untransformed box.
-        if (!surface.ready && style.transform !== 'none') {
-          const transform = new DOMMatrixReadOnly(style.transform), scaleX = Math.hypot(transform.a, transform.b), scaleY = Math.hypot(transform.c, transform.d);
-          if (scaleX && scaleY) { const box = layer.box, w = box.width / scaleX, h = box.height / scaleY; layer.box = { x: box.x + (box.width - w) / 2, y: box.y + (box.height - h) / 2, width: w, height: h }; }
+    const geometryChanged = revision !== layoutRevision;
+    host.dataset.scrollLayer = documentScroll ? 'document' : 'viewport';
+    if (!documentScroll) { host.style.removeProperty('width'); host.style.removeProperty('height'); host.style.removeProperty('transform'); host.style.removeProperty('display'); }
+    const hostBox = documentScroll ? null : getLayoutRect(host);
+    hostX = hostBox?.left ?? 0; hostY = hostBox?.top ?? 0;
+    const w = documentScroll ? snapshot.width : hostBox?.width || snapshot.width;
+    const h = documentScroll ? snapshot.height : hostBox?.height || snapshot.height;
+    const dpr = Math.min(devicePixelRatio, documentScroll ? WORK_VISUAL.touchDpr : WORK_VISUAL.maxDpr);
+    if (geometryChanged) {
+      contentBottom = getLayoutRect(contentRoot).bottom + window.scrollY;
+      for (const surface of surfaces) {
+        surface.documentBox = documentBoxFor(surface.frame);
+        surface.anchorDocumentBox = documentBoxFor(surface.anchor);
+        surface.radius = parseFloat(getLayoutStyle(surface.frame).borderTopLeftRadius) || 0;
+        for (const layer of surface.images) {
+          layer.documentBox = documentBoxFor(layer.element);
+          const style = getLayoutStyle(layer.element); layer.fit = style.objectFit;
+          layer.radius = parseFloat(style.borderTopLeftRadius) || 0;
+          const position = style.objectPosition.split(' ');
+          layer.position = position.slice(0, 2).map(p => Number.isFinite(parseFloat(p)) ? parseFloat(p) / 100 : .5) as [number, number];
+          // Cache the unscaled source box, even when native hover is mid-transition.
+          if (style.transform !== 'none') {
+            const transform = new DOMMatrixReadOnly(style.transform), sx = Math.hypot(transform.a, transform.b), sy = Math.hypot(transform.c, transform.d);
+            if (sx && sy) {
+              const b = layer.documentBox, imageWidth = b.width / sx, imageHeight = b.height / sy;
+              layer.documentBox = { x: b.x + (b.width - imageWidth) / 2, y: b.y + (b.height - imageHeight) / 2, width: imageWidth, height: imageHeight };
+            }
+          }
         }
       }
+      layoutRevision = revision; recordTouchMetric('work.geometry.refresh');
+    } else recordTouchMetric('work.geometry.cachedFrame');
+    if (documentScroll) {
+      const wantedPad = Math.ceil(Math.min(WORK_VISUAL.scrollOverscanMax, Math.max(WORK_VISUAL.scrollOverscanMin, h * WORK_VISUAL.scrollOverscan)));
+      if (resetCapacity || w !== width || dpr !== lastDpr || h + 2 * WORK_VISUAL.scrollOverscanMin > bufferCapacity) {
+        // A high-water allocation absorbs toolbar-only height changes. It never
+        // scales the image; logical viewport height and native DPR stay exact.
+        bufferCapacity = Math.ceil((h + 2 * wantedPad) / 64) * 64;
+      }
+      overscan = Math.min(wantedPad, Math.max(0, (bufferCapacity - h) / 2));
+    } else { bufferCapacity = h; overscan = 0; }
+    const drawHeight = documentScroll ? Math.max(1, Math.min(Math.floor(contentBottom), bufferCapacity)) : h;
+    drawTop = documentScroll ? Math.min(Math.max(0, snapshot.scrollY - overscan), Math.max(0, contentBottom - drawHeight)) : snapshot.scrollY;
+    bufferInset = documentScroll ? snapshot.scrollY - drawTop : 0;
+    if (w !== width || drawHeight !== bufferHeight || dpr !== lastDpr) {
+      renderer.setDrawingBufferSize(w, drawHeight, dpr); allocationGeneration++;
+      recordTouchMetric('work.canvas.reallocation');
+      sampleTouchMetric('work.canvas.pixels', Math.round(w * dpr) * Math.round(drawHeight * dpr));
+    }
+    width = w; height = h; bufferHeight = drawHeight; lastDpr = dpr; resetCapacity = false;
+    if (diagnostics) host.dataset.dpr = String(dpr);
+    for (const surface of surfaces) {
+      surface.box = viewportBox(surface.documentBox); surface.anchorBox = viewportBox(surface.anchorDocumentBox);
+      const b = surface.box; surface.visible = b.height > 0 && b.width > 0 && b.y < bufferHeight - bufferInset + 1 && b.y + b.height > -bufferInset - 1;
+      if (!surface.visible) { surface.mesh.visible = false; delete surface.anchor.dataset.workHit; continue; }
+      for (const layer of surface.images) layer.box = viewportBox(layer.documentBox);
     }
     needsMeasure = false; return false;
   }
   function update(time: number, delta: number) {
     if (disposed || failed || !enabled || suspended || document.hidden) return false;
-    if (!coarse.matches && nativeScrollNeedsFallback()) { strength = 0; activity = 0; return true; }
+    if (!documentScroll && nativeScrollNeedsFallback()) { strength = 0; activity = 0; return true; }
+    textureQueue.prepare();
     if (!surfaces.some(surface => surface.visible)) {
       strength = 0; activity = 0; moving = false;
       if (pending) pending.complete = true;
       return false;
     }
-    const maxCurl = coarse.matches ? WORK_VISUAL.touchCurl : WORK_VISUAL.maxCurl;
+    const maxCurl = documentScroll ? WORK_VISUAL.touchCurl : WORK_VISUAL.maxCurl;
     const dt = Math.max(1 / 240, Math.min(.1, delta));
     const oldStrength = strength;
     let flattenRatio = 0;
@@ -318,7 +397,7 @@ export async function mountWorkScene(host: HTMLElement, root: HTMLElement, disab
     if (Math.abs(oldStrength - strength) > .000001) dirty = true;
     for (const surface of surfaces) {
       if (!surface.visible) continue;
-      const targetHover = !flatHold && surface.hovered && !coarse.matches ? 1 : 0;
+      const targetHover = !flatHold && surface.hovered && getInputState().pointerType === 'mouse' ? 1 : 0;
       const hoverDelta = targetHover - surface.hover;
       if (pending) { surface.hover = (pending.hoverFrom.get(surface) ?? 0) * flattenRatio; dirty = true; }
       else if (Math.abs(hoverDelta) > .0005) { surface.hover += hoverDelta * (1 - Math.exp(-WORK_VISUAL.hoverDamping * dt)); moving = true; dirty = true; } else surface.hover = targetHover;
@@ -348,12 +427,17 @@ export async function mountWorkScene(host: HTMLElement, root: HTMLElement, disab
       });
       if (dirty) setHit(surface);
     }
-    return moving;
+    return moving || textureQueue.hasReadyWork();
   }
   function render() {
     if (disposed || failed || !enabled || suspended || document.hidden) return false;
-    if (!coarse.matches && nativeScrollNeedsFallback()) return true;
-    if (!dirty && !pending?.complete && !afterRender.length) return false;
+    if (!documentScroll && nativeScrollNeedsFallback()) return true;
+    const uploaded = textureQueue.uploadOne();
+    if (!dirty && !pending?.complete && !afterRender.length) {
+      const queued = textureQueue.hasReadyWork();
+      if (!moving && !uploaded && !queued) metricPaintedAt = 0;
+      return uploaded || queued;
+    }
     // Responsive selection can change after measurement. Recheck immediately
     // before drawing, so stale pixels never take over a newer DOM source.
     for (const surface of surfaces) {
@@ -364,47 +448,56 @@ export async function mountWorkScene(host: HTMLElement, root: HTMLElement, disab
     // With no visible, decoded surface the DOM remains the complete fallback.
     // Hiding the canvas avoids even a GPU clear while another section is scrolling.
     if (!surfaces.some(surface => surface.mesh.visible)) {
-      fallbackAll(); host.dataset.curl = '0.000000'; dirty = false;
+      const inView = surfaces.some(surface => surface.visible);
+      fallbackAll(inView ? 'decode-or-upload' : 'offscreen');
+      setState(inView ? 'source-pending' : 'offscreen');
+      if (!inView) metricPaintedAt = 0;
+      host.dataset.curl = '0.000000'; dirty = uploaded;
       if (pending?.complete) finishPending();
       drain();
-      return false;
+      return uploaded || textureQueue.hasReadyWork();
     }
     try {
       gpu.begin();
       try {
-        renderer.setScissorTest(false); renderer.clear(); renderer.setScissorTest(true);
+        renderer.setScissorTest(false); renderer.clear(true, false, false); renderer.setScissorTest(true);
         renderer.render(scene, camera); renderer.setScissorTest(false);
       } finally { gpu.end(); }
-      if (renderer.getContext().isContextLost()) { fail(); return false; }
+      if (renderer.getContext().isContextLost()) { fail('context-lost'); return false; }
       for (const surface of surfaces) {
         if (!surface.mesh.visible) continue;
-        if (!surface.ready) { surface.ready = true; surface.frame.dataset.workReady = 'true'; needsMeasure = true; }
+        if (!surface.ready) { surface.ready = true; surface.frame.dataset.workReady = 'true'; }
         if (diagnostics) surface.images.forEach(layer => { layer.element.dataset.workDrawTop = String(layer.box.y); });
         surface.anchor.dataset.workHit = 'true';
       }
       // Move the buffered drawing only together with the newly painted pixels.
       // Between frames its document positioning follows native scroll for free.
-      if (coarse.matches) {
-        host.style.width = width + 'px'; host.style.height = bufferHeight + 'px';
+      if (documentScroll) {
+        if (host.style.width !== width + 'px') host.style.width = width + 'px';
+        if (host.style.height !== bufferHeight + 'px') host.style.height = bufferHeight + 'px';
         host.style.transform = `translate3d(0, ${drawTop}px, 0)`;
       }
-      paintedScroll = getFrameSnapshot().scrollY; paintedAt = performance.now();
+      const paintedNow = performance.now();
+      if (metricPaintedAt) sampleTouchMetric('workDrawIntervalMs', paintedNow - metricPaintedAt);
+      metricPaintedAt = paintedNow; recordTouchMetric('workDraws');
+      paintedScroll = getFrameSnapshot().scrollY; paintedAt = paintedNow; paintedTop = drawTop; paintedHeight = bufferHeight;
       if (diagnostics) {
         host.dataset.renderScrollY = String(paintedScroll); host.dataset.windowTop = String(drawTop);
         host.dataset.overscan = String(bufferInset); host.dataset.renderViewportHeight = String(height);
-        host.dataset.bufferHeight = String(bufferHeight);
+        host.dataset.bufferHeight = String(bufferHeight); host.dataset.bufferCapacity = String(bufferCapacity);
+        host.dataset.allocationGeneration = String(allocationGeneration); host.dataset.layoutRevision = String(layoutRevision);
       }
       host.style.removeProperty('display'); host.style.visibility = 'visible'; setState('ready');
       setPerformanceReady('work', true);
       host.dataset.curl = strength.toFixed(6); renderer.domElement.dataset.frames = String(renderer.info.render.frame);
-      dirty = false;
+      dirty = uploaded;
       if (pending?.complete) finishPending();
       drain();
     } catch { fail(); }
-    return needsMeasure || moving;
+    return needsMeasure || moving || uploaded || textureQueue.hasReadyWork();
   }
 
-  const lost = (event: Event) => { event.preventDefault(); fail(); };
+  const lost = (event: Event) => { event.preventDefault(); fail('context-lost'); };
   const retryImages = () => {
     for (const surface of surfaces) for (const layer of surface.images) {
       if (!currentTexture(layer)) { layer.retryAt = 0; layer.attempts = 0; layer.load(); }
@@ -412,28 +505,42 @@ export async function mountWorkScene(host: HTMLElement, root: HTMLElement, disab
   };
   const visibility = () => {
     previousScroll = NaN; activity = 0; strength = 0;
-    if (document.hidden) { fallbackAll(); finishPending(); drain(); }
+    if (document.hidden) { metricPaintedAt = 0; fallbackAll('hidden'); finishPending(); drain(); }
     else { retryImages(); invalidate(); }
   };
   const layoutChanged = () => {
-    // A document tile can follow scrolling without repainting, but it cannot
-    // follow a reflow. Reveal the newly laid-out DOM immediately; the capped
-    // render loop may not draw its replacement until a later browser frame.
-    fallbackAll(); paintedScroll = NaN; setState('layout-change'); invalidate();
+    // Restore current DOM geometry before the next capped paint. Never observe
+    // the canvas host: it is an output and would create a resize feedback loop.
+    invalidateLayout('work-content'); layoutRevision = -1;
+    fallbackAll('layout'); paintedScroll = NaN; setState('layout-change'); invalidate();
   };
-  // The host is an output of drawing. Observing its display/size changes would
-  // feed synchronous fallback writes back into ResizeObserver delivery.
+  const viewportChanged = (change?: { kind: 'layout' | 'height'; width: number; height: number; dpr: number }) => {
+    if (documentScroll && change?.kind === 'height') {
+      // Native document positioning remains valid. Update curvature and coverage
+      // on the next frame; an actual content resize is caught separately below.
+      recordTouchMetric('work.viewport.heightOnly'); invalidate();
+      return;
+    }
+    resetCapacity = true; layoutChanged();
+  };
+  const inputChanged = () => {
+    const next = getInputState().touchCapable;
+    if (next === documentScroll) return;
+    documentScroll = next; resetCapacity = true; layoutChanged();
+  };
   const ro = new ResizeObserver(layoutChanged); ro.observe(root);
-  const offViewport = subscribeViewportChange(layoutChanged);
+  if (contentRoot !== root) ro.observe(contentRoot);
+  const offViewport = subscribeViewportChange(viewportChanged);
+  const offInput = subscribeInputChange(inputChanged);
   for (const surface of surfaces) { ro.observe(surface.frame); surface.images.forEach(layer => ro.observe(layer.element)); }
-  window.addEventListener('scroll', nativeScroll, { passive: true }); window.addEventListener('resize', layoutChanged, { passive: true });
-  document.addEventListener('visibilitychange', visibility); coarse.addEventListener('change', layoutChanged);
+  window.addEventListener('scroll', nativeScroll, { passive: true });
+  document.addEventListener('visibilitychange', visibility);
   window.addEventListener('online', retryImages);
   renderer.domElement.addEventListener('webglcontextlost', lost);
   const offMeasure = subscribeFrame(measure, 'measure'), offUpdate = subscribeFrame(update, 'update'), offRender = subscribeFrame(render, 'render');
   invalidate();
   return {
-    setMotion(value) { enabled = value; activity = 0; strength = 0; previousScroll = NaN; if (!value) { fallbackAll(); finishPending(); drain(); } else invalidate(); },
+    setMotion(value) { enabled = value; activity = 0; strength = 0; previousScroll = NaN; if (!value) { metricPaintedAt = 0; fallbackAll('paused'); finishPending(); drain(); } else invalidate(); },
     flatten(options = {}) {
       if (options.signal?.aborted) return Promise.reject(abortError());
       if (pending) { const old = pending; pending = null; old.off(); old.reject(abortError()); }
@@ -447,15 +554,16 @@ export async function mountWorkScene(host: HTMLElement, root: HTMLElement, disab
     },
     restore() {
       suspended = false; flatHold = true; strength = 0; activity = 0; previousScroll = NaN;
+      invalidateLayout('work-restore'); layoutRevision = -1;
       if (disposed || failed || !enabled || document.hidden) { flatHold = false; fallbackAll(); surfaces.forEach(surface => { delete surface.anchor.dataset.workNeutral; }); return Promise.resolve(); }
       return new Promise<void>(resolve => { afterRender.push(() => { flatHold = false; surfaces.forEach(surface => { delete surface.anchor.dataset.workNeutral; }); resolve(); }); invalidate(); });
     },
-    setSuspended(value) { suspended = value; activity = 0; strength = 0; if (value) { surfaces.forEach(surface => { surface.hovered = false; surface.hover = 0; }); fallbackAll(); finishPending(); drain(); } else invalidate(); },
+    setSuspended(value) { suspended = value; activity = 0; strength = 0; if (value) { metricPaintedAt = 0; surfaces.forEach(surface => { surface.hovered = false; surface.hover = 0; }); fallbackAll('suspended'); finishPending(); drain(); } else { invalidateLayout('work-resume'); layoutRevision = -1; invalidate(); } },
     dispose() {
       disposed = true;
       if (pending) { pending.off(); pending.reject(abortError()); pending = null; }
-      drain(); fallbackAll(); offMeasure(); offUpdate(); offRender(); ro.disconnect(); offViewport();
-      window.removeEventListener('scroll', nativeScroll); window.removeEventListener('resize', layoutChanged); document.removeEventListener('visibilitychange', visibility); coarse.removeEventListener('change', layoutChanged); window.removeEventListener('online', retryImages);
+      textureQueue.dispose(); drain(); fallbackAll('disposed'); offMeasure(); offUpdate(); offRender(); ro.disconnect(); offViewport(); offInput();
+      window.removeEventListener('scroll', nativeScroll); document.removeEventListener('visibilitychange', visibility); window.removeEventListener('online', retryImages);
       renderer.domElement.removeEventListener('webglcontextlost', lost);
       for (const surface of surfaces) { surface.off(); delete surface.anchor.dataset.workNeutral; surface.images.forEach(layer => { layer.off(); layer.texture?.dispose(); }); surface.material.dispose(); for (const key of ['left', 'top', 'width', 'height', 'path']) surface.anchor.style.removeProperty('--work-hit-' + key); }
       gpu.dispose(); geometry.dispose(); empty.dispose(); renderer.dispose(); renderer.domElement.remove();

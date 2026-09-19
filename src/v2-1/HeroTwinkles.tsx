@@ -32,7 +32,7 @@ export function HeroTwinkles({ paused, reduced, suspended }: { paused: boolean; 
     const wake = () => { dirty = true; requestFrame(); };
     const resize = new ResizeObserver(wake); resize.observe(hero);
     obstacles.forEach(node => resize.observe(node));
-    const intersection = new IntersectionObserver(entries => { visible = entries.some(entry => entry.isIntersecting); requestFrame(); }); intersection.observe(hero);
+    const intersection = new IntersectionObserver(entries => { visible = entries.some(entry => entry.isIntersecting); dirty = true; requestFrame(); }); intersection.observe(hero);
     const offPhoto = subscribeHeroPhoto(hero, asset => { photo = asset; wake(); }, () => { photo = undefined; wake(); });
     document.addEventListener('visibilitychange', wake);
     window.addEventListener('resize', wake);
@@ -40,6 +40,9 @@ export function HeroTwinkles({ paused, reduced, suspended }: { paused: boolean; 
     hero.addEventListener('animationend', wake, true);
     void document.fonts.ready.then(() => { if (!disposed) wake(); });
     const offMeasure = subscribeFrame(() => {
+      // The work section must not remeasure/repartition the hidden hero's
+      // star catalog at each scroll tick. Re-entry explicitly dirties this cache.
+      if (!visible && !dirty) return;
       const snapshot = getFrameSnapshot();
       if (!dirty && lastScroll === snapshot.scrollY) return;
       dirty = false;

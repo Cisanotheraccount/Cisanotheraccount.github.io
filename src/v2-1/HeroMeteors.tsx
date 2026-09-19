@@ -45,10 +45,11 @@ export function HeroMeteors({ paused, reduced, suspended, onOpen }: HeroMeteorsP
     const wake = () => { dirty = true; requestFrame(); };
     const release = () => { for (const mark of marks.current) { mark.pressed = false; mark.hovered = false; mark.near = false; } requestFrame(); };
     const resized = new ResizeObserver(wake); resized.observe(hero);
-    const intersection = new IntersectionObserver(entries => { visible = entries.some(entry => entry.isIntersecting); requestFrame(); }); intersection.observe(hero);
+    const intersection = new IntersectionObserver(entries => { visible = entries.some(entry => entry.isIntersecting); dirty = true; requestFrame(); }); intersection.observe(hero);
     document.addEventListener('visibilitychange', release);
     window.addEventListener('blur', release); window.addEventListener('pointerup', release); window.addEventListener('pointercancel', release); fine.addEventListener('change', wake);
     const measure = subscribeFrame(() => {
+      if (!visible && !dirty) return;
       const frame = getFrameSnapshot(), data = hero.querySelector<HTMLElement>('.gxc-canvas')?.dataset.wordRect ?? '';
       if (frame.width !== oldWidth || frame.height !== oldHeight || data !== wordData) dirty = true;
       if (frame.scrollY !== oldScroll) { heroRect = hero.getBoundingClientRect(); oldScroll = frame.scrollY; }

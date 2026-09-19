@@ -65,6 +65,8 @@ p, h1, h2, h3, figure { margin: 0; }
 .gxc-canvas { position: absolute; inset: 0; z-index: 1; opacity: 0; transition: opacity .7s ease; pointer-events: none; }
 .gxc-canvas[data-ready=true] { opacity: 1; }
 .gxc-canvas canvas { width: 100%; height: 100%; display: block; }
+.gxc-glass-touch { position: absolute; top: 0; left: 0; z-index: 1; pointer-events: none; touch-action: pinch-zoom; user-select: none; -webkit-user-select: none; -webkit-tap-highlight-color: transparent; }
+.gxc-glass-touch[data-touch-available=true] { pointer-events: auto; }
 .gxc-wordmark-fallback { position: relative; z-index: 2; height: 100%; padding: 0 80px; display: grid; place-items: center; transition: opacity .25s ease; }
 .gxc-wordmark-fallback img { width: 100%; height: 100%; max-height: 88%; object-fit: contain; opacity: 1; }
 

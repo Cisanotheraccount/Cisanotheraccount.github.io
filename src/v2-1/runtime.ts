@@ -2,12 +2,15 @@ import { useEffect, useLayoutEffect } from 'react';
 import Lenis from 'lenis';
 import { PerformanceGovernor, type PerformanceScene } from './performanceGovernor';
 import { performancePolicy } from './performanceConfig';
+import { sharedPointer, installInputState, setScrollSource, recordScrollInput } from './inputState';
+import { installLayoutSnapshot, invalidateLayout, prepareLayoutSnapshot, getLayoutRevision, getLayoutRect } from './layoutSnapshot';
+import { recordTouchMetric, recordTouchEvent, sampleTouchMetric } from './touchDiagnostics';
 
 export type FramePhase = 'scroll' | 'measure' | 'update' | 'render';
 type Frame = (time: number, delta: number) => boolean | void;
 const phases: FramePhase[] = ['scroll', 'measure', 'update', 'render'];
 const subscribers = new Map<FramePhase, Set<Frame>>(phases.map(phase => [phase, new Set()]));
-const pointer = { x: 0, y: 0, inside: false, speedX: 0, speedY: 0, lastMoved: 0, kind: 'mouse' };
+const pointer = sharedPointer;
 const snapshot = { time: 0, delta: 1 / 60, elapsed: 1 / 60, nativeDelta: 1 / 60, targetFps: 60, scrollY: 0, scrollSpeed: 0, width: 0, height: 0, pointer };
 let frame = 0, previous = 0, previousScroll: number | null = null;
 let lenis: Lenis | undefined;
@@ -15,13 +18,15 @@ let scrollLocked = false;
 const governor = new PerformanceGovernor();
 const sceneRoots = new Map<PerformanceScene, { element: HTMLElement; top: number; bottom: number }>();
 const performanceListeners = new Set<() => void>();
-const viewportListeners = new Set<() => void>();
+export type ViewportChange = { kind: 'layout' | 'height'; width: number; height: number; dpr: number };
+const viewportListeners = new Set<(change?: ViewportChange) => void>();
 let continuous = false, motionDisabled = false, nativePrevious = 0, nativeScrollAt = -Infinity, lastNotify = 0;
 let viewportKey = '';
+let sceneLayoutRevision = -1;
 
 export const getPerformanceSnapshot = (scene?: PerformanceScene) => governor.getSnapshot(scene);
 export function subscribePerformance(listener: () => void) { performanceListeners.add(listener); return () => { performanceListeners.delete(listener); }; }
-export function subscribeViewportChange(listener: () => void) { viewportListeners.add(listener); return () => { viewportListeners.delete(listener); }; }
+export function subscribeViewportChange(listener: (change?: ViewportChange) => void) { viewportListeners.add(listener); return () => { viewportListeners.delete(listener); }; }
 export function setPerformanceReady(scene: PerformanceScene, ready: boolean) { governor.setReady(scene, ready, performance.now()); }
 export function reportGpuTime(scene: PerformanceScene, milliseconds: number) { governor.recordGpuTime(milliseconds, scene); }
 export function registerPerformanceScene(scene: PerformanceScene, element: HTMLElement) {
@@ -46,6 +51,13 @@ export function requestFrame() {
 function tick(now: number) {
   frame = 0;
   const started = performance.now();
+  if (sceneLayoutRevision !== getLayoutRevision()) {
+    sceneLayoutRevision = getLayoutRevision();
+    for (const bounds of sceneRoots.values()) {
+      const box = getLayoutRect(bounds.element);
+      bounds.top = box.top + window.scrollY; bounds.bottom = bounds.top + box.height;
+    }
+  }
   const center = window.scrollY + innerHeight * .45;
   let currentScene: PerformanceScene | null = null;
   for (const [name, bounds] of sceneRoots) if (center >= bounds.top && center < bounds.bottom) currentScene = name;
@@ -75,9 +87,12 @@ function tick(now: number) {
       snapshot.scrollSpeed = previousScroll === null ? 0 : (y - previousScroll) / Math.max(delta, 1 / 240);
       snapshot.scrollY = y; previousScroll = y;
       snapshot.width = document.documentElement.clientWidth; snapshot.height = innerHeight;
+      prepareLayoutSnapshot();
       if (now - pointer.lastMoved > 70) { pointer.speedX = 0; pointer.speedY = 0; }
     }
+    const phaseStart = performance.now();
     for (const subscriber of subscribers.get(phase)!) active = !!subscriber(now, delta) || active;
+    sampleTouchMetric(`${phase}Ms`, performance.now() - phaseStart);
   }
   if (measuring && active) governor.recordFrame(now, performance.now() - started);
   if (performanceListeners.size && now - lastNotify >= performancePolicy.diagnosticIntervalMs) { lastNotify = now; performanceListeners.forEach(listener => listener()); }
@@ -104,6 +119,7 @@ export function setScrollLocked(value: boolean) {
   if (value === scrollLocked) return;
   scrollLocked = value;
   governor.suspend();
+  invalidateLayout('detail-lock');
   if (value) {
     lenis?.scrollTo(window.scrollY, { immediate: true, force: true });
     lenis?.stop();
@@ -113,6 +129,7 @@ export function setScrollLocked(value: boolean) {
   resetScrollSample();
 }
 export function scrollToPage(top: number, { immediate = false }: { immediate?: boolean } = {}) {
+  setScrollSource('programmatic');
   const target = Math.max(0, Math.min(top, document.documentElement.scrollHeight - innerHeight));
   if (lenis) lenis.scrollTo(target, { immediate, force: true });
   else window.scrollTo({ top: target, behavior: immediate ? 'instant' : 'smooth' });
@@ -135,29 +152,37 @@ export function useSmoothScene(disabled: boolean, locked: boolean) {
       }
       resetScrollSample();
     };
-    const wake = () => requestFrame();
+    const offInput = installInputState(requestFrame);
+    const offLayout = installLayoutSnapshot(requestFrame);
+    const wake = () => { setScrollSource(lenis ? 'wheel-smooth' : 'native'); requestFrame(); };
     const scroll = () => {
-      if (!scrollLocked && lenis?.isScrolling !== 'smooth') nativeScrollAt = performance.now();
+      recordScrollInput(lenis?.isScrolling === 'smooth');
+      if (!scrollLocked && lenis?.isScrolling !== 'smooth') {
+        nativeScrollAt = performance.now();
+      }
       requestFrame();
     };
-    const move = (event: PointerEvent) => {
-      const now = performance.now(), dt = Math.max((now - pointer.lastMoved) / 1000, 1 / 240);
-      pointer.speedX = pointer.inside ? (event.clientX - pointer.x) / dt : 0;
-      pointer.speedY = pointer.inside ? (event.clientY - pointer.y) / dt : 0;
-      pointer.x = event.clientX; pointer.y = event.clientY; pointer.inside = true;
-      pointer.kind = event.pointerType; pointer.lastMoved = now; requestFrame();
-    };
-    const leave = () => { pointer.inside = false; pointer.speedX = 0; pointer.speedY = 0; requestFrame(); };
     const visibility = () => {
-      previous = 0; nativePrevious = 0; continuous = false; governor.suspend(); resetScrollSample(); leave();
+      previous = 0; nativePrevious = 0; continuous = false; governor.suspend(); resetScrollSample();
       if (document.hidden) { cancelAnimationFrame(frame); frame = 0; } else requestFrame();
     };
     const resize = () => {
-      lenis?.resize(); resetScrollSample();
-      const key = `${innerWidth}:${innerHeight}:${devicePixelRatio}`;
-      if (key !== viewportKey) { viewportKey = key; governor.resetMeasurements(performance.now(), 'Viewport or DPR changed'); }
-      for (const bounds of sceneRoots.values()) { const box = bounds.element.getBoundingClientRect(); bounds.top = box.top + scrollY; bounds.bottom = bounds.top + box.height; }
-      viewportListeners.forEach(listener => listener());
+      const width = document.documentElement.clientWidth, height = innerHeight, dpr = devicePixelRatio;
+      const key = `${width}:${dpr}:${screen.orientation?.angle ?? window.orientation ?? 0}`;
+      const realLayout = viewportKey !== key;
+      viewportKey = key;
+      lenis?.resize();
+      // Mobile browser bars resize the visual height repeatedly while scrolling.
+      // They must not restart cadence qualification or zero the scroll velocity.
+      if (realLayout) {
+        resetScrollSample(); invalidateLayout('viewport-layout');
+        governor.resetMeasurements(performance.now(), 'Layout width, orientation or DPR changed');
+        recordTouchMetric('governorViewportResets');
+        for (const bounds of sceneRoots.values()) { const box = bounds.element.getBoundingClientRect(); bounds.top = box.top + scrollY; bounds.bottom = bounds.top + box.height; }
+      }
+      const change: ViewportChange = { kind: realLayout ? 'layout' : 'height', width, height, dpr };
+      recordTouchEvent('viewport', change);
+      viewportListeners.forEach(listener => listener(change)); requestFrame();
     };
     // Some browsers change DPR without changing the window's CSS dimensions.
     // Re-arm the query at the new ratio; it creates no polling or permission request.
@@ -168,21 +193,19 @@ export function useSmoothScene(disabled: boolean, locked: boolean) {
       resolution.addEventListener('change', densityChanged); resize();
     };
     resolution.addEventListener('change', densityChanged);
+    viewportKey = `${document.documentElement.clientWidth}:${devicePixelRatio}:${screen.orientation?.angle ?? window.orientation ?? 0}`;
     configure(); media.addEventListener('change', configure);
     window.addEventListener('wheel', wake, { passive: true });
     window.addEventListener('scroll', scroll, { passive: true, capture: true });
-    window.addEventListener('pointermove', move, { passive: true });
-    document.documentElement.addEventListener('pointerleave', leave);
-    window.addEventListener('blur', leave); window.addEventListener('resize', resize);
+    window.addEventListener('resize', resize);
     window.addEventListener('pageshow', resize);
     document.addEventListener('visibilitychange', visibility);
     return () => {
-      off?.(); lenis?.destroy(); lenis = undefined;
+      off?.(); offInput(); offLayout(); lenis?.destroy(); lenis = undefined;
       media.removeEventListener('change', configure);
       resolution.removeEventListener('change', densityChanged);
       window.removeEventListener('wheel', wake); window.removeEventListener('scroll', scroll, true);
-      window.removeEventListener('pointermove', move); document.documentElement.removeEventListener('pointerleave', leave);
-      window.removeEventListener('blur', leave); window.removeEventListener('resize', resize);
+      window.removeEventListener('resize', resize);
       window.removeEventListener('pageshow', resize); document.removeEventListener('visibilitychange', visibility);
     };
   }, [disabled]);

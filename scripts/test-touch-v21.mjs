@@ -1,0 +1,22 @@
+import assert from 'node:assert/strict';
+import {readFile} from 'node:fs/promises';
+import ts from 'typescript';
+class Target extends EventTarget { matches=false; }
+const win=new Target();win.matchMedia=()=>new Target();win.scrollY=0;globalThis.window=win;globalThis.matchMedia=win.matchMedia;
+Object.defineProperty(globalThis,'navigator',{value:{maxTouchPoints:5},configurable:true});
+const doc=new Target();doc.documentElement=new Target();doc.hidden=false;globalThis.document=doc;
+const source=ts.transpileModule(await readFile(new URL('../src/v2-1/inputState.ts',import.meta.url),'utf8'),{compilerOptions:{target:ts.ScriptTarget.ES2022,module:ts.ModuleKind.ES2022}}).outputText;
+const m=await import('data:text/javascript;base64,'+Buffer.from(source).toString('base64'));
+let wakes=0;const off=m.installInputState(()=>wakes++);
+const event=(name,id,x=20,y=30,type='touch')=>Object.assign(new Event(name),{pointerId:id,pointerType:type,clientX:x,clientY:y});
+assert.equal(m.getInputState().touchCapable,true);
+win.dispatchEvent(event('pointerdown',1));assert.equal(m.beginGlassTouch(event('pointerdown',1)),true);assert.equal(m.sharedPointer.speedX,0);
+m.moveGlassTouch(event('pointermove',1,80,90));assert(m.sharedPointer.speedX>0);assert.equal(m.sharedPointer.glassTouch,true);
+const contact={...m.sharedPointer};win.dispatchEvent(event('pointerdown',8,400,400,'mouse'));win.dispatchEvent(event('pointerup',8,400,400,'mouse'));assert.equal(m.sharedPointer.kind,'touch');assert.equal(m.sharedPointer.x,contact.x);assert.equal(m.sharedPointer.pressed,true);
+win.dispatchEvent(event('pointerdown',2));assert.equal(m.sharedPointer.glassTouch,false);assert.equal(m.getInputState().touchCount,2);assert.equal(m.beginGlassTouch(event('pointerdown',2)),false);
+win.dispatchEvent(event('pointerup',2));win.dispatchEvent(event('pointerup',1));assert.equal(m.getInputState().touchCount,0);
+win.dispatchEvent(event('pointerdown',3,300,100));assert(m.beginGlassTouch(event('pointerdown',3,300,100)));assert.equal(m.sharedPointer.speedX,0);assert.equal(m.sharedPointer.speedY,0);
+win.dispatchEvent(event('pointercancel',3));assert.equal(m.sharedPointer.glassTouch,false);assert.equal(m.sharedPointer.pointerId,null);
+win.dispatchEvent(event('pointerdown',4));m.beginGlassTouch(event('pointerdown',4));win.dispatchEvent(new Event('blur'));assert.equal(m.sharedPointer.inside,false);assert.equal(m.getInputState().touchCount,0);
+win.dispatchEvent(event('pointermove',5,40,50,'mouse'));assert.equal(m.getInputState().touchCapable,true);assert.equal(m.sharedPointer.kind,'mouse');
+off();assert(wakes>0);console.log('PASS: touch capability remains stable; single contact, multi-contact rejection, fresh velocity, cancel, blur and mouse coexistence.');

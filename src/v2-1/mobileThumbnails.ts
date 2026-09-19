@@ -1,18 +1,20 @@
 import { useEffect, useState } from 'react';
+import { getInputState, subscribeInputChange } from './inputState';
 import manifest from '../../public/v2-1/thumbnails/manifest.json';
 
-export const MOBILE_THUMBNAIL_QUERY = '(max-width: 760px), (hover: none) and (pointer: coarse)';
+export const MOBILE_THUMBNAIL_QUERY = '(max-width: 760px)';
 type Variant = { url: string; width: number; height: number; bytes: number; sha256: string };
 type ThumbnailManifest = { schemaVersion: number; projects: Record<string, { images: { id: string; variants: Variant[] }[] }> };
 
 // Initialize before the first img is rendered; avoid briefly requesting the
 // desktop original on a phone. Input capability is independent of layout width.
 export function useMobileThumbnailMode() {
-  const [enabled, setEnabled] = useState(() => window.matchMedia(MOBILE_THUMBNAIL_QUERY).matches);
+  const [enabled, setEnabled] = useState(() => window.matchMedia(MOBILE_THUMBNAIL_QUERY).matches || getInputState().touchCapable);
   useEffect(() => {
     const media = window.matchMedia(MOBILE_THUMBNAIL_QUERY);
-    const change = () => setEnabled(media.matches);
+    const change = () => setEnabled(media.matches || getInputState().touchCapable);
     change();
+    const offInput = subscribeInputChange(change);
     media.addEventListener('change', change);
     return () => media.removeEventListener('change', change);
   }, []);

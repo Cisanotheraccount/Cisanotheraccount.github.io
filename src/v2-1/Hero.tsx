@@ -2,6 +2,7 @@ import { useEffect, useRef, useState } from 'react';
 import type { GlassScene } from './glassScene';
 import { heroPhoto, subscribeHeroPhoto } from './heroPhoto';
 import { registerPerformanceScene, setPerformanceReady } from './runtime';
+import { bindHeroTouch } from './heroTouch';
 
 export function HeroPhoto() {
   const host = useRef<HTMLDivElement>(null);
@@ -24,6 +25,7 @@ export function HeroPhoto() {
 export function GlassHero({ disabled, suspended }: { disabled: boolean; suspended: boolean }) {
   const host = useRef<HTMLDivElement>(null);
   const area = useRef<HTMLDivElement>(null);
+  const touch = useRef<HTMLDivElement>(null);
   const scene = useRef<GlassScene | undefined>(undefined);
   const [ready, setReady] = useState(false);
   const disabledRef = useRef(disabled); disabledRef.current = disabled;
@@ -64,8 +66,13 @@ export function GlassHero({ disabled, suspended }: { disabled: boolean; suspende
   }, []);
   useEffect(() => { scene.current?.setMotion(!disabled); }, [disabled]);
   useEffect(() => { scene.current?.setSuspended(suspended); }, [suspended]);
+  useEffect(() => {
+    if (!ready || disabled || suspended || !host.current || !touch.current) return;
+    return bindHeroTouch(touch.current, host.current);
+  }, [ready, disabled, suspended]);
   return <div ref={area} className="gxc-wordmark-space" role="img" aria-label="galaxci, a connected glass signature against a starry sky">
     {!ready && <div className="gxc-wordmark-fallback"><img src="/v-next/galaxci-glass-poster.webp" alt="" width="2133" height="933"/></div>}
     <div ref={host} className="gxc-canvas" data-ready={ready ? 'true' : 'false'} aria-hidden="true"/>
+    <div ref={touch} className="gxc-glass-touch" data-touch-available="false" data-touch-state="inactive" aria-hidden="true"/>
   </div>;
 }

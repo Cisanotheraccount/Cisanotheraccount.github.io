@@ -27,7 +27,7 @@
 .gxc-shotflow-demo-screen > img, .gxc-shotflow-demo-screen > video { display: block; position: absolute; inset: 0; width: 100%; height: 100%; max-height: none; object-fit: contain; border-radius: inherit; }
 .gxc-shotflow-demo-screen > video { visibility: hidden; }
 .gxc-shotflow-demo-screen > video[data-visible=true] { visibility: visible; }
-.gxc-shotflow-demo-hotspot { position: absolute; z-index: 1; transform: translate(-50%,-50%); padding: 0; background: #f1f0ed0a; border: 1px solid #f1f0eda6; border-radius: 8px; box-shadow: 0 0 0 3px #0b0d1080; }
+.gxc-shotflow-demo-hotspot { position: absolute; z-index: 1; padding: 0; background: #f1f0ed0a; border: 1px solid #f1f0eda6; border-radius: 8px; box-shadow: 0 0 0 3px #0b0d1080; }
 .gxc-shotflow-demo-hotspot > span { position: absolute; right: -7px; top: -7px; width: 24px; height: 24px; border-radius: 50%; display: grid; place-items: center; background: #e4e5e7; color: #121417; box-shadow: 0 0 0 3px #0b0d10; pointer-events: none; }
 .gxc-shotflow-demo-load-state { position: absolute; inset: 0; border-radius: inherit; display: flex; flex-direction: column; justify-content: center; align-items: center; gap: 16px; padding: 24px; background: #0c0e11; color: #a6aab4; font-size: 12px; line-height: 1.8; text-align: center; }
 .gxc-shotflow-demo-load-state > button { padding: 8px 16px; border: 1px solid var(--line); color: #f1f0ed; font-size: 12px; }
@@ -62,3 +62,32 @@
   .gxc-shotflow-demo-placeholder > p { font-size: 36px; }
 }
 @media (prefers-reduced-motion:reduce) { .gxc-shotflow-demo button { transition: none; } }
+
+/* Keep the static transition target outside the interactive layer. */
+.gxc-shotflow-demo-media { position: relative; }
+.gxc-shotflow-demo-preview { width: 100%; }
+.gxc-shotflow-demo[data-started=true] .gxc-shotflow-demo-preview { visibility: hidden; pointer-events: none; }
+.gxc-shotflow-demo-live { position: absolute; inset: 0; }
+.gxc-shotflow-demo-screen { overflow: hidden; }
+.gxc-shotflow-demo-list { position: absolute; overflow-y: auto; overflow-x: hidden; overscroll-behavior: contain; touch-action: pan-y; scrollbar-width: none; background: #000; }
+.gxc-shotflow-demo-list::-webkit-scrollbar { display: none; }
+.gxc-shotflow-demo-list:focus-visible { outline: 2px solid #f1f0ed; outline-offset: -3px; }
+.gxc-shotflow-demo-list-content { position: relative; width: 100%; }
+.gxc-shotflow-demo-list-content > img { display: block; width: 100%; height: auto; max-height: none; }
+.gxc-shotflow-demo-secondary-actions { display: flex; flex-wrap: wrap; justify-content: space-between; gap: 4px 20px; }
+.gxc-shotflow-sr-only { position: absolute; width: 1px; height: 1px; padding: 0; margin: -1px; overflow: hidden; clip-path: inset(50%); white-space: nowrap; border: 0; }
+.gxc-shotflow-introduction { padding: 58px 0 36px; }
+.gxc-shotflow-introduction .gxc-detail-heading { padding: 0; }
+.gxc-shotflow-introduction .gxc-shotflow-context { max-width: 720px; }
+.gxc-shotflow-import-case .gxc-shotflow-walkthrough { padding-top: 28px; padding-bottom: 56px; }
+.gxc-shotflow-import-case .gxc-shotflow-walkthrough > header { margin-bottom: 16px; }
+.gxc-shotflow-import-case .gxc-shotflow-walkthrough > header h3 { margin: 0; font-size: 28px; }
+.gxc-shotflow-import-case .gxc-shotflow-onset { border-top: 0; }
+@media (max-width:760px) {
+  .gxc-shotflow-introduction { padding: 34px 0 28px; }
+  .gxc-shotflow-import-case .gxc-shotflow-walkthrough { padding-top: 24px; padding-bottom: 32px; }
+  .gxc-shotflow-demo-preview .gxc-shotflow-screen { margin-inline: auto; }
+}
+
+/* Screenshot hotspots follow native coordinates; their text equivalents retain 44px targets. */
+.gxc-shotflow-demo .gxc-shotflow-demo-hotspot { min-width: 0; min-height: 0; }

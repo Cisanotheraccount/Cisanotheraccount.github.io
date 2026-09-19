@@ -26,7 +26,9 @@ export async function verifyThumbnailRelease(directory) {
         assert(Number.isInteger(variant.width) && variant.width > previousWidth && variant.width <= 1600, `Invalid width ordering: ${variant.url}`);
         assert(Number.isInteger(variant.height) && variant.height > 0, `Invalid image height: ${variant.url}`);
         assert(variant.width <= image.source.width, `Thumbnail cannot upscale its source: ${variant.url}`);
-        assert.equal(variant.url, `/${thumbnailNamespace}${slug}/${image.id}-${variant.width}.webp`, 'Thumbnail must stay in its own asset namespace');
+        const allowedUrls = [`/${thumbnailNamespace}${slug}/${image.id}-${variant.width}.webp`];
+        if (slug === 'shotflow') allowedUrls.push(`/v2-1/shotflow-import-v2/thumbnails/${image.id}-${variant.width}.webp`);
+        assert(allowedUrls.includes(variant.url), 'Thumbnail must stay in its exact project/slot namespace');
         assert(!urls.has(variant.url), `Duplicate thumbnail dependency: ${variant.url}`);
         const file = variant.url.slice(1), bytes = await readFile(path.join(directory, file));
         assert.equal(bytes.length, variant.bytes, `Thumbnail byte length changed: ${file}`);

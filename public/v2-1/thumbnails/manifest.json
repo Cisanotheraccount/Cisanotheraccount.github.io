@@ -83,17 +83,17 @@
           "id": "workspace",
           "quality": 82,
           "source": {
-            "path": "v-next/review/shotflow-walkthrough-20260917/native/raw/workspace.png",
-            "sha256": "ac64279d5aa0444c2ef25a1d15bc3d558ada2a361b5c8444fc11012341067752",
+            "path": "public/v2-1/shotflow-import-v2/workspace-1290.webp",
+            "sha256": "a3debd7d5490a362e4ba088e8d5b6f9341589c86b80dd4561af43e5ef882da2c",
             "width": 1290,
             "height": 2796,
-            "bytes": 1131173,
+            "bytes": 196132,
             "alpha": false,
             "colorManagement": "Source has no ICC profile; retain its sRGB RGB values without exposure or saturation adjustments.",
             "maximumExportWidth": 1290,
             "limit": "Original has fewer than 1600 horizontal pixels; keep native maximum.",
-            "provenance": "public/portfolio/shotflow-walkthrough-v1/provenance.json",
-            "selection": "Same native English screenshot as the current 2.1 card; September 17 capture, build 15, staged sample data."
+            "provenance": "public/v2-1/shotflow-import-v2/manifest.json",
+            "selection": "English native capture from the complete Reference Study analysis; 32 actual generated shots, with suggestions unconfirmed."
           },
           "previousVariants": [
             {
@@ -109,9 +109,7 @@
               "height": 2796,
               "bytes": 178958,
               "sha256": "44dc29226c1e7b57620764843cf5ca78f12fa4a5e25abdcf837979103efa139f"
-            }
-          ],
-          "variants": [
+            },
             {
               "url": "/v2-1/thumbnails/shotflow/workspace-480.webp",
               "width": 480,
@@ -140,23 +138,53 @@
               "bytes": 88950,
               "sha256": "2b23b4fb265d883154a380a41d5fcca86fd89b3e52b1c630a0795378cc30d7fa"
             }
+          ],
+          "variants": [
+            {
+              "url": "/v2-1/shotflow-import-v2/thumbnails/workspace-360.webp",
+              "width": 360,
+              "height": 780,
+              "bytes": 31550,
+              "sha256": "3dffb2c90aa802934896655e0ffe12d687fffb573fdb49dc22dc67cbbcf0f39d"
+            },
+            {
+              "url": "/v2-1/shotflow-import-v2/thumbnails/workspace-540.webp",
+              "width": 540,
+              "height": 1170,
+              "bytes": 53392,
+              "sha256": "eb0e73f0dc38d64e48364367c1770a841679af9af0a0462a9ad5e5a2424439e6"
+            },
+            {
+              "url": "/v2-1/shotflow-import-v2/thumbnails/workspace-720.webp",
+              "width": 720,
+              "height": 1561,
+              "bytes": 80240,
+              "sha256": "a55f724edc76d649ed57a8b814c8cb761b9d508b6de5612f0b17c99cf8b2dafc"
+            },
+            {
+              "url": "/v2-1/shotflow-import-v2/thumbnails/workspace-960.webp",
+              "width": 960,
+              "height": 2081,
+              "bytes": 115200,
+              "sha256": "3db3bc934ccd58fa5173819d2451be4115ab7a9924de5f2cad00bdb44cc3d109"
+            }
           ]
         },
         {
           "id": "storyboard",
           "quality": 82,
           "source": {
-            "path": "v-next/review/shotflow-walkthrough-20260917/native/raw/storyboard-overview.png",
-            "sha256": "cba44a6f2cbd34c1ad4998a47de6188f65f2d89a16c46cccf103f742c7c47302",
+            "path": "public/v2-1/shotflow-import-v2/storyboard-1290.webp",
+            "sha256": "4cde9ea0fe9c40291b0809f78b65ec8fdb11a1eaf6ab474b7d758d1a464f88fd",
             "width": 1290,
             "height": 2796,
-            "bytes": 528421,
+            "bytes": 188974,
             "alpha": false,
             "colorManagement": "Source has no ICC profile; retain its sRGB RGB values without exposure or saturation adjustments.",
             "maximumExportWidth": 1290,
             "limit": "Original has fewer than 1600 horizontal pixels; keep native maximum.",
-            "provenance": "public/portfolio/shotflow-walkthrough-v1/provenance.json",
-            "selection": "Same native English screenshot as the current 2.1 card; September 17 capture, build 15, staged sample data."
+            "provenance": "public/v2-1/shotflow-import-v2/manifest.json",
+            "selection": "English native capture from the complete Reference Study analysis; 32 actual generated shots, with suggestions unconfirmed."
           },
           "previousVariants": [
             {
@@ -172,9 +200,7 @@
               "height": 2796,
               "bytes": 159164,
               "sha256": "684df4e8de5da483c6f835ff1b75de84b01aa6000df50465e953a42e610a601f"
-            }
-          ],
-          "variants": [
+            },
             {
               "url": "/v2-1/thumbnails/shotflow/storyboard-480.webp",
               "width": 480,
@@ -202,6 +228,36 @@
               "height": 2796,
               "bytes": 93442,
               "sha256": "62cf2d1d2f435d5c1af0468d36dbb12b1369de8d6baecf8ad5fdd34cc6ef5150"
+            }
+          ],
+          "variants": [
+            {
+              "url": "/v2-1/shotflow-import-v2/thumbnails/storyboard-360.webp",
+              "width": 360,
+              "height": 780,
+              "bytes": 34466,
+              "sha256": "726e0b441c41d79b3120db14b7b53beb842f20254743d9dfb12a6fba81d71fc6"
+            },
+            {
+              "url": "/v2-1/shotflow-import-v2/thumbnails/storyboard-540.webp",
+              "width": 540,
+              "height": 1170,
+              "bytes": 58932,
+              "sha256": "fd8e84cafbb48f652cea8b12ad5d4b67c7d1ac60b6bc308051de4781905a31df"
+            },
+            {
+              "url": "/v2-1/shotflow-import-v2/thumbnails/storyboard-720.webp",
+              "width": 720,
+              "height": 1561,
+              "bytes": 84448,
+              "sha256": "d32babb266699007c1feab15e5397a4a0d11e2e28fb75131c8e463866e1c2c43"
+            },
+            {
+              "url": "/v2-1/shotflow-import-v2/thumbnails/storyboard-960.webp",
+              "width": 960,
+              "height": 2081,
+              "bytes": 120058,
+              "sha256": "408e31b9c20c91385643e3479923b701f32dca5c10fef0d3c1feb2b17641c851"
             }
           ]
         }

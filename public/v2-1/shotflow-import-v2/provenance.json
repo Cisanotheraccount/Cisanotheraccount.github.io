@@ -1,0 +1,96 @@
+{
+  "schemaVersion": 1,
+  "captureDate": "2026-09-19",
+  "native": {
+    "version": "0.1.0",
+    "build": "15",
+    "device": "iPhone 15 Pro Max",
+    "runtime": "iOS 26.5 (23F77)",
+    "minimumOSVersion": "18.0",
+    "language": "en",
+    "appearance": "dark",
+    "screenPixels": [
+      1290,
+      2796
+    ],
+    "screenPoints": [
+      430,
+      932
+    ],
+    "captureType": "Headless dedicated iOS simulator; authentic production import and analysis"
+  },
+  "source": {
+    "publicAlias": "reference-film-01.mov",
+    "nativeDisplayName": "Reference video 1",
+    "duration": 95.73333333333333,
+    "width": 3840,
+    "height": 2160,
+    "fps": 30,
+    "bytes": 411684660,
+    "sha256": "b3d795c53fd358b3f740c66ed12ceb9a556d803d47863b115640228717a0fdac",
+    "publishedOriginal": false
+  },
+  "authenticity": {
+    "shotsSeeded": false,
+    "cutsEdited": false,
+    "analysisProgressSeeded": false,
+    "productionUIEdited": false,
+    "originalSourceFilesUnchanged": 109,
+    "nativeImport": "Photos picker containing only the prepared video under its video filter; actual production import invoked",
+    "captureOnlyChanges": [
+      "Persistent isolated test store",
+      "Passive result and timing writer",
+      "XCTest navigation and screenshot attachments"
+    ],
+    "reproductionEvidence": "The source hash inventory, isolated instrumentation patch, native result JSON, XCTest results, full recording, and full-resolution stitched scroll image are retained in the local review archive."
+  },
+  "timing": {
+    "engineMonotonicSeconds": 400.3079137083405,
+    "engineWallSeconds": 400.3124179840088,
+    "displaySeconds": 3,
+    "context": "CPU iOS simulator capture; not a physical-device performance benchmark",
+    "recordingMethod": "90 equally spaced native recorded frames including the endpoints of one continuous source interval; no generated progress, reordered states, or added holds"
+  },
+  "result": {
+    "sourceCount": 1,
+    "shotCount": 32,
+    "completedCount": 0,
+    "cutsUnchanged": true,
+    "engine": "TransNet V2 · Core ML FP16 v2 · Dual output",
+    "summary": {
+      "engine": "TransNet V2 · Core ML FP16 v2 · Dual output",
+      "lastFrameTime": 95.7,
+      "processedFrameCount": 2872,
+      "processedWindowCount": 58,
+      "recipeVersion": 2
+    },
+    "suggestions": "All 32 shot-size, movement, and lens fields remain unconfirmed, exactly as this capture returned. The app uses system Apple Vision for suggestions; the capture logs do not establish the underlying reason for unavailable suggestions."
+  },
+  "representative": {
+    "order": 5,
+    "start": 14.566666666666666,
+    "end": 18.666666666666668,
+    "duration": 4.1,
+    "width": 1280,
+    "height": 720,
+    "fps": 30,
+    "videoCodec": "H.264",
+    "audioCodec": "AAC",
+    "audioSampleRate": 44100,
+    "audioChannels": 2,
+    "speed": 1,
+    "decodedVideoFrames": 123,
+    "decodedPCMSampleFrames": 180810,
+    "sourceSubtitlesPreserved": true
+  },
+  "mediaValidation": {
+    "representativeVideo": "All 123 video frames and complete stereo audio decoded; MP4 faststart verified",
+    "analysisRecording": "All 90 video frames decoded; 3 seconds, H.264, silent, MP4 faststart"
+  },
+  "derivatives": {
+    "screenshots": "Native 1290×2796 screenshots encoded as WebP, with proportionally resized responsive derivatives",
+    "storyboardScroll": "Overlapping native screenshots aligned using actual accessibility row coordinates; full-resolution PNG retained locally and proportional WebP exported for the website",
+    "originalFullVideoPublished": false,
+    "storyboardViewport": "Native content paints from y=133pt to the full 932pt screen bottom. The stitched image excludes the final uniform 102px at native 3x resolution; the website restores that measured #1c1c1e trailing space after the image without changing row coordinates."
+  }
+}

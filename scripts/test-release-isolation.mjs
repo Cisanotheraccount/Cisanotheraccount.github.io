@@ -5,6 +5,7 @@ import { projectRoot, verifyBaseline } from './release-baseline.mjs';
 import { verifyThumbnailRelease } from './thumbnail-release.mjs';
 import { verifyBackgroundRelease } from './background-release.mjs';
 import { verifyEntryRelease } from './entry-release.mjs';
+import { shotFlowNamespace, verifyShotFlowRelease } from './shotflow-release.mjs';
 
 const output = path.join(projectRoot, 'dist');
 const baseline = await verifyBaseline(output);
@@ -15,6 +16,8 @@ const backgrounds = await verifyBackgroundRelease(output);
 const backgroundPaths = new Set(backgrounds.files);
 const entry = await verifyEntryRelease(output);
 const entryPaths = new Set(entry.files);
+const shotFlow = await verifyShotFlowRelease(output);
+const shotFlowPaths = new Set(shotFlow.files);
 async function filesUnder(directory, relative = '') {
   const result = [];
   for (const entry of await readdir(path.join(directory, relative), { withFileTypes: true })) {
@@ -26,10 +29,14 @@ async function filesUnder(directory, relative = '') {
 const files = await filesUnder(output);
 const added = files.filter(file => !baselinePaths.has(file));
 assert(added.length > 2, 'The independent 2.1 build must exist.');
-assert(added.every(file => file.startsWith('assets/2-1/') || thumbnailPaths.has(file) || backgroundPaths.has(file) || entryPaths.has(file) || ['galaxci/2.1/index.html', 'v2-1/index.html'].includes(file)), '2.1 may only append namespaced bundles and verified thumbnail/background/entry dependencies.');
+assert(added.every(file => file.startsWith('assets/2-1/') || thumbnailPaths.has(file) || backgroundPaths.has(file) || entryPaths.has(file) || shotFlowPaths.has(file) || ['galaxci/2.1/index.html', 'v2-1/index.html'].includes(file)), '2.1 may only append namespaced bundles and verified thumbnail/background/entry/ShotFlow dependencies.');
 for (const file of thumbnailPaths) assert(!baselinePaths.has(file), '2.1 thumbnails cannot replace any frozen 2.0 asset');
 for (const file of backgroundPaths) assert(!baselinePaths.has(file), '2.1 backgrounds cannot replace any frozen 2.0 asset');
 for (const file of entryPaths) assert(!baselinePaths.has(file), '2.1 entry assets cannot replace any frozen 2.0 asset');
+for (const file of shotFlowPaths) assert(!baselinePaths.has(file), '2.1 ShotFlow assets cannot replace any frozen 2.0 asset');
+for (const file of thumbnailPaths) if (file.startsWith(shotFlowNamespace)) {
+  assert(shotFlowPaths.has(file), 'New ShotFlow thumbnails must also belong to the capture manifest');
+}
 const newPage = await readFile(path.join(output, 'galaxci/2.1/index.html'), 'utf8');
 assert.equal(await readFile(path.join(output, 'v2-1/index.html'), 'utf8'), newPage, 'Local and branded 2.1 entries must match.');
 assert.match(newPage, /<title>[^<]*2\.1[^<]*<\/title>/, 'The tab title identifies 2.1.');
@@ -45,4 +52,4 @@ for (const file of files.filter(file => /\.(html|js|css)$/.test(file))) {
     dependencies += 1;
   }
 }
-console.log(`Release isolation passed: ${baseline.files.length} frozen SHA-256 matches, ${added.length} namespaced additions, ${thumbnails.files.length - 1} verified thumbnail hashes, ${backgrounds.files.length - 1} new/${backgrounds.sharedCount} shared background hashes, ${entry.files.length - 1} verified entry hashes, ${dependencies} existing JS/CSS references.`);
+console.log(`Release isolation passed: ${baseline.files.length} frozen SHA-256 matches, ${added.length} namespaced additions, ${thumbnails.files.length - 1} verified thumbnail hashes, ${backgrounds.files.length - 1} new/${backgrounds.sharedCount} shared background hashes, ${entry.files.length - 1} verified entry hashes, ${shotFlow.files.length - 1} verified ShotFlow hashes, ${dependencies} existing JS/CSS references.`);

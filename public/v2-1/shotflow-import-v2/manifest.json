@@ -1,0 +1,1299 @@
+{
+  "schemaVersion": 1,
+  "project": "Reference Study",
+  "native": {
+    "version": "0.1.0",
+    "build": "15",
+    "device": "iPhone 15 Pro Max",
+    "runtime": "iOS 26.5 (23F77)",
+    "minimumOSVersion": "18.0",
+    "language": "en",
+    "appearance": "dark",
+    "screenPixels": [
+      1290,
+      2796
+    ],
+    "screenPoints": [
+      430,
+      932
+    ],
+    "captureType": "Headless dedicated iOS simulator; authentic production import and analysis"
+  },
+  "source": {
+    "publicAlias": "reference-film-01.mov",
+    "nativeDisplayName": "Reference video 1",
+    "duration": 95.73333333333333,
+    "width": 3840,
+    "height": 2160,
+    "fps": 30,
+    "bytes": 411684660,
+    "sha256": "b3d795c53fd358b3f740c66ed12ceb9a556d803d47863b115640228717a0fdac",
+    "publishedOriginal": false
+  },
+  "analysis": {
+    "recording": "/v2-1/shotflow-import-v2/analysis-condensed.mp4",
+    "actualSeconds": 400.3079137083405,
+    "displaySeconds": 3,
+    "engine": "TransNet V2 · Core ML FP16 v2 · Dual output",
+    "summary": {
+      "engine": "TransNet V2 · Core ML FP16 v2 · Dual output",
+      "lastFrameTime": 95.7,
+      "processedFrameCount": 2872,
+      "processedWindowCount": 58,
+      "recipeVersion": 2
+    },
+    "shots": [
+      {
+        "shotId": "41B62849-37DB-481B-969D-20D2E11D929C",
+        "order": 1,
+        "start": 0,
+        "end": 6.166666666666667,
+        "duration": 6.166666666666667,
+        "title": "Shot size to confirm · Camera movement to confirm",
+        "shotScale": "To confirm",
+        "motion": "To confirm",
+        "lens": "Unconfirmed",
+        "suggestionConfidence": 0.35,
+        "focalLengthConfidence": "unavailable",
+        "motionConfidence": "unavailable",
+        "isComplete": false
+      },
+      {
+        "shotId": "E7F2D06C-1B57-4093-A325-51086FC540EC",
+        "order": 2,
+        "start": 6.166666666666667,
+        "end": 9.6,
+        "duration": 3.4333333333333327,
+        "title": "Shot size to confirm · Camera movement to confirm",
+        "shotScale": "To confirm",
+        "motion": "To confirm",
+        "lens": "Unconfirmed",
+        "suggestionConfidence": 0.35,
+        "focalLengthConfidence": "unavailable",
+        "motionConfidence": "unavailable",
+        "isComplete": false
+      },
+      {
+        "shotId": "0F7A706F-0D11-4B5E-ADED-6CD6CD2C2FD0",
+        "order": 3,
+        "start": 9.6,
+        "end": 12.2,
+        "duration": 2.5999999999999996,
+        "title": "Shot size to confirm · Camera movement to confirm",
+        "shotScale": "To confirm",
+        "motion": "To confirm",
+        "lens": "Unconfirmed",
+        "suggestionConfidence": 0.35,
+        "focalLengthConfidence": "unavailable",
+        "motionConfidence": "unavailable",
+        "isComplete": false
+      },
+      {
+        "shotId": "FA1F2352-3584-4A5B-B072-F91CD54FC047",
+        "order": 4,
+        "start": 12.2,
+        "end": 14.566666666666666,
+        "duration": 2.366666666666667,
+        "title": "Shot size to confirm · Camera movement to confirm",
+        "shotScale": "To confirm",
+        "motion": "To confirm",
+        "lens": "Unconfirmed",
+        "suggestionConfidence": 0.35,
+        "focalLengthConfidence": "unavailable",
+        "motionConfidence": "unavailable",
+        "isComplete": false
+      },
+      {
+        "shotId": "E236DDD7-484E-4FB2-9289-AC74FAB6ADE3",
+        "order": 5,
+        "start": 14.566666666666666,
+        "end": 18.666666666666668,
+        "duration": 4.100000000000001,
+        "title": "Shot size to confirm · Camera movement to confirm",
+        "shotScale": "To confirm",
+        "motion": "To confirm",
+        "lens": "Unconfirmed",
+        "suggestionConfidence": 0.35,
+        "focalLengthConfidence": "unavailable",
+        "motionConfidence": "unavailable",
+        "isComplete": false
+      },
+      {
+        "shotId": "D14089CB-2922-4E46-9BDA-1A16FF8177B1",
+        "order": 6,
+        "start": 18.666666666666668,
+        "end": 21.433333333333334,
+        "duration": 2.7666666666666657,
+        "title": "Shot size to confirm · Camera movement to confirm",
+        "shotScale": "To confirm",
+        "motion": "To confirm",
+        "lens": "Unconfirmed",
+        "suggestionConfidence": 0.35,
+        "focalLengthConfidence": "unavailable",
+        "motionConfidence": "unavailable",
+        "isComplete": false
+      },
+      {
+        "shotId": "2679C7DD-CC96-4FB2-81BC-7FB30A73F3C8",
+        "order": 7,
+        "start": 21.433333333333334,
+        "end": 23.433333333333334,
+        "duration": 2,
+        "title": "Shot size to confirm · Camera movement to confirm",
+        "shotScale": "To confirm",
+        "motion": "To confirm",
+        "lens": "Unconfirmed",
+        "suggestionConfidence": 0.35,
+        "focalLengthConfidence": "unavailable",
+        "motionConfidence": "unavailable",
+        "isComplete": false
+      },
+      {
+        "shotId": "46056A56-70A8-4919-B57E-7D4C26D9DDC0",
+        "order": 8,
+        "start": 23.433333333333334,
+        "end": 26.566666666666666,
+        "duration": 3.133333333333333,
+        "title": "Shot size to confirm · Camera movement to confirm",
+        "shotScale": "To confirm",
+        "motion": "To confirm",
+        "lens": "Unconfirmed",
+        "suggestionConfidence": 0.35,
+        "focalLengthConfidence": "unavailable",
+        "motionConfidence": "unavailable",
+        "isComplete": false
+      },
+      {
+        "shotId": "341E55AB-634B-4A70-9F84-F4A32BB98444",
+        "order": 9,
+        "start": 26.566666666666666,
+        "end": 29.266666666666666,
+        "duration": 2.6999999999999993,
+        "title": "Shot size to confirm · Camera movement to confirm",
+        "shotScale": "To confirm",
+        "motion": "To confirm",
+        "lens": "Unconfirmed",
+        "suggestionConfidence": 0.35,
+        "focalLengthConfidence": "unavailable",
+        "motionConfidence": "unavailable",
+        "isComplete": false
+      },
+      {
+        "shotId": "B8B15F15-FAC1-4453-9874-28702B946785",
+        "order": 10,
+        "start": 29.266666666666666,
+        "end": 32,
+        "duration": 2.7333333333333343,
+        "title": "Shot size to confirm · Camera movement to confirm",
+        "shotScale": "To confirm",
+        "motion": "To confirm",
+        "lens": "Unconfirmed",
+        "suggestionConfidence": 0.35,
+        "focalLengthConfidence": "unavailable",
+        "motionConfidence": "unavailable",
+        "isComplete": false
+      },
+      {
+        "shotId": "A2D547F5-3B90-42F9-A6F9-A8BC24D21F77",
+        "order": 11,
+        "start": 32,
+        "end": 34.4,
+        "duration": 2.3999999999999986,
+        "title": "Shot size to confirm · Camera movement to confirm",
+        "shotScale": "To confirm",
+        "motion": "To confirm",
+        "lens": "Unconfirmed",
+        "suggestionConfidence": 0.35,
+        "focalLengthConfidence": "unavailable",
+        "motionConfidence": "unavailable",
+        "isComplete": false
+      },
+      {
+        "shotId": "05A25BDF-6FE2-4C56-B1EA-5ED40040AE11",
+        "order": 12,
+        "start": 34.4,
+        "end": 37.86666666666667,
+        "duration": 3.4666666666666686,
+        "title": "Shot size to confirm · Camera movement to confirm",
+        "shotScale": "To confirm",
+        "motion": "To confirm",
+        "lens": "Unconfirmed",
+        "suggestionConfidence": 0.35,
+        "focalLengthConfidence": "unavailable",
+        "motionConfidence": "unavailable",
+        "isComplete": false
+      },
+      {
+        "shotId": "9FA62202-2B88-4C20-8ED7-CCAC12E02BAA",
+        "order": 13,
+        "start": 37.86666666666667,
+        "end": 41.333333333333336,
+        "duration": 3.4666666666666686,
+        "title": "Shot size to confirm · Camera movement to confirm",
+        "shotScale": "To confirm",
+        "motion": "To confirm",
+        "lens": "Unconfirmed",
+        "suggestionConfidence": 0.35,
+        "focalLengthConfidence": "unavailable",
+        "motionConfidence": "unavailable",
+        "isComplete": false
+      },
+      {
+        "shotId": "CDAFED5D-96CD-408C-89EA-2BF7CE776EAC",
+        "order": 14,
+        "start": 41.333333333333336,
+        "end": 45.93333333333333,
+        "duration": 4.599999999999994,
+        "title": "Shot size to confirm · Camera movement to confirm",
+        "shotScale": "To confirm",
+        "motion": "To confirm",
+        "lens": "Unconfirmed",
+        "suggestionConfidence": 0.35,
+        "focalLengthConfidence": "unavailable",
+        "motionConfidence": "unavailable",
+        "isComplete": false
+      },
+      {
+        "shotId": "CD61E8B0-B500-4F5C-860C-DD340E717688",
+        "order": 15,
+        "start": 45.93333333333333,
+        "end": 48.5,
+        "duration": 2.56666666666667,
+        "title": "Shot size to confirm · Camera movement to confirm",
+        "shotScale": "To confirm",
+        "motion": "To confirm",
+        "lens": "Unconfirmed",
+        "suggestionConfidence": 0.35,
+        "focalLengthConfidence": "unavailable",
+        "motionConfidence": "unavailable",
+        "isComplete": false
+      },
+      {
+        "shotId": "50E091A8-0DD8-4FAD-BFB6-A7A2070C488A",
+        "order": 16,
+        "start": 48.5,
+        "end": 52.03333333333333,
+        "duration": 3.5333333333333314,
+        "title": "Shot size to confirm · Camera movement to confirm",
+        "shotScale": "To confirm",
+        "motion": "To confirm",
+        "lens": "Unconfirmed",
+        "suggestionConfidence": 0.35,
+        "focalLengthConfidence": "unavailable",
+        "motionConfidence": "unavailable",
+        "isComplete": false
+      },
+      {
+        "shotId": "49968B41-1531-4D6F-8503-9E5E29DA108C",
+        "order": 17,
+        "start": 52.03333333333333,
+        "end": 55.7,
+        "duration": 3.6666666666666714,
+        "title": "Shot size to confirm · Camera movement to confirm",
+        "shotScale": "To confirm",
+        "motion": "To confirm",
+        "lens": "Unconfirmed",
+        "suggestionConfidence": 0.35,
+        "focalLengthConfidence": "unavailable",
+        "motionConfidence": "unavailable",
+        "isComplete": false
+      },
+      {
+        "shotId": "9EEE88DC-A734-49F5-858D-96CED9C44A20",
+        "order": 18,
+        "start": 55.7,
+        "end": 58.166666666666664,
+        "duration": 2.4666666666666615,
+        "title": "Shot size to confirm · Camera movement to confirm",
+        "shotScale": "To confirm",
+        "motion": "To confirm",
+        "lens": "Unconfirmed",
+        "suggestionConfidence": 0.35,
+        "focalLengthConfidence": "unavailable",
+        "motionConfidence": "unavailable",
+        "isComplete": false
+      },
+      {
+        "shotId": "B4547E3A-3DD5-408D-B8EC-EAB174103686",
+        "order": 19,
+        "start": 58.166666666666664,
+        "end": 59.53333333333333,
+        "duration": 1.3666666666666671,
+        "title": "Shot size to confirm · Camera movement to confirm",
+        "shotScale": "To confirm",
+        "motion": "To confirm",
+        "lens": "Unconfirmed",
+        "suggestionConfidence": 0.35,
+        "focalLengthConfidence": "unavailable",
+        "motionConfidence": "unavailable",
+        "isComplete": false
+      },
+      {
+        "shotId": "59C7F918-676A-464C-BFF7-89CCFA454629",
+        "order": 20,
+        "start": 59.53333333333333,
+        "end": 61.36666666666667,
+        "duration": 1.8333333333333357,
+        "title": "Shot size to confirm · Camera movement to confirm",
+        "shotScale": "To confirm",
+        "motion": "To confirm",
+        "lens": "Unconfirmed",
+        "suggestionConfidence": 0.35,
+        "focalLengthConfidence": "unavailable",
+        "motionConfidence": "unavailable",
+        "isComplete": false
+      },
+      {
+        "shotId": "D40FF4B2-A8AA-4C9E-ACA6-60DDBCF2AA65",
+        "order": 21,
+        "start": 61.36666666666667,
+        "end": 66.73333333333333,
+        "duration": 5.366666666666667,
+        "title": "Shot size to confirm · Camera movement to confirm",
+        "shotScale": "To confirm",
+        "motion": "To confirm",
+        "lens": "Unconfirmed",
+        "suggestionConfidence": 0.35,
+        "focalLengthConfidence": "unavailable",
+        "motionConfidence": "unavailable",
+        "isComplete": false
+      },
+      {
+        "shotId": "E52C8568-9133-478F-86AA-647A0EDFDBD8",
+        "order": 22,
+        "start": 66.73333333333333,
+        "end": 68.73333333333333,
+        "duration": 2,
+        "title": "Shot size to confirm · Camera movement to confirm",
+        "shotScale": "To confirm",
+        "motion": "To confirm",
+        "lens": "Unconfirmed",
+        "suggestionConfidence": 0.35,
+        "focalLengthConfidence": "unavailable",
+        "motionConfidence": "unavailable",
+        "isComplete": false
+      },
+      {
+        "shotId": "3AC4BC67-317A-4E33-9A2E-6AA1860E8248",
+        "order": 23,
+        "start": 68.73333333333333,
+        "end": 72.46666666666667,
+        "duration": 3.7333333333333343,
+        "title": "Shot size to confirm · Camera movement to confirm",
+        "shotScale": "To confirm",
+        "motion": "To confirm",
+        "lens": "Unconfirmed",
+        "suggestionConfidence": 0.35,
+        "focalLengthConfidence": "unavailable",
+        "motionConfidence": "unavailable",
+        "isComplete": false
+      },
+      {
+        "shotId": "67A394A8-1FAF-4EE9-BBC3-B6779D24B1D3",
+        "order": 24,
+        "start": 72.46666666666667,
+        "end": 74.46666666666667,
+        "duration": 2,
+        "title": "Shot size to confirm · Camera movement to confirm",
+        "shotScale": "To confirm",
+        "motion": "To confirm",
+        "lens": "Unconfirmed",
+        "suggestionConfidence": 0.35,
+        "focalLengthConfidence": "unavailable",
+        "motionConfidence": "unavailable",
+        "isComplete": false
+      },
+      {
+        "shotId": "611CD00E-17DF-489D-B91F-AB6B4DB26445",
+        "order": 25,
+        "start": 74.46666666666667,
+        "end": 76.5,
+        "duration": 2.0333333333333314,
+        "title": "Shot size to confirm · Camera movement to confirm",
+        "shotScale": "To confirm",
+        "motion": "To confirm",
+        "lens": "Unconfirmed",
+        "suggestionConfidence": 0.35,
+        "focalLengthConfidence": "unavailable",
+        "motionConfidence": "unavailable",
+        "isComplete": false
+      },
+      {
+        "shotId": "966D9662-0620-4EE6-9E00-1D135EE8A465",
+        "order": 26,
+        "start": 76.5,
+        "end": 78.96666666666667,
+        "duration": 2.4666666666666686,
+        "title": "Shot size to confirm · Camera movement to confirm",
+        "shotScale": "To confirm",
+        "motion": "To confirm",
+        "lens": "Unconfirmed",
+        "suggestionConfidence": 0.35,
+        "focalLengthConfidence": "unavailable",
+        "motionConfidence": "unavailable",
+        "isComplete": false
+      },
+      {
+        "shotId": "04465646-5DF6-4EEF-A6C4-56DF5AF19028",
+        "order": 27,
+        "start": 78.96666666666667,
+        "end": 81.8,
+        "duration": 2.8333333333333286,
+        "title": "Shot size to confirm · Camera movement to confirm",
+        "shotScale": "To confirm",
+        "motion": "To confirm",
+        "lens": "Unconfirmed",
+        "suggestionConfidence": 0.35,
+        "focalLengthConfidence": "unavailable",
+        "motionConfidence": "unavailable",
+        "isComplete": false
+      },
+      {
+        "shotId": "9AB989E8-6813-423A-A72A-E1ACA153B625",
+        "order": 28,
+        "start": 81.8,
+        "end": 85.43333333333334,
+        "duration": 3.63333333333334,
+        "title": "Shot size to confirm · Camera movement to confirm",
+        "shotScale": "To confirm",
+        "motion": "To confirm",
+        "lens": "Unconfirmed",
+        "suggestionConfidence": 0.35,
+        "focalLengthConfidence": "unavailable",
+        "motionConfidence": "unavailable",
+        "isComplete": false
+      },
+      {
+        "shotId": "D670C3B1-D61B-44DB-8111-DAA40B8A34AA",
+        "order": 29,
+        "start": 85.43333333333334,
+        "end": 88.03333333333333,
+        "duration": 2.5999999999999943,
+        "title": "Shot size to confirm · Camera movement to confirm",
+        "shotScale": "To confirm",
+        "motion": "To confirm",
+        "lens": "Unconfirmed",
+        "suggestionConfidence": 0.35,
+        "focalLengthConfidence": "unavailable",
+        "motionConfidence": "unavailable",
+        "isComplete": false
+      },
+      {
+        "shotId": "E0038D47-F472-44EA-B500-07717B683A8B",
+        "order": 30,
+        "start": 88.03333333333333,
+        "end": 91.66666666666667,
+        "duration": 3.63333333333334,
+        "title": "Shot size to confirm · Camera movement to confirm",
+        "shotScale": "To confirm",
+        "motion": "To confirm",
+        "lens": "Unconfirmed",
+        "suggestionConfidence": 0.35,
+        "focalLengthConfidence": "unavailable",
+        "motionConfidence": "unavailable",
+        "isComplete": false
+      },
+      {
+        "shotId": "90ADF432-129C-4DF7-A278-D5908322B35B",
+        "order": 31,
+        "start": 91.66666666666667,
+        "end": 94.23333333333333,
+        "duration": 2.566666666666663,
+        "title": "Shot size to confirm · Camera movement to confirm",
+        "shotScale": "To confirm",
+        "motion": "To confirm",
+        "lens": "Unconfirmed",
+        "suggestionConfidence": 0.35,
+        "focalLengthConfidence": "unavailable",
+        "motionConfidence": "unavailable",
+        "isComplete": false
+      },
+      {
+        "shotId": "2829E825-A2F5-4365-BA00-758ADC8EBC10",
+        "order": 32,
+        "start": 94.23333333333333,
+        "end": 95.73333333333333,
+        "duration": 1.5,
+        "title": "Shot size to confirm · Camera movement to confirm",
+        "shotScale": "To confirm",
+        "motion": "To confirm",
+        "lens": "Unconfirmed",
+        "suggestionConfidence": 0.35,
+        "focalLengthConfidence": "unavailable",
+        "motionConfidence": "unavailable",
+        "isComplete": false
+      }
+    ],
+    "note": "This real analysis generated 32 shots. Shot size, camera movement, and lens suggestions remain unconfirmed. The recorded analysis is condensed to a 3-second demonstration; it is not a processing-speed benchmark."
+  },
+  "states": {
+    "projects": {
+      "image": "/v2-1/shotflow-import-v2/projects-1290.webp",
+      "width": 1290,
+      "height": 2796,
+      "hotspots": [
+        {
+          "action": "create-project",
+          "label": "New project",
+          "rectPercent": [
+            80.93023255813954,
+            6.759656652360516,
+            13.488372093023257,
+            3.8626609442060076
+          ]
+        }
+      ]
+    },
+    "new-project": {
+      "image": "/v2-1/shotflow-import-v2/new-project-1290.webp",
+      "width": 1290,
+      "height": 2796,
+      "hotspots": [
+        {
+          "action": "confirm-project",
+          "label": "Create",
+          "rectPercent": [
+            75.45051379123852,
+            13.916059486974753,
+            17.315305570578676,
+            3.71893402535183
+          ]
+        }
+      ]
+    },
+    "add-reference": {
+      "image": "/v2-1/shotflow-import-v2/add-reference-1290.webp",
+      "width": 1290,
+      "height": 2796,
+      "hotspots": [
+        {
+          "action": "open-photos",
+          "label": "Photos",
+          "rectPercent": [
+            8.372093023255815,
+            44.38483547925608,
+            40.46511627906977,
+            5.579399141630901
+          ]
+        }
+      ]
+    },
+    "photos": {
+      "image": "/v2-1/shotflow-import-v2/photos-1290.webp",
+      "width": 1290,
+      "height": 2796,
+      "hotspots": [
+        {
+          "action": "select-video",
+          "label": "Select prepared video",
+          "rectPercent": [
+            0,
+            37.23175965665236,
+            33.02325581395349,
+            15.236051502145923
+          ]
+        }
+      ]
+    },
+    "selected-video": {
+      "image": "/v2-1/shotflow-import-v2/selected-video-1290.webp",
+      "width": 1290,
+      "height": 2796,
+      "hotspots": [
+        {
+          "action": "confirm-video",
+          "label": "Add selected video",
+          "rectPercent": [
+            85.34883720930233,
+            13.197424892703863,
+            10.232558139534884,
+            4.721030042918455
+          ]
+        }
+      ]
+    },
+    "analysis": {
+      "image": "/v2-1/shotflow-import-v2/analysis-1290.webp",
+      "width": 1290,
+      "height": 2796,
+      "hotspots": [
+        {
+          "action": "close-analysis",
+          "label": "Close",
+          "rectPercent": [
+            5.581395348837209,
+            8.905579399141631,
+            15.581395348837209,
+            3.8626609442060085
+          ]
+        }
+      ]
+    },
+    "workspace": {
+      "image": "/v2-1/shotflow-import-v2/workspace-1290.webp",
+      "width": 1290,
+      "height": 2796,
+      "hotspots": [
+        {
+          "action": "open-storyboard",
+          "label": "View storyboard",
+          "rectPercent": [
+            4.651162790697675,
+            35.94420600858369,
+            90.69767441860465,
+            6.223175965665236
+          ]
+        }
+      ]
+    },
+    "storyboard": {
+      "image": "/v2-1/shotflow-import-v2/storyboard-1290.webp",
+      "width": 1290,
+      "height": 2796,
+      "hotspots": []
+    },
+    "player": {
+      "image": "/v2-1/shotflow-import-v2/player-1290.webp",
+      "width": 1290,
+      "height": 2796,
+      "hotspots": [
+        {
+          "action": "play-shot",
+          "label": "Play",
+          "rectPercent": [
+            16.74418604651163,
+            84.33476394849785,
+            53.48837209302326,
+            6.223175965665236
+          ]
+        }
+      ]
+    },
+    "field": {
+      "image": "/v2-1/shotflow-import-v2/field-1290.webp",
+      "width": 1290,
+      "height": 2796,
+      "hotspots": []
+    }
+  },
+  "storyboard": {
+    "scrollContent": {
+      "image": "/v2-1/shotflow-import-v2/storyboard-scroll.webp",
+      "width": 800,
+      "height": 13628
+    },
+    "viewportRectPercent": [
+      0,
+      14.27038626609442,
+      100,
+      85.72961373390558
+    ],
+    "rows": [
+      {
+        "shotId": "41B62849-37DB-481B-969D-20D2E11D929C",
+        "order": 1,
+        "start": 0,
+        "end": 6.166666666666667,
+        "rectInContent": [
+          74.4186,
+          460.7752,
+          651.1628,
+          248.6822
+        ]
+      },
+      {
+        "shotId": "E7F2D06C-1B57-4093-A325-51086FC540EC",
+        "order": 2,
+        "start": 6.166666666666667,
+        "end": 9.6,
+        "rectInContent": [
+          74.4186,
+          873.1783,
+          651.1628,
+          248.6822
+        ]
+      },
+      {
+        "shotId": "0F7A706F-0D11-4B5E-ADED-6CD6CD2C2FD0",
+        "order": 3,
+        "start": 9.6,
+        "end": 12.2,
+        "rectInContent": [
+          74.4186,
+          1285.5814,
+          651.1628,
+          248.6822
+        ]
+      },
+      {
+        "shotId": "FA1F2352-3584-4A5B-B072-F91CD54FC047",
+        "order": 4,
+        "start": 12.2,
+        "end": 14.566666666666666,
+        "rectInContent": [
+          74.4186,
+          1697.9845,
+          651.1628,
+          248.6822
+        ]
+      },
+      {
+        "shotId": "E236DDD7-484E-4FB2-9289-AC74FAB6ADE3",
+        "order": 5,
+        "start": 14.566666666666666,
+        "end": 18.666666666666668,
+        "rectInContent": [
+          74.4186,
+          2110.3876,
+          651.1628,
+          248.6822
+        ]
+      },
+      {
+        "shotId": "D14089CB-2922-4E46-9BDA-1A16FF8177B1",
+        "order": 6,
+        "start": 18.666666666666668,
+        "end": 21.433333333333334,
+        "rectInContent": [
+          74.4186,
+          2522.7907,
+          651.1628,
+          248.6822
+        ]
+      },
+      {
+        "shotId": "2679C7DD-CC96-4FB2-81BC-7FB30A73F3C8",
+        "order": 7,
+        "start": 21.433333333333334,
+        "end": 23.433333333333334,
+        "rectInContent": [
+          74.4186,
+          2935.1938,
+          651.1628,
+          248.6822
+        ]
+      },
+      {
+        "shotId": "46056A56-70A8-4919-B57E-7D4C26D9DDC0",
+        "order": 8,
+        "start": 23.433333333333334,
+        "end": 26.566666666666666,
+        "rectInContent": [
+          74.4186,
+          3347.5969,
+          651.1628,
+          248.6822
+        ]
+      },
+      {
+        "shotId": "341E55AB-634B-4A70-9F84-F4A32BB98444",
+        "order": 9,
+        "start": 26.566666666666666,
+        "end": 29.266666666666666,
+        "rectInContent": [
+          74.4186,
+          3760,
+          651.1628,
+          248.6822
+        ]
+      },
+      {
+        "shotId": "B8B15F15-FAC1-4453-9874-28702B946785",
+        "order": 10,
+        "start": 29.266666666666666,
+        "end": 32,
+        "rectInContent": [
+          74.4186,
+          4172.4031,
+          651.1628,
+          248.6822
+        ]
+      },
+      {
+        "shotId": "A2D547F5-3B90-42F9-A6F9-A8BC24D21F77",
+        "order": 11,
+        "start": 32,
+        "end": 34.4,
+        "rectInContent": [
+          74.4186,
+          4584.8062,
+          651.1628,
+          248.6822
+        ]
+      },
+      {
+        "shotId": "05A25BDF-6FE2-4C56-B1EA-5ED40040AE11",
+        "order": 12,
+        "start": 34.4,
+        "end": 37.86666666666667,
+        "rectInContent": [
+          74.4186,
+          4997.2093,
+          651.1628,
+          248.6822
+        ]
+      },
+      {
+        "shotId": "9FA62202-2B88-4C20-8ED7-CCAC12E02BAA",
+        "order": 13,
+        "start": 37.86666666666667,
+        "end": 41.333333333333336,
+        "rectInContent": [
+          74.4186,
+          5409.6124,
+          651.1628,
+          248.6822
+        ]
+      },
+      {
+        "shotId": "CDAFED5D-96CD-408C-89EA-2BF7CE776EAC",
+        "order": 14,
+        "start": 41.333333333333336,
+        "end": 45.93333333333333,
+        "rectInContent": [
+          74.4186,
+          5822.0155,
+          651.1628,
+          248.6822
+        ]
+      },
+      {
+        "shotId": "CD61E8B0-B500-4F5C-860C-DD340E717688",
+        "order": 15,
+        "start": 45.93333333333333,
+        "end": 48.5,
+        "rectInContent": [
+          74.4186,
+          6234.4186,
+          651.1628,
+          248.6822
+        ]
+      },
+      {
+        "shotId": "50E091A8-0DD8-4FAD-BFB6-A7A2070C488A",
+        "order": 16,
+        "start": 48.5,
+        "end": 52.03333333333333,
+        "rectInContent": [
+          74.4186,
+          6646.8217,
+          651.1628,
+          248.6822
+        ]
+      },
+      {
+        "shotId": "49968B41-1531-4D6F-8503-9E5E29DA108C",
+        "order": 17,
+        "start": 52.03333333333333,
+        "end": 55.7,
+        "rectInContent": [
+          74.4186,
+          7059.2248,
+          651.1628,
+          248.6822
+        ]
+      },
+      {
+        "shotId": "9EEE88DC-A734-49F5-858D-96CED9C44A20",
+        "order": 18,
+        "start": 55.7,
+        "end": 58.166666666666664,
+        "rectInContent": [
+          74.4186,
+          7471.6279,
+          651.1628,
+          248.6822
+        ]
+      },
+      {
+        "shotId": "B4547E3A-3DD5-408D-B8EC-EAB174103686",
+        "order": 19,
+        "start": 58.166666666666664,
+        "end": 59.53333333333333,
+        "rectInContent": [
+          74.4186,
+          7884.031,
+          651.1628,
+          248.6822
+        ]
+      },
+      {
+        "shotId": "59C7F918-676A-464C-BFF7-89CCFA454629",
+        "order": 20,
+        "start": 59.53333333333333,
+        "end": 61.36666666666667,
+        "rectInContent": [
+          74.4186,
+          8296.4341,
+          651.1628,
+          248.6822
+        ]
+      },
+      {
+        "shotId": "D40FF4B2-A8AA-4C9E-ACA6-60DDBCF2AA65",
+        "order": 21,
+        "start": 61.36666666666667,
+        "end": 66.73333333333333,
+        "rectInContent": [
+          74.4186,
+          8708.8372,
+          651.1628,
+          248.6822
+        ]
+      },
+      {
+        "shotId": "E52C8568-9133-478F-86AA-647A0EDFDBD8",
+        "order": 22,
+        "start": 66.73333333333333,
+        "end": 68.73333333333333,
+        "rectInContent": [
+          74.4186,
+          9121.2403,
+          651.1628,
+          248.6822
+        ]
+      },
+      {
+        "shotId": "3AC4BC67-317A-4E33-9A2E-6AA1860E8248",
+        "order": 23,
+        "start": 68.73333333333333,
+        "end": 72.46666666666667,
+        "rectInContent": [
+          74.4186,
+          9533.6434,
+          651.1628,
+          248.6822
+        ]
+      },
+      {
+        "shotId": "67A394A8-1FAF-4EE9-BBC3-B6779D24B1D3",
+        "order": 24,
+        "start": 72.46666666666667,
+        "end": 74.46666666666667,
+        "rectInContent": [
+          74.4186,
+          9946.0465,
+          651.1628,
+          248.6822
+        ]
+      },
+      {
+        "shotId": "611CD00E-17DF-489D-B91F-AB6B4DB26445",
+        "order": 25,
+        "start": 74.46666666666667,
+        "end": 76.5,
+        "rectInContent": [
+          74.4186,
+          10358.4496,
+          651.1628,
+          248.6822
+        ]
+      },
+      {
+        "shotId": "966D9662-0620-4EE6-9E00-1D135EE8A465",
+        "order": 26,
+        "start": 76.5,
+        "end": 78.96666666666667,
+        "rectInContent": [
+          74.4186,
+          10770.8527,
+          651.1628,
+          248.6822
+        ]
+      },
+      {
+        "shotId": "04465646-5DF6-4EEF-A6C4-56DF5AF19028",
+        "order": 27,
+        "start": 78.96666666666667,
+        "end": 81.8,
+        "rectInContent": [
+          74.4186,
+          11183.2558,
+          651.1628,
+          248.6822
+        ]
+      },
+      {
+        "shotId": "9AB989E8-6813-423A-A72A-E1ACA153B625",
+        "order": 28,
+        "start": 81.8,
+        "end": 85.43333333333334,
+        "rectInContent": [
+          74.4186,
+          11595.6589,
+          651.1628,
+          248.6822
+        ]
+      },
+      {
+        "shotId": "D670C3B1-D61B-44DB-8111-DAA40B8A34AA",
+        "order": 29,
+        "start": 85.43333333333334,
+        "end": 88.03333333333333,
+        "rectInContent": [
+          74.4186,
+          12008.062,
+          651.1628,
+          248.6822
+        ]
+      },
+      {
+        "shotId": "E0038D47-F472-44EA-B500-07717B683A8B",
+        "order": 30,
+        "start": 88.03333333333333,
+        "end": 91.66666666666667,
+        "rectInContent": [
+          74.4186,
+          12420.4651,
+          651.1628,
+          248.6822
+        ]
+      },
+      {
+        "shotId": "90ADF432-129C-4DF7-A278-D5908322B35B",
+        "order": 31,
+        "start": 91.66666666666667,
+        "end": 94.23333333333333,
+        "rectInContent": [
+          74.4186,
+          12832.8682,
+          651.1628,
+          248.6822
+        ]
+      },
+      {
+        "shotId": "2829E825-A2F5-4365-BA00-758ADC8EBC10",
+        "order": 32,
+        "start": 94.23333333333333,
+        "end": 95.73333333333333,
+        "rectInContent": [
+          74.4186,
+          13245.2713,
+          651.1628,
+          248.6822
+        ]
+      }
+    ],
+    "trailingSpace": {
+      "width": 1290,
+      "height": 102,
+      "color": "#1c1c1e"
+    }
+  },
+  "representative": {
+    "shotId": "E236DDD7-484E-4FB2-9289-AC74FAB6ADE3",
+    "order": 5,
+    "start": 14.566666666666666,
+    "end": 18.666666666666668,
+    "media": "/v2-1/shotflow-import-v2/representative-shot.mp4",
+    "poster": "/v2-1/shotflow-import-v2/representative-shot-poster.webp",
+    "playerVideoRectPercent": [
+      0,
+      33.02262160228898,
+      100,
+      25.95225321888412
+    ]
+  },
+  "assets": [
+    {
+      "path": "/v2-1/shotflow-import-v2/add-reference-1290.webp",
+      "sha256": "cfdbf372db402b0c3b0391b4976ff3ea82888dddc7344d4397c6ae95a410e527",
+      "bytes": 86974,
+      "mime": "image/webp",
+      "width": 1290,
+      "height": 2796
+    },
+    {
+      "path": "/v2-1/shotflow-import-v2/analysis-1290.webp",
+      "sha256": "7a04404df8992418ba762fd321b2811fcaf7974f045bbb6258e3cd705ba261d7",
+      "bytes": 77234,
+      "mime": "image/webp",
+      "width": 1290,
+      "height": 2796
+    },
+    {
+      "path": "/v2-1/shotflow-import-v2/analysis-condensed.mp4",
+      "sha256": "40a9493d5ccc691f8774e63269d91d3aa20b68456509afc9a9a30b58b2c58fe9",
+      "bytes": 654519,
+      "mime": "video/mp4"
+    },
+    {
+      "path": "/v2-1/shotflow-import-v2/field-1290.webp",
+      "sha256": "8275919cf8841cbd139348877a123a5c61bed3aa2a2496539ef2049a445e592a",
+      "bytes": 224446,
+      "mime": "image/webp",
+      "width": 1290,
+      "height": 2796
+    },
+    {
+      "path": "/v2-1/shotflow-import-v2/new-project-1290.webp",
+      "sha256": "b6d785d3d56784f5c5b5358ad773bdfa43b6af1a675a73a523f82a8b40bbeef3",
+      "bytes": 67592,
+      "mime": "image/webp",
+      "width": 1290,
+      "height": 2796
+    },
+    {
+      "path": "/v2-1/shotflow-import-v2/photos-1290.webp",
+      "sha256": "78824803c5d9e6ebb37f40e54cb7551c7d0692e94320e05fb12198a508f471a8",
+      "bytes": 94650,
+      "mime": "image/webp",
+      "width": 1290,
+      "height": 2796
+    },
+    {
+      "path": "/v2-1/shotflow-import-v2/player-1290.webp",
+      "sha256": "b112889278ffd806ca9526e0ddca16391655ae52bc9c82549dc5bc02d284fd58",
+      "bytes": 168470,
+      "mime": "image/webp",
+      "width": 1290,
+      "height": 2796
+    },
+    {
+      "path": "/v2-1/shotflow-import-v2/projects-1290.webp",
+      "sha256": "38b6dfbb31855d1488cf23a1b778ab72f80bcc2012861d3c404d3ee4758f9902",
+      "bytes": 42754,
+      "mime": "image/webp",
+      "width": 1290,
+      "height": 2796
+    },
+    {
+      "path": "/v2-1/shotflow-import-v2/provenance.json",
+      "sha256": "c70e345d529546437a69fc13b2a8b5ade27094d67319b09398084166d088aa67",
+      "bytes": 3864,
+      "mime": "application/json"
+    },
+    {
+      "path": "/v2-1/shotflow-import-v2/readme.md",
+      "sha256": "f8bfba41845c7155069728caf8cd25b08aaf8f82b9bbafc3b67f432ead82ca7b",
+      "bytes": 1455,
+      "mime": "text/markdown"
+    },
+    {
+      "path": "/v2-1/shotflow-import-v2/representative-shot-poster.webp",
+      "sha256": "58faead10f66668f250f3c700ef96095de6793488a7545896f87a30782c9e4d7",
+      "bytes": 135980,
+      "mime": "image/webp",
+      "width": 1280,
+      "height": 720
+    },
+    {
+      "path": "/v2-1/shotflow-import-v2/representative-shot.mp4",
+      "sha256": "c5a8b8b06409e672a8830c88d6bdb8de5101d7815938a2b2cb7fda808a0f96e2",
+      "bytes": 3974842,
+      "mime": "video/mp4"
+    },
+    {
+      "path": "/v2-1/shotflow-import-v2/selected-video-1290.webp",
+      "sha256": "90582c67ee4efd5c20917c9b3ca226fac7b03bfb9d819b9d6ab89da4225f2fce",
+      "bytes": 93184,
+      "mime": "image/webp",
+      "width": 1290,
+      "height": 2796
+    },
+    {
+      "path": "/v2-1/shotflow-import-v2/storyboard-1290.webp",
+      "sha256": "4cde9ea0fe9c40291b0809f78b65ec8fdb11a1eaf6ab474b7d758d1a464f88fd",
+      "bytes": 188974,
+      "mime": "image/webp",
+      "width": 1290,
+      "height": 2796
+    },
+    {
+      "path": "/v2-1/shotflow-import-v2/storyboard-800.webp",
+      "sha256": "2d85720c836ae60e591a031959bb6e1c42a091ec449f9176bff93efc214a7058",
+      "bytes": 112126,
+      "mime": "image/webp",
+      "width": 800,
+      "height": 1734
+    },
+    {
+      "path": "/v2-1/shotflow-import-v2/storyboard-scroll.webp",
+      "sha256": "6e0d7afab32beebae41c4d6d9dbd986510e60097e036174df4746f2108c6e573",
+      "bytes": 1025042,
+      "mime": "image/webp",
+      "width": 800,
+      "height": 13628
+    },
+    {
+      "path": "/v2-1/shotflow-import-v2/thumbnails/storyboard-360.webp",
+      "sha256": "726e0b441c41d79b3120db14b7b53beb842f20254743d9dfb12a6fba81d71fc6",
+      "bytes": 34466,
+      "mime": "image/webp",
+      "width": 360,
+      "height": 780
+    },
+    {
+      "path": "/v2-1/shotflow-import-v2/thumbnails/storyboard-540.webp",
+      "sha256": "fd8e84cafbb48f652cea8b12ad5d4b67c7d1ac60b6bc308051de4781905a31df",
+      "bytes": 58932,
+      "mime": "image/webp",
+      "width": 540,
+      "height": 1170
+    },
+    {
+      "path": "/v2-1/shotflow-import-v2/thumbnails/storyboard-720.webp",
+      "sha256": "d32babb266699007c1feab15e5397a4a0d11e2e28fb75131c8e463866e1c2c43",
+      "bytes": 84448,
+      "mime": "image/webp",
+      "width": 720,
+      "height": 1561
+    },
+    {
+      "path": "/v2-1/shotflow-import-v2/thumbnails/storyboard-960.webp",
+      "sha256": "408e31b9c20c91385643e3479923b701f32dca5c10fef0d3c1feb2b17641c851",
+      "bytes": 120058,
+      "mime": "image/webp",
+      "width": 960,
+      "height": 2081
+    },
+    {
+      "path": "/v2-1/shotflow-import-v2/thumbnails/workspace-360.webp",
+      "sha256": "3dffb2c90aa802934896655e0ffe12d687fffb573fdb49dc22dc67cbbcf0f39d",
+      "bytes": 31550,
+      "mime": "image/webp",
+      "width": 360,
+      "height": 780
+    },
+    {
+      "path": "/v2-1/shotflow-import-v2/thumbnails/workspace-540.webp",
+      "sha256": "eb0e73f0dc38d64e48364367c1770a841679af9af0a0462a9ad5e5a2424439e6",
+      "bytes": 53392,
+      "mime": "image/webp",
+      "width": 540,
+      "height": 1170
+    },
+    {
+      "path": "/v2-1/shotflow-import-v2/thumbnails/workspace-720.webp",
+      "sha256": "a55f724edc76d649ed57a8b814c8cb761b9d508b6de5612f0b17c99cf8b2dafc",
+      "bytes": 80240,
+      "mime": "image/webp",
+      "width": 720,
+      "height": 1561
+    },
+    {
+      "path": "/v2-1/shotflow-import-v2/thumbnails/workspace-960.webp",
+      "sha256": "3db3bc934ccd58fa5173819d2451be4115ab7a9924de5f2cad00bdb44cc3d109",
+      "bytes": 115200,
+      "mime": "image/webp",
+      "width": 960,
+      "height": 2081
+    },
+    {
+      "path": "/v2-1/shotflow-import-v2/workspace-1290.webp",
+      "sha256": "a3debd7d5490a362e4ba088e8d5b6f9341589c86b80dd4561af43e5ef882da2c",
+      "bytes": 196132,
+      "mime": "image/webp",
+      "width": 1290,
+      "height": 2796
+    },
+    {
+      "path": "/v2-1/shotflow-import-v2/workspace-800.webp",
+      "sha256": "11010a1722b04524c5a24b42e8a385ab9e81250ffabf4aae8ae5039ea86a1543",
+      "bytes": 110354,
+      "mime": "image/webp",
+      "width": 800,
+      "height": 1734
+    }
+  ]
+}

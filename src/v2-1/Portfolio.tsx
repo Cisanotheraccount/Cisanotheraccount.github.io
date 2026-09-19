@@ -307,68 +307,62 @@ function ShotFlowCase({ item, heading, slot, onZoom, active }: { item: Portfolio
     demo.current?.scrollIntoView({ block: 'start', behavior: 'instant' });
     demoHeading.current?.focus({ preventScroll: true });
   };
-  return <div className="gxc-shotflow-case">
-    <section className="gxc-shotflow-hero" aria-labelledby="gxc-detail-title">
-      <div className="gxc-shotflow-intro">
-        <header className="gxc-detail-heading"><span className="gxc-mono">{item.category}</span><h2 ref={heading} id="gxc-detail-title" tabIndex={-1}>{item.title}</h2><p>{item.summary}</p></header>
-        <p className="gxc-shotflow-context">A saved reference is only the beginning. Preparing a shoot means finding the useful moments, understanding how they work and deciding what to capture. ShotFlow brings those decisions into a phone-based companion for working with a professional camera.</p>
-        <p className="gxc-shotflow-tags gxc-mono">{item.tags.join(' / ')}</p>
-        <button className="gxc-text-link gxc-shotflow-demo-link" onClick={visitDemo}>Try the interactive walkthrough<ArrowDown size={17}/></button>
-        <div className="gxc-shotflow-step">
-          <span className="gxc-mono">01 / PROJECT WORKSPACE</span>
-          <h3>{item.highlights[0].title}</h3>
-          <p>A project gives references a shared purpose. Several source videos can belong to one shoot while keeping their own identities. The workspace brings source material, resulting shots and completion progress together, with direct routes to storyboard review and the on-set checklist.</p>
-          <p>The unit of planning becomes the individual shot: a specific moment to study, adapt and eventually mark complete. Keeping the next unfinished shot within reach connects preparation to the work still ahead.</p>
-        </div>
-      </div>
-      <div ref={slot} className="gxc-shotflow-screen"><StudyImage study={screens[0]} onZoom={onZoom}/></div>
+  return <div className="gxc-shotflow-case gxc-shotflow-import-case" onClickCapture={event => {
+    const button = event.target instanceof Element ? event.target.closest('.gxc-study > button') : null;
+    if (button instanceof HTMLButtonElement) button.focus({ preventScroll: true });
+  }}>
+    <section className="gxc-shotflow-introduction" aria-labelledby="gxc-detail-title">
+      <header className="gxc-detail-heading"><span className="gxc-mono">{item.category}</span><h2 ref={heading} id="gxc-detail-title" tabIndex={-1}>{item.title}</h2><p>{item.summary}</p></header>
+      <p className="gxc-shotflow-context">A reference video is full of decisions: when a shot begins, how the camera moves and what happens before the next cut. Add the video to ShotFlow and let automatic analysis turn it into individual shots you can understand, revisit and bring into your own shoot.</p>
+      <p className="gxc-shotflow-tags gxc-mono">{item.tags.join(' / ')}</p>
+      <button className="gxc-text-link gxc-shotflow-demo-link" onClick={visitDemo}>Try the workflow<ArrowDown size={17}/></button>
     </section>
-    <ol className="gxc-shotflow-flow gxc-shotflow-overview-flow" aria-label="From reference to on-set checklist">{['References', 'Analysis', 'Review & refine', 'On-set checklist'].map((step, i) => <li key={step}><span>{step}</span>{i < 3 && <ArrowRight size={20} aria-hidden="true"/>}</li>)}</ol>
-    <section className="gxc-shotflow-row gxc-shotflow-analysis" aria-labelledby="gxc-shotflow-analysis-title">
+    <section ref={demo} className="gxc-shotflow-walkthrough" aria-labelledby="gxc-shotflow-demo-title">
+      <header className="gxc-shotflow-step"><h3 ref={demoHeading} id="gxc-shotflow-demo-title" tabIndex={-1}>From a video to its shots.</h3></header>
+      <ShotFlowDemo active={active} preview={<div ref={slot} className="gxc-shotflow-screen"><StudyImage study={screens[0]} onZoom={onZoom}/></div>}/>
+    </section>
+    <ol className="gxc-shotflow-flow gxc-shotflow-overview-flow" aria-label="From reference video to a shooting plan">{['Add a reference', 'Automatic analysis', 'Explore the shots', 'Bring it on set'].map((step, i) => <li key={step}><span>{step}</span>{i < 3 && <ArrowRight size={20} aria-hidden="true"/>}</li>)}</ol>
+    <section className="gxc-shotflow-row" aria-labelledby="gxc-shotflow-import-title">
       <div className="gxc-shotflow-step">
-        <span className="gxc-mono">FROM SOURCES TO SHOTS</span>
-        <h3 id="gxc-shotflow-analysis-title">Keep the process visible.</h3>
-        <p>Each video moves through its own import and analysis state. One failed source should not hide the results from another. The analysis view keeps progress and recovery actions attached to the item that needs attention.</p>
-        <p>Local analysis saves checkpoints so interrupted work can resume. Progress describes the current stage, rather than promising an exact time remaining. Together, these choices make the transition from a collection of videos to a working shot list easier to follow. Pausing, resuming or retrying stays connected to a named source, so the person preparing the project can see which material is ready to review and which still needs attention.</p>
+        <span className="gxc-mono">01 / ADD A REFERENCE</span><h3 id="gxc-shotflow-import-title">Begin with the video.</h3>
+        <p>The starting point is a reference worth studying. Create a project and choose a video from Photos. Once the video is imported, analysis begins within the same flow. The project gives the resulting shots a place to belong, keeping them connected to the material that prompted the shoot.</p>
+        <p>A source is useful beyond its first import. Its name and original sequence remain available as the project grows, so a shot can always be understood in context. Several reference videos can belong to one project without losing their identities. This walkthrough follows one complete reference through that process.</p>
+      </div>
+      <div className="gxc-shotflow-screen"><StudyImage study={screens[4]} onZoom={onZoom}/></div>
+    </section>
+    <section className="gxc-shotflow-review" aria-labelledby="gxc-shotflow-analysis-title">
+      <div className="gxc-shotflow-step">
+        <span className="gxc-mono">02 / AUTOMATIC ANALYSIS</span><h3 id="gxc-shotflow-analysis-title">Let the shots emerge.</h3>
+        <p>ShotFlow analyzes the reference for shot boundaries, turning one continuous video into a sequence of individual segments. Each result has a beginning, an end and a visual reference. That gives the person preparing a shoot a concrete unit to inspect: a particular moment with its own framing and duration.</p>
+        <p>The analysis screen keeps that work visible and attached to its source. After it finishes, the workspace brings the source video and generated shot count together. The example above uses the actual output from the entire reference; its recorded waiting time is shortened only for the web walkthrough.</p>
       </div>
       <div className="gxc-shotflow-screen"><StudyImage study={screens[1]} onZoom={onZoom}/></div>
     </section>
-    <section className="gxc-shotflow-review" aria-labelledby="gxc-shotflow-review-title">
+    <section className="gxc-shotflow-row" aria-labelledby="gxc-shotflow-results-title">
       <div className="gxc-shotflow-step">
-        <span className="gxc-mono">02 / STORYBOARD</span>
-        <h3 id="gxc-shotflow-review-title">{item.highlights[1].title}</h3>
-        <p>A reference has an original sequence; a shoot has a practical order. Grouping shots by source preserves the context of the video they came from. A separate shooting-order view supports planning across the whole project without rearranging the original footage.</p>
-        <p>Shot size, camera movement and suggested focal ranges sit alongside the reference. These are prompts for judgment: a suggested matching angle of view cannot recover the exact lens or physical camera movement from an image. The reference remains available for comparison. Source names belong to group headings, leaving individual rows to communicate timing, shot details and completion. The two views organize the same material around different decisions.</p>
+        <span className="gxc-mono">THE GENERATED STORYBOARD</span><h3 id="gxc-shotflow-results-title">See the structure in the reference.</h3>
+        <p>The storyboard makes the result readable as a whole. Source grouping preserves the order and context of the original video, while each row brings the shot’s timing and information close to its image. Scroll the sequence, compare neighboring shots and choose a moment to look at more closely.</p>
+        <p>A separate shooting-order view lets the project serve practical preparation across references. This recorded build demonstrates automatic shot boundaries; shot size, camera movement and lens suggestions remain unconfirmed. When a boundary needs correction, optional manual adjustment can refine the selected range while retaining the original video.</p>
       </div>
       <div className="gxc-shotflow-screen"><StudyImage study={screens[2]} onZoom={onZoom}/></div>
     </section>
-    <section className="gxc-shotflow-refine" aria-labelledby="gxc-shotflow-refine-title">
+    <section className="gxc-shotflow-review" aria-labelledby="gxc-shotflow-playback-title">
       <div className="gxc-shotflow-step">
-        <span className="gxc-mono">AUTOMATIC SUGGESTIONS, HUMAN DECISIONS</span>
-        <h3 id="gxc-shotflow-refine-title">Look closer. Make the cut.</h3>
-        <p>Play the individual reference clip to inspect its timing, movement and framing. A still image can identify the shot; playback reveals how it unfolds. Moving between the list and the clip keeps those details close to the planning decision.</p>
-        <p>When a boundary needs correction, manual editing changes the selected time range while retaining the source video. The walkthrough shows one shorter opening. That small adjustment illustrates the wider relationship: automatic analysis offers a starting point, and the person preparing the shoot decides what belongs in the plan. Reanalysis follows the same principle of preserving decisions: applying a newer model creates a project copy, keeping existing manual edits, recorded takes and comments in the original.</p>
+        <span className="gxc-mono">03 / REVIEW & USE</span><h3 id="gxc-shotflow-playback-title">Understand how a shot unfolds.</h3>
+        <p>A thumbnail helps identify a shot; playback reveals its movement and rhythm. Open an individual segment to study the original footage at the boundaries produced by the analysis. Returning to the list keeps the surrounding sequence within reach, making it easy to connect one camera decision with the next.</p>
+        <p>The guided example offers one representative shot for playback. Its image, timing and original audio come from the same reference video used for the analysis. Sound starts muted and can be enabled when you choose.</p>
       </div>
-      <div className="gxc-shotflow-pair">
-        <div className="gxc-shotflow-screen"><StudyImage study={screens[3]} onZoom={onZoom}/></div>
-        <div className="gxc-shotflow-screen"><StudyImage study={screens[4]} onZoom={onZoom}/></div>
-      </div>
+      <div className="gxc-shotflow-screen"><StudyImage study={screens[3]} onZoom={onZoom}/></div>
     </section>
     <section className="gxc-shotflow-onset gxc-shotflow-row" aria-labelledby="gxc-shotflow-onset-title">
       <div className="gxc-shotflow-step">
-        <span className="gxc-mono">03 / ON SET</span>
-        <h3 id="gxc-shotflow-onset-title">{item.highlights[2].title}</h3>
-        <p>On set, the phone serves as a reference beside the camera. The professional workflow prioritizes the shot to review, its guidance and the remaining checklist. Reference imagery, movement guidance and a timer can support preparation before recording on the external camera.</p>
-        <p>After the shot is filmed, marking it complete saves progress and brings the next unfinished shot forward. The phone tracks the plan; completing a checklist item does not record footage or remotely operate the camera. This keeps the handoff between reference, physical shooting and progress explicit. A separate phone-recording workflow can save and review a take. Here, the emphasis stays on the professional-camera sequence, where the useful action on the phone is moving the plan forward.</p>
+        <span className="gxc-mono">FROM REFERENCE TO SHOOT</span><h3 id="gxc-shotflow-onset-title">Keep the plan beside the camera.</h3>
+        <p>On set, the phone becomes a reference and checklist beside the professional camera. Review the current shot, prepare the framing and movement, then mark it complete after filming. The next unfinished shot comes forward, connecting the reference studied earlier with the work still ahead.</p>
         <ol className="gxc-shotflow-onset-steps" aria-label="On-set workflow">{['Review', 'Shoot', 'Mark complete', 'Next shot'].map((step, i) => <li key={step}><span>{step}</span>{i < 3 && <ArrowRight size={15} aria-hidden="true"/>}</li>)}</ol>
       </div>
       <div className="gxc-shotflow-screen"><StudyImage study={screens[5]} onZoom={onZoom}/></div>
     </section>
-    <section ref={demo} className="gxc-shotflow-walkthrough" aria-labelledby="gxc-shotflow-demo-title">
-      <header className="gxc-shotflow-step"><span className="gxc-mono">AN INTERACTIVE WALKTHROUGH</span><h3 ref={demoHeading} id="gxc-shotflow-demo-title" tabIndex={-1}>Try the workflow.</h3><p>Follow one shot from reference to the next item on the checklist. Tap the highlighted controls or use the step-by-step buttons.</p></header>
-      <ShotFlowDemo active={active}/>
-    </section>
-    <aside className="gxc-shotflow-status"><span className="gxc-mono">IN DEVELOPMENT</span><p>Native interfaces captured from development version 0.1.0 (15), using an English sample project and illustrative videos made from bundled sample images. The walkthrough connects captured states and recordings; it does not run the iOS app or analyze new footage. Earlier captures without their original videos remain in the project archive.</p></aside>
+    <aside className="gxc-shotflow-status"><span className="gxc-mono">IN DEVELOPMENT</span><p>English interfaces captured from the native development app, using a prepared project and a user-supplied reference video. The walkthrough connects real captures, recorded analysis and its generated results. Analysis is prepared in advance; the website does not process uploads or run the iOS app. Earlier demonstration captures remain archived.</p></aside>
   </div>;
 }
 

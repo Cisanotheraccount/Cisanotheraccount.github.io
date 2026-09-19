@@ -1,0 +1,114 @@
+{
+  "hero": {
+    "sourceSha256": "5d4f83c4c09adcce5859f836f08d842222ab65e9494e93a70226059d99556af0",
+    "width": 8192,
+    "height": 5464,
+    "variants": [
+      {
+        "url": "/v-next/background/stars-1536.jpg",
+        "width": 1536,
+        "height": 1024,
+        "bytes": 908420,
+        "sha256": "232f40ab2e291368fce8b48e652f9ff21438bd287a971041fb6f5e272b574e5b"
+      },
+      {
+        "url": "/v-next/background/stars-2560.jpg",
+        "width": 2560,
+        "height": 1708,
+        "bytes": 2478850,
+        "sha256": "454a4e4e6b53d48560186a529997387dde28fd0e5cf801403bfddcf741643f94"
+      },
+      {
+        "url": "/v-next/background/stars-3072.jpg",
+        "width": 3072,
+        "height": 2049,
+        "bytes": 3570871,
+        "sha256": "e62c756c0ab80a86c3a7ed94cc93b1d11bc51ff18241dd4e1bbf595b495d19a7"
+      },
+      {
+        "url": "/v-next/background/stars-4096.jpg",
+        "width": 4096,
+        "height": 2732,
+        "bytes": 6427893,
+        "sha256": "716d4d82ce11503e1bc4d1cdf263180497fc185a873a6e0b706f7265d77b18bc"
+      },
+      {
+        "url": "/v2-1/backgrounds/hero/stars-5120.jpg",
+        "width": 5120,
+        "height": 3415,
+        "bytes": 10186821,
+        "sha256": "07a24af846ba21a018cf2d6b6889588c013f870066c159965633f53accbe14dd"
+      },
+      {
+        "url": "/v2-1/backgrounds/hero/stars-6144.jpg",
+        "width": 6144,
+        "height": 4098,
+        "bytes": 14783565,
+        "sha256": "285d78d29e34e559382270cf9bba2d379d252c28fb623cb80271fb730ca16a20"
+      },
+      {
+        "url": "/v2-1/backgrounds/hero/stars-8192.jpg",
+        "width": 8192,
+        "height": 5464,
+        "bytes": 26511075,
+        "sha256": "c3488e7600ced9cec19dfdf70609fbe431bda741bf92d136a524f28c002b16df"
+      }
+    ]
+  },
+  "work": {
+    "sourceSha256": "b65272f302a58cf6ebcad0fee757e272445e8caaaae1b7e7b6a99587737e7e5d",
+    "width": 5464,
+    "height": 3900,
+    "variants": [
+      {
+        "url": "/v-next/work-background/yellowstone/yellowstone-1536.jpg",
+        "width": 1536,
+        "height": 1096,
+        "bytes": 1059643,
+        "sha256": "749e174003b34e18882298628563ea059b0ce459a8d9163f39e018e1bb698ffe"
+      },
+      {
+        "url": "/v-next/work-background/yellowstone/yellowstone-1920.jpg",
+        "width": 1920,
+        "height": 1370,
+        "bytes": 1698972,
+        "sha256": "6b4cd205a0bf3debb0d4e3f6520b86e3c004c2621287899a6244e2bebc190bef"
+      },
+      {
+        "url": "/v-next/work-background/yellowstone/yellowstone-2560.jpg",
+        "width": 2560,
+        "height": 1827,
+        "bytes": 3110101,
+        "sha256": "df08c149d21e2238587ad4d77da293f53ae46d4e620c7b48cf30790527741a0a"
+      },
+      {
+        "url": "/v-next/work-background/yellowstone/yellowstone-3072.jpg",
+        "width": 3072,
+        "height": 2193,
+        "bytes": 4552830,
+        "sha256": "e003df9fa17ee6aca729a0beb685c671b843cbc282abc996aae735b06c3e410c"
+      },
+      {
+        "url": "/v-next/work-background/yellowstone/yellowstone-4096.jpg",
+        "width": 4096,
+        "height": 2924,
+        "bytes": 8256291,
+        "sha256": "b32e1b41ae43d154df963010840ffddc747f525c074664ffc394b2c3528673a8"
+      },
+      {
+        "url": "/v2-1/backgrounds/work/yellowstone-5120.jpg",
+        "width": 5120,
+        "height": 3654,
+        "bytes": 12827837,
+        "sha256": "9c9ca9b1eeba7b85197add05ea3781f6ed1a82f4651d32ad00010dc89bf0797c"
+      },
+      {
+        "url": "/v2-1/backgrounds/work/yellowstone-5464.jpg",
+        "width": 5464,
+        "height": 3900,
+        "bytes": 14811601,
+        "sha256": "80d62f38f3f5d942bbbf8c0f78d7af421f73e2a4d4be46c18757583eb0e4b9ee"
+      }
+    ]
+  }
+}

@@ -14,6 +14,7 @@ import { WorkCanvas } from './WorkCanvas';
 import { WorkBackdrop } from './WorkBackdrop';
 import type { WorkScene } from './workScene';
 import { shotFlowCaseCover, shotFlowCaseScreens } from './shotflowCaseContent';
+import { mobileThumbnail, useMobileThumbnailMode, workImageSizes, workLayout } from './mobileThumbnails';
 
 import ShotFlowDemo from './ShotFlowDemo';
 import { PerformancePanel } from './PerformancePanel';
@@ -26,6 +27,7 @@ const retiredProject = () => /^#\/work\/m-box\/?$/.test(location.hash);
 const modified = (e: MouseEvent) => e.metaKey || e.ctrlKey || e.shiftKey || e.altKey || e.button !== 0;
 
 export function NextPortfolio() {
+  const mobileThumbnails = useMobileThumbnailMode();
   const [reduce, setReduce] = useState(() => matchMedia('(prefers-reduced-motion: reduce)').matches);
   useEffect(() => {
     const media = matchMedia('(prefers-reduced-motion: reduce)');
@@ -182,7 +184,7 @@ export function NextPortfolio() {
       </section>
       <section ref={workRoot} className="gxc-work gxc-gutter" id="work" tabIndex={-1} data-section aria-labelledby="work-title">
         <div className="gxc-section-heading"><span className="gxc-mono">01 / SELECTED EXPLORATIONS</span><h2 id="work-title">Ideas, made<br/><em>tangible.</em></h2><p>Conversation. Environments.<br/>New ways to interact.</p></div>
-        <div className="gxc-project-grid">{workProjects.map((item, i) => <ProjectCard key={item.id} item={item} index={i} pending={openingSlug === item.slug} onOpen={open} />)}</div>
+        <div className="gxc-project-grid">{workProjects.map((item, i) => <ProjectCard key={item.id} item={item} index={i} pending={openingSlug === item.slug} mobileThumbnails={mobileThumbnails} onOpen={open} />)}</div>
         <div className="gxc-work-end gxc-mono"><span>FROM CONVERSATION TO ENVIRONMENTS.</span><Plus size={15}/><span>ALWAYS EXPLORING.</span></div>
       </section>
       <section className="gxc-about gxc-gutter" id="about" tabIndex={-1} data-section aria-labelledby="about-title">
@@ -204,20 +206,34 @@ export function NextPortfolio() {
   </div>;
 }
 
-function ProjectCard({ item, index, pending, onOpen }: { item: PortfolioProject; index: number; pending: boolean; onOpen: (e: MouseEvent<HTMLAnchorElement>, p: PortfolioProject) => void }) {
+function ProjectThumbnail({ slug, id, mobile, src, desktopSrcSet, sizes, alt, width, height, className }: { slug: string; id: string; mobile: boolean; src: string; desktopSrcSet?: string; sizes: string; alt: string; width: number; height: number; className?: string }) {
+  const light = mobile ? mobileThumbnail(slug, id) : undefined;
+  const sourceKey = [src, desktopSrcSet, light?.srcSet ?? 'desktop'].join('|');
+  const [failedKey, setFailedKey] = useState('');
+  const fallback = failedKey === sourceKey;
+  useEffect(() => { setFailedKey(''); }, [sourceKey]);
+  useEffect(() => {
+    if (!fallback) return;
+    // A failed mobile candidate should not disable responsive selection forever.
+    // Retry after a changed viewport/DPR, as well as on a media/source change.
+    const failedWidth = innerWidth, failedDpr = devicePixelRatio;
+    const retry = () => { if (innerWidth !== failedWidth || devicePixelRatio !== failedDpr) setFailedKey(''); };
+    window.addEventListener('resize', retry);
+    return () => window.removeEventListener('resize', retry);
+  }, [fallback]);
+  return <img className={className} src={fallback ? src : light?.src ?? src} srcSet={fallback ? undefined : light?.srcSet ?? desktopSrcSet} sizes={sizes} alt={alt} width={width} height={height} loading="lazy" decoding="async" data-thumbnail-id={id} data-thumbnail-mode={fallback ? 'fallback' : light ? 'mobile' : 'desktop'} onError={() => { if (!fallback) setFailedKey(sourceKey); }}/>
+}
+
+function ProjectCard({ item, index, pending, mobileThumbnails, onOpen }: { item: PortfolioProject; index: number; pending: boolean; mobileThumbnails: boolean; onOpen: (e: MouseEvent<HTMLAnchorElement>, p: PortfolioProject) => void }) {
   const media = item.slug === 'shotflow' ? shotFlowCaseCover : item;
-  const layout = index === 0 ? 'lead' : index === 1 ? 'wide' : index === 2 ? 'narrow' : index % 2 ? 'left' : 'right';
-  const desktopSpan = { lead: 9, wide: 7, narrow: 4, left: 6, right: 5 }[layout];
-  const tabletSpan = layout === 'lead' ? 11 : 6;
-  // Match the twelve-column grid, gutters and gaps at each breakpoint.
-  const gridSize = (span: number, gutter: number, gap: number) => `calc(${span / 12 * 100}vw - ${(2 * gutter * span + gap * (12 - span)) / 12}px)`;
-  const sizes = `(max-width: 760px) calc(100vw - 44px), (max-width: 1000px) ${gridSize(tabletSpan, 32, 24)}, (min-width: 1600px) ${gridSize(desktopSpan, 80, 40)}, ${gridSize(desktopSpan, 56, 32)}`;
+  const layout = workLayout(index);
+  const sizes = workImageSizes(layout, item.slug === 'shotflow');
   const pictureStyle = { '--project-image-ratio': `${media.imageWidth} / ${media.imageHeight}` } as CSSProperties;
   return <article className={'gxc-project gxc-project-' + item.slug} data-layout={layout}>
     <a href={'#/work/' + item.slug} onClick={e => onOpen(e, item)} data-opening={pending ? 'true' : undefined} aria-busy={pending || undefined} aria-label={'Explore ' + item.title}>
       <div className="gxc-project-picture" data-fit={item.imageFit ?? 'cover'} style={pictureStyle}>
-        <img src={media.image} srcSet={media.imageSmall + ' 800w, ' + media.image + ' ' + media.imageWidth + 'w'} sizes={sizes} alt={media.imageAlt} width={media.imageWidth} height={media.imageHeight} loading="lazy" decoding="async"/>
-        {item.slug === 'shotflow' && <img className="gxc-shotflow-second" src={shotFlowCaseScreens[2].image} alt="ShotFlow English native storyboard capture" width="1290" height="2796" loading="lazy"/>}
+        <ProjectThumbnail slug={item.slug} id={item.slug === 'shotflow' ? 'workspace' : 'cover'} mobile={mobileThumbnails} src={media.image} desktopSrcSet={media.imageSmall + ' 800w, ' + media.image + ' ' + media.imageWidth + 'w'} sizes={sizes} alt={media.imageAlt} width={media.imageWidth} height={media.imageHeight}/>
+        {item.slug === 'shotflow' && <ProjectThumbnail slug={item.slug} id="storyboard" mobile={mobileThumbnails} className="gxc-shotflow-second" src={shotFlowCaseScreens[2].image} sizes={sizes} alt="ShotFlow English native storyboard capture" width={1290} height={2796}/>}
         <span className="gxc-project-index gxc-mono">{number(index)} / {index < 3 ? 'IN FOCUS' : 'EXPLORATION'}</span><span className="gxc-project-open"><ArrowUpRight size={22}/></span>
       </div>
       <div className="gxc-project-caption"><div><h3>{item.title}</h3><p>{item.category}</p></div><span className="gxc-mono">{item.tags[0]}</span></div>

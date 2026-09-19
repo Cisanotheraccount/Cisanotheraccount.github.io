@@ -14,7 +14,7 @@ export interface WorkScene {
 }
 
 type Box = { x: number; y: number; width: number; height: number };
-type ImageLayer = { element: HTMLImageElement; texture: THREE.Texture | null; source: string; generation: number; box: Box; fit: string; radius: number; position: [number, number]; off(): void };
+type ImageLayer = { element: HTMLImageElement; texture: THREE.Texture | null; source: string; generation: number; pending: string; retryAt: number; attempts: number; load(): void; box: Box; fit: string; radius: number; position: [number, number]; off(): void };
 type Surface = { frame: HTMLElement; anchor: HTMLElement; images: ImageLayer[]; material: THREE.ShaderMaterial; mesh: THREE.Mesh; box: Box; anchorBox: Box; color: THREE.Color; radius: number; visible: boolean; hovered: boolean; hover: number; ready: boolean; off(): void };
 type PendingFlatten = { from: number; hoverFrom: Map<Surface, number>; start: number; duration: number; resolve(): void; reject(reason: unknown): void; off(): void; complete: boolean };
 const zeroBox = (): Box => ({ x: 0, y: 0, width: 0, height: 0 });
@@ -25,6 +25,7 @@ const vertexShader = `varying vec2 vUv;
 void main() { vUv = uv; gl_Position = vec4(position.xy, 0.0, 1.0); }`;
 const fragmentShader = `
 uniform vec2 uViewport;
+uniform vec2 uBuffer;
 uniform float uCurl;
 uniform vec4 uFrame;
 uniform vec3 uBackground;
@@ -53,8 +54,10 @@ vec4 imageAt(sampler2D map, vec2 p, vec4 image, vec4 clip, float radius) {
   return color;
 }
 void main() {
-  vec2 screen = vec2(vUv.x, 1.0 - vUv.y);
-  float q = 2.0 * screen.y - 1.0;
+  // Buffered rows travel with native scrolling between paints. Curvature is
+  // still referenced to the actual viewport, not the larger drawing buffer.
+  vec2 screen = vec2(vUv.x, ((1.0 - vUv.y) * uBuffer.x - uBuffer.y) / uViewport.y);
+  float q = clamp(2.0 * screen.y - 1.0, -1.0, 1.0);
   float profile = 1.0 - sqrt(max(0.0, 1.0 - q * q));
   vec2 p = vec2(.5 + (screen.x - .5) * (1.0 - profile * uCurl), screen.y) * uViewport;
   float alpha = maskBox(p, uFrame, uFrameRadius);
@@ -94,26 +97,51 @@ export async function mountWorkScene(host: HTMLElement, root: HTMLElement, disab
   const geometry = new THREE.PlaneGeometry(2, 2);
   const empty = new THREE.DataTexture(new Uint8Array([0, 0, 0, 0]), 1, 1); empty.needsUpdate = true;
   const coarse = matchMedia('(pointer: coarse)');
+  const diagnostics = import.meta.env.DEV || query.get('qa') === '1' || query.get('perf') === '1';
   let enabled = !disabled, suspended = false, disposed = false, failed = false;
   let width = 0, height = 0, hostX = 0, hostY = 0, lastDpr = 0;
+  let bufferHeight = 0, bufferInset = 0, drawTop = 0, overscan = 0;
+  let paintedScroll = NaN, paintedAt = 0;
   let dirty = true, needsMeasure = true, strength = 0, activity = 0, flatHold = false;
   let previousScroll = NaN, moving = false, afterRender: Array<() => void> = [];
   let pending: PendingFlatten | null = null;
   const surfaces: Surface[] = [];
+  let nativeFallbacks = 0;
+  const setState = (state: string) => {
+    if (state === host.dataset.state) return;
+    if (state === 'native-scroll' || state === 'scroll-catchup') nativeFallbacks++;
+    host.dataset.state = state;
+    if (diagnostics) host.dataset.nativeFallbacks = String(nativeFallbacks);
+  };
+  const sourceFor = (layer: ImageLayer) => layer.element.currentSrc || layer.element.src;
+  const currentTexture = (layer: ImageLayer) => !!layer.texture && layer.element.complete
+    && layer.element.naturalWidth > 0 && layer.source === sourceFor(layer);
   const wake = () => { dirty = true; requestFrame(); };
   const invalidate = () => { needsMeasure = true; wake(); };
   const fallback = (surface: Surface) => {
     delete surface.frame.dataset.workReady; delete surface.anchor.dataset.workHit;
     surface.ready = false; surface.mesh.visible = false;
   };
-  const fallbackAll = () => { surfaces.forEach(fallback); host.style.visibility = 'hidden'; };
+  const fallbackAll = () => {
+    surfaces.forEach(fallback); host.style.visibility = 'hidden';
+    // Hidden absolute boxes still extend scrollable overflow. Removing the tile
+    // from layout prevents a paused portrait buffer extending a shorter page
+    // after landscape rotation. The next successful paint restores its box.
+    if (coarse.matches) host.style.display = 'none';
+  };
   const finishPending = () => { if (!pending) return; const task = pending; pending = null; task.off(); task.resolve(); };
   const drain = () => { const queue = afterRender; afterRender = []; queue.forEach(fn => fn()); };
-  const fail = () => { failed = true; gpu.dispose(); setPerformanceReady('work', true); host.dataset.state = 'fallback'; fallbackAll(); finishPending(); drain(); };
+  const fail = () => { failed = true; gpu.dispose(); setPerformanceReady('work', true); setState('fallback'); fallbackAll(); finishPending(); drain(); };
   const nativeScroll = () => {
-    // Reveal native images immediately in the scroll event, before a capped
-    // scene frame could leave the fixed canvas behind the browser's scrolling.
-    if (nativeScrollNeedsFallback()) { fallbackAll(); host.dataset.state = 'native-scroll'; finishPending(); drain(); }
+    // Touch artwork belongs to the document scroll layer. The compositor moves
+    // its last drawing with links/text between capped GPU frames, including on
+    // high-refresh screens. Only jumps beyond coverage need a native fallback.
+    if (coarse.matches) {
+      if (!Number.isFinite(paintedScroll) || Math.abs(window.scrollY - paintedScroll) > Math.max(0, overscan - 4)
+        || performance.now() - paintedAt > WORK_VISUAL.scrollStaleMs) {
+        fallbackAll(); setState('scroll-catchup');
+      }
+    } else if (nativeScrollNeedsFallback()) { fallbackAll(); setState('native-scroll'); finishPending(); drain(); }
     invalidate();
   };
 
@@ -125,7 +153,7 @@ export async function mountWorkScene(host: HTMLElement, root: HTMLElement, disab
     const color = new THREE.Color(style.backgroundColor === 'rgba(0, 0, 0, 0)' ? '#181a1d' : style.backgroundColor);
     const material = new THREE.ShaderMaterial({
       vertexShader, fragmentShader, transparent: true, depthTest: false, depthWrite: false, toneMapped: false,
-      uniforms: { uViewport: { value: new THREE.Vector2(1, 1) }, uCurl: { value: 0 }, uFrame: { value: new THREE.Vector4() }, uBackground: { value: color }, uFrameRadius: { value: 0 }, uMap0: { value: empty }, uMap1: { value: empty }, uImage0: { value: new THREE.Vector4() }, uImage1: { value: new THREE.Vector4() }, uClip0: { value: new THREE.Vector4() }, uClip1: { value: new THREE.Vector4() }, uRadii: { value: new THREE.Vector2() }, uCount: { value: elements.length } },
+      uniforms: { uViewport: { value: new THREE.Vector2(1, 1) }, uBuffer: { value: new THREE.Vector2(1, 0) }, uCurl: { value: 0 }, uFrame: { value: new THREE.Vector4() }, uBackground: { value: color }, uFrameRadius: { value: 0 }, uMap0: { value: empty }, uMap1: { value: empty }, uImage0: { value: new THREE.Vector4() }, uImage1: { value: new THREE.Vector4() }, uClip0: { value: new THREE.Vector4() }, uClip1: { value: new THREE.Vector4() }, uRadii: { value: new THREE.Vector2() }, uCount: { value: elements.length } },
     });
     const mesh = new THREE.Mesh(geometry, material); mesh.frustumCulled = false; mesh.visible = false; mesh.renderOrder = surfaces.length;
     const surface: Surface = { frame, anchor, images: [], material, mesh, box: zeroBox(), anchorBox: zeroBox(), color, radius: parseFloat(style.borderTopLeftRadius) || 0, visible: false, hovered: false, hover: 0, ready: false, off() {} };
@@ -134,33 +162,62 @@ export async function mountWorkScene(host: HTMLElement, root: HTMLElement, disab
     anchor.addEventListener('pointerenter', enter); anchor.addEventListener('pointerleave', leave);
     surface.off = () => { anchor.removeEventListener('pointerenter', enter); anchor.removeEventListener('pointerleave', leave); };
     for (const element of elements) {
-      const layer: ImageLayer = { element, texture: null, source: '', generation: 0, box: zeroBox(), fit: 'cover', radius: 0, position: [.5, .5], off() {} };
+      const layer: ImageLayer = { element, texture: null, source: '', generation: 0, pending: '', retryAt: 0, attempts: 0, load() {}, box: zeroBox(), fit: 'cover', radius: 0, position: [.5, .5], off() {} };
+      let retryTimer: ReturnType<typeof setTimeout> | undefined;
       const load = async () => {
         if (disposed || failed || !element.complete || !element.naturalWidth) return;
-        const source = element.currentSrc || element.src; if (source === layer.source && layer.texture) return;
+        const source = sourceFor(layer); if (currentTexture(layer) || source === layer.pending || performance.now() < layer.retryAt) return;
+        // A stale responsive-image texture must not cover a newer DOM selection.
+        fallback(surface); wake();
         const generation = ++layer.generation;
+        layer.pending = source;
         // Upload an undecorated image source. Responsive DOM images can expose density-corrected
         // natural sizes, which do not necessarily match the underlying decoded upload dimensions.
         const sourceImage = new Image(); sourceImage.decoding = 'async'; sourceImage.src = source;
-        try { await sourceImage.decode(); } catch { return; }
-        if (disposed || failed || generation !== layer.generation || !element.naturalWidth || source !== (element.currentSrc || element.src)) return;
+        try { await sourceImage.decode(); } catch {
+          if (disposed || failed || generation !== layer.generation) return;
+          layer.pending = ''; layer.attempts++;
+          const delay = layer.attempts === 1 ? 250 : 1000;
+          layer.retryAt = layer.attempts <= 2 ? performance.now() + delay : Infinity;
+          if (layer.attempts <= 2) retryTimer = setTimeout(() => { retryTimer = undefined; layer.retryAt = 0; void load(); }, delay);
+          fallback(surface); invalidate(); return;
+        }
+        if (disposed || failed || generation !== layer.generation) return;
+        layer.pending = '';
+        if (!element.complete || !element.naturalWidth || source !== sourceFor(layer)) { invalidate(); return; }
         const texture = new THREE.Texture(sourceImage); texture.colorSpace = THREE.SRGBColorSpace;
         texture.minFilter = THREE.LinearMipmapLinearFilter; texture.magFilter = THREE.LinearFilter;
         texture.anisotropy = Math.min(4, renderer.capabilities.getMaxAnisotropy());
         // Screen coordinates run downward; the shader deliberately samples image V downward too.
         texture.flipY = false; texture.needsUpdate = true;
-        layer.texture?.dispose(); layer.texture = texture; layer.source = source; invalidate();
+        layer.texture?.dispose(); layer.texture = texture; layer.source = source;
+        layer.attempts = 0; layer.retryAt = 0;
+        if (diagnostics) {
+          element.dataset.workTextureSource = source;
+          element.dataset.workTextureWidth = String(sourceImage.naturalWidth);
+          element.dataset.workTextureHeight = String(sourceImage.naturalHeight);
+        }
+        invalidate();
       };
-      const error = () => { layer.generation++; layer.texture?.dispose(); layer.texture = null; layer.source = ''; fallback(surface); invalidate(); };
-      element.addEventListener('load', load); element.addEventListener('error', error);
-      layer.off = () => { element.removeEventListener('load', load); element.removeEventListener('error', error); };
+      layer.load = () => { void load(); };
+      const reset = () => {
+        layer.generation++; layer.pending = ''; layer.attempts = 0; layer.retryAt = 0;
+        if (retryTimer !== undefined) { clearTimeout(retryTimer); retryTimer = undefined; }
+        fallback(surface); invalidate();
+      };
+      const loaded = () => { reset(); void load(); };
+      const error = () => { reset(); layer.texture?.dispose(); layer.texture = null; layer.source = ''; };
+      const changed = new MutationObserver(() => { reset(); void load(); });
+      changed.observe(element, { attributes: true, attributeFilter: ['src', 'srcset', 'sizes'] });
+      element.addEventListener('load', loaded); element.addEventListener('error', error);
+      layer.off = () => { layer.generation++; if (retryTimer !== undefined) clearTimeout(retryTimer); changed.disconnect(); element.removeEventListener('load', loaded); element.removeEventListener('error', error); };
       surface.images.push(layer); void load();
     }
     mesh.onBeforeRender = () => {
       const box = warpedBounds(surface.box);
-      const left = Math.max(0, Math.floor(box.x - 2)), top = Math.max(0, Math.floor(box.y - 2));
-      const right = Math.min(width, Math.ceil(box.x + box.width + 2)), bottom = Math.min(height, Math.ceil(box.y + box.height + 2));
-      renderer.setScissor(left, height - bottom, Math.max(0, right - left), Math.max(0, bottom - top));
+      const left = Math.max(0, Math.floor(box.x - 2)), top = Math.max(0, Math.floor(box.y + bufferInset - 2));
+      const right = Math.min(width, Math.ceil(box.x + box.width + 2)), bottom = Math.min(bufferHeight, Math.ceil(box.y + box.height + bufferInset + 2));
+      renderer.setScissor(left, bufferHeight - bottom, Math.max(0, right - left), Math.max(0, bottom - top));
     };
     surfaces.push(surface); scene.add(mesh);
   }
@@ -171,7 +228,7 @@ export async function mountWorkScene(host: HTMLElement, root: HTMLElement, disab
     return width / 2 + (x - width / 2) / (1 - profile * strength);
   }
   function warpedBounds(box: Box): Box {
-    const ys = [Math.max(0, box.y), Math.min(height, box.y + box.height)];
+    const ys = [box.y, box.y + box.height];
     if (box.y < height / 2 && box.y + box.height > height / 2) ys.push(height / 2);
     const xs = ys.flatMap(y => [screenX(box.x, y), screenX(box.x + box.width, y)]);
     return { x: Math.min(...xs), y: box.y, width: Math.max(...xs) - Math.min(...xs), height: box.height };
@@ -192,17 +249,33 @@ export async function mountWorkScene(host: HTMLElement, root: HTMLElement, disab
   function measure() {
     if (disposed || failed || !enabled || suspended || document.hidden) return false;
     if (getPerformanceSnapshot('work').staticFallback) { fail(); return false; }
-    if (nativeScrollNeedsFallback()) { fallbackAll(); needsMeasure = true; return false; }
+    if (!coarse.matches && nativeScrollNeedsFallback()) { fallbackAll(); setState('native-scroll'); needsMeasure = true; return false; }
     const snapshot = getFrameSnapshot();
     if (previousScroll !== snapshot.scrollY) { previousScroll = snapshot.scrollY; needsMeasure = true; dirty = true; }
     if (!needsMeasure) return false;
-    const hostBox = host.getBoundingClientRect(); hostX = hostBox.left; hostY = hostBox.top;
-    const w = hostBox.width || snapshot.width, h = hostBox.height || snapshot.height;
-    const dpr = Math.min(devicePixelRatio, coarse.matches ? WORK_VISUAL.touchDpr : WORK_VISUAL.maxDpr);
-    if (w !== width || h !== height || dpr !== lastDpr) { width = w; height = h; lastDpr = dpr; renderer.setPixelRatio(dpr); renderer.setSize(w, h, false); }
+    const touch = coarse.matches;
+    host.dataset.scrollLayer = touch ? 'document' : 'viewport';
+    if (!touch) { host.style.removeProperty('width'); host.style.removeProperty('height'); host.style.removeProperty('transform'); host.style.removeProperty('display'); }
+    const hostBox = host.getBoundingClientRect();
+    hostX = touch ? 0 : hostBox.left; hostY = touch ? 0 : hostBox.top;
+    const w = touch ? snapshot.width : hostBox.width || snapshot.width;
+    const h = touch ? snapshot.height : hostBox.height || snapshot.height;
+    overscan = touch ? Math.ceil(Math.min(WORK_VISUAL.scrollOverscanMax, Math.max(WORK_VISUAL.scrollOverscanMin, h * WORK_VISUAL.scrollOverscan))) : 0;
+    // Read the content extent, not scrollHeight: the absolute buffer must never
+    // extend the document and create its own additional scrollable space.
+    const contentBottom = (root.closest('.gxc-site')?.querySelector('main')?.getBoundingClientRect().bottom ?? h) + window.scrollY;
+    const drawHeight = touch ? Math.ceil(Math.min(contentBottom, h + 2 * overscan)) : h;
+    drawTop = touch ? Math.min(Math.max(0, snapshot.scrollY - overscan), Math.max(0, contentBottom - drawHeight)) : snapshot.scrollY;
+    bufferInset = touch ? snapshot.scrollY - drawTop : 0;
+    const dpr = Math.min(devicePixelRatio, touch ? WORK_VISUAL.touchDpr : WORK_VISUAL.maxDpr);
+    if (w !== width || h !== height || drawHeight !== bufferHeight || dpr !== lastDpr) {
+      width = w; height = h; bufferHeight = Math.max(1, drawHeight); lastDpr = dpr;
+      renderer.setPixelRatio(dpr); renderer.setSize(width, bufferHeight, false);
+    }
+    if (diagnostics) host.dataset.dpr = String(dpr);
     for (const surface of surfaces) {
       surface.box = boxFor(surface.frame); surface.anchorBox = boxFor(surface.anchor);
-      const b = surface.box; surface.visible = b.height > 0 && b.width > 0 && b.y < height + 1 && b.y + b.height > -1;
+      const b = surface.box; surface.visible = b.height > 0 && b.width > 0 && b.y < bufferHeight - bufferInset + 1 && b.y + b.height > -bufferInset - 1;
       if (!surface.visible) { surface.mesh.visible = false; delete surface.anchor.dataset.workHit; continue; }
       for (const layer of surface.images) {
         layer.box = boxFor(layer.element);
@@ -219,7 +292,7 @@ export async function mountWorkScene(host: HTMLElement, root: HTMLElement, disab
   }
   function update(time: number, delta: number) {
     if (disposed || failed || !enabled || suspended || document.hidden) return false;
-    if (nativeScrollNeedsFallback()) { strength = 0; activity = 0; return true; }
+    if (!coarse.matches && nativeScrollNeedsFallback()) { strength = 0; activity = 0; return true; }
     if (!surfaces.some(surface => surface.visible)) {
       strength = 0; activity = 0; moving = false;
       if (pending) pending.complete = true;
@@ -249,16 +322,23 @@ export async function mountWorkScene(host: HTMLElement, root: HTMLElement, disab
       const hoverDelta = targetHover - surface.hover;
       if (pending) { surface.hover = (pending.hoverFrom.get(surface) ?? 0) * flattenRatio; dirty = true; }
       else if (Math.abs(hoverDelta) > .0005) { surface.hover += hoverDelta * (1 - Math.exp(-WORK_VISUAL.hoverDamping * dt)); moving = true; dirty = true; } else surface.hover = targetHover;
-      if (!surface.images.every(layer => !!layer.texture)) { fallback(surface); continue; }
+      if (!surface.images.every(currentTexture)) {
+        fallback(surface);
+        for (const layer of surface.images) if (!currentTexture(layer)) layer.load();
+        continue;
+      }
       surface.mesh.visible = true;
       const uniforms = surface.material.uniforms;
-      uniforms.uViewport.value.set(width, height); uniforms.uCurl.value = strength;
+      uniforms.uViewport.value.set(width, height); uniforms.uBuffer.value.set(bufferHeight, bufferInset); uniforms.uCurl.value = strength;
       vectorBox(uniforms.uFrame.value, surface.box); uniforms.uFrameRadius.value = surface.radius;
       const scale = 1 + surface.hover * (WORK_VISUAL.hoverScale - 1);
       surface.images.forEach((layer, index) => {
         const raw = layer.box;
         const clip = { x: raw.x + raw.width * (1 - scale) / 2, y: raw.y + raw.height * (1 - scale) / 2, width: raw.width * scale, height: raw.height * scale };
-        const naturalW = layer.element.naturalWidth, naturalH = layer.element.naturalHeight;
+        // Responsive DOM naturalWidth can be density-corrected and rounded.
+        // Fit the same decoded pixel ratio that WebGL actually samples.
+        const decoded = layer.texture!.image as HTMLImageElement;
+        const naturalW = decoded.naturalWidth, naturalH = decoded.naturalHeight;
         let ratio = layer.fit === 'contain' ? Math.min(clip.width / naturalW, clip.height / naturalH) : Math.max(clip.width / naturalW, clip.height / naturalH);
         if (!Number.isFinite(ratio)) ratio = 1;
         const image = { x: clip.x + (clip.width - naturalW * ratio) * layer.position[0], y: clip.y + (clip.height - naturalH * ratio) * layer.position[1], width: naturalW * ratio, height: naturalH * ratio };
@@ -272,12 +352,19 @@ export async function mountWorkScene(host: HTMLElement, root: HTMLElement, disab
   }
   function render() {
     if (disposed || failed || !enabled || suspended || document.hidden) return false;
-    if (nativeScrollNeedsFallback()) return true;
+    if (!coarse.matches && nativeScrollNeedsFallback()) return true;
     if (!dirty && !pending?.complete && !afterRender.length) return false;
+    // Responsive selection can change after measurement. Recheck immediately
+    // before drawing, so stale pixels never take over a newer DOM source.
+    for (const surface of surfaces) {
+      if (surface.mesh.visible && !surface.images.every(currentTexture)) {
+        fallback(surface); surface.images.forEach(layer => layer.load());
+      }
+    }
     // With no visible, decoded surface the DOM remains the complete fallback.
     // Hiding the canvas avoids even a GPU clear while another section is scrolling.
     if (!surfaces.some(surface => surface.mesh.visible)) {
-      host.style.visibility = 'hidden'; host.dataset.curl = '0.000000'; dirty = false;
+      fallbackAll(); host.dataset.curl = '0.000000'; dirty = false;
       if (pending?.complete) finishPending();
       drain();
       return false;
@@ -292,9 +379,22 @@ export async function mountWorkScene(host: HTMLElement, root: HTMLElement, disab
       for (const surface of surfaces) {
         if (!surface.mesh.visible) continue;
         if (!surface.ready) { surface.ready = true; surface.frame.dataset.workReady = 'true'; needsMeasure = true; }
+        if (diagnostics) surface.images.forEach(layer => { layer.element.dataset.workDrawTop = String(layer.box.y); });
         surface.anchor.dataset.workHit = 'true';
       }
-      host.style.visibility = 'visible'; host.dataset.state = 'ready';
+      // Move the buffered drawing only together with the newly painted pixels.
+      // Between frames its document positioning follows native scroll for free.
+      if (coarse.matches) {
+        host.style.width = width + 'px'; host.style.height = bufferHeight + 'px';
+        host.style.transform = `translate3d(0, ${drawTop}px, 0)`;
+      }
+      paintedScroll = getFrameSnapshot().scrollY; paintedAt = performance.now();
+      if (diagnostics) {
+        host.dataset.renderScrollY = String(paintedScroll); host.dataset.windowTop = String(drawTop);
+        host.dataset.overscan = String(bufferInset); host.dataset.renderViewportHeight = String(height);
+        host.dataset.bufferHeight = String(bufferHeight);
+      }
+      host.style.removeProperty('display'); host.style.visibility = 'visible'; setState('ready');
       setPerformanceReady('work', true);
       host.dataset.curl = strength.toFixed(6); renderer.domElement.dataset.frames = String(renderer.info.render.frame);
       dirty = false;
@@ -305,16 +405,22 @@ export async function mountWorkScene(host: HTMLElement, root: HTMLElement, disab
   }
 
   const lost = (event: Event) => { event.preventDefault(); fail(); };
+  const retryImages = () => {
+    for (const surface of surfaces) for (const layer of surface.images) {
+      if (!currentTexture(layer)) { layer.retryAt = 0; layer.attempts = 0; layer.load(); }
+    }
+  };
   const visibility = () => {
     previousScroll = NaN; activity = 0; strength = 0;
     if (document.hidden) { fallbackAll(); finishPending(); drain(); }
-    else invalidate();
+    else { retryImages(); invalidate(); }
   };
   const ro = new ResizeObserver(invalidate); ro.observe(root); ro.observe(host);
   const offViewport = subscribeViewportChange(invalidate);
   for (const surface of surfaces) { ro.observe(surface.frame); surface.images.forEach(layer => ro.observe(layer.element)); }
   window.addEventListener('scroll', nativeScroll, { passive: true }); window.addEventListener('resize', invalidate, { passive: true });
   document.addEventListener('visibilitychange', visibility); coarse.addEventListener('change', invalidate);
+  window.addEventListener('online', retryImages);
   renderer.domElement.addEventListener('webglcontextlost', lost);
   const offMeasure = subscribeFrame(measure, 'measure'), offUpdate = subscribeFrame(update, 'update'), offRender = subscribeFrame(render, 'render');
   invalidate();
@@ -341,7 +447,7 @@ export async function mountWorkScene(host: HTMLElement, root: HTMLElement, disab
       disposed = true;
       if (pending) { pending.off(); pending.reject(abortError()); pending = null; }
       drain(); fallbackAll(); offMeasure(); offUpdate(); offRender(); ro.disconnect(); offViewport();
-      window.removeEventListener('scroll', nativeScroll); window.removeEventListener('resize', invalidate); document.removeEventListener('visibilitychange', visibility); coarse.removeEventListener('change', invalidate);
+      window.removeEventListener('scroll', nativeScroll); window.removeEventListener('resize', invalidate); document.removeEventListener('visibilitychange', visibility); coarse.removeEventListener('change', invalidate); window.removeEventListener('online', retryImages);
       renderer.domElement.removeEventListener('webglcontextlost', lost);
       for (const surface of surfaces) { surface.off(); delete surface.anchor.dataset.workNeutral; surface.images.forEach(layer => { layer.off(); layer.texture?.dispose(); }); surface.material.dispose(); for (const key of ['left', 'top', 'width', 'height', 'path']) surface.anchor.style.removeProperty('--work-hit-' + key); }
       gpu.dispose(); geometry.dispose(); empty.dispose(); renderer.dispose(); renderer.domElement.remove();

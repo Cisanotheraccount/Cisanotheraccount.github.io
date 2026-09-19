@@ -20,7 +20,9 @@ export const visual = {
   },
   work: {
     maxCurl: .06, touchCurl: .035, speedReference: 800, attack: .025, release: .175,
-    hoverScale: 1.025, hoverDamping: 12, flattenDuration: 140, maxDpr: 1.5, touchDpr: 1.25,
+    hoverScale: 1.025, hoverDamping: 12, flattenDuration: 140, maxDpr: 1.5, touchDpr: 3,
+    scrollOverscan: .12, scrollOverscanMin: 64, scrollOverscanMax: 128,
+    scrollStaleMs: 160,
   },
   uiGlass,
   meteors: meteorArt,

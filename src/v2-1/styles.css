@@ -85,6 +85,7 @@ em { font-style: normal; color: #87888a; }
 .gxc-project-grid { display: grid; grid-template-columns: repeat(12,minmax(0,1fr)); align-items: start; gap: 72px 32px; }
 .gxc-project { min-width: 0; grid-column: span 6; }
 .gxc-work-canvas { position: fixed; inset: 0; z-index: 1; pointer-events: none; }
+.gxc-work-canvas[data-scroll-layer=document] { position: absolute; inset: auto; left: 0; top: 0; }
 .gxc-work-canvas canvas { display: block; width: 100%; height: 100%; }
 .gxc-work { position: relative; z-index: 2; }
 .gxc-hero { z-index: 2; }

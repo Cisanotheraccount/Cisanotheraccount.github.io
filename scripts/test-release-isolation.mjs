@@ -2,10 +2,13 @@ import assert from 'node:assert/strict';
 import { access, readdir, readFile } from 'node:fs/promises';
 import path from 'node:path';
 import { projectRoot, verifyBaseline } from './release-baseline.mjs';
+import { verifyThumbnailRelease } from './thumbnail-release.mjs';
 
 const output = path.join(projectRoot, 'dist');
 const baseline = await verifyBaseline(output);
 const baselinePaths = new Set(baseline.files.map(file => file.path));
+const thumbnails = await verifyThumbnailRelease(output);
+const thumbnailPaths = new Set(thumbnails.files);
 async function filesUnder(directory, relative = '') {
   const result = [];
   for (const entry of await readdir(path.join(directory, relative), { withFileTypes: true })) {
@@ -17,7 +20,8 @@ async function filesUnder(directory, relative = '') {
 const files = await filesUnder(output);
 const added = files.filter(file => !baselinePaths.has(file));
 assert(added.length > 2, 'The independent 2.1 build must exist.');
-assert(added.every(file => file.startsWith('assets/2-1/') || ['galaxci/2.1/index.html', 'v2-1/index.html'].includes(file)), '2.1 may only append namespaced files.');
+assert(added.every(file => file.startsWith('assets/2-1/') || thumbnailPaths.has(file) || ['galaxci/2.1/index.html', 'v2-1/index.html'].includes(file)), '2.1 may only append namespaced bundles and verified thumbnail dependencies.');
+for (const file of thumbnailPaths) assert(!baselinePaths.has(file), '2.1 thumbnails cannot replace any frozen 2.0 asset');
 const newPage = await readFile(path.join(output, 'galaxci/2.1/index.html'), 'utf8');
 assert.equal(await readFile(path.join(output, 'v2-1/index.html'), 'utf8'), newPage, 'Local and branded 2.1 entries must match.');
 assert.match(newPage, /<title>[^<]*2\.1[^<]*<\/title>/, 'The tab title identifies 2.1.');
@@ -33,4 +37,4 @@ for (const file of files.filter(file => /\.(html|js|css)$/.test(file))) {
     dependencies += 1;
   }
 }
-console.log(`Release isolation passed: ${baseline.files.length} frozen SHA-256 matches, ${added.length} namespaced additions, ${dependencies} existing JS/CSS references.`);
+console.log(`Release isolation passed: ${baseline.files.length} frozen SHA-256 matches, ${added.length} namespaced additions, ${thumbnails.files.length - 1} verified thumbnail hashes, ${dependencies} existing JS/CSS references.`);

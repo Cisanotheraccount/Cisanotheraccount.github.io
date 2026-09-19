@@ -1,0 +1,719 @@
+{
+  "schemaVersion": 1,
+  "purpose": "Responsive 2.1 work-card thumbnails only. Shared desktop/detail assets remain unchanged.",
+  "requestedWidths": [
+    480,
+    800,
+    1200,
+    1600
+  ],
+  "processing": "Full-frame EXIF orientation and proportional Lanczos resize. WebP72 render/photo; WebP82 UI/text; no crop, recolor or upscaling. Alpha retained when present.",
+  "buildContract": "Builds consume these exports; only this optional editorial command reads original sources.",
+  "projects": {
+    "psytrain": {
+      "images": [
+        {
+          "id": "cover",
+          "quality": 82,
+          "source": {
+            "path": "内容资料/02_项目/P01_PsytrAIn/images/旧站素材/06_b311c349d269.png",
+            "sha256": "b311c349d269bc84904fa362f258d7ee37d9dfc4e361c2cbd8c9bfada265774d",
+            "width": 2000,
+            "height": 1294,
+            "bytes": 2171819,
+            "alpha": true,
+            "colorManagement": "Source has no ICC profile; retain its sRGB RGB values without exposure or saturation adjustments.",
+            "maximumExportWidth": 1600,
+            "limit": null,
+            "provenance": "public/portfolio/asset-sources.json",
+            "selection": "Original source of the current approved card composition."
+          },
+          "previousVariants": [
+            {
+              "url": "/portfolio/psytrain-1600.webp",
+              "width": 1600,
+              "height": 1035,
+              "bytes": 47642,
+              "sha256": "2eff9127e29a537ef2eb11758cf66c1ba134d9cd6a891e1f5ba50e541d0673f5"
+            },
+            {
+              "url": "/portfolio/psytrain-800.webp",
+              "width": 800,
+              "height": 518,
+              "bytes": 18932,
+              "sha256": "a35b64281b7176253bdea16db0c4f306eb1117b52850d7cdf4be4b467bf92f97"
+            }
+          ],
+          "variants": [
+            {
+              "url": "/v2-1/thumbnails/psytrain/cover-480.webp",
+              "width": 480,
+              "height": 311,
+              "bytes": 7302,
+              "sha256": "bef7463bb9d52e8e5b82e0c27b972b5ae5d8689d3d9c2accfbd7a9b6d4de6c7e"
+            },
+            {
+              "url": "/v2-1/thumbnails/psytrain/cover-800.webp",
+              "width": 800,
+              "height": 518,
+              "bytes": 13782,
+              "sha256": "e9a4f2aa18a02d049d37b8340841ccdce18b5ec10cebcd162d7297c5922c88cf"
+            },
+            {
+              "url": "/v2-1/thumbnails/psytrain/cover-1200.webp",
+              "width": 1200,
+              "height": 776,
+              "bytes": 23188,
+              "sha256": "a1ffca22d964061b12df43211614bd6f4c725a2e443fcde6197a97bd2ceac387"
+            },
+            {
+              "url": "/v2-1/thumbnails/psytrain/cover-1600.webp",
+              "width": 1600,
+              "height": 1035,
+              "bytes": 34142,
+              "sha256": "36507bc268b124ba25de4cce28c686a07bc12b2dfcb5cef1594ecebd5dba4c1a"
+            }
+          ]
+        }
+      ]
+    },
+    "shotflow": {
+      "images": [
+        {
+          "id": "workspace",
+          "quality": 82,
+          "source": {
+            "path": "v-next/review/shotflow-walkthrough-20260917/native/raw/workspace.png",
+            "sha256": "ac64279d5aa0444c2ef25a1d15bc3d558ada2a361b5c8444fc11012341067752",
+            "width": 1290,
+            "height": 2796,
+            "bytes": 1131173,
+            "alpha": false,
+            "colorManagement": "Source has no ICC profile; retain its sRGB RGB values without exposure or saturation adjustments.",
+            "maximumExportWidth": 1290,
+            "limit": "Original has fewer than 1600 horizontal pixels; keep native maximum.",
+            "provenance": "public/portfolio/shotflow-walkthrough-v1/provenance.json",
+            "selection": "Same native English screenshot as the current 2.1 card; September 17 capture, build 15, staged sample data."
+          },
+          "previousVariants": [
+            {
+              "url": "/portfolio/shotflow-walkthrough-v1/workspace-800.webp",
+              "width": 800,
+              "height": 1734,
+              "bytes": 96116,
+              "sha256": "038582f218136450569f77635028550deaa5aa725d122b2c9f5eb2b1d9aeaff0"
+            },
+            {
+              "url": "/portfolio/shotflow-walkthrough-v1/workspace-1290.webp",
+              "width": 1290,
+              "height": 2796,
+              "bytes": 178958,
+              "sha256": "44dc29226c1e7b57620764843cf5ca78f12fa4a5e25abdcf837979103efa139f"
+            }
+          ],
+          "variants": [
+            {
+              "url": "/v2-1/thumbnails/shotflow/workspace-480.webp",
+              "width": 480,
+              "height": 1040,
+              "bytes": 27012,
+              "sha256": "d47cdbcda394a46f9c069f51c22edc8eb40da744be98635968ba2dad7b32f912"
+            },
+            {
+              "url": "/v2-1/thumbnails/shotflow/workspace-800.webp",
+              "width": 800,
+              "height": 1734,
+              "bytes": 50920,
+              "sha256": "6b7e68cb276c53a10ccd622033092ebf2c033aa8808461909f773f717047ff83"
+            },
+            {
+              "url": "/v2-1/thumbnails/shotflow/workspace-1200.webp",
+              "width": 1200,
+              "height": 2601,
+              "bytes": 81598,
+              "sha256": "0ad9c0c78df04781d2b6cecb4d1b416e4338dc131db7ccd09bd82d69c5ca4649"
+            },
+            {
+              "url": "/v2-1/thumbnails/shotflow/workspace-1290.webp",
+              "width": 1290,
+              "height": 2796,
+              "bytes": 88950,
+              "sha256": "2b23b4fb265d883154a380a41d5fcca86fd89b3e52b1c630a0795378cc30d7fa"
+            }
+          ]
+        },
+        {
+          "id": "storyboard",
+          "quality": 82,
+          "source": {
+            "path": "v-next/review/shotflow-walkthrough-20260917/native/raw/storyboard-overview.png",
+            "sha256": "cba44a6f2cbd34c1ad4998a47de6188f65f2d89a16c46cccf103f742c7c47302",
+            "width": 1290,
+            "height": 2796,
+            "bytes": 528421,
+            "alpha": false,
+            "colorManagement": "Source has no ICC profile; retain its sRGB RGB values without exposure or saturation adjustments.",
+            "maximumExportWidth": 1290,
+            "limit": "Original has fewer than 1600 horizontal pixels; keep native maximum.",
+            "provenance": "public/portfolio/shotflow-walkthrough-v1/provenance.json",
+            "selection": "Same native English screenshot as the current 2.1 card; September 17 capture, build 15, staged sample data."
+          },
+          "previousVariants": [
+            {
+              "url": "/portfolio/shotflow-walkthrough-v1/storyboard-overview-800.webp",
+              "width": 800,
+              "height": 1734,
+              "bytes": 92920,
+              "sha256": "c74686e09a7bc8c8f1122fdb6bc828b3ba935db7f4c0efc58f3681400e19143c"
+            },
+            {
+              "url": "/portfolio/shotflow-walkthrough-v1/storyboard-overview-1290.webp",
+              "width": 1290,
+              "height": 2796,
+              "bytes": 159164,
+              "sha256": "684df4e8de5da483c6f835ff1b75de84b01aa6000df50465e953a42e610a601f"
+            }
+          ],
+          "variants": [
+            {
+              "url": "/v2-1/thumbnails/shotflow/storyboard-480.webp",
+              "width": 480,
+              "height": 1040,
+              "bytes": 30352,
+              "sha256": "0a0d3e9e35cbc3a9a2ef1c64c408e72309fabcfbd0777e1153e88c6ef6cea27f"
+            },
+            {
+              "url": "/v2-1/thumbnails/shotflow/storyboard-800.webp",
+              "width": 800,
+              "height": 1734,
+              "bytes": 55066,
+              "sha256": "f4b62f8d6c4a4adc0eb382d22ab8937b79df97f75110768d1b79316b8923f4c2"
+            },
+            {
+              "url": "/v2-1/thumbnails/shotflow/storyboard-1200.webp",
+              "width": 1200,
+              "height": 2601,
+              "bytes": 84826,
+              "sha256": "c07ebb090198bb6ced3709e7f04ba3729c795480f436ad75b887eb3292871f92"
+            },
+            {
+              "url": "/v2-1/thumbnails/shotflow/storyboard-1290.webp",
+              "width": 1290,
+              "height": 2796,
+              "bytes": 93442,
+              "sha256": "62cf2d1d2f435d5c1af0468d36dbb12b1369de8d6baecf8ad5fdd34cc6ef5150"
+            }
+          ]
+        }
+      ]
+    },
+    "introme": {
+      "images": [
+        {
+          "id": "cover",
+          "quality": 82,
+          "source": {
+            "path": "内容资料/02_项目/P19_IntroMe/images/Figma原图/deck-a/raw-9d54f91b22bbef05ea4bb0dae8b4b8fcf9f930b9fd2d740c20f415e5e9a7ede4.png",
+            "sha256": "9d54f91b22bbef05ea4bb0dae8b4b8fcf9f930b9fd2d740c20f415e5e9a7ede4",
+            "width": 3796,
+            "height": 2642,
+            "bytes": 4412967,
+            "alpha": true,
+            "colorManagement": "Source has no ICC profile; retain its sRGB RGB values without exposure or saturation adjustments.",
+            "maximumExportWidth": 1600,
+            "limit": null,
+            "provenance": "public/portfolio/asset-sources.json",
+            "selection": "Original source of the current approved card composition."
+          },
+          "previousVariants": [
+            {
+              "url": "/portfolio/introme-1600.webp",
+              "width": 1600,
+              "height": 1114,
+              "bytes": 53302,
+              "sha256": "618c466eecf81232c9432028633575fa3a5964950fc211fc80e7cd9cf31aa134"
+            },
+            {
+              "url": "/portfolio/introme-800.webp",
+              "width": 800,
+              "height": 557,
+              "bytes": 20620,
+              "sha256": "29bafbd702942ede417b42574001cf0841afb8af6fae74df44bc22d706a04f70"
+            }
+          ],
+          "variants": [
+            {
+              "url": "/v2-1/thumbnails/introme/cover-480.webp",
+              "width": 480,
+              "height": 334,
+              "bytes": 9664,
+              "sha256": "540b3efd18a5e5109e3d8594106a9513fc33277ec3c4a62808ee89bc22fc5cac"
+            },
+            {
+              "url": "/v2-1/thumbnails/introme/cover-800.webp",
+              "width": 800,
+              "height": 557,
+              "bytes": 18010,
+              "sha256": "f6a0f9d1c7c67b63e0f0c1c44a06f8a0c1920140cb03caa45019587423abbbe2"
+            },
+            {
+              "url": "/v2-1/thumbnails/introme/cover-1200.webp",
+              "width": 1200,
+              "height": 835,
+              "bytes": 31008,
+              "sha256": "d9a318c271cb7ed0f036755f8b57789b966db9598b3946e9aaf65f9c125b3f91"
+            },
+            {
+              "url": "/v2-1/thumbnails/introme/cover-1600.webp",
+              "width": 1600,
+              "height": 1114,
+              "bytes": 46658,
+              "sha256": "4714b66a21c5cae7ed16af901988e9b6ae378d4574d87be664cb69652959c11d"
+            }
+          ]
+        }
+      ]
+    },
+    "hypnos-cockpit": {
+      "images": [
+        {
+          "id": "cover",
+          "quality": 82,
+          "source": {
+            "path": "内容资料/02_项目/P04_Hypnos-Cockpit/images/旧站素材/06_020d5528162c.png",
+            "sha256": "020d5528162c88fcaadee759bdc385a36243763d35841078ef02e1a3982a0651",
+            "width": 2000,
+            "height": 1294,
+            "bytes": 2278539,
+            "alpha": true,
+            "colorManagement": "Source has no ICC profile; retain its sRGB RGB values without exposure or saturation adjustments.",
+            "maximumExportWidth": 1600,
+            "limit": null,
+            "provenance": "public/portfolio/asset-sources.json",
+            "selection": "Original source of the current approved card composition."
+          },
+          "previousVariants": [
+            {
+              "url": "/portfolio/hypnos-cockpit-1600.webp",
+              "width": 1600,
+              "height": 1035,
+              "bytes": 71292,
+              "sha256": "b032b8a3e100f4bd34bf7ea5621ec7d76633928f9d91726a468408f20fc6951c"
+            },
+            {
+              "url": "/portfolio/hypnos-cockpit-800.webp",
+              "width": 800,
+              "height": 518,
+              "bytes": 23840,
+              "sha256": "2d49d83f96a2a83bd0a780df6de74ea35cadcf8a52e2c141474e409cb7bb0ed2"
+            }
+          ],
+          "variants": [
+            {
+              "url": "/v2-1/thumbnails/hypnos-cockpit/cover-480.webp",
+              "width": 480,
+              "height": 311,
+              "bytes": 8218,
+              "sha256": "71a11dccc13cb0f926771e40ee35aa5f112a96a73bd57875626255e49e0650d1"
+            },
+            {
+              "url": "/v2-1/thumbnails/hypnos-cockpit/cover-800.webp",
+              "width": 800,
+              "height": 518,
+              "bytes": 17566,
+              "sha256": "52c986fdf41111e21a5ffae969cbf80e6059ca6c8796980ac35a3b52fb1f6d02"
+            },
+            {
+              "url": "/v2-1/thumbnails/hypnos-cockpit/cover-1200.webp",
+              "width": 1200,
+              "height": 776,
+              "bytes": 33320,
+              "sha256": "d03d685e43a92fa312c6500cc3a79d68ca7d661eb128d7f9fd5865facdca9aed"
+            },
+            {
+              "url": "/v2-1/thumbnails/hypnos-cockpit/cover-1600.webp",
+              "width": 1600,
+              "height": 1035,
+              "bytes": 51098,
+              "sha256": "551d5233d883b82696ca938a9c70fa081e543a96fda13dce30aaf6acaca8eb59"
+            }
+          ]
+        }
+      ]
+    },
+    "deal-points": {
+      "images": [
+        {
+          "id": "cover",
+          "quality": 82,
+          "source": {
+            "path": "内容资料/02_项目/P02_Deal-Points/images/旧站素材/06_5b6661ab41b4.png",
+            "sha256": "5b6661ab41b40adc4da388f10b21b84606c3ea450c155ff1b82e224aab763759",
+            "width": 1100,
+            "height": 712,
+            "bytes": 581945,
+            "alpha": true,
+            "colorManagement": "Source has no ICC profile; retain its sRGB RGB values without exposure or saturation adjustments.",
+            "maximumExportWidth": 1100,
+            "limit": "Original has fewer than 1600 horizontal pixels; keep native maximum.",
+            "provenance": "public/portfolio/asset-sources.json",
+            "selection": "Original source of the current approved card composition."
+          },
+          "previousVariants": [
+            {
+              "url": "/portfolio/deal-points-800.webp",
+              "width": 800,
+              "height": 518,
+              "bytes": 44088,
+              "sha256": "28e9da8549b76811bbbe89289ddbbd39b9852d4d5c789925e4e472fea1b30317"
+            },
+            {
+              "url": "/portfolio/deal-points-1100.webp",
+              "width": 1100,
+              "height": 712,
+              "bytes": 70358,
+              "sha256": "bb9ea161dc0e76c760848573c62ed834c0dbef08e5b65eab230f3e0e66f9d6ee"
+            }
+          ],
+          "variants": [
+            {
+              "url": "/v2-1/thumbnails/deal-points/cover-480.webp",
+              "width": 480,
+              "height": 311,
+              "bytes": 16240,
+              "sha256": "5471d3b1c79df7be527cc1a02b3e5887834f412ff01f9c87fca849e7a1eb35dd"
+            },
+            {
+              "url": "/v2-1/thumbnails/deal-points/cover-800.webp",
+              "width": 800,
+              "height": 518,
+              "bytes": 34474,
+              "sha256": "44d3a25e4f7f05f77538064fba249b1179446d492f88f7a4919ec1415a1d8be0"
+            },
+            {
+              "url": "/v2-1/thumbnails/deal-points/cover-1100.webp",
+              "width": 1100,
+              "height": 712,
+              "bytes": 55082,
+              "sha256": "9ba277f842d399a5cfa490d42d93cc5b933c342ed602eaa4def834b94f8820db"
+            }
+          ]
+        }
+      ]
+    },
+    "orbit": {
+      "images": [
+        {
+          "id": "cover",
+          "quality": 82,
+          "source": {
+            "path": "内容资料/02_项目/P03_Orbit/images/旧站素材/07_41972b2e4dd0.png",
+            "sha256": "41972b2e4dd03c6bbc4be1548e63901d7c4b64aed1fa5167fa9b00eaafeefceb",
+            "width": 1100,
+            "height": 712,
+            "bytes": 373909,
+            "alpha": true,
+            "colorManagement": "Source has no ICC profile; retain its sRGB RGB values without exposure or saturation adjustments.",
+            "maximumExportWidth": 1100,
+            "limit": "Original has fewer than 1600 horizontal pixels; keep native maximum.",
+            "provenance": "public/portfolio/asset-sources.json",
+            "selection": "Original source of the current approved card composition."
+          },
+          "previousVariants": [
+            {
+              "url": "/portfolio/orbit-800.webp",
+              "width": 800,
+              "height": 518,
+              "bytes": 19144,
+              "sha256": "4dcab5259f8a5134ee3efae21bcd33b119ff48e29c700a41434c87051d829927"
+            },
+            {
+              "url": "/portfolio/orbit-1100.webp",
+              "width": 1100,
+              "height": 712,
+              "bytes": 28856,
+              "sha256": "acc0706e7508f2bbdbb7b04900355fd06e300c6acd166e502234cb2ab1ab5c57"
+            }
+          ],
+          "variants": [
+            {
+              "url": "/v2-1/thumbnails/orbit/cover-480.webp",
+              "width": 480,
+              "height": 311,
+              "bytes": 6972,
+              "sha256": "c3ac24d8a0bb03b6e72e076a1779a5c6ea211f735198d9ada50f6643f3192d11"
+            },
+            {
+              "url": "/v2-1/thumbnails/orbit/cover-800.webp",
+              "width": 800,
+              "height": 518,
+              "bytes": 15164,
+              "sha256": "b7d328fabb213e4e04f10dd0300a5f70949ec1ac127ff6ed60e9480067827e9b"
+            },
+            {
+              "url": "/v2-1/thumbnails/orbit/cover-1100.webp",
+              "width": 1100,
+              "height": 712,
+              "bytes": 23290,
+              "sha256": "50f7d54415744925ff22919584e3e618c8b31b921e35a8f870d819fc78375f4f"
+            }
+          ]
+        }
+      ]
+    },
+    "cyber-city": {
+      "images": [
+        {
+          "id": "cover",
+          "quality": 72,
+          "source": {
+            "path": "内容资料/02_项目/P08_Cyber-City/images/旧站素材/01_6c7c73328d88.png",
+            "sha256": "6c7c73328d88bf072e3f92856a8389ab760aca50588099eebe94e2368518ae17",
+            "width": 1100,
+            "height": 619,
+            "bytes": 1157854,
+            "alpha": false,
+            "colorManagement": "Source has no ICC profile; retain its sRGB RGB values without exposure or saturation adjustments.",
+            "maximumExportWidth": 1100,
+            "limit": "Original has fewer than 1600 horizontal pixels; keep native maximum.",
+            "provenance": "public/portfolio/asset-sources.json",
+            "selection": "Original project-index cover; only one distinct archived still is available."
+          },
+          "previousVariants": [
+            {
+              "url": "/portfolio/cyber-city-1100.webp",
+              "width": 1100,
+              "height": 619,
+              "bytes": 154520,
+              "sha256": "d568d53e4bf3933640ba7f6653740521ea02558d45f2c76df9cd9d5d356a3b9c"
+            },
+            {
+              "url": "/portfolio/cyber-city-800.webp",
+              "width": 800,
+              "height": 450,
+              "bytes": 77906,
+              "sha256": "ac8932353cbd88ef67e7a9881148fa08657e2802d9a0e59e0bd9bf679a2f7936"
+            }
+          ],
+          "variants": [
+            {
+              "url": "/v2-1/thumbnails/cyber-city/cover-480.webp",
+              "width": 480,
+              "height": 270,
+              "bytes": 7026,
+              "sha256": "cef54816f9242260e383f12199d26a745e17d98db1f313420a61d8d40638b35a"
+            },
+            {
+              "url": "/v2-1/thumbnails/cyber-city/cover-800.webp",
+              "width": 800,
+              "height": 450,
+              "bytes": 16380,
+              "sha256": "9fa483a754797894a52b7db7bd13ac0c81638b35f3d038d1e5fad1d5195967dc"
+            },
+            {
+              "url": "/v2-1/thumbnails/cyber-city/cover-1100.webp",
+              "width": 1100,
+              "height": 619,
+              "bytes": 35782,
+              "sha256": "b662f19c6bd7494b13de55d677860688ce14653232e4841b872aa82f8df02d31"
+            }
+          ]
+        }
+      ]
+    },
+    "crystal-city": {
+      "images": [
+        {
+          "id": "cover",
+          "quality": 72,
+          "source": {
+            "path": "内容资料/02_项目/P09_Crystal-City/images/旧站素材/04_b6aa62c947e4.png",
+            "sha256": "b6aa62c947e43a5e2568cef60bef671f2c4a076e2ffe6ef08f4467011bf22cac",
+            "width": 1920,
+            "height": 1080,
+            "bytes": 3347620,
+            "alpha": false,
+            "colorManagement": "Source has no ICC profile; retain its sRGB RGB values without exposure or saturation adjustments.",
+            "maximumExportWidth": 1600,
+            "limit": null,
+            "provenance": "public/portfolio/asset-sources.json",
+            "selection": "Higher-resolution archived version of the original project-index cover composition. IMG-05 repeats this view and is omitted from the gallery."
+          },
+          "previousVariants": [
+            {
+              "url": "/portfolio/crystal-city-1600.webp",
+              "width": 1600,
+              "height": 900,
+              "bytes": 335214,
+              "sha256": "3b955611f0fea93ca00f9152936305ed8fe80d6510abcc2d685c7add586c10b4"
+            },
+            {
+              "url": "/portfolio/crystal-city-800.webp",
+              "width": 800,
+              "height": 450,
+              "bytes": 82528,
+              "sha256": "daa745479224ed4e5b546b48bf0404a1d4bd1fe5683bd52641db134f1071ef61"
+            }
+          ],
+          "variants": [
+            {
+              "url": "/v2-1/thumbnails/crystal-city/cover-480.webp",
+              "width": 480,
+              "height": 270,
+              "bytes": 14324,
+              "sha256": "1f33c4f8b1ac872c8aa6ea1275d8f7d74090816bcf32ecab5917bff0be988323"
+            },
+            {
+              "url": "/v2-1/thumbnails/crystal-city/cover-800.webp",
+              "width": 800,
+              "height": 450,
+              "bytes": 30102,
+              "sha256": "92693b6ae10ae6f3400bc61b2db4b4961d8e04d13915ec5d300f8ebb0ef71cc2"
+            },
+            {
+              "url": "/v2-1/thumbnails/crystal-city/cover-1200.webp",
+              "width": 1200,
+              "height": 675,
+              "bytes": 55722,
+              "sha256": "3c4f9c48f59b94ffb488a80decb05d5b9001fa6ec4b93eb5a1607e08b88df8ab"
+            },
+            {
+              "url": "/v2-1/thumbnails/crystal-city/cover-1600.webp",
+              "width": 1600,
+              "height": 900,
+              "bytes": 92346,
+              "sha256": "98f624b9525b90d936b26e3aca8a940056f0969028c8b7d06af15f3dcef655de"
+            }
+          ]
+        }
+      ]
+    },
+    "last-one": {
+      "images": [
+        {
+          "id": "cover",
+          "quality": 72,
+          "source": {
+            "path": "内容资料/02_项目/P07_Last-One/images/旧站素材/05_743bc48b9f4b.jpeg",
+            "sha256": "743bc48b9f4bc9b7f7b6b50fe74844be21fd7ce8d585edfc78b062786d7de4f0",
+            "width": 2000,
+            "height": 838,
+            "bytes": 60625,
+            "alpha": false,
+            "colorManagement": "Source has no ICC profile; retain its sRGB RGB values without exposure or saturation adjustments.",
+            "maximumExportWidth": 1600,
+            "limit": null,
+            "provenance": "public/portfolio/asset-sources.json",
+            "selection": "2000-pixel archived background version of the character and sphere composition used on the original project index. IMG-06 repeats this view and is omitted."
+          },
+          "previousVariants": [
+            {
+              "url": "/portfolio/last-one-1600.webp",
+              "width": 1600,
+              "height": 670,
+              "bytes": 27608,
+              "sha256": "3fc37af6363463e37b01070bd5e2ca96ef26fd0de5650ee7e5fb09c8f56ef9f9"
+            },
+            {
+              "url": "/portfolio/last-one-800.webp",
+              "width": 800,
+              "height": 335,
+              "bytes": 7220,
+              "sha256": "9db7179672c7d97a32dfe9d127988a403ae21f356f24101dad8f15252c4671d0"
+            }
+          ],
+          "variants": [
+            {
+              "url": "/v2-1/thumbnails/last-one/cover-480.webp",
+              "width": 480,
+              "height": 201,
+              "bytes": 1612,
+              "sha256": "8cdc07d874d5a7264b72b852767ee6aa56b06aa64335b8145da3f20708fbea09"
+            },
+            {
+              "url": "/v2-1/thumbnails/last-one/cover-800.webp",
+              "width": 800,
+              "height": 335,
+              "bytes": 3026,
+              "sha256": "3c7653fa06c127bdbd5ec2915dc23b3a99d20fe7f6e4b42e20ceedf98a233d66"
+            },
+            {
+              "url": "/v2-1/thumbnails/last-one/cover-1200.webp",
+              "width": 1200,
+              "height": 503,
+              "bytes": 5318,
+              "sha256": "5a432c285a0d01297774c43227d647b429c24029250124888ae9cdef744d069e"
+            },
+            {
+              "url": "/v2-1/thumbnails/last-one/cover-1600.webp",
+              "width": 1600,
+              "height": 670,
+              "bytes": 8074,
+              "sha256": "a42c771b45226dc4a4f517001914c75caf12688a8eb7a1310696c7187a45dea4"
+            }
+          ]
+        }
+      ]
+    },
+    "gala-x-ci-vr-gallery": {
+      "images": [
+        {
+          "id": "cover",
+          "quality": 72,
+          "source": {
+            "path": "内容资料/02_项目/P06_Gala-X-Ci-VR-Gallery/images/旧站素材/01_137f07199324.png",
+            "sha256": "137f07199324c99bd6cfd47caaf460f342b42f2191b60df2728a3e075ccf33cd",
+            "width": 1100,
+            "height": 689,
+            "bytes": 821585,
+            "alpha": true,
+            "colorManagement": "Source has no ICC profile; retain its sRGB RGB values without exposure or saturation adjustments.",
+            "maximumExportWidth": 1100,
+            "limit": "Original has fewer than 1600 horizontal pixels; keep native maximum.",
+            "provenance": "public/portfolio/asset-sources.json",
+            "selection": "Original project-index cover showing the gallery’s black-hole opening."
+          },
+          "previousVariants": [
+            {
+              "url": "/portfolio/gala-x-ci-vr-gallery-1100.webp",
+              "width": 1100,
+              "height": 689,
+              "bytes": 57852,
+              "sha256": "79a8edd459f7e54c4091e2efadb6ac8fc6a3d112feda8ee62e1ea76d72d7ee82"
+            },
+            {
+              "url": "/portfolio/gala-x-ci-vr-gallery-800.webp",
+              "width": 800,
+              "height": 501,
+              "bytes": 35192,
+              "sha256": "96aadd3b09929fe9832674a264e61418f35f2484982e26bdcf7adcaf3bd9aab1"
+            }
+          ],
+          "variants": [
+            {
+              "url": "/v2-1/thumbnails/gala-x-ci-vr-gallery/cover-480.webp",
+              "width": 480,
+              "height": 301,
+              "bytes": 5464,
+              "sha256": "2502c0d5ac5ea4a33ddc723a1d5ac597edf6189cb7f620a40f598d3c3880d8a4"
+            },
+            {
+              "url": "/v2-1/thumbnails/gala-x-ci-vr-gallery/cover-800.webp",
+              "width": 800,
+              "height": 501,
+              "bytes": 11696,
+              "sha256": "ac55964e0330c221f63b3dcd7f5e8ab0617f1af5ae303900c9d3ce34126e455c"
+            },
+            {
+              "url": "/v2-1/thumbnails/gala-x-ci-vr-gallery/cover-1100.webp",
+              "width": 1100,
+              "height": 689,
+              "bytes": 18646,
+              "sha256": "7b6a8c09bdf1609b8d61d6896979cf6c6a7fd4f91d2832c7f214010914ed1a47"
+            }
+          ]
+        }
+      ]
+    }
+  }
+}

@@ -1,0 +1,39 @@
+{
+  "source": "_25A6463.jpg",
+  "sourceSha256": "43f6a67451e5a89db861f2e97950aaa7fe060e62553ee51d325e02c28d242ebb",
+  "sourceBytes": 2137617,
+  "sourceWidth": 8192,
+  "sourceHeight": 5464,
+  "width": 8192,
+  "height": 5464,
+  "crop": {
+    "x": 0,
+    "y": 0,
+    "width": 8192,
+    "height": 5464
+  },
+  "colorSpace": "sRGB",
+  "profile": "sRGB IEC61966-2.1",
+  "variants": [
+    {
+      "url": "/v2-1/backgrounds/work/yellowstone-landscape-8192.jpg",
+      "width": 8192,
+      "height": 5464,
+      "bytes": 2094715,
+      "sha256": "68fd0c50d23784a03abba95b2ac13d63d4e3bac1aebdbf23227892fb024b1c83"
+    }
+  ],
+  "encoding": {
+    "format": "JPEG",
+    "reencoded": false,
+    "originalICC": true,
+    "exif": false,
+    "xmp": false,
+    "jpegScanSha256": "38d02e37ad3a7c96062b5cab5a5dd36a3001bb95ecc674153171173b739bb426",
+    "decodedPixelsIdentical": true
+  },
+  "processing": "Full uncropped Lightroom landscape export. JPEG entropy-coded scan bytes and original sRGB ICC retained verbatim. Only APP1 (EXIF/XMP), APP13 (Photoshop/IPTC) and COM metadata segments removed. No resize, crop, exposure, saturation, grading, sharpening, blur or second JPEG encoding.",
+  "originalPreserved": true,
+  "heroExportsPreserved": true,
+  "previousWorkExportsPreserved": true
+}

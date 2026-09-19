@@ -12,10 +12,10 @@ const sources = {
     legacyWidths: [1536, 2560, 3072, 4096], newWidths: [5120, 6144, 8192],
   },
   work: {
-    width: 5464, height: 3900,
-    sha256: 'b65272f302a58cf6ebcad0fee757e272445e8caaaae1b7e7b6a99587737e7e5d',
-    prefix: 'yellowstone', legacy: 'v-next/work-background/yellowstone/',
-    legacyWidths: [1536, 1920, 2560, 3072, 4096], newWidths: [5120, 5464],
+    width: 8192, height: 5464,
+    sha256: '43f6a67451e5a89db861f2e97950aaa7fe060e62553ee51d325e02c28d242ebb',
+    prefix: 'yellowstone-landscape',
+    legacyWidths: [], newWidths: [8192],
   },
 };
 
@@ -44,8 +44,8 @@ function jpegDimensions(bytes, file) {
   assert.fail(`Missing JPEG dimensions: ${file}`);
 }
 
-// Verify both shared 2.0 references and the new 2.1 assets. Return only the five
-// new JPEGs and their manifest for copying/allowlisting; legacy dependencies
+// Verify shared hero references and the independent 2.1 assets. Return the four
+// JPEGs, manifest and work-photo metadata for copying/allowlisting; legacy dependencies
 // remain owned by the frozen baseline and must never be overwritten here.
 export async function verifyBackgroundRelease(directory) {
   const manifestPath = backgroundNamespace + 'manifest.json';
@@ -90,6 +90,31 @@ export async function verifyBackgroundRelease(directory) {
       else sharedCount += 1;
     }
   }
-  assert.equal(files.length, 6, 'Only the five reviewed 2.1 JPEGs and manifest may be appended');
+  const metadataPaths = ['work/provenance.json', 'work/star-points.json'].map(file => backgroundNamespace + file);
+  const [provenance, catalog] = await Promise.all(metadataPaths.map(async file =>
+    JSON.parse(await readFile(path.join(directory, file), 'utf8'))));
+  const source = sources.work;
+  assert.equal(provenance.sourceSha256, source.sha256, 'Work provenance must match the selected photograph');
+  assert.equal(provenance.sourceWidth, source.width);
+  assert.equal(provenance.sourceHeight, source.height);
+  assert.equal(provenance.width, source.width);
+  assert.equal(provenance.height, source.height);
+  assert.deepEqual(provenance.crop, { x: 0, y: 0, width: source.width, height: source.height });
+  assert.deepEqual(provenance.variants, manifest.work.variants, 'Work fallback and selected photograph must agree');
+  assert.equal(catalog.source.sha256, source.sha256, 'Never reuse another photograph’s star coordinates');
+  assert.equal(catalog.source.width, source.width);
+  assert.equal(catalog.source.height, source.height);
+  assert.equal(catalog.source.originalWidth, source.width);
+  assert.equal(catalog.source.originalHeight, source.height);
+  assert.deepEqual(catalog.source.crop, provenance.crop);
+  assert(catalog.count > 0 && catalog.count === catalog.points.length, 'Missing measured stars');
+  assert.equal(new Set(catalog.points.map(point => point.id)).size, catalog.count, 'Duplicate star IDs');
+  for (const point of catalog.points) {
+    assert(point.x >= 0 && point.x < source.width && point.y >= 0 && point.y < source.height);
+    assert(Math.abs(point.u - (point.x + .5) / source.width) < .000001);
+    assert(Math.abs(point.v - (point.y + .5) / source.height) < .000001);
+  }
+  files.push(...metadataPaths);
+  assert.equal(files.length, 7, 'Only four reviewed JPEGs, manifest and work-photo metadata may be appended');
   return { manifest, files, sharedCount };
 }

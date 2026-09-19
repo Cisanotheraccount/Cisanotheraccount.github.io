@@ -1,10 +1,12 @@
-"""Extend the read-only background ladders with full-detail 2.1 JPEGs.
+"""Prepare full-detail 2.1 hero JPEGs and preserve the current work photograph.
 
 Run with Python + Pillow. Existing /v-next exports are verified and referenced,
 never regenerated. Only public/v2-1/backgrounds is written. The original sRGB
 ICC bytes, exposure, saturation and established crop are preserved. Public
 derivatives omit EXIF/GPS. Source files are located in the local content library;
 normal website builds do not run this script or require those private originals.
+The Lightroom work image has its own lossless preparation script:
+prepare-landscape-work-background-v21.py. Never re-encode it here.
 """
 
 from hashlib import sha256
@@ -30,17 +32,6 @@ SPECS = {
         "prefix": "stars",
         "quality": 98,
         "crop": None,
-    },
-    "work": {
-        "source": "内容资料/03_摄影与平面设计合集/摄影/作品区背景原图/_25A6448.jpg",
-        "sourceSha256": "b65272f302a58cf6ebcad0fee757e272445e8caaaae1b7e7b6a99587737e7e5d",
-        "sourceSize": (5464, 8192),
-        "provenance": "public/v-next/work-background/yellowstone/provenance.json",
-        "variantsKey": "variants",
-        "widths": (5120, 5464),
-        "prefix": "yellowstone",
-        "quality": 95,
-        "crop": (0, 1500, 5464, 5400),
     },
 }
 
@@ -144,6 +135,17 @@ def main():
             variants.append(record(path, size))
         manifest[name] = {"sourceSha256": spec["sourceSha256"], "width": photo.width,
                           "height": photo.height, "variants": variants}
+
+    work = json.loads((OUTPUT / "work/provenance.json").read_text())
+    require(work["sourceSha256"] == "43f6a67451e5a89db861f2e97950aaa7fe060e62553ee51d325e02c28d242ebb",
+            "Prepare and review the current Lightroom work photograph first")
+    require((work["width"], work["height"]) == (8192, 5464), "Work photograph dimensions changed")
+    require(len(work["variants"]) == 1, "Expected the unchanged full-resolution Lightroom JPEG")
+    variant = work["variants"][0]
+    require(variant["url"] == "/v2-1/backgrounds/work/yellowstone-landscape-8192.jpg", "Unexpected work asset")
+    require(record(ROOT / "public" / variant["url"].lstrip("/"), (8192, 5464)) == variant,
+            "Current work JPEG no longer matches its provenance")
+    manifest["work"] = {key: work[key] for key in ("sourceSha256", "width", "height", "variants")}
 
     for path, before in protected.items():
         require(digest(path) == before, f"Protected 2.0 asset changed: {path}")

@@ -1,8 +1,8 @@
 import { useEffect, useLayoutEffect, useRef, type RefObject, type CSSProperties } from 'react';
 import { workProjects } from './content/portfolioData';
-import metadata from '../../public/v-next/work-background/yellowstone/provenance.json';
+import metadata from '../../public/v2-1/backgrounds/work/provenance.json';
 import backgrounds from '../../public/v2-1/backgrounds/manifest.json';
-import catalog from '../../public/v-next/work-background/yellowstone/star-points.json';
+import catalog from '../../public/v2-1/backgrounds/work/star-points.json';
 import palettes from '../../public/v-next/work-background/palettes.json';
 import { photoCover } from './heroPhoto';
 import { getFrameSnapshot, requestFrame, subscribeFrame, subscribeViewportChange } from './runtime';
@@ -209,9 +209,11 @@ export function WorkBackdrop({ root, paused, reduced, suspended, enabled = true 
       visibilityChanged = true;
       if (!visible) { exposed.clear(); return; }
       nextClip = `inset(${Math.max(0, start)}px 0px ${Math.max(0, height - end)}px)`;
-      // Pixel positions may be outside the viewport; fades stay attached to the
-      // section's entrance/exit, while the photograph always keeps a cover crop.
-      nextMask = `linear-gradient(to bottom, transparent ${start}px, #000 ${start + art.entryFade}px, #000 ${end - art.exitFade}px, transparent ${end}px)`;
+      // Fade only the section boundaries; the photograph stays fully opaque
+      // throughout the interior, independently of these layout transitions.
+      nextMask = art.entryFade || art.exitFade
+        ? `linear-gradient(to bottom, transparent ${start}px, #000 ${start + art.entryFade}px, #000 ${end - art.exitFade}px, transparent ${end}px)`
+        : 'none';
       const padding = art.twinkles.obstructionPadding;
       const obstacles = blockers.flatMap(({ element, anchor }) => {
         const rect = getLayoutRect(element);

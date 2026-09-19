@@ -1,13 +1,15 @@
 /** Work-only art direction. Hero exposure, timing and colors stay independent. */
 export const workBackdropArt = {
-  photoOpacity: .56,
+  // Preserve the user's Lightroom exposure and star highlights on the page.
+  photoOpacity: 1,
   // Lift the lower Milky Way into view; overscan keeps portrait edges covered.
   photoScale: 1.10,
   photoAnchorY: 1,
-  primaryOpacity: .16,
-  secondaryOpacity: .08,
+  primaryOpacity: 0,
+  secondaryOpacity: 0,
   transitionSeconds: 1.1,
   selectionHysteresis: .065,
+  // Section-edge transitions are separate from the photograph's exposure.
   entryFade: 220,
   exitFade: 300,
   mobileBreakpoint: 760,

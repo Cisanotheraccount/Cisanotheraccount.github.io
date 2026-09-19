@@ -8,7 +8,7 @@ const quality = await importSource(await readFile(new URL('../src/v2-1/backgroun
 const makeVariants = (widths, sourceWidth, sourceHeight) => widths.map(width => ({ url: `/image-${width}.jpg`, width, height: Math.round(width * sourceHeight / sourceWidth) }));
 const hero = { width: 8192, height: 5464, sourceSha256: 'same-source', derivatives: makeVariants([1536, 2560, 3072, 4096], 8192, 5464) };
 const variants = makeVariants([1536, 2560, 3072, 4096, 5120, 6144, 8192], 8192, 5464);
-const workVariants = makeVariants([1536, 1920, 2560, 3072, 4096, 5120, 5464], 5464, 3900);
+const workVariants = makeVariants([8192], 8192, 5464);
 const choose = (width, height, dpr, extra = {}) => quality.selectBackgroundVariant({ width, height, dpr, imageWidth: hero.width, imageHeight: hero.height, variants, ...extra });
 assert.equal(choose(390, 844, 3).variant.width, 4096, 'Portrait cover uses height and true DPR 3.');
 assert.equal(choose(430, 932, 3).variant.width, 5120, 'Retina 3 is not capped to the glass DPR 2.');
@@ -21,11 +21,11 @@ assert.equal(choose(430, 932, Number.NaN).dpr, 1);
 assert.equal(choose(1536, 100, 1, { variants: [...variants].reverse() }).variant.width, 1536);
 assert.equal(choose(10000, 10000, 3, { variants: [...variants, { url: '/upscaled.jpg', width: 16384, height: 10928 }] }).variant.width, 8192);
 assert.equal(choose(390, 844, 3, { variants: [] }).variant, undefined);
-const work = quality.selectBackgroundVariant({ width: 430, height: 932, dpr: 3, overscan: 1.1, imageWidth: 5464, imageHeight: 3900, variants: workVariants });
-assert.equal(work.variant.width, 5120, 'Work photo includes its unchanged 1.10 overscan at DPR 3.');
-assert(Math.abs(work.desiredWidth - 932 * 5464 / 3900 * 3 * 1.1) < .00001);
-const work4k = quality.selectBackgroundVariant({ width: 2560, height: 1440, dpr: 2, overscan: 1.1, imageWidth: 5464, imageHeight: 3900, variants: workVariants });
-assert.equal(work4k.variant.width, 5464); assert.equal(work4k.sourceLimited, true);
+const work = quality.selectBackgroundVariant({ width: 430, height: 932, dpr: 3, overscan: 1.1, imageWidth: 8192, imageHeight: 5464, variants: workVariants });
+assert.equal(work.variant.width, 8192, 'Work uses the Lightroom JPEG without another compression pass.');
+assert(Math.abs(work.desiredWidth - 932 * 8192 / 5464 * 3 * 1.1) < .00001);
+const work4k = quality.selectBackgroundVariant({ width: 3840, height: 2160, dpr: 2, overscan: 1.1, imageWidth: 8192, imageHeight: 5464, variants: workVariants });
+assert.equal(work4k.variant.width, 8192); assert.equal(work4k.sourceLimited, true);
 
 // Execute the real shared controller with a deterministic browser clock/decode
 // transport. This verifies async races; it does not claim image-quality or FPS QA.

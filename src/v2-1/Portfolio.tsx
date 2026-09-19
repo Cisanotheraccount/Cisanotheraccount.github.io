@@ -85,7 +85,7 @@ export function NextPortfolio() {
     return () => { pendingOpen.current?.abort(); history.scrollRestoration = oldRestoration; window.removeEventListener('popstate', sync); window.removeEventListener('hashchange', sync); window.removeEventListener('keydown', key); window.removeEventListener('pointerdown', pointer); };
   }, []);
   useLayoutEffect(() => {
-    document.title = project ? project.title + ' — Gala X Ci 2.1' : 'Gala X Ci 2.1 — Ci Song / Design & exploration';
+    document.title = project ? project.title + ' — Gala X Ci 2.1' : 'Gala X Ci 2.1 — Ci Song';
   }, [project]);
   useEffect(() => {
     const observer = new IntersectionObserver(() => {
@@ -162,7 +162,7 @@ export function NextPortfolio() {
   return <div className="gxc-site" data-motion={disabled ? 'reduced' : 'full'} data-state={openingSlug ? 'flattening' : project ? 'detail' : locked ? 'closing' : 'home'} data-target={openingSlug ?? project?.slug ?? ''} style={{ '--entry-duration': visual.motion.entry + 's' } as CSSProperties}>
     <a className="gxc-skip" href="#work" onClick={e => { e.preventDefault(); jump('work', true); }}>Skip to work</a>
     <header className="gxc-header">
-      <a className="gxc-brand" href="#top" onClick={e => { e.preventDefault(); jump('top', e.detail === 0); }} aria-label="Gala X Ci, back to top">GALA X CI</a>
+      <a className="gxc-brand" data-gxc-reveal="0" href="#top" onClick={e => { e.preventDefault(); jump('top', e.detail === 0); }} aria-label="Gala X Ci, back to top">GALA X CI</a>
       <GlassNav className="gxc-nav">
         <nav aria-label="Main navigation">{['work', 'about', 'contact'].map(id => <a key={id} href={'#' + id} aria-current={active === id ? 'location' : undefined} onClick={e => { e.preventDefault(); jump(id, e.detail === 0); }}>{id}<span aria-hidden="true" /></a>)}</nav>
         <button className="gxc-motion" aria-label={reduce ? 'System reduced motion enabled' : paused ? 'Resume motion' : 'Pause motion'} aria-pressed={disabled} disabled={reduce} onClick={() => setPaused(!paused)}>{disabled ? <Play size={13} /> : <Pause size={13} />}</button>
@@ -172,20 +172,22 @@ export function NextPortfolio() {
     <main>
       <section className="gxc-hero" id="top" tabIndex={-1} data-section>
         <HeroPhoto />
-        <HeroTwinkles paused={paused} reduced={reduce} suspended={entering || locked || menuVisible || !!project} />
+        <HeroTwinkles paused={paused} reduced={reduce} suspended={entryPhase === 'preparing' || locked || menuVisible || !!project} />
         <div className="gxc-hero-top gxc-gutter">
-          <p className="gxc-mono">CI SONG<br/><span>DESIGN & EXPLORATION</span></p>
-          <p className="gxc-hero-statement">Between people,<br/>interfaces & environments.</p>
-          <p className="gxc-mono gxc-hero-photo-credit">PHOTOGRAPHED BY<br/>CI SONG · <time dateTime="2022">2022</time></p>
+          <p className="gxc-mono"><span className="gxc-reveal-line"><span data-gxc-reveal="1">CI SONG</span></span><span className="gxc-reveal-line"><span data-gxc-reveal="2">DESIGN & EXPLORATION</span></span></p>
+          <p className="gxc-hero-statement"><span className="gxc-reveal-line"><span data-gxc-reveal="2">Between people,</span></span><span className="gxc-reveal-line"><span data-gxc-reveal="3">interfaces & environments.</span></span></p>
+          <p className="gxc-mono gxc-hero-photo-credit"><span className="gxc-reveal-line"><span data-gxc-reveal="3">PHOTOGRAPHED BY</span></span><span className="gxc-reveal-line"><span data-gxc-reveal="4">CI SONG · <time dateTime="2022">2022</time></span></span></p>
         </div>
         <h1 className="gxc-sr">Gala X Ci — Ci Song</h1>
         <GlassHero disabled={disabled} suspended={locked || menuVisible || !!project} />
-        <div className="gxc-hero-bottom gxc-gutter">
-          <p>Designing experiences across<br/><span>digital and physical worlds.</span></p>
-          <div><span className="gxc-mono">INTERFACES, EXPERIMENTS,<br/>AND ENVIRONMENTS.</span><a className="gxc-round-link" href="#work" onClick={e => { e.preventDefault(); jump('work', e.detail === 0); }} aria-label="Explore selected work"><ArrowDown size={22}/></a></div>
+        <div className="gxc-hero-footer">
+          <div className="gxc-hero-bottom gxc-gutter">
+            <p><span className="gxc-reveal-line"><span data-gxc-reveal="4">Designing experiences across</span></span><span className="gxc-reveal-line"><span data-gxc-reveal="5">digital and physical worlds.</span></span></p>
+            <div><span className="gxc-mono"><span className="gxc-reveal-line"><span data-gxc-reveal="5">INTERFACES, EXPERIMENTS,</span></span><span className="gxc-reveal-line"><span data-gxc-reveal="6">AND ENVIRONMENTS.</span></span></span><a className="gxc-round-link" data-gxc-reveal="7" href="#work" onClick={e => { e.preventDefault(); jump('work', e.detail === 0); }} aria-label="Explore selected work"><ArrowDown size={22}/></a></div>
+          </div>
+          <div className="gxc-hero-rule gxc-gutter" data-gxc-reveal="7" aria-hidden="true"><Plus/><span/><Plus/></div>
+          <HeroMeteors paused={paused} reduced={reduce} suspended={entryPhase === 'preparing' || locked || menuVisible || !!project} onOpen={(e, item) => open(e, item, 'hero')} />
         </div>
-        <div className="gxc-hero-rule gxc-gutter" aria-hidden="true"><Plus/><span/><Plus/></div>
-        <HeroMeteors paused={paused} reduced={reduce} suspended={entering || locked || menuVisible || !!project} onOpen={(e, item) => open(e, item, 'hero')} />
       </section>
       <section ref={workRoot} className="gxc-work gxc-gutter" id="work" tabIndex={-1} data-section aria-labelledby="work-title">
         <div className="gxc-section-heading"><span className="gxc-mono">01 / SELECTED EXPLORATIONS</span><h2 id="work-title">Ideas, made<br/><em>tangible.</em></h2><p>Conversation. Environments.<br/>New ways to interact.</p></div>

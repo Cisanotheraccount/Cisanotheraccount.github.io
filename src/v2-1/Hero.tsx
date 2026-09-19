@@ -4,6 +4,7 @@ import { heroPhoto, subscribeHeroPhoto } from './heroPhoto';
 import { registerPerformanceScene, setPerformanceReady } from './runtime';
 import { bindHeroTouch } from './heroTouch';
 import { settleEntryPart } from './entry';
+import { observeHeroLayout } from './heroLayout';
 
 export function HeroPhoto() {
   const host = useRef<HTMLDivElement>(null);
@@ -34,18 +35,16 @@ export function GlassHero({ disabled, suspended }: { disabled: boolean; suspende
   const suspendedRef = useRef(suspended); suspendedRef.current = suspended;
   useEffect(() => {
     if (ready || !host.current || !area.current) return;
-    const publish = () => {
-      const rect = area.current?.getBoundingClientRect(), canvas = host.current;
-      if (!rect || !canvas) return;
-      const hero = canvas.getBoundingClientRect();
+    const canvas = host.current;
+    const layout = observeHeroLayout(canvas, area.current, ({ word: rect, canvas: hero }) => {
       const width = rect.width - (rect.width < 700 ? 44 : 160);
       const height = rect.height * .88;
       const scale = Math.min(width / 2133, height / 933);
       const w = scale * 2133, h = scale * 933;
-      canvas.dataset.wordRect = JSON.stringify({ left: rect.left - hero.left + (rect.width - w) / 2, top: rect.top - hero.top + (rect.height - h) / 2, width: w, height: h });
-    };
-    const observer = new ResizeObserver(publish); observer.observe(area.current); publish();
-    return () => observer.disconnect();
+      const next = JSON.stringify({ left: rect.left - hero.left + (rect.width - w) / 2, top: rect.top - hero.top + (rect.height - h) / 2, width: w, height: h });
+      if (canvas.dataset.wordRect !== next) canvas.dataset.wordRect = next;
+    });
+    return () => layout.dispose();
   }, [ready]);
   useEffect(() => {
     let disposed = false; setReady(false);

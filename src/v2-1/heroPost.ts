@@ -193,7 +193,7 @@ export class HeroPost {
       varying vec2 vUv; uniform sampler2D uColor,uMask,uBackground,uFlare,uVelocity;
       uniform sampler2D uPhotograph;
       uniform vec4 uPhotoCover;
-      uniform bool uNativePhoto;
+      uniform bool uNativePhoto,uGlassOnly;
       uniform float uFluid,uFlareEnabled,uMaxDisplacement;
       uniform vec2 uPixel;
       ${aces}
@@ -237,8 +237,9 @@ export class HeroPost {
         if(uNativePhoto) {
           vec3 photograph=texture2D(uPhotograph,vUv*uPhotoCover.xy+uPhotoCover.zw).rgb;
           gl_FragColor=photoOverlay(gl_FragColor.rgb,linearToOutputTexel(vec4(photograph,1.)).rgb,coverage);
+          if(uGlassOnly && coverage<=0.) gl_FragColor=vec4(0.);
         }
-      }`, { uColor: { value: this.color.texture }, uMask: { value: this.mask.texture }, uBackground: { value: this.background.texture }, uFlare: { value: this.flare.texture }, uVelocity: { value: this.velocity.texture }, uPixel: { value: this.pixel }, uMaxDisplacement: { value: visual.fluid.maxPixels }, uFluid: { value: 0 }, uFlareEnabled: { value: 1 }, toneMappingExposure: { value: visual.lighting.exposure }, uNativePhoto: { value: nativePhoto }, uPhotograph: { value: null }, uPhotoCover: { value: new THREE.Vector4(1,1,0,0) } });
+      }`, { uColor: { value: this.color.texture }, uMask: { value: this.mask.texture }, uBackground: { value: this.background.texture }, uFlare: { value: this.flare.texture }, uVelocity: { value: this.velocity.texture }, uPixel: { value: this.pixel }, uMaxDisplacement: { value: visual.fluid.maxPixels }, uFluid: { value: 0 }, uFlareEnabled: { value: 1 }, toneMappingExposure: { value: visual.lighting.exposure }, uNativePhoto: { value: nativePhoto }, uGlassOnly: { value: false }, uPhotograph: { value: null }, uPhotoCover: { value: new THREE.Vector4(1,1,0,0) } });
     if (import.meta.env.DEV && new URLSearchParams(location.search).has('glass-mask')) {
       this.composite.fragmentShader = this.composite.fragmentShader.replace('vec4(result,1.)', 'vec4(vec3(coverage),1.)');
     }
@@ -280,9 +281,12 @@ export class HeroPost {
     this.sizeFlare();
   }
 
+  setGlassOnly(value: boolean) { this.composite.uniforms.uGlassOnly.value = value; }
   setFlare(value: boolean) { this.flareAllowed = value; this.composite.uniforms.uFlareEnabled.value = +value; }
   // Sky updates invalidate only their buffer, never the independent highlight clock.
   invalidateBackground() { this.backgroundDirty = true; }
+  // Uniform-driven opening contours can change without a geometry revision.
+  invalidateMask() { this.maskDirty = true; }
   async warm() {
     const original = this.renderer.getRenderTarget();
     const passes: [THREE.ShaderMaterial, THREE.WebGLRenderTarget | null][] = [
@@ -296,6 +300,45 @@ export class HeroPost {
         await this.renderer.compileAsync(this.quadScene, this.quadCamera);
       }
     } finally { this.renderer.setRenderTarget(original); }
+  }
+  /** Compile the actual HDR/color and mask variants without keeping mutable
+   * renderer or mesh state across an await while the live ring is drawing. */
+  async compileGlass(scene: THREE.Scene, camera: THREE.Camera, glass: THREE.Mesh, backdrop: THREE.Mesh): Promise<void> {
+    const r = this.renderer;
+    for (const masking of [false, true]) {
+      if (this.disposed) return;
+      let owner: THREE.Object3D | null = glass;
+      while (owner && owner !== scene) owner = owner.parent;
+      if (owner !== scene) return; // The opening may have been cancelled mid-compile.
+      const oldTarget = r.getRenderTarget(), oldFace = r.getActiveCubeFace(), oldMip = r.getActiveMipmapLevel();
+      const oldColor = r.getClearColor(new THREE.Color()), oldAlpha = r.getClearAlpha();
+      const oldViewport = r.getViewport(new THREE.Vector4()), oldScissor = r.getScissor(new THREE.Vector4());
+      const oldScissorTest = r.getScissorTest(), oldAutoClear = r.autoClear;
+      const savedMaterial = glass.material, savedBackdropMaterial = backdrop.material;
+      const savedGlass = glass.visible, savedBackdrop = backdrop.visible;
+      const parts = glass.userData.heroGlassParts as THREE.Mesh[] | undefined;
+      const maskParts = Array.isArray(parts) ? [...new Set(parts)] : [glass];
+      const savedPartMaterials = maskParts.map(part => [part, part.material] as const);
+      let pending: Promise<unknown>;
+      try {
+        backdrop.material = this.cachedBackdrop;
+        if (masking) {
+          for (const part of maskParts) part.material = part.userData.heroMaskMaterial ?? this.maskMaterial;
+          backdrop.visible = false; r.setClearColor(0, 1);
+        }
+        r.setRenderTarget(masking ? this.mask : this.color);
+        // Three starts compile() synchronously; the returned promise only waits
+        // for GPU program readiness. Restore before yielding to any live frame.
+        pending = r.compileAsync(scene, camera);
+      } finally {
+        for (const [part, material] of savedPartMaterials) part.material = material;
+        glass.material = savedMaterial; glass.visible = savedGlass;
+        backdrop.material = savedBackdropMaterial; backdrop.visible = savedBackdrop;
+        r.setClearColor(oldColor, oldAlpha); r.setRenderTarget(oldTarget, oldFace, oldMip);
+        r.setViewport(oldViewport); r.setScissor(oldScissor); r.setScissorTest(oldScissorTest); r.autoClear = oldAutoClear;
+      }
+      await pending;
+    }
   }
   push(uv: THREE.Vector2, delta: THREE.Vector2) {
     this.pointerFrom.copy(uv).sub(delta); this.pointer.copy(uv); this.impulse.add(delta).clampLength(0, visual.fluid.maxImpulse);
@@ -313,9 +356,11 @@ export class HeroPost {
     glass.updateWorldMatrix(true, false); camera.updateWorldMatrix(true, false);
     const position = glass.geometry.getAttribute('position');
     const positionVersion = position && ('version' in position ? position.version : position.data.version);
-    const version = `${positionVersion ?? 0}:${glass.geometry.index?.version ?? 0}`;
+    const version = `${positionVersion ?? 0}:${glass.geometry.index?.version ?? 0}:${glass.userData.heroMaskRevision ?? 0}`;
     const geometryChanged = glass.geometry.uuid !== this.maskGeometry || version !== this.maskGeometryVersion;
-    if (geometryChanged) glass.geometry.computeBoundingBox();
+    // A multi-part owner has empty geometry and a caller-maintained union box.
+    // Recomputing that box would discard its children's flare coverage.
+    if (geometryChanged && !Array.isArray(glass.userData.heroGlassParts)) glass.geometry.computeBoundingBox();
     const changed = this.maskDirty || geometryChanged || glass.visible !== this.maskVisible
       || !this.maskWorld.equals(glass.matrixWorld) || !this.maskView.equals(camera.matrixWorldInverse)
       || !this.maskProjection.equals(camera.projectionMatrix);
@@ -377,6 +422,10 @@ export class HeroPost {
     const oldTarget = r.getRenderTarget(); const oldColor = r.getClearColor(new THREE.Color()); const oldAlpha = r.getClearAlpha();
     const savedMaterial = glass.material, savedBackdropMaterial = backdrop.material;
     const savedBackdrop = backdrop.visible, savedGlass = glass.visible;
+    const parts = glass.userData.heroGlassParts as THREE.Mesh[] | undefined;
+    const maskParts = Array.isArray(parts) ? [...new Set(parts)] : [glass];
+    const savedPartMaterials = maskParts.map(part => [part, part.material] as const);
+    const restorePartMaterials = () => { for (const [part, material] of savedPartMaterials) part.material = material; };
     try {
       measure('fluid', () => {
         r.setClearColor(0, 1);
@@ -409,9 +458,10 @@ export class HeroPost {
       measure('color', () => { r.setRenderTarget(this.color); r.render(scene, camera); });
       const mask = this.needsMask(glass, camera);
       if (mask.changed) measure('mask', () => {
-        glass.material = this.maskMaterial; backdrop.visible = false;
+        for (const part of maskParts) part.material = part.userData.heroMaskMaterial ?? this.maskMaterial;
+        backdrop.visible = false;
         r.setClearColor(0, 1); r.setRenderTarget(this.mask); r.render(scene, camera);
-        glass.material = savedMaterial; backdrop.visible = savedBackdrop;
+        restorePartMaterials(); backdrop.visible = savedBackdrop;
         this.rememberMask(glass, camera, mask.version);
       });
       const now = performance.now();
@@ -428,6 +478,7 @@ export class HeroPost {
       this.composite.uniforms.uFluid.value = fluidAllowed && this.active ? tail * tail * (3 - 2 * tail) : 0;
       measure('composite', () => this.draw(this.composite, oldTarget));
     } finally {
+      restorePartMaterials();
       glass.material = savedMaterial; backdrop.material = savedBackdropMaterial;
       backdrop.visible = savedBackdrop; glass.visible = savedGlass;
       // We only change target-owned viewport/scissor state; rebinding restores

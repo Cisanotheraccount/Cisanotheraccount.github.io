@@ -6,11 +6,14 @@ import { getSky } from './skyState';
 import { getTwinkles } from './twinkle';
 import { getProjectSky } from './projectSkyState';
 import { createProjectAtlas } from './projectAtlas';
-import { getFrameSnapshot, getPerformanceSnapshot, reportGpuTime, requestFrame, subscribeFrame, subscribeViewportChange } from './runtime';
+import { getFrameSnapshot, getPerformanceSnapshot, reportGpuTime, requestFrame, subscribeFrame } from './runtime';
 import { createHeroGpuProfiler } from './gpuTiming';
 import { photoCover, subscribeHeroPhoto, type LoadedHeroPhoto } from './heroPhoto';
 import { recordTouchEvent, recordTouchMetric, sampleTouchMetric } from './touchDiagnostics';
 import { createEntryRing, type EntryRing } from './entryRing';
+import { createLiquidWriting, prepareWritingField } from './liquidWriting';
+import type { EntryTransition } from './entry';
+import { observeHeroLayout, type HeroLayout } from './heroLayout';
 
 declare global { interface Window { __gxcCapturePoster?: () => string } }
 
@@ -193,7 +196,9 @@ export async function mountGlass(host: HTMLElement, area: HTMLElement, disabled:
     let pointerX = 0, pointerY = 0, angle: number = visual.rimLight.angle, targetAngle: number = visual.rimLight.angle;
     let rx = .07, ry = -.07, cameraX = 0, cameraY = 0;
     let lastWidth = 0, lastHeight = 0, lastDpr = 0, documentTop = 0, left = 0;
+    let lastWordTop = NaN, lastWordHeight = NaN;
     let lastPointerTime = -1, frames = 0, lastDrawAt = 0;
+    let invalidateOpeningLayout: (() => void) | undefined;
     invalidateProjects = () => {
       projectRevision = -1; dirty = true; post?.invalidateBackground(); requestFrame();
     };
@@ -209,7 +214,7 @@ export async function mountGlass(host: HTMLElement, area: HTMLElement, disabled:
       dirty = true; requestFrame();
     };
     const updatePost = () => {
-      const wanted = enabled && (finePointer.matches || touchInteracting) && !noPost && !(noFluid && noFlare) && !postFailed;
+      const wanted = enabled && (finePointer.matches || touchInteracting || entryRing?.active) && !noPost && !(noFluid && noFlare) && !postFailed;
       // A phone pays for these buffers only after its first glass gesture. Keep
       // them for the next contact, but bypass the post pipeline once its tail ends.
       if (wanted && !post) {
@@ -218,21 +223,25 @@ export async function mountGlass(host: HTMLElement, area: HTMLElement, disabled:
           post = new HeroPost(renderer, nativePhoto); post.setFlare(!noFlare); post.setSize(lastWidth || 1, lastHeight || 1, lastDpr || 1);
           const cover = photoCover(lastWidth || 1, lastHeight || 1, currentPhoto!.width, currentPhoto!.height);
           post.setPhotograph(photo, (lastWidth || 1) / cover.width, (lastHeight || 1) / cover.height);
+          entryRing?.setPost(post);
           recordTouchMetric('heroPostAllocations');
           sampleTouchMetric('heroPostCreateMs', performance.now() - started);
           recordTouchEvent('hero-post-created', { input: touchInteracting ? 'touch' : 'fine-pointer' });
-        } catch { post?.dispose(); post = undefined; postFailed = true; }
+        } catch { entryRing?.setPost(undefined); post?.dispose(); post = undefined; postFailed = true; }
       }
       renderer.domElement.dataset.postfx = post ? 'ready' : postFailed ? 'unsupported' : 'disabled';
     };
     const usePost = () => !!post && enabled && !noPost && (finePointer.matches || touchInteracting || post.active);
     cleanup.push(() => post?.dispose());
-    const resize = () => {
+    const resize = ({ canvas: rect, word, documentTop: measuredTop, dpr: deviceDpr }: HeroLayout) => {
       if (disposed || contextLost) return;
-      const rect = host.getBoundingClientRect(), word = area.getBoundingClientRect();
       const width = rect.width, height = rect.height; if (!width || !height) return;
-      left = rect.left; documentTop = rect.top + window.scrollY;
-      const dpr = Math.min(devicePixelRatio, width < 700 ? visual.glass.mobileDpr : visual.glass.maxDpr);
+      left = rect.left; documentTop = measuredTop;
+      const dpr = Math.min(deviceDpr, width < 700 ? visual.glass.mobileDpr : visual.glass.maxDpr);
+      const wordTop = word.top - rect.top;
+      const openingLayoutChanged = width !== lastWidth || height !== lastHeight || dpr !== lastDpr
+        || wordTop !== lastWordTop || word.height !== lastWordHeight;
+      lastWordTop = wordTop; lastWordHeight = word.height;
       if (width !== lastWidth || height !== lastHeight || dpr !== lastDpr) {
         renderer.setPixelRatio(dpr); renderer.setSize(width, height, false);
         lastWidth = width; lastHeight = height; lastDpr = dpr; post?.setSize(width, height, dpr);
@@ -241,7 +250,7 @@ export async function mountGlass(host: HTMLElement, area: HTMLElement, disabled:
       camera.left = -viewWidth / 2; camera.right = viewWidth / 2; camera.top = viewHeight / 2; camera.bottom = -viewHeight / 2; camera.updateProjectionMatrix();
       const pad = width < 700 ? 22 : 80;
       group.scale.setScalar(Math.min((width - pad * 2) / wordSize.x, word.height * .88 / wordSize.y) * viewHeight / height);
-      group.position.y = (height / 2 - (word.top - rect.top + word.height / 2)) * viewHeight / height;
+      group.position.y = (height / 2 - (wordTop + word.height / 2)) * viewHeight / height;
       // Overscan covers the small camera movement; UV compensation preserves the original crop.
       const overscan = visual.cameraMotion.overscan;
       backdrop.scale.set(viewWidth * overscan, viewHeight * overscan, 1);
@@ -252,6 +261,9 @@ export async function mountGlass(host: HTMLElement, area: HTMLElement, disabled:
       skyBackdrop.update(getSky(hero), width, height, overscan);
       post?.invalidateBackground();
       applyPose(); publishWordRect();
+      // Commit the new endpoint before retiring a cached/active handwriting
+      // surface, including row reflow that leaves the renderer size unchanged.
+      if (openingLayoutChanged) invalidateOpeningLayout?.();
       dirty = true; requestFrame();
     };
     const applyPose = () => {
@@ -288,17 +300,12 @@ export async function mountGlass(host: HTMLElement, area: HTMLElement, disabled:
       backdropMaterial.map = texture;
       skyBackdrop.updateTwinkles(asset.fallback ? [] : getTwinkles(hero).points);
       renderer.domElement.dataset.photoSource = asset.url;
-      resize();
+      layout.invalidate();
     };
     renderer.domElement.dataset.photoSource = currentPhoto.url;
-    const render = (dt: number) => {
-      renderer.setClearColor(0x090a0c, 1);
-      const renderStarted = performance.now();
-      if (lastDrawAt) {
-        sampleTouchMetric('heroFrameIntervalMs', renderStarted - lastDrawAt);
-        if (touchInteracting || post?.active) sampleTouchMetric('heroTouchFrameIntervalMs', renderStarted - lastDrawAt);
-      }
-      lastDrawAt = renderStarted;
+    // Both normal glass and handwriting consume the update-phase sky snapshot.
+    // Refresh one shared background texture for color and transmission together.
+    const syncBackdrop = () => {
       const sky = getSky(hero);
       const twinkles = getTwinkles(hero);
       const projects = getProjectSky(hero);
@@ -317,6 +324,31 @@ export async function mountGlass(host: HTMLElement, area: HTMLElement, disabled:
         skyBackdrop.update(sky, lastWidth, lastHeight, visual.cameraMotion.overscan);
         post?.invalidateBackground();
       }
+      return { sky, twinkles, projects };
+    };
+    const publishBackdrop = ({ sky, twinkles, projects }: ReturnType<typeof syncBackdrop>) => {
+      if (hero.dataset.skyReady !== 'true') hero.dataset.skyReady = 'true';
+      if (projectAtlas && projects.points.length) hero.dataset.projectSkyReady = 'true';
+      else delete hero.dataset.projectSkyReady;
+      renderer.domElement.dataset.skyCount = String(sky.streaks.length);
+      renderer.domElement.dataset.twinkleCount = String(twinkles.points.length);
+      renderer.domElement.dataset.projectCount = String(projectAtlas ? projects.points.length : 0);
+      if (import.meta.env.DEV || diagnostics.get('perf') === '1' || diagnostics.get('qa') === '1') {
+        renderer.domElement.dataset.skyRevision = String(sky.revision);
+        renderer.domElement.dataset.twinkleRevision = String(twinkles.revision);
+        renderer.domElement.dataset.projectRevision = String(projects.revision);
+      }
+    };
+    const render = (dt: number) => {
+      post?.setGlassOnly(false);
+      renderer.setClearColor(0x090a0c, 1);
+      const renderStarted = performance.now();
+      if (lastDrawAt) {
+        sampleTouchMetric('heroFrameIntervalMs', renderStarted - lastDrawAt);
+        if (touchInteracting || post?.active) sampleTouchMetric('heroTouchFrameIntervalMs', renderStarted - lastDrawAt);
+      }
+      lastDrawAt = renderStarted;
+      const background = syncBackdrop();
       const quality = getPerformanceSnapshot('hero').quality;
       renderer.transmissionResolutionScale = visual.renderQuality[quality].transmissionScale;
       post?.setQuality(quality);
@@ -325,7 +357,7 @@ export async function mountGlass(host: HTMLElement, area: HTMLElement, disabled:
       try { if (post && postDrawing) {
         try { post.render(scene, camera, mesh, backdrop, dt, enabled && !noFluid, gpu.measure); }
         catch {
-          post.dispose(); post = undefined; postFailed = true; postDrawing = false; renderer.domElement.dataset.postfx = 'failed';
+          entryRing?.setPost(undefined); post.dispose(); post = undefined; postFailed = true; postDrawing = false; renderer.domElement.dataset.postfx = 'failed';
           recordTouchEvent('hero-post-failed');
           renderer.setRenderTarget(null); renderer.render(scene, camera);
         }
@@ -338,12 +370,7 @@ export async function mountGlass(host: HTMLElement, area: HTMLElement, disabled:
       }
       renderer.domElement.dataset.postfx = postFailed ? 'unsupported' : postDrawing ? 'enabled' : post ? 'idle' : 'disabled';
       renderer.domElement.dataset.frames = String(++frames);
-      if (hero.dataset.skyReady !== 'true') hero.dataset.skyReady = 'true';
-      if (projectAtlas && projects.points.length) hero.dataset.projectSkyReady = 'true';
-      else delete hero.dataset.projectSkyReady;
-      renderer.domElement.dataset.skyCount = String(sky.streaks.length);
-      renderer.domElement.dataset.twinkleCount = String(twinkles.points.length);
-      renderer.domElement.dataset.projectCount = String(projectAtlas ? projects.points.length : 0);
+      publishBackdrop(background);
       renderer.domElement.dataset.fluid = post?.active ? 'active' : 'rest';
       renderer.domElement.dataset.quality = quality;
       if (import.meta.env.DEV || diagnostics.get('perf') === '1' || diagnostics.get('qa') === '1') {
@@ -363,26 +390,133 @@ export async function mountGlass(host: HTMLElement, area: HTMLElement, disabled:
       parent.removeEventListener('pointerleave', leave);
       window.removeEventListener('blur', blur); document.removeEventListener('visibilitychange', visibility); finePointer.removeEventListener('change', pointerMode);
     });
-    const ro = new ResizeObserver(resize); ro.observe(host); ro.observe(area); cleanup.push(() => ro.disconnect());
-    cleanup.push(subscribeViewportChange(resize));
+    const layout = observeHeroLayout(host, area, resize);
+    cleanup.push(() => layout.dispose());
     const io = new IntersectionObserver(entries => {
       visible = entries[0].isIntersecting;
       reset(true);
     }); io.observe(parent); cleanup.push(() => io.disconnect());
-    resize(); updatePost(); applyPose();
+    layout.measure(); updatePost(); applyPose();
     await renderer.compileAsync(scene, camera);
     if (post) {
       try { await post.warm(); }
-      catch { post.dispose(); post = undefined; postFailed = true; renderer.domElement.dataset.postfx = 'failed'; }
+      catch { entryRing?.setPost(undefined); post.dispose(); post = undefined; postFailed = true; renderer.domElement.dataset.postfx = 'failed'; }
     }
     if (disposed || contextLost) throw new Error('Glass context unavailable');
     render(1 / 60);
-    entryRing?.setOnHandoff(() => {
+    if (entryRing?.active && post) await prepareWritingField();
+    if (disposed || contextLost) throw new Error('Writing preparation cancelled');
+    // The opening and signature retain one fluid simulation. Only the glass
+    // surface changes; native photograph and its color/crop never transition.
+    let morph: { surface: ReturnType<typeof createLiquidWriting>; transition: EntryTransition } | undefined;
+    let preparedMorph: ReturnType<typeof createLiquidWriting> | undefined, prepareTimer = 0;
+    const discardPrepared = () => { preparedMorph?.dispose(); preparedMorph = undefined; if (!morph) mesh.visible = true; post?.invalidateMask(); post?.invalidateBackground(); };
+    cleanup.push(() => { window.clearTimeout(prepareTimer); discardPrepared(); });
+    const retireMorph = () => {
+      if (!morph) return;
+      scene.remove(morph.surface.mesh); morph.surface.dispose(); morph = undefined;
+      mesh.visible = true; post?.invalidateMask(); post?.invalidateBackground();
+      delete host.dataset.entryMorph;
+    };
+    cleanup.push(retireMorph);
+    let handoffDelta = 1 / 60, handoffDraws = 0;
+    const showWordAfterOpening = (dt: number) => {
       if (disposed || contextLost) return;
-      resize(); render(1 / 60); requestFrame();
-    });
+      window.clearTimeout(prepareTimer); discardPrepared(); retireMorph(); post?.invalidateBackground(); post?.invalidateMask();
+      layout.measure(); render(dt); handoffDraws++; requestFrame();
+    };
+    const finishOpening = (id: number, dt: number) => {
+      // finishReveal synchronously notifies the ring's handoff callback. Give
+      // that one draw this frame's delta, rather than drawing both surfaces and
+      // advancing the shared liquid again in a second signature draw.
+      const before = handoffDraws;
+      retireMorph(); handoffDelta = dt;
+      try { window.__gxcEntry?.finishReveal(id); }
+      finally { handoffDelta = 1 / 60; }
+      // Cancellation, a missing bridge, or an already-retired ring may not
+      // notify a handoff. These paths must still restore a measured wordmark.
+      if (handoffDraws === before) showWordAfterOpening(dt);
+    };
+    const beginMorph = (transition: EntryTransition) => {
+      if (disposed || contextLost || !entryRing || transition.mode !== 'morph') return;
+      try {
+        const started = performance.now();
+        entryRing.freezePose();
+        const surface = preparedMorph ?? createLiquidWriting(renderer, entryRing.surface, { scene, camera, mesh }, lastWidth, lastHeight, material);
+        preparedMorph = undefined; window.clearTimeout(prepareTimer);
+        try { surface.activate(); } catch (error) { surface.dispose(); throw error; }
+        morph = { surface, transition };
+        mesh.visible = false; scene.add(surface.mesh);
+        post?.invalidateBackground(); post?.invalidateMask();
+        host.dataset.entryMorphPrepareMs = (performance.now() - started).toFixed(1);
+        host.dataset.entryMorph = 'active';
+        requestFrame();
+      } catch (error) {
+        host.dataset.entryMorphFailure = error instanceof Error ? error.message : String(error);
+        finishOpening(transition.id, 1 / 60);
+      }
+    };
+    entryRing?.setOnHandoff(() => showWordAfterOpening(handoffDelta));
+    entryRing?.setOnMorph(beginMorph);
+    const prepareOpening = async () => {
+      const bridge = window.__gxcEntry;
+      if (!entryRing?.active || !post || disposed || contextLost || document.hidden || bridge?.phase !== 'preparing') return;
+      const readyAt = bridge.milestones.previewReady;
+      const remaining = readyAt === undefined ? 100 : 4400 - (performance.now() - bridge.startedAt - readyAt);
+      if (remaining > 0) { prepareTimer = window.setTimeout(() => void prepareOpening(), remaining); return; }
+      const started = performance.now();
+      let surface: ReturnType<typeof createLiquidWriting> | undefined;
+      try {
+        surface = createLiquidWriting(renderer, entryRing.surface, { scene, camera, mesh }, lastWidth, lastHeight, material);
+        preparedMorph = surface; scene.add(surface.mesh);
+        if (post) await post.compileGlass(scene, camera, surface.mesh, backdrop);
+        else await renderer.compileAsync(scene, camera);
+        if (!disposed && !contextLost && preparedMorph === surface) host.dataset.entryMorphWarmed = 'true';
+        host.dataset.entryMorphWarmMs = (performance.now() - started).toFixed(1);
+      } catch {
+        if (preparedMorph === surface) discardPrepared();
+      } finally {
+        if (!morph && surface) { surface.mesh.removeFromParent(); mesh.visible = true; }
+      }
+    };
+    invalidateOpeningLayout = () => {
+      discardPrepared();
+      if (morph) {
+        const id = morph.transition.id;
+        finishOpening(id, 0);
+      }
+    };
+    if (entryRing?.active && post) {
+      window.__gxcEntry?.setMorphReady();
+      prepareTimer = window.setTimeout(() => void prepareOpening(), 4400);
+    }
+    const renderMorph = (dt: number) => {
+      if (!morph || disposed || contextLost || document.hidden) return false;
+      const { surface, transition } = morph;
+      if (window.__gxcEntry?.transition?.id !== transition.id) {
+        retireMorph(); render(dt); return false;
+      }
+      const heldProgress = diagnostics.get('qa') === '1' ? diagnostics.get('morph-hold') : null;
+      const progress = heldProgress !== null ? THREE.MathUtils.clamp(Number(heldProgress), 0, 1) : THREE.MathUtils.clamp((performance.now() - transition.startedAt) / transition.durationMs, 0, 1);
+      host.dataset.entryMorphProgress = progress.toFixed(4);
+      host.dataset.entryWriting = '3d-path';
+      if (progress >= 1) {
+        // The endpoint is the real wordmark: do not draw an implicit endpoint
+        // that would be overwritten before the browser can present it.
+        finishOpening(transition.id, dt);
+        return false;
+      }
+      surface.setProgress(progress); post?.invalidateMask(); post?.setGlassOnly(false);
+      const background = syncBackdrop();
+      renderer.setClearColor(0x090a0c, 1);
+      if (post) post.render(scene, camera, surface.mesh, backdrop, dt, enabled && !noFluid);
+      else renderer.render(scene, camera);
+      publishBackdrop(background);
+      renderer.domElement.dataset.fluid = post?.active ? 'active' : 'rest';
+      return true;
+    };
     // Do not flash the prepared signature over a still-active opening.
-    if (entryRing?.active) entryRing.redraw();
+    if (entryRing?.active) { post?.invalidateBackground(); entryRing.present(); }
     let pendingRender = false;
     const offUpdate = subscribeFrame((_time, dt) => {
       if (entryRing?.active) return false;
@@ -434,6 +568,17 @@ export async function mountGlass(host: HTMLElement, area: HTMLElement, disabled:
       return moving || !!post?.active;
     }, 'update');
     const offRender = subscribeFrame((_time, dt) => {
+      if (morph) {
+        const id = morph.transition.id;
+        try { return renderMorph(dt); }
+        catch (error) {
+          host.dataset.entryMorphFailure = error instanceof Error ? error.message : String(error);
+          // A failed post draw may already have consumed this frame's liquid
+          // impulse. Restore the real mesh without advancing elapsed time twice.
+          try { finishOpening(id, 0); } catch { host.dataset.failed = 'opening-render'; onLost(); dispose(); }
+          return false;
+        }
+      }
       if (entryRing?.active) return false;
       if (!visible || disposed || contextLost || document.hidden || suspended) { pendingRender = false; return false; }
       // The meteor scheduler runs in update; read it here after all updates so

@@ -16,7 +16,7 @@
           "id": "cover",
           "quality": 82,
           "source": {
-            "path": "内容资料/02_项目/P01_PsytrAIn/images/旧站素材/06_b311c349d269.png",
+            "path": "\u5185\u5bb9\u8d44\u6599/02_\u9879\u76ee/P01_PsytrAIn/images/\u65e7\u7ad9\u7d20\u6750/06_b311c349d269.png",
             "sha256": "b311c349d269bc84904fa362f258d7ee37d9dfc4e361c2cbd8c9bfada265774d",
             "width": 2000,
             "height": 1294,
@@ -83,17 +83,17 @@
           "id": "workspace",
           "quality": 82,
           "source": {
-            "path": "public/v2-1/shotflow-import-v2/workspace-1290.webp",
-            "sha256": "a3debd7d5490a362e4ba088e8d5b6f9341589c86b80dd4561af43e5ef882da2c",
+            "path": "public/v2-1/shotflow-clean-v4/workspace-1290.webp",
+            "sha256": "56065982d9c4657581238d5b37e35673a3c42d08b799cdb40205b5fb7699c46f",
             "width": 1290,
             "height": 2796,
-            "bytes": 196132,
+            "bytes": 595926,
             "alpha": false,
             "colorManagement": "Source has no ICC profile; retain its sRGB RGB values without exposure or saturation adjustments.",
             "maximumExportWidth": 1290,
             "limit": "Original has fewer than 1600 horizontal pixels; keep native maximum.",
-            "provenance": "public/v2-1/shotflow-import-v2/manifest.json",
-            "selection": "English native capture from the complete Reference Study analysis; 32 actual generated shots, with suggestions unconfirmed."
+            "provenance": "public/v2-1/shotflow-clean-v4/provenance.json",
+            "selection": "English native capture with source-subtitle presentation cleanup; real 32-shot result and native geometry preserved."
           },
           "previousVariants": [
             {
@@ -141,32 +141,32 @@
           ],
           "variants": [
             {
-              "url": "/v2-1/shotflow-import-v2/thumbnails/workspace-360.webp",
+              "url": "/v2-1/shotflow-clean-v4/workspace-360.webp",
               "width": 360,
               "height": 780,
-              "bytes": 31550,
-              "sha256": "3dffb2c90aa802934896655e0ffe12d687fffb573fdb49dc22dc67cbbcf0f39d"
+              "bytes": 89766,
+              "sha256": "c04618f02db388e3afabf31f925b813b6f19c2abc420b57e1b760eb3757ba7e4"
             },
             {
-              "url": "/v2-1/shotflow-import-v2/thumbnails/workspace-540.webp",
+              "url": "/v2-1/shotflow-clean-v4/workspace-540.webp",
               "width": 540,
               "height": 1170,
-              "bytes": 53392,
-              "sha256": "eb0e73f0dc38d64e48364367c1770a841679af9af0a0462a9ad5e5a2424439e6"
+              "bytes": 161528,
+              "sha256": "c90dbb285ab03fdf70139b793f6721d068fa7ac4ad2d981653378283f9a9d539"
             },
             {
-              "url": "/v2-1/shotflow-import-v2/thumbnails/workspace-720.webp",
+              "url": "/v2-1/shotflow-clean-v4/workspace-720.webp",
               "width": 720,
               "height": 1561,
-              "bytes": 80240,
-              "sha256": "a55f724edc76d649ed57a8b814c8cb761b9d508b6de5612f0b17c99cf8b2dafc"
+              "bytes": 257526,
+              "sha256": "39fe9196201532c148c7f47056f974eb8f3ccc8e1745ddcb7e70b419f6592ac7"
             },
             {
-              "url": "/v2-1/shotflow-import-v2/thumbnails/workspace-960.webp",
+              "url": "/v2-1/shotflow-clean-v4/workspace-960.webp",
               "width": 960,
               "height": 2081,
-              "bytes": 115200,
-              "sha256": "3db3bc934ccd58fa5173819d2451be4115ab7a9924de5f2cad00bdb44cc3d109"
+              "bytes": 392080,
+              "sha256": "893c6310938ceac97c6fb9b813a8bb78d03440d02b2a917999fa7f1596973132"
             }
           ]
         },
@@ -174,17 +174,17 @@
           "id": "storyboard",
           "quality": 82,
           "source": {
-            "path": "public/v2-1/shotflow-import-v2/storyboard-1290.webp",
-            "sha256": "4cde9ea0fe9c40291b0809f78b65ec8fdb11a1eaf6ab474b7d758d1a464f88fd",
+            "path": "public/v2-1/shotflow-clean-v4/storyboard-1290.webp",
+            "sha256": "c541fb84d7ee7257651a80b5397ce4544dd0d08ecf545a7b9de99697f8c2013e",
             "width": 1290,
             "height": 2796,
-            "bytes": 188974,
+            "bytes": 469502,
             "alpha": false,
             "colorManagement": "Source has no ICC profile; retain its sRGB RGB values without exposure or saturation adjustments.",
             "maximumExportWidth": 1290,
             "limit": "Original has fewer than 1600 horizontal pixels; keep native maximum.",
-            "provenance": "public/v2-1/shotflow-import-v2/manifest.json",
-            "selection": "English native capture from the complete Reference Study analysis; 32 actual generated shots, with suggestions unconfirmed."
+            "provenance": "public/v2-1/shotflow-clean-v4/provenance.json",
+            "selection": "English native capture with source-subtitle presentation cleanup; real 32-shot result and native geometry preserved."
           },
           "previousVariants": [
             {
@@ -232,32 +232,32 @@
           ],
           "variants": [
             {
-              "url": "/v2-1/shotflow-import-v2/thumbnails/storyboard-360.webp",
+              "url": "/v2-1/shotflow-clean-v4/storyboard-360.webp",
               "width": 360,
               "height": 780,
-              "bytes": 34466,
-              "sha256": "726e0b441c41d79b3120db14b7b53beb842f20254743d9dfb12a6fba81d71fc6"
+              "bytes": 87178,
+              "sha256": "5287b2b27ec4b85d3eede9e37657223196a298f8f1a48220947fe2c14a2f5e90"
             },
             {
-              "url": "/v2-1/shotflow-import-v2/thumbnails/storyboard-540.webp",
+              "url": "/v2-1/shotflow-clean-v4/storyboard-540.webp",
               "width": 540,
               "height": 1170,
-              "bytes": 58932,
-              "sha256": "fd8e84cafbb48f652cea8b12ad5d4b67c7d1ac60b6bc308051de4781905a31df"
+              "bytes": 151554,
+              "sha256": "a13d3ee806b763a281d23663b00cfa1ea41a2960e5e161e0cf9cf82a33965fb8"
             },
             {
-              "url": "/v2-1/shotflow-import-v2/thumbnails/storyboard-720.webp",
+              "url": "/v2-1/shotflow-clean-v4/storyboard-720.webp",
               "width": 720,
               "height": 1561,
-              "bytes": 84448,
-              "sha256": "d32babb266699007c1feab15e5397a4a0d11e2e28fb75131c8e463866e1c2c43"
+              "bytes": 234114,
+              "sha256": "9a098a0eb2262704915ae1494c45ecfa8e157fdad9087a2ce7e002628bec1c77"
             },
             {
-              "url": "/v2-1/shotflow-import-v2/thumbnails/storyboard-960.webp",
+              "url": "/v2-1/shotflow-clean-v4/storyboard-960.webp",
               "width": 960,
               "height": 2081,
-              "bytes": 120058,
-              "sha256": "408e31b9c20c91385643e3479923b701f32dca5c10fef0d3c1feb2b17641c851"
+              "bytes": 345744,
+              "sha256": "25473b1bb4ee0cbb84521022a2a59abf69d26d4c52a1200ba7b4792f5f945e09"
             }
           ]
         }
@@ -269,7 +269,7 @@
           "id": "cover",
           "quality": 82,
           "source": {
-            "path": "内容资料/02_项目/P19_IntroMe/images/Figma原图/deck-a/raw-9d54f91b22bbef05ea4bb0dae8b4b8fcf9f930b9fd2d740c20f415e5e9a7ede4.png",
+            "path": "\u5185\u5bb9\u8d44\u6599/02_\u9879\u76ee/P19_IntroMe/images/Figma\u539f\u56fe/deck-a/raw-9d54f91b22bbef05ea4bb0dae8b4b8fcf9f930b9fd2d740c20f415e5e9a7ede4.png",
             "sha256": "9d54f91b22bbef05ea4bb0dae8b4b8fcf9f930b9fd2d740c20f415e5e9a7ede4",
             "width": 3796,
             "height": 2642,
@@ -336,7 +336,7 @@
           "id": "cover",
           "quality": 82,
           "source": {
-            "path": "内容资料/02_项目/P04_Hypnos-Cockpit/images/旧站素材/06_020d5528162c.png",
+            "path": "\u5185\u5bb9\u8d44\u6599/02_\u9879\u76ee/P04_Hypnos-Cockpit/images/\u65e7\u7ad9\u7d20\u6750/06_020d5528162c.png",
             "sha256": "020d5528162c88fcaadee759bdc385a36243763d35841078ef02e1a3982a0651",
             "width": 2000,
             "height": 1294,
@@ -403,7 +403,7 @@
           "id": "cover",
           "quality": 82,
           "source": {
-            "path": "内容资料/02_项目/P02_Deal-Points/images/旧站素材/06_5b6661ab41b4.png",
+            "path": "\u5185\u5bb9\u8d44\u6599/02_\u9879\u76ee/P02_Deal-Points/images/\u65e7\u7ad9\u7d20\u6750/06_5b6661ab41b4.png",
             "sha256": "5b6661ab41b40adc4da388f10b21b84606c3ea450c155ff1b82e224aab763759",
             "width": 1100,
             "height": 712,
@@ -463,7 +463,7 @@
           "id": "cover",
           "quality": 82,
           "source": {
-            "path": "内容资料/02_项目/P03_Orbit/images/旧站素材/07_41972b2e4dd0.png",
+            "path": "\u5185\u5bb9\u8d44\u6599/02_\u9879\u76ee/P03_Orbit/images/\u65e7\u7ad9\u7d20\u6750/07_41972b2e4dd0.png",
             "sha256": "41972b2e4dd03c6bbc4be1548e63901d7c4b64aed1fa5167fa9b00eaafeefceb",
             "width": 1100,
             "height": 712,
@@ -523,7 +523,7 @@
           "id": "cover",
           "quality": 72,
           "source": {
-            "path": "内容资料/02_项目/P08_Cyber-City/images/旧站素材/01_6c7c73328d88.png",
+            "path": "\u5185\u5bb9\u8d44\u6599/02_\u9879\u76ee/P08_Cyber-City/images/\u65e7\u7ad9\u7d20\u6750/01_6c7c73328d88.png",
             "sha256": "6c7c73328d88bf072e3f92856a8389ab760aca50588099eebe94e2368518ae17",
             "width": 1100,
             "height": 619,
@@ -583,7 +583,7 @@
           "id": "cover",
           "quality": 72,
           "source": {
-            "path": "内容资料/02_项目/P09_Crystal-City/images/旧站素材/04_b6aa62c947e4.png",
+            "path": "\u5185\u5bb9\u8d44\u6599/02_\u9879\u76ee/P09_Crystal-City/images/\u65e7\u7ad9\u7d20\u6750/04_b6aa62c947e4.png",
             "sha256": "b6aa62c947e43a5e2568cef60bef671f2c4a076e2ffe6ef08f4467011bf22cac",
             "width": 1920,
             "height": 1080,
@@ -650,7 +650,7 @@
           "id": "cover",
           "quality": 72,
           "source": {
-            "path": "内容资料/02_项目/P07_Last-One/images/旧站素材/05_743bc48b9f4b.jpeg",
+            "path": "\u5185\u5bb9\u8d44\u6599/02_\u9879\u76ee/P07_Last-One/images/\u65e7\u7ad9\u7d20\u6750/05_743bc48b9f4b.jpeg",
             "sha256": "743bc48b9f4bc9b7f7b6b50fe74844be21fd7ce8d585edfc78b062786d7de4f0",
             "width": 2000,
             "height": 838,
@@ -717,7 +717,7 @@
           "id": "cover",
           "quality": 72,
           "source": {
-            "path": "内容资料/02_项目/P06_Gala-X-Ci-VR-Gallery/images/旧站素材/01_137f07199324.png",
+            "path": "\u5185\u5bb9\u8d44\u6599/02_\u9879\u76ee/P06_Gala-X-Ci-VR-Gallery/images/\u65e7\u7ad9\u7d20\u6750/01_137f07199324.png",
             "sha256": "137f07199324c99bd6cfd47caaf460f342b42f2191b60df2728a3e075ccf33cd",
             "width": 1100,
             "height": 689,
@@ -727,7 +727,7 @@
             "maximumExportWidth": 1100,
             "limit": "Original has fewer than 1600 horizontal pixels; keep native maximum.",
             "provenance": "public/portfolio/asset-sources.json",
-            "selection": "Original project-index cover showing the gallery’s black-hole opening."
+            "selection": "Original project-index cover showing the gallery\u2019s black-hole opening."
           },
           "previousVariants": [
             {

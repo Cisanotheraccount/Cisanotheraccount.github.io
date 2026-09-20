@@ -27,7 +27,10 @@ export async function verifyThumbnailRelease(directory) {
         assert(Number.isInteger(variant.height) && variant.height > 0, `Invalid image height: ${variant.url}`);
         assert(variant.width <= image.source.width, `Thumbnail cannot upscale its source: ${variant.url}`);
         const allowedUrls = [`/${thumbnailNamespace}${slug}/${image.id}-${variant.width}.webp`];
-        if (slug === 'shotflow') allowedUrls.push(`/v2-1/shotflow-import-v2/thumbnails/${image.id}-${variant.width}.webp`);
+        if (slug === 'shotflow') {
+          allowedUrls.push(`/v2-1/shotflow-import-v2/thumbnails/${image.id}-${variant.width}.webp`);
+          allowedUrls.push(`/v2-1/shotflow-clean-v4/${image.id}-${variant.width}.webp`);
+        }
         assert(allowedUrls.includes(variant.url), 'Thumbnail must stay in its exact project/slot namespace');
         assert(!urls.has(variant.url), `Duplicate thumbnail dependency: ${variant.url}`);
         const file = variant.url.slice(1), bytes = await readFile(path.join(directory, file));

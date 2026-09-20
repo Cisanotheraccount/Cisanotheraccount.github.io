@@ -1,0 +1,65 @@
+{
+  "schemaVersion": 1,
+  "baseCaptures": [
+    "/v2-1/shotflow-import-v2/manifest.json",
+    "/v2-1/shotflow-three-v3/manifest.json"
+  ],
+  "sourceSHA256": "b3d795c53fd358b3f740c66ed12ceb9a556d803d47863b115640228717a0fdac",
+  "sourceOriginalModified": false,
+  "analysisRerun": false,
+  "audio": "Original AAC packets preserved without re-encoding",
+  "videoSubtitleMaskPixels": [
+    0,
+    644,
+    1280,
+    68
+  ],
+  "videoChecks": [
+    {
+      "audioPacketHash": "c82f14a9b15de4e9cfdf676ac631f1567f34850688b6e0e8cdd60aabc38f58b2",
+      "audioPacketsIdentical": true,
+      "duration": 4.1,
+      "durationIdentical": true,
+      "file": "shot-05.mp4",
+      "framesChecked": 123,
+      "pass": true,
+      "subjectMeanAbsoluteEncodingDifference": 0.6262469490822669,
+      "subtitleBandMaximum": 2,
+      "timestampsIdentical": true
+    },
+    {
+      "audioPacketHash": "30de981a9ac8686675c49ea6ab7771a864220dfb8b2bf3cd52d0285401889b56",
+      "audioPacketsIdentical": true,
+      "duration": 2.7666666666666666,
+      "durationIdentical": true,
+      "file": "shot-06.mp4",
+      "framesChecked": 83,
+      "pass": true,
+      "subjectMeanAbsoluteEncodingDifference": 0.9520261250047508,
+      "subtitleBandMaximum": 2,
+      "timestampsIdentical": true
+    },
+    {
+      "audioPacketHash": "8295101c46f0dbd450372aa139a179e55119204093b86eafe4da41ba1a9da7b1",
+      "audioPacketsIdentical": true,
+      "duration": 2,
+      "durationIdentical": true,
+      "file": "shot-07.mp4",
+      "framesChecked": 60,
+      "pass": true,
+      "subjectMeanAbsoluteEncodingDifference": 0.7042347419383106,
+      "subtitleBandMaximum": 2,
+      "timestampsIdentical": true
+    }
+  ],
+  "staticMethod": "Measured subtitle regions within black letterbox; lossless WebP derivatives preserve all other decoded pixels",
+  "photosThumbnail": {
+    "status": "approved-preserve-original",
+    "decision": "Keep both existing Photos-library previews unchanged, including their original thumbnail captions. No frame replacement or masking.",
+    "approvedOn": "2026-09-20",
+    "states": [
+      "photos",
+      "selected-video"
+    ]
+  }
+}

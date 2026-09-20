@@ -5,6 +5,8 @@ import path from 'node:path';
 
 export const shotFlowNamespace = 'v2-1/shotflow-import-v2/';
 export const shotFlowThreeNamespace = 'v2-1/shotflow-three-v3/';
+export const shotFlowPresentationNamespace = 'v2-1/shotflow-clean-v4/';
+export const shotFlowNamespaces = [shotFlowNamespace, shotFlowThreeNamespace, shotFlowPresentationNamespace];
 const mimeTypes = {
   '.webp': 'image/webp', '.png': 'image/png', '.jpg': 'image/jpeg', '.jpeg': 'image/jpeg',
   '.mp4': 'video/mp4', '.json': 'application/json', '.md': 'text/markdown',
@@ -51,8 +53,9 @@ async function verifyCapture(directory, namespace) {
 }
 
 export async function verifyShotFlowRelease(directory) {
-  const [original, three] = await Promise.all([
+  const [original, three, presentation] = await Promise.all([
     verifyCapture(directory, shotFlowNamespace), verifyCapture(directory, shotFlowThreeNamespace),
+    verifyCapture(directory, shotFlowPresentationNamespace),
   ]);
   assert.deepEqual(three.manifest.shots.map(shot => shot.order), [5, 6, 7], 'The interactive demo contains exactly the three approved shots');
   const paths = new Set(three.files.map(file => '/' + file));
@@ -69,5 +72,24 @@ export async function verifyShotFlowRelease(directory) {
     const content = original.manifest.storyboard.scrollContent;
     assert([x, y, width, height].every(Number.isFinite) && x >= 0 && y >= 0 && width > 0 && height > 0 && x + width <= content.width && y + height <= content.height, 'Checkbox must stay inside measured native scroll content');
   }
-  return { manifest: { original: original.manifest, three: three.manifest }, files: [...original.files, ...three.files] };
+  const originalAssets = new Map([...original.manifest.assets, ...three.manifest.assets].map(asset => [asset.path, asset]));
+  const presentationAssets = new Map(presentation.manifest.assets.map(asset => [asset.path, asset]));
+  assert.equal(presentation.manifest.baseCapture, '/' + shotFlowNamespace + 'manifest.json');
+  assert.equal(presentation.manifest.baseThreeCapture, '/' + shotFlowThreeNamespace + 'manifest.json');
+  assert.equal(presentation.manifest.reanalyzed, false, 'Presentation changes never rerun analysis');
+  const replacements = presentation.manifest.replacements;
+  assert(replacements && Object.keys(replacements).length > 0, 'Presentation requires explicit replacements');
+  for (const [source, target] of Object.entries(replacements)) {
+    const before = originalAssets.get(source), after = presentationAssets.get(target);
+    assert(before && after, 'Presentation may only replace registered capture assets');
+    assert.equal(before.mime, after.mime, 'Presentation must preserve media type');
+    if (before.width) assert.equal(before.width, after.width, 'Presentation must preserve image width');
+    if (before.height) assert.equal(before.height, after.height, 'Presentation must preserve image height');
+  }
+  for (const state of ['photos', 'selected-video']) assert(!replacements[original.manifest.states[state].image], 'The approved Photos-library previews must remain unchanged');
+  for (const shot of three.manifest.shots) {
+    assert(replacements[shot.media] && replacements[shot.poster] && replacements[shot.playerImage], 'Each playable shot requires subtitle-free media, poster and screen');
+  }
+  assert.deepEqual(presentation.manifest.shots, three.manifest.shots.map(({ shotId, order, start, end }) => ({ shotId, order, start, end })), 'Presentation must preserve actual shot identities and cuts');
+  return { manifest: { original: original.manifest, three: three.manifest, presentation: presentation.manifest }, files: [...original.files, ...three.files, ...presentation.files] };
 }

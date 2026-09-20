@@ -362,7 +362,7 @@ function ShotFlowCase({ item, heading, slot, onZoom, active }: { item: Portfolio
       </div>
       <div className="gxc-shotflow-screen"><StudyImage study={screens[5]} onZoom={onZoom}/></div>
     </section>
-    <aside className="gxc-shotflow-status"><span className="gxc-mono">IN DEVELOPMENT</span><p>English interfaces captured from the native development app, using a prepared project and a user-supplied reference video. The walkthrough connects real captures, recorded analysis and its generated results. Analysis is prepared in advance; the website does not process uploads or run the iOS app. Earlier demonstration captures remain archived.</p></aside>
+    <aside className="gxc-shotflow-status"><span className="gxc-mono">IN DEVELOPMENT</span><p>English interfaces captured from the native development app, using a prepared project and a user-supplied reference video. The walkthrough connects real captures, recorded analysis and its generated results. Analysis is prepared in advance; the website does not process uploads or run the iOS app. Playback subtitles are omitted for clarity; original audio and shot boundaries are retained. Earlier demonstration captures remain archived.</p></aside>
   </div>;
 }
 

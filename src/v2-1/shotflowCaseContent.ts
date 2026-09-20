@@ -1,4 +1,4 @@
-import { shotFlowCapture, shotFlowShotCount } from './shotflowWalkthrough';
+import { shotFlowAsset, shotFlowCapture, shotFlowShotCount } from './shotflowWalkthrough';
 
 const screen = (key: keyof typeof shotFlowCapture.states, alt: string, caption: string) => ({
   image: shotFlowCapture.states[key].image, alt, caption, width: 1290, height: 2796,
@@ -13,7 +13,7 @@ export const shotFlowCaseScreens = [
 ];
 export const shotFlowCaseCover = {
   image: shotFlowCaseScreens[0].image,
-  imageSmall: '/v2-1/shotflow-import-v2/workspace-800.webp',
+  imageSmall: shotFlowAsset('/v2-1/shotflow-import-v2/workspace-800.webp'),
   imageAlt: shotFlowCaseScreens[0].alt,
   imageWidth: 1290,
   imageHeight: 2796,

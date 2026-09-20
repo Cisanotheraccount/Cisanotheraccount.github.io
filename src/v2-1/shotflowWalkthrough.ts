@@ -1,5 +1,9 @@
 import manifest from '../../public/v2-1/shotflow-import-v2/manifest.json';
 import threeManifest from '../../public/v2-1/shotflow-three-v3/manifest.json';
+import presentation from '../../public/v2-1/shotflow-clean-v4/manifest.json';
+
+/** Subtitle-free presentation derivatives; original capture metadata stays immutable. */
+export const shotFlowAsset = (url: string) => (presentation.replacements as Record<string, string>)[url] ?? url;
 
 /** Top-left bounds, in percent of the complete native capture. */
 export type ShotFlowRect = readonly [number, number, number, number];
@@ -16,7 +20,14 @@ type ShotFlowManifest = {
 };
 
 // Captures and bounds come from the isolated native run; no simulated shot data.
-export const shotFlowCapture = manifest as unknown as ShotFlowManifest;
+const originalCapture = manifest as unknown as ShotFlowManifest;
+export const shotFlowCapture: ShotFlowManifest = {
+  ...originalCapture,
+  states: Object.fromEntries(Object.entries(originalCapture.states).map(([id, state]) => [id, { ...state, image: shotFlowAsset(state.image) }])) as Record<StateId, Capture>,
+  analysis: { ...originalCapture.analysis, recording: shotFlowAsset(originalCapture.analysis.recording) },
+  storyboard: { ...originalCapture.storyboard, scrollContent: { ...originalCapture.storyboard.scrollContent, image: shotFlowAsset(originalCapture.storyboard.scrollContent.image) } },
+  representative: { ...originalCapture.representative, media: shotFlowAsset(originalCapture.representative.media), poster: originalCapture.representative.poster ? shotFlowAsset(originalCapture.representative.poster) : undefined },
+};
 export const shotFlowCaptureSize = { width: shotFlowCapture.native.screenPixels[0], height: shotFlowCapture.native.screenPixels[1] };
 export const shotFlowRepresentative = shotFlowCapture.storyboard.rows.find(row => row.shotId === shotFlowCapture.representative.shotId)!;
 export const shotFlowShotCount = shotFlowCapture.storyboard.rows.length;
@@ -34,7 +45,11 @@ type ThreeShotManifest = {
     player: { play: ShotFlowRect; previous: ShotFlowRect; next: ShotFlowRect; close: ShotFlowRect; elapsed: ShotFlowRect; progress: ShotFlowRect };
   };
 };
-export const shotFlowThreeCapture = threeManifest as unknown as ThreeShotManifest;
+const originalThreeCapture = threeManifest as unknown as ThreeShotManifest;
+export const shotFlowThreeCapture: ThreeShotManifest = {
+  ...originalThreeCapture,
+  shots: originalThreeCapture.shots.map(shot => ({ ...shot, media: shotFlowAsset(shot.media), poster: shotFlowAsset(shot.poster), playerImage: shotFlowAsset(shot.playerImage) })),
+};
 export const shotFlowDemoShots = shotFlowThreeCapture.shots;
 export const shotFlowDemoCount = shotFlowDemoShots.length;
 

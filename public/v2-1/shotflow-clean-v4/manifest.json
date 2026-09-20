@@ -1,0 +1,260 @@
+{
+  "schemaVersion": 1,
+  "baseCapture": "/v2-1/shotflow-import-v2/manifest.json",
+  "baseThreeCapture": "/v2-1/shotflow-three-v3/manifest.json",
+  "reanalyzed": false,
+  "purpose": "Subtitle-free presentation with unchanged real analysis output",
+  "shots": [
+    {
+      "shotId": "E236DDD7-484E-4FB2-9289-AC74FAB6ADE3",
+      "order": 5,
+      "start": 14.566666666666666,
+      "end": 18.666666666666668
+    },
+    {
+      "shotId": "D14089CB-2922-4E46-9BDA-1A16FF8177B1",
+      "order": 6,
+      "start": 18.666666666666668,
+      "end": 21.433333333333334
+    },
+    {
+      "shotId": "2679C7DD-CC96-4FB2-81BC-7FB30A73F3C8",
+      "order": 7,
+      "start": 21.433333333333334,
+      "end": 23.433333333333334
+    }
+  ],
+  "replacements": {
+    "/v2-1/shotflow-import-v2/player-1290.webp": "/v2-1/shotflow-clean-v4/player-1290.webp",
+    "/v2-1/shotflow-import-v2/representative-shot-poster.webp": "/v2-1/shotflow-clean-v4/representative-shot-poster.webp",
+    "/v2-1/shotflow-import-v2/storyboard-1290.webp": "/v2-1/shotflow-clean-v4/storyboard-1290.webp",
+    "/v2-1/shotflow-import-v2/storyboard-800.webp": "/v2-1/shotflow-clean-v4/storyboard-800.webp",
+    "/v2-1/shotflow-import-v2/storyboard-scroll.webp": "/v2-1/shotflow-clean-v4/storyboard-scroll.webp",
+    "/v2-1/shotflow-import-v2/thumbnails/storyboard-360.webp": "/v2-1/shotflow-clean-v4/storyboard-360.webp",
+    "/v2-1/shotflow-import-v2/thumbnails/storyboard-540.webp": "/v2-1/shotflow-clean-v4/storyboard-540.webp",
+    "/v2-1/shotflow-import-v2/thumbnails/storyboard-720.webp": "/v2-1/shotflow-clean-v4/storyboard-720.webp",
+    "/v2-1/shotflow-import-v2/thumbnails/storyboard-960.webp": "/v2-1/shotflow-clean-v4/storyboard-960.webp",
+    "/v2-1/shotflow-import-v2/thumbnails/workspace-360.webp": "/v2-1/shotflow-clean-v4/workspace-360.webp",
+    "/v2-1/shotflow-import-v2/thumbnails/workspace-540.webp": "/v2-1/shotflow-clean-v4/workspace-540.webp",
+    "/v2-1/shotflow-import-v2/thumbnails/workspace-720.webp": "/v2-1/shotflow-clean-v4/workspace-720.webp",
+    "/v2-1/shotflow-import-v2/thumbnails/workspace-960.webp": "/v2-1/shotflow-clean-v4/workspace-960.webp",
+    "/v2-1/shotflow-import-v2/workspace-1290.webp": "/v2-1/shotflow-clean-v4/workspace-1290.webp",
+    "/v2-1/shotflow-import-v2/workspace-800.webp": "/v2-1/shotflow-clean-v4/workspace-800.webp",
+    "/v2-1/shotflow-three-v3/shot-05-player-stopped.webp": "/v2-1/shotflow-clean-v4/shot-05-player-stopped.webp",
+    "/v2-1/shotflow-three-v3/shot-06-player-stopped.webp": "/v2-1/shotflow-clean-v4/shot-06-player-stopped.webp",
+    "/v2-1/shotflow-three-v3/shot-07-player-stopped.webp": "/v2-1/shotflow-clean-v4/shot-07-player-stopped.webp",
+    "/v2-1/shotflow-three-v3/shot-05.mp4": "/v2-1/shotflow-clean-v4/shot-05.mp4",
+    "/v2-1/shotflow-three-v3/shot-05-poster.webp": "/v2-1/shotflow-clean-v4/shot-05-poster.webp",
+    "/v2-1/shotflow-three-v3/shot-06.mp4": "/v2-1/shotflow-clean-v4/shot-06.mp4",
+    "/v2-1/shotflow-three-v3/shot-06-poster.webp": "/v2-1/shotflow-clean-v4/shot-06-poster.webp",
+    "/v2-1/shotflow-three-v3/shot-07.mp4": "/v2-1/shotflow-clean-v4/shot-07.mp4",
+    "/v2-1/shotflow-three-v3/shot-07-poster.webp": "/v2-1/shotflow-clean-v4/shot-07-poster.webp",
+    "/v2-1/shotflow-import-v2/representative-shot.mp4": "/v2-1/shotflow-clean-v4/shot-05.mp4"
+  },
+  "assets": [
+    {
+      "path": "/v2-1/shotflow-clean-v4/player-1290.webp",
+      "sha256": "f2d1430f0ab415cc50468c005ba616752b014144cdd06a2aef04a53123785c86",
+      "bytes": 488770,
+      "mime": "image/webp",
+      "width": 1290,
+      "height": 2796
+    },
+    {
+      "path": "/v2-1/shotflow-clean-v4/provenance.json",
+      "sha256": "b1e51c8e8de94f8afa67172e171a6de5262f6e5f1d2c61915a34a9442f2f3eea",
+      "bytes": 2129,
+      "mime": "application/json"
+    },
+    {
+      "path": "/v2-1/shotflow-clean-v4/readme.md",
+      "sha256": "42cc1508963a2091cca8954ae672842480367a6ea52d25821706196caaeba482",
+      "bytes": 995,
+      "mime": "text/markdown"
+    },
+    {
+      "path": "/v2-1/shotflow-clean-v4/representative-shot-poster.webp",
+      "sha256": "15d45e88d4964a09a106d14ab82f89e89567f091ad19280a2d6c36c596d715be",
+      "bytes": 375896,
+      "mime": "image/webp",
+      "width": 1280,
+      "height": 720
+    },
+    {
+      "path": "/v2-1/shotflow-clean-v4/shot-05-player-stopped.webp",
+      "sha256": "fac27803237acf71929fc9b749f913fbc033d0880e8f4e70f9d91947815dbb8f",
+      "bytes": 501862,
+      "mime": "image/webp",
+      "width": 1290,
+      "height": 2796
+    },
+    {
+      "path": "/v2-1/shotflow-clean-v4/shot-05-poster.webp",
+      "sha256": "bd82f0173326f9660f3d058a5ff4d7593b440d02b85330d7c884d2ba1f851e8d",
+      "bytes": 339924,
+      "mime": "image/webp",
+      "width": 1280,
+      "height": 720
+    },
+    {
+      "path": "/v2-1/shotflow-clean-v4/shot-05.mp4",
+      "sha256": "e2e68297b0e048c852027a7f4f55aca99a8f908d66208af5ee6e80a9597f98ce",
+      "bytes": 2531326,
+      "mime": "video/mp4",
+      "width": 1280,
+      "height": 720
+    },
+    {
+      "path": "/v2-1/shotflow-clean-v4/shot-06-player-stopped.webp",
+      "sha256": "d53a2d8652109787f8ab583cb66646674a3094e38f6b92183142ab4e6904b378",
+      "bytes": 603424,
+      "mime": "image/webp",
+      "width": 1290,
+      "height": 2796
+    },
+    {
+      "path": "/v2-1/shotflow-clean-v4/shot-06-poster.webp",
+      "sha256": "6027c2cdc8852fa35385d78d4e160a4c2f9d45f50d4d554e7e3b4c5888df8dd3",
+      "bytes": 422810,
+      "mime": "image/webp",
+      "width": 1280,
+      "height": 720
+    },
+    {
+      "path": "/v2-1/shotflow-clean-v4/shot-06.mp4",
+      "sha256": "d944f3709c39230649cf4616a63c1453a347d8c08b0f6adc824ebf228a3e902b",
+      "bytes": 1564030,
+      "mime": "video/mp4",
+      "width": 1280,
+      "height": 720
+    },
+    {
+      "path": "/v2-1/shotflow-clean-v4/shot-07-player-stopped.webp",
+      "sha256": "0b361f582a20db41b8b9b0911a8652b0791e87196f19d9878a239895d6e42298",
+      "bytes": 415300,
+      "mime": "image/webp",
+      "width": 1290,
+      "height": 2796
+    },
+    {
+      "path": "/v2-1/shotflow-clean-v4/shot-07-poster.webp",
+      "sha256": "3bc765aa2f1868c5dfe642e69b10bb28c95ca6422304f5a6aa87bd3189535de3",
+      "bytes": 241088,
+      "mime": "image/webp",
+      "width": 1280,
+      "height": 720
+    },
+    {
+      "path": "/v2-1/shotflow-clean-v4/shot-07.mp4",
+      "sha256": "540f313984218bce1fba9eddf2ba88e69942d5bdf0ce6d226d4cb771016b8284",
+      "bytes": 863779,
+      "mime": "video/mp4",
+      "width": 1280,
+      "height": 720
+    },
+    {
+      "path": "/v2-1/shotflow-clean-v4/storyboard-1290.webp",
+      "sha256": "c541fb84d7ee7257651a80b5397ce4544dd0d08ecf545a7b9de99697f8c2013e",
+      "bytes": 469502,
+      "mime": "image/webp",
+      "width": 1290,
+      "height": 2796
+    },
+    {
+      "path": "/v2-1/shotflow-clean-v4/storyboard-360.webp",
+      "sha256": "5287b2b27ec4b85d3eede9e37657223196a298f8f1a48220947fe2c14a2f5e90",
+      "bytes": 87178,
+      "mime": "image/webp",
+      "width": 360,
+      "height": 780
+    },
+    {
+      "path": "/v2-1/shotflow-clean-v4/storyboard-540.webp",
+      "sha256": "a13d3ee806b763a281d23663b00cfa1ea41a2960e5e161e0cf9cf82a33965fb8",
+      "bytes": 151554,
+      "mime": "image/webp",
+      "width": 540,
+      "height": 1170
+    },
+    {
+      "path": "/v2-1/shotflow-clean-v4/storyboard-720.webp",
+      "sha256": "9a098a0eb2262704915ae1494c45ecfa8e157fdad9087a2ce7e002628bec1c77",
+      "bytes": 234114,
+      "mime": "image/webp",
+      "width": 720,
+      "height": 1561
+    },
+    {
+      "path": "/v2-1/shotflow-clean-v4/storyboard-800.webp",
+      "sha256": "205c9dad83f6d45db7c828a641a204f54955c773bf349863329728b8660e426c",
+      "bytes": 276384,
+      "mime": "image/webp",
+      "width": 800,
+      "height": 1734
+    },
+    {
+      "path": "/v2-1/shotflow-clean-v4/storyboard-960.webp",
+      "sha256": "25473b1bb4ee0cbb84521022a2a59abf69d26d4c52a1200ba7b4792f5f945e09",
+      "bytes": 345744,
+      "mime": "image/webp",
+      "width": 960,
+      "height": 2081
+    },
+    {
+      "path": "/v2-1/shotflow-clean-v4/storyboard-scroll.webp",
+      "sha256": "7f13a7e61c1849b2743b9aba38aca5c643df157072daef5454979b1934203506",
+      "bytes": 2636660,
+      "mime": "image/webp",
+      "width": 800,
+      "height": 13628
+    },
+    {
+      "path": "/v2-1/shotflow-clean-v4/workspace-1290.webp",
+      "sha256": "56065982d9c4657581238d5b37e35673a3c42d08b799cdb40205b5fb7699c46f",
+      "bytes": 595926,
+      "mime": "image/webp",
+      "width": 1290,
+      "height": 2796
+    },
+    {
+      "path": "/v2-1/shotflow-clean-v4/workspace-360.webp",
+      "sha256": "c04618f02db388e3afabf31f925b813b6f19c2abc420b57e1b760eb3757ba7e4",
+      "bytes": 89766,
+      "mime": "image/webp",
+      "width": 360,
+      "height": 780
+    },
+    {
+      "path": "/v2-1/shotflow-clean-v4/workspace-540.webp",
+      "sha256": "c90dbb285ab03fdf70139b793f6721d068fa7ac4ad2d981653378283f9a9d539",
+      "bytes": 161528,
+      "mime": "image/webp",
+      "width": 540,
+      "height": 1170
+    },
+    {
+      "path": "/v2-1/shotflow-clean-v4/workspace-720.webp",
+      "sha256": "39fe9196201532c148c7f47056f974eb8f3ccc8e1745ddcb7e70b419f6592ac7",
+      "bytes": 257526,
+      "mime": "image/webp",
+      "width": 720,
+      "height": 1561
+    },
+    {
+      "path": "/v2-1/shotflow-clean-v4/workspace-800.webp",
+      "sha256": "c692f77079a3d9c1f13301c4521c7964bd00ab4fb5d72ec57f6b00f99856a824",
+      "bytes": 317676,
+      "mime": "image/webp",
+      "width": 800,
+      "height": 1734
+    },
+    {
+      "path": "/v2-1/shotflow-clean-v4/workspace-960.webp",
+      "sha256": "893c6310938ceac97c6fb9b813a8bb78d03440d02b2a917999fa7f1596973132",
+      "bytes": 392080,
+      "mime": "image/webp",
+      "width": 960,
+      "height": 2081
+    }
+  ]
+}

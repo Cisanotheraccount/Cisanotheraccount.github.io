@@ -5,7 +5,7 @@ import { projectRoot, verifyBaseline } from './release-baseline.mjs';
 import { verifyThumbnailRelease } from './thumbnail-release.mjs';
 import { verifyBackgroundRelease } from './background-release.mjs';
 import { verifyEntryRelease } from './entry-release.mjs';
-import { shotFlowNamespace, verifyShotFlowRelease } from './shotflow-release.mjs';
+import { shotFlowNamespaces, verifyShotFlowRelease } from './shotflow-release.mjs';
 
 const output = path.join(projectRoot, 'dist');
 const baseline = await verifyBaseline(output);
@@ -34,7 +34,7 @@ for (const file of thumbnailPaths) assert(!baselinePaths.has(file), '2.1 thumbna
 for (const file of backgroundPaths) assert(!baselinePaths.has(file), '2.1 backgrounds cannot replace any frozen 2.0 asset');
 for (const file of entryPaths) assert(!baselinePaths.has(file), '2.1 entry assets cannot replace any frozen 2.0 asset');
 for (const file of shotFlowPaths) assert(!baselinePaths.has(file), '2.1 ShotFlow assets cannot replace any frozen 2.0 asset');
-for (const file of thumbnailPaths) if (file.startsWith(shotFlowNamespace)) {
+for (const file of thumbnailPaths) if (shotFlowNamespaces.some(namespace => file.startsWith(namespace))) {
   assert(shotFlowPaths.has(file), 'New ShotFlow thumbnails must also belong to the capture manifest');
 }
 const newPage = await readFile(path.join(output, 'galaxci/2.1/index.html'), 'utf8');

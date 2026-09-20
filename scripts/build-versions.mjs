@@ -7,7 +7,7 @@ import { projectRoot, restoreBaseline, verifyBaseline } from './release-baseline
 import { verifyThumbnailRelease } from './thumbnail-release.mjs';
 import { verifyBackgroundRelease } from './background-release.mjs';
 import { verifyEntryRelease } from './entry-release.mjs';
-import { shotFlowNamespace, verifyShotFlowRelease } from './shotflow-release.mjs';
+import { shotFlowNamespaces, verifyShotFlowRelease } from './shotflow-release.mjs';
 
 // Each version has a separate Rollup graph. The approved 2.0 graph is an exact
 // published snapshot, including old immutable bundles still used by cached tabs.
@@ -22,7 +22,7 @@ const baselinePaths = new Set(baseline.files.map(file => file.path));
 for (const file of backgrounds.files) assert(!baselinePaths.has(file), '2.1 backgrounds cannot replace a frozen 2.0 asset');
 for (const file of entry.files) assert(!baselinePaths.has(file), '2.1 entry assets cannot replace a frozen 2.0 asset');
 for (const file of shotFlow.files) assert(!baselinePaths.has(file), '2.1 ShotFlow assets cannot replace a frozen 2.0 asset');
-for (const file of thumbnails.files.filter(file => file.startsWith(shotFlowNamespace))) {
+for (const file of thumbnails.files.filter(file => shotFlowNamespaces.some(namespace => file.startsWith(namespace)))) {
   assert(shotFlow.files.includes(file), 'New ShotFlow thumbnails must also belong to the capture manifest');
 }
 await rm(staging, { recursive: true, force: true });

@@ -17,6 +17,7 @@ import { shotFlowCaseCover, shotFlowCaseScreens } from './shotflowCaseContent';
 import { mobileThumbnail, useMobileThumbnailMode, workImageSizes, workLayout } from './mobileThumbnails';
 
 import ShotFlowDemo from './ShotFlowDemo';
+import { ShotFlowPhoneFrame } from './ShotFlowPhoneFrame';
 import { PerformancePanel } from './PerformancePanel';
 import { markEntryAppReady, useEntryPhase } from './entry';
 import { useDeferredImage } from './deferredMedia';
@@ -319,7 +320,7 @@ function ShotFlowCase({ item, heading, slot, onZoom, active }: { item: Portfolio
     </section>
     <section ref={demo} className="gxc-shotflow-walkthrough" aria-labelledby="gxc-shotflow-demo-title">
       <header className="gxc-shotflow-step"><h3 ref={demoHeading} id="gxc-shotflow-demo-title" tabIndex={-1}>From a video to its shots.</h3></header>
-      <ShotFlowDemo active={active} preview={<div ref={slot} className="gxc-shotflow-screen"><StudyImage study={screens[0]} onZoom={onZoom}/></div>}/>
+      <ShotFlowDemo active={active} onEnlargePreview={() => onZoom(screens[0])} preview={<div ref={slot} className="gxc-shotflow-screen"><StudyImage study={screens[0]} onZoom={onZoom}/></div>}/>
     </section>
     <ol className="gxc-shotflow-flow gxc-shotflow-overview-flow" aria-label="From reference video to a shooting plan">{['Add a reference', 'Automatic analysis', 'Explore the shots', 'Bring it on set'].map((step, i) => <li key={step}><span>{step}</span>{i < 3 && <ArrowRight size={20} aria-hidden="true"/>}</li>)}</ol>
     <section className="gxc-shotflow-row" aria-labelledby="gxc-shotflow-import-title">
@@ -328,7 +329,7 @@ function ShotFlowCase({ item, heading, slot, onZoom, active }: { item: Portfolio
         <p>The starting point is a reference worth studying. Create a project and choose a video from Photos. Once the video is imported, analysis begins within the same flow. The project gives the resulting shots a place to belong, keeping them connected to the material that prompted the shoot.</p>
         <p>A source is useful beyond its first import. Its name and original sequence remain available as the project grows, so a shot can always be understood in context. Several reference videos can belong to one project without losing their identities. This walkthrough follows one complete reference through that process.</p>
       </div>
-      <div className="gxc-shotflow-screen"><StudyImage study={screens[4]} onZoom={onZoom}/></div>
+      <div className="gxc-shotflow-screen"><StudyImage study={screens[4]} onZoom={onZoom} phoneFrame/></div>
     </section>
     <section className="gxc-shotflow-review" aria-labelledby="gxc-shotflow-analysis-title">
       <div className="gxc-shotflow-step">
@@ -336,7 +337,7 @@ function ShotFlowCase({ item, heading, slot, onZoom, active }: { item: Portfolio
         <p>ShotFlow analyzes the reference for shot boundaries, turning one continuous video into a sequence of individual segments. Each result has a beginning, an end and a visual reference. That gives the person preparing a shoot a concrete unit to inspect: a particular moment with its own framing and duration.</p>
         <p>The analysis screen keeps that work visible and attached to its source. After it finishes, the workspace brings the source video and generated shot count together. The example above uses the actual output from the entire reference; its recorded waiting time is shortened only for the web walkthrough.</p>
       </div>
-      <div className="gxc-shotflow-screen"><StudyImage study={screens[1]} onZoom={onZoom}/></div>
+      <div className="gxc-shotflow-screen"><StudyImage study={screens[1]} onZoom={onZoom} phoneFrame/></div>
     </section>
     <section className="gxc-shotflow-row" aria-labelledby="gxc-shotflow-results-title">
       <div className="gxc-shotflow-step">
@@ -344,7 +345,7 @@ function ShotFlowCase({ item, heading, slot, onZoom, active }: { item: Portfolio
         <p>The storyboard makes the result readable as a whole. Source grouping preserves the order and context of the original video, while each row brings the shot’s timing and information close to its image. Scroll the sequence, compare neighboring shots and choose a moment to look at more closely.</p>
         <p>A separate shooting-order view lets the project serve practical preparation across references. This recorded build demonstrates automatic shot boundaries; shot size, camera movement and lens suggestions remain unconfirmed. When a boundary needs correction, optional manual adjustment can refine the selected range while retaining the original video.</p>
       </div>
-      <div className="gxc-shotflow-screen"><StudyImage study={screens[2]} onZoom={onZoom}/></div>
+      <div className="gxc-shotflow-screen"><StudyImage study={screens[2]} onZoom={onZoom} phoneFrame/></div>
     </section>
     <section className="gxc-shotflow-review" aria-labelledby="gxc-shotflow-playback-title">
       <div className="gxc-shotflow-step">
@@ -352,7 +353,7 @@ function ShotFlowCase({ item, heading, slot, onZoom, active }: { item: Portfolio
         <p>A thumbnail helps identify a shot; playback reveals its movement and rhythm. Open an individual segment to study the original footage at the boundaries produced by the analysis. Returning to the list keeps the surrounding sequence within reach, making it easy to connect one camera decision with the next.</p>
         <p>The guided example offers three consecutive shots for playback and a small checklist to try. Their images, timing and original audio come from the same reference video used for the analysis. Sound starts muted and can be enabled when you choose.</p>
       </div>
-      <div className="gxc-shotflow-screen"><StudyImage study={screens[3]} onZoom={onZoom}/></div>
+      <div className="gxc-shotflow-screen"><StudyImage study={screens[3]} onZoom={onZoom} phoneFrame/></div>
     </section>
     <section className="gxc-shotflow-onset gxc-shotflow-row" aria-labelledby="gxc-shotflow-onset-title">
       <div className="gxc-shotflow-step">
@@ -360,7 +361,7 @@ function ShotFlowCase({ item, heading, slot, onZoom, active }: { item: Portfolio
         <p>On set, the phone becomes a reference and checklist beside the professional camera. Review the current shot, prepare the framing and movement, then mark it complete after filming. The next unfinished shot comes forward, connecting the reference studied earlier with the work still ahead.</p>
         <ol className="gxc-shotflow-onset-steps" aria-label="On-set workflow">{['Review', 'Shoot', 'Mark complete', 'Next shot'].map((step, i) => <li key={step}><span>{step}</span>{i < 3 && <ArrowRight size={15} aria-hidden="true"/>}</li>)}</ol>
       </div>
-      <div className="gxc-shotflow-screen"><StudyImage study={screens[5]} onZoom={onZoom}/></div>
+      <div className="gxc-shotflow-screen"><StudyImage study={screens[5]} onZoom={onZoom} phoneFrame/></div>
     </section>
     <aside className="gxc-shotflow-status"><span className="gxc-mono">IN DEVELOPMENT</span><p>English interfaces captured from the native development app, using a prepared project and a user-supplied reference video. The walkthrough connects real captures, recorded analysis and its generated results. Analysis is prepared in advance; the website does not process uploads or run the iOS app. Playback subtitles are omitted for clarity; original audio and shot boundaries are retained. Earlier demonstration captures remain archived.</p></aside>
   </div>;
@@ -443,14 +444,15 @@ function ProjectDialog({ project, entrySource, source, instant, onClose, onLock,
       </motion.article>
       {morph && target && source && <motion.div className={'gxc-transition-cover cover-' + shown.slug} data-fit={shown.imageFit ?? 'cover'} style={{ x, y, width: coverWidth, height: coverHeight, opacity: cloneOpacity }}><img src={shown.slug === 'shotflow' ? shotFlowCaseCover.image : shown.image} alt=""/></motion.div>}
     </div>}
-    <ZoomImage study={zoom} close={() => setZoom(null)}/>
+    <ZoomImage study={zoom} close={() => setZoom(null)} phoneFrame={shown?.slug === 'shotflow'}/>
   </dialog>, document.body);
 }
-function StudyImage({ study, onZoom }: { study: Study; onZoom(study: Study): void }) {
-  return <figure className="gxc-study"><button onClick={() => onZoom(study)} aria-label={'Enlarge: ' + study.caption}><img src={study.image} alt={study.alt} width={study.width} height={study.height} loading="lazy"/><span><Maximize2 size={18}/></span></button><figcaption>{study.caption}<span className="gxc-mono">VIEW FULL SIZE</span></figcaption></figure>;
+function StudyImage({ study, onZoom, phoneFrame = false }: { study: Study; onZoom(study: Study): void; phoneFrame?: boolean }) {
+  const image = <button onClick={event => { if (phoneFrame) event.currentTarget.focus({ preventScroll: true }); onZoom(study); }} aria-label={'Enlarge: ' + study.caption}><img src={study.image} alt={study.alt} width={study.width} height={study.height} loading="lazy"/><span><Maximize2 size={18}/></span></button>;
+  return <figure className="gxc-study">{phoneFrame ? <ShotFlowPhoneFrame>{image}</ShotFlowPhoneFrame> : image}<figcaption>{study.caption}{phoneFrame ? <button className="gxc-shotflow-enlarge" onClick={event => { event.currentTarget.focus({ preventScroll: true }); onZoom(study); }}><Maximize2 size={14}/>View full size</button> : <span className="gxc-mono">VIEW FULL SIZE</span>}</figcaption></figure>;
 }
-function ZoomImage({ study, close }: { study: Study | null; close(): void }) {
+function ZoomImage({ study, close, phoneFrame = false }: { study: Study | null; close(): void; phoneFrame?: boolean }) {
   const ref = useRef<HTMLDialogElement>(null);
   useLayoutEffect(() => { if (study) ref.current?.showModal(); else ref.current?.close(); }, [study]);
-  return <dialog ref={ref} className="gxc-zoom" aria-label="Full size project image" onCancel={e => { e.preventDefault(); close(); }}><button className="gxc-zoom-close" onClick={close} aria-label="Close image"><X/></button>{study && <><img src={study.image} alt={study.alt}/><p>{study.caption}</p></>}</dialog>;
+  return <dialog ref={ref} className="gxc-zoom" data-shotflow={phoneFrame || undefined} aria-label="Full size project image" onCancel={e => { e.preventDefault(); close(); }}><button className="gxc-zoom-close" onClick={close} aria-label="Close image"><X/></button>{study && <>{phoneFrame ? <ShotFlowPhoneFrame><img src={study.image} alt={study.alt}/></ShotFlowPhoneFrame> : <img src={study.image} alt={study.alt}/>}<p>{study.caption}</p></>}</dialog>;
 }

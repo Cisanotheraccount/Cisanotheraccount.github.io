@@ -1,0 +1,30 @@
+/* All lengths use the same 360px handset basis: 10px inset, 46px outer
+   radius and 36px inner radius. Metal, keys and shadow never add to the inset. */
+.gxc-shotflow-phone-wrap { width: 100%; min-width: 0; container-type: inline-size; }
+.gxc-shotflow-phone { position: relative; padding: 2.77777778cqw; border: 0; border-radius: 12.77777778cqw; background: #000; box-shadow: 0 18px 36px #0006; }
+.gxc-shotflow-phone::before { content: ''; position: absolute; z-index: 2; inset: 0; padding: .55555556cqw; border-radius: inherit; background: linear-gradient(115deg,#96999c 0%,#343638 17%,#686b6d 44%,#292b2d 73%,#8c8f92 100%); -webkit-mask: linear-gradient(#fff 0 0) content-box,linear-gradient(#fff 0 0); mask: linear-gradient(#fff 0 0) content-box,linear-gradient(#fff 0 0); -webkit-mask-composite: xor; mask-composite: exclude; pointer-events: none; }
+.gxc-shotflow-phone-display { position: relative; isolation: isolate; container-type: inline-size; width: 100%; aspect-ratio: 1290 / 2796; overflow: hidden; border-radius: 10cqw; background: #000; }
+.gxc-shotflow-phone-display > img { display: block; width: 100%; height: auto; max-height: none; }
+.gxc-shotflow-phone-display .gxc-study img { display: block; }
+.gxc-shotflow-phone-display .gxc-shotflow-demo-preview .gxc-study figcaption { display: none; }
+.gxc-shotflow-phone-display .gxc-study > button, .gxc-shotflow-phone-display > button { display: block; position: relative; width: 100%; padding: 0; background: #000; border-radius: 0; text-align: left; }
+.gxc-shotflow-phone-display .gxc-study > button > span, .gxc-shotflow-phone-display > button > span { display: none; }
+.gxc-shotflow-phone-display button:focus-visible { outline: 2px solid #f1f0ed; outline-offset: -3px; }
+.gxc-shotflow-phone-display .gxc-shotflow-demo-screen { border-radius: 0; }
+.gxc-shotflow-phone-island { position: absolute; z-index: 4; pointer-events: none; width: 24%; height: 3%; left: 38%; top: 1.35%; border-radius: 999px; background: #000; box-shadow: inset 0 0 0 1px #141519; }
+.gxc-shotflow-phone-island::after { content: ''; position: absolute; width: 8%; aspect-ratio: 1; top: 50%; right: 10%; transform: translateY(-50%); border-radius: 50%; background: radial-gradient(circle at 40% 35%,#132333,#080a0e 55%,#030405 75%); }
+.gxc-shotflow-phone-keys { position: absolute; inset: 0; pointer-events: none; }
+.gxc-shotflow-phone-keys i { position: absolute; width: .83333333cqw; left: -.83333333cqw; border-radius: .55555556cqw 0 0 .55555556cqw; background: linear-gradient(90deg,#252729,#878a8d,#242628); }
+.gxc-shotflow-phone-keys i:nth-child(1) { top: 16%; height: 3.2%; }
+.gxc-shotflow-phone-keys i:nth-child(2) { top: 23%; height: 6.3%; }
+.gxc-shotflow-phone-keys i:nth-child(3) { top: 31%; height: 6.3%; }
+.gxc-shotflow-phone-keys i:nth-child(4) { left: auto; right: -.83333333cqw; top: 25.5%; height: 9%; border-radius: 0 .55555556cqw .55555556cqw 0; }
+.gxc-shotflow-enlarge { display: inline-flex; align-items: center; gap: 8px; min-width: 44px; min-height: 44px; padding: 8px 0; color: #c5cad3; font-size: 10px; line-height: 1.5; }
+.gxc-shotflow-screen .gxc-study figcaption > .gxc-shotflow-enlarge { display: flex; width: fit-content; margin-top: 8px; }
+/* Keep the opener focusable while its zoom dialog owns input. */
+.gxc-shotflow-enlarge[aria-disabled=true] { opacity: .4; cursor: default; }
+.gxc-shotflow-enlarge:focus-visible { outline: 2px solid #f1f0ed; outline-offset: 3px; }
+.gxc-shotflow-demo-caption:has(.gxc-shotflow-enlarge) { flex-wrap: wrap; justify-content: space-between; gap: 0 12px; }
+/* Fit the whole handset in the zoom viewport; captions remain outside it. */
+.gxc-zoom[data-shotflow=true] > .gxc-shotflow-phone-wrap { width: min(100%,560px,calc((100svh - 180px) * .47560472)); margin: auto; }
+@media (hover:hover) and (pointer:fine) { .gxc-shotflow-enlarge:hover { color: #fff; } }

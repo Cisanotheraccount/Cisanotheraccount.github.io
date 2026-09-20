@@ -2,6 +2,7 @@ import { useCallback, useEffect, useId, useLayoutEffect, useRef, useState, type 
 import { ArrowLeft, ArrowRight, Check, ChevronLeft, ChevronRight, Circle, Pause, Play, RotateCcw, Volume2, VolumeX, X } from 'lucide-react';
 import { nextUnfinishedDemoShot, shotFlowCapture, shotFlowCaptureSize, shotFlowDemoCount, shotFlowDemoShots, shotFlowThreeCapture, shotFlowWalkthrough, type ShotFlowRect } from './shotflowWalkthrough';
 import './shotflowDemo.css';
+import { ShotFlowPhoneFrame } from './ShotFlowPhoneFrame';
 
 type MediaStatus = 'idle' | 'loading' | 'playing' | 'paused' | 'ended' | 'error';
 const rectStyle = ([left, top, width, height]: ShotFlowRect): CSSProperties => ({ left: left + '%', top: top + '%', width: width + '%', height: height + '%' });
@@ -13,7 +14,7 @@ const content = shotFlowCapture.storyboard.scrollContent;
 const contentRect = ([x, y, width, height]: ShotFlowRect): ShotFlowRect => [x / content.width * 100, y / content.height * 100, width / content.width * 100, height / content.height * 100];
 
 /** Native captures provide the screen; the local controls operate only this guided example. */
-export default function ShotFlowDemo({ active, preview }: { active: boolean; preview: ReactNode }) {
+export default function ShotFlowDemo({ active, preview, onEnlargePreview }: { active: boolean; preview: ReactNode; onEnlargePreview(): void }) {
   const id = useId();
   const [started, setStarted] = useState(false);
   const [index, setIndex] = useState(0);
@@ -180,9 +181,7 @@ export default function ShotFlowDemo({ active, preview }: { active: boolean; pre
         <p id={id + '-description'} className="gxc-shotflow-demo-description">{started ? step.description : 'Create a project, add the prepared video and explore the shots it becomes. Try playing and checking off three real shots in this guided example.'}</p>
       </div>
       <div className="gxc-shotflow-demo-media">
-        <div className="gxc-shotflow-phone" aria-label="Phone-framed app demonstration">
-          <div className="gxc-shotflow-phone-keys" aria-hidden="true"><i/><i/><i/><i/></div>
-          <div className="gxc-shotflow-phone-display">
+        <ShotFlowPhoneFrame>
             <div className="gxc-shotflow-demo-preview" aria-hidden={started || undefined}>{preview}</div>
             {started && <div className="gxc-shotflow-demo-live">
               <div className="gxc-shotflow-demo-screen" style={{ aspectRatio: `${shotFlowCaptureSize.width} / ${shotFlowCaptureSize.height}` }} aria-label="Captured app screen">
@@ -231,10 +230,8 @@ export default function ShotFlowDemo({ active, preview }: { active: boolean; pre
                 </div>}
               </div>
             </div>}
-            <div className="gxc-shotflow-phone-island" aria-hidden="true"/>
-          </div>
-        </div>
-        <p className="gxc-shotflow-demo-caption">{started ? isAnalysis ? 'Recorded analysis · Demo timing' : `${isPlayer ? `Shot ${clip.order}` : step.label} · Native app capture` : 'Native app capture · Select image to enlarge'}</p>
+        </ShotFlowPhoneFrame>
+        <p className="gxc-shotflow-demo-caption">{started ? isAnalysis ? 'Recorded analysis · Demo timing' : `${isPlayer ? `Shot ${clip.order}` : step.label} · Native app capture` : 'Native app capture'}{!started && <button type="button" className="gxc-shotflow-enlarge" onClick={event => { if (!active) return; event.currentTarget.focus({ preventScroll: true }); onEnlargePreview(); }} aria-disabled={!active}>View full size</button>}</p>
       </div>
       <div className="gxc-shotflow-demo-actions">
         {started ? <button ref={primaryButton} type="button" className="gxc-shotflow-demo-primary" onClick={runAction} disabled={!active}>{hasVideo ? isLoading ? <X size={17}/> : isPlaying ? <Pause size={17}/> : <Play size={17}/> : <ArrowRight size={17}/>}<span>{action}</span></button> : <button ref={startButton} type="button" className="gxc-shotflow-demo-primary" onClick={restart} disabled={!active}><Play size={17}/>Start walkthrough</button>}

@@ -6,6 +6,7 @@ import path from 'node:path';
 import { root, output23, buildManifestPath23, sha256, captureCompiled23, copyPreviousRelease, verifyPreviousRelease, verifyNewAssets, verifyOutput23 } from './version23-release.mjs';
 import { verifyEntry23Release } from './entry-release-v23.mjs';
 import { verifyHarvardCaseRelease } from './harvard-case-release-v23.mjs';
+import { applyPhotographyRelease, verifyPhotographyRelease } from './photography-release.mjs';
 
 const staging = path.join(root, '.site-build/integrated-2-3');
 const candidate = path.join(root, '.site-build/integrated-2-3-complete');
@@ -16,12 +17,15 @@ await verifyPreviousRelease();
 const assets = await verifyNewAssets();
 await verifyEntry23Release(path.join(root, 'public'));
 await verifyHarvardCaseRelease(path.join(root, 'public'));
+const photography = await verifyPhotographyRelease(path.join(root, 'public'));
 await rm(staging, { recursive: true, force: true });
 await rm(candidate, { recursive: true, force: true });
 try {
   await build({ configFile: false, root, base: '/', plugins: [react()], cacheDir: path.join(root, '.site-cache/vite-2-3-integrated'), publicDir: path.join(root, 'public'),
     build: { outDir: staging, emptyOutDir: true, copyPublicDir: false, assetsDir: 'assets/2-3', rollupOptions: { input: { version23: path.join(root, 'v2-3/index.html') } } } });
   assert.deepEqual(await verifyNewAssets(), assets, 'Assets changed during compilation');
+  assert.deepEqual((await verifyPhotographyRelease(path.join(root, 'public'))).manifest, photography.manifest,
+    'Photography release changed during compilation; retry with a consistent receipt');
   await copyPreviousRelease(candidate);
   await cp(path.join(staging, 'assets/2-3'), path.join(candidate, 'assets/2-3'), { recursive: true });
   for (const file of assets.files) {
@@ -29,6 +33,7 @@ try {
     await mkdir(path.dirname(dest), { recursive: true });
     await cp(path.join(root, 'public', file.path), dest);
   }
+  await applyPhotographyRelease(candidate, { releaseRoot: path.join(root, 'public') });
   const html = await readFile(path.join(staging, 'v2-3/index.html'), 'utf8');
   for (const route of ['galaxci/2.3', 'v2-3']) {
     await mkdir(path.join(candidate, route), { recursive: true });
@@ -45,7 +50,7 @@ try {
   await rm(previousOutput, { recursive: true, force: true });
   await writeFile(buildManifestPath23 + '.tmp', JSON.stringify(compiled, null, 2) + '\n');
   await rename(buildManifestPath23 + '.tmp', buildManifestPath23);
-  console.log(JSON.stringify({ ...report, output: path.relative(root, output23), publication: 'not performed by build' }, null, 2));
+  console.log(JSON.stringify({ ...report, photography: photography.summary, output: path.relative(root, output23), publication: 'not performed by build' }, null, 2));
 } finally {
   await rm(staging, { recursive: true, force: true });
   await rm(candidate, { recursive: true, force: true });

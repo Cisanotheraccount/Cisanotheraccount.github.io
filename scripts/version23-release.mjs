@@ -3,6 +3,7 @@ import { createHash } from 'node:crypto';
 import { copyFile, mkdir, readFile, readdir } from 'node:fs/promises';
 import path from 'node:path';
 import { fileURLToPath } from 'node:url';
+import { photoEntry, verifyAppliedPhotographyRelease, verifyPhotographyRelease } from './photography-release.mjs';
 
 export const root = path.resolve(path.dirname(fileURLToPath(import.meta.url)), '..');
 // Keep generated artifacts alongside the other task-owned caches; the top-level
@@ -27,12 +28,21 @@ export async function baseline23() {
   }
   return manifest;
 }
-export async function verifyPreviousRelease(directory) {
+/**
+ * The previous-release source stays frozen. Only a completed output may use
+ * the new photography receipt for the legacy photography route entry.
+ */
+export async function verifyPreviousRelease(directory, { photographyOverlay = false, releaseRoot } = {}) {
+  assert(!photographyOverlay || directory, 'Photography overlay verification requires an output directory');
   const manifest = await baseline23();
+  const photography = photographyOverlay ? await verifyPhotographyRelease(releaseRoot) : undefined;
+  const photographyEntry = photography?.manifest.files.find(file => file.path === photoEntry);
+  assert(!photographyOverlay || photographyEntry, 'Photography receipt is missing its route entry');
   for (const file of manifest.files) {
     const bytes = await readFile(path.join(directory ?? sourceRoots[file.source], file.path));
-    assert.equal(bytes.length, file.bytes, 'Previous release size changed: ' + file.path);
-    assert.equal(sha256(bytes), file.sha256, 'Previous release hash changed: ' + file.path);
+    const expected = photographyOverlay && file.path === photoEntry ? photographyEntry : file;
+    assert.equal(bytes.length, expected.bytes, 'Previous release size changed: ' + file.path);
+    assert.equal(sha256(bytes), expected.sha256, 'Previous release hash changed: ' + file.path);
   }
   return manifest;
 }
@@ -88,10 +98,12 @@ export async function captureCompiled23(directory, sourceSha256) {
 export async function verifyOutput23(directory = output23, compiled) {
   compiled ??= JSON.parse(await readFile(buildManifestPath23, 'utf8'));
   assert.equal(compiled.version, 1);
-  const previous = await verifyPreviousRelease(directory);
+  const previous = await verifyPreviousRelease(directory, { photographyOverlay: true });
   const assets = await verifyNewAssets(directory);
+  const photography = await verifyAppliedPhotographyRelease(directory);
   const previousPaths = new Set(previous.files.map(file => file.path));
   const assetPaths = new Set(assets.files.map(file => file.path));
+  const photographyPaths = new Set(photography.manifest.files.map(file => file.path));
   const compiledPaths = new Set();
   for (const file of compiled.files) {
     checkPath(file.path);
@@ -111,7 +123,10 @@ export async function verifyOutput23(directory = output23, compiled) {
   assert(html.includes('/assets/2-3/') && html.includes('2.3'), 'Missing independent 2.3 entry');
   assert(!/LOCAL DEMO|LOCAL PREVIEW|temporary preview/i.test(html), 'Local preview label in production entry');
   for (const rel of paths) {
-    assert(previousPaths.has(rel) || assetPaths.has(rel) || compiledPaths.has(rel), 'Unregistered output file: ' + rel);
+    assert(previousPaths.has(rel) || assetPaths.has(rel) || compiledPaths.has(rel) || photographyPaths.has(rel), 'Unregistered output file: ' + rel);
   }
-  return { previousFiles: previous.files.length, newAssets: assets.files.length, outputFiles: paths.length, baselineCommit: previous.commit };
+  for (const rel of paths.filter(rel => rel === photoEntry || rel.startsWith('photography-assets/'))) {
+    assert(photographyPaths.has(rel), 'Unregistered photography output file: ' + rel);
+  }
+  return { previousFiles: previous.files.length, newAssets: assets.files.length, photographyFiles: photography.manifest.files.length, outputFiles: paths.length, baselineCommit: previous.commit };
 }

@@ -319,7 +319,7 @@ function ShotFlowCase({ item, heading, slot, onZoom, active }: { item: Portfolio
   }}>
     <section className="gxc-shotflow-introduction" aria-labelledby="gxc-detail-title">
       <header className="gxc-detail-heading"><span className="gxc-mono">{item.category}</span><h2 ref={heading} id="gxc-detail-title" tabIndex={-1}>{item.title}</h2><p>{item.summary}</p></header>
-      <p className="gxc-shotflow-context">A reference video is full of decisions: when a shot begins, how the camera moves and what happens before the next cut. Add the video to ShotFlow and let automatic analysis turn it into individual shots you can understand, revisit and bring into your own shoot.</p>
+      <p className="gxc-shotflow-context">ShotFlow uses a pretrained TransNet V2 deep learning model to find cuts and transitions in reference footage. I integrated it through Core ML to run locally on iPhone, then connected the detected shots to a workflow for reviewing references, refining a shot list and planning a shoot.</p>
       <p className="gxc-shotflow-tags gxc-mono">{item.tags.join(' / ')}</p>
       <button className="gxc-text-link gxc-shotflow-demo-link" onClick={visitDemo}>Try the workflow<ArrowDown size={17}/></button>
     </section>
@@ -327,7 +327,7 @@ function ShotFlowCase({ item, heading, slot, onZoom, active }: { item: Portfolio
       <header className="gxc-shotflow-step"><h3 ref={demoHeading} id="gxc-shotflow-demo-title" tabIndex={-1}>From a video to its shots.</h3></header>
       <ShotFlowDemo active={active} preview={<div ref={slot} className="gxc-shotflow-screen"><StudyImage study={screens[0]} onZoom={onZoom}/></div>}/>
     </section>
-    <ol className="gxc-shotflow-flow gxc-shotflow-overview-flow" aria-label="From reference video to a shooting plan">{['Add a reference', 'Automatic analysis', 'Explore the shots', 'Bring it on set'].map((step, i) => <li key={step}><span>{step}</span>{i < 3 && <ArrowRight size={20} aria-hidden="true"/>}</li>)}</ol>
+    <ol className="gxc-shotflow-flow gxc-shotflow-overview-flow" aria-label="From reference video to a shooting plan">{['Add a reference', 'On-device AI analysis', 'Explore the shots', 'Bring it on set'].map((step, i) => <li key={step}><span>{step}</span>{i < 3 && <ArrowRight size={20} aria-hidden="true"/>}</li>)}</ol>
     <section className="gxc-shotflow-row" aria-labelledby="gxc-shotflow-import-title">
       <div className="gxc-shotflow-step">
         <span className="gxc-mono">01 / ADD A REFERENCE</span><h3 id="gxc-shotflow-import-title">Begin with the video.</h3>
@@ -339,7 +339,8 @@ function ShotFlowCase({ item, heading, slot, onZoom, active }: { item: Portfolio
     <section className="gxc-shotflow-review" aria-labelledby="gxc-shotflow-analysis-title">
       <div className="gxc-shotflow-step">
         <span className="gxc-mono">02 / AUTOMATIC ANALYSIS</span><h3 id="gxc-shotflow-analysis-title">Let the shots emerge.</h3>
-        <p>ShotFlow analyzes the reference for shot boundaries, turning one continuous video into a sequence of individual segments. Each result has a beginning, an end and a visual reference. That gives the person preparing a shoot a concrete unit to inspect: a particular moment with its own framing and duration.</p>
+        <p>TransNet V2 predicts shot boundaries across the source frames. Its pretrained weights are converted to Core ML FP16 and bundled with the app; local inference and ShotFlow’s post-processing turn those predictions into time-aligned segments. Each shot keeps its original video, timing and visual reference.</p>
+        <p>My contribution is the model integration and the product workflow around its output. Apple Vision, optical flow and local rules support the separate framing and camera-motion suggestions. Users can review and adjust the detected shots before taking the plan on set.</p>
         <p>The analysis screen keeps that work visible and attached to its source. After it finishes, the workspace brings the source video and generated shot count together. The example above uses the actual output from the entire reference; its recorded waiting time is shortened only for the web walkthrough.</p>
       </div>
       <div className="gxc-shotflow-screen"><StudyImage study={screens[1]} onZoom={onZoom} phoneFrame/></div>

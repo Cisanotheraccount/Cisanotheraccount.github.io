@@ -61,7 +61,7 @@ export const introMeMedia = {
 export const introMeExplorations = [
   { title: 'Build a character.', tools: 'CC4 · Unity · Unreal · MetaHuman · Convai', image: introMeMedia.character, body: 'I explored successive 3D character workflows. The likeness mattered, alongside the hardware and production effort needed to make it work.' },
   { title: 'Capture a likeness.', tools: 'Creaform · 3D scanning', image: introMeMedia.scan, body: 'I tried scanning myself. The result did not give me the likeness I was looking for, so I continued exploring another way to represent myself.' },
-  { title: 'Start with myself.', tools: 'HeyGen · Video-based avatar', image: { ...introMeMedia.portrait, loading: 'lazy' as const, caption: 'Ci Song, shown on the IntroMe presentation cover.' }, body: 'I moved toward a video-based approach, learning the distinction between generating an avatar video and preparing one for live conversation.' },
+  { title: 'Start with myself.', tools: 'HeyGen · Generative video', image: { ...introMeMedia.portrait, loading: 'lazy' as const, caption: 'Ci Song, shown on the IntroMe presentation cover.' }, body: 'I recorded myself and used HeyGen to generate avatar video, then explored the additional preparation needed for a live conversational avatar.' },
 ];
 
 export const introMeRecordingStates = [

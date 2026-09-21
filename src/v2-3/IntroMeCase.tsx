@@ -113,7 +113,7 @@ export function IntroMeCase({ item, heading, slot, renderStudy, instant, active 
         <p className="im-eyebrow"><span>01 / INTRODUCING</span><span>{item.category}</span></p>
         <h2 ref={heading} id="gxc-detail-title" className="im-title" tabIndex={-1}>{item.title}</h2>
         <p className="im-tagline">A portfolio you can<br className="im-desktop-break"/> ask questions about.</p>
-        <p className="im-lede">My appearance, voice and project knowledge, brought together in a conversational guide to my work.</p>
+        <p className="im-lede">Generative video and conversational AI, brought together through a HeyGen avatar of myself. I shaped its appearance, voice and project knowledge to create another way to meet me and explore my work.</p>
 
       </header>
       <div className="im-stage">

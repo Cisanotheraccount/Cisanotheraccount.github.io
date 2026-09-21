@@ -17,8 +17,8 @@ const productContext = asset('ui-product-context', '159:4079', '/v2-3/cases/orbi
 
 export const orbitCase: HarvardCaseData = {
   slug: 'orbit', title: 'Orbit',
-  subtitle: 'A vision-based AI necklace that passively logs where household items are placed, enabling seamless memory retrieval through spatial intelligence.',
-  period: 'Aug. 2025 — Oct. 2025', kind: 'Personal Project · Project 03',
+  subtitle: 'A physical AI concept for everyday memory: a wearable that would combine computer vision and spatial mapping to help people find the things they leave behind.',
+  period: 'Aug. 2025 — Oct. 2025', kind: 'Physical AI · Wearable concept',
   tags: ['Physical AI', 'Expericence Prototyping', 'Memory Augmentation', 'Wearable Design'], mark, hero: cover, coverFrame: '159:3798',
   chapters: [
     {

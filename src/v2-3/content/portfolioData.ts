@@ -36,16 +36,16 @@ export const portfolioProjects: PortfolioProject[] = [
     id: 'P04',
     slug: 'hypnos-cockpit',
     title: 'Hýpnos Cockpit',
-    category: 'In-vehicle rest experience',
-    summary: 'Reimagining the car as a place to rest.',
+    category: 'AI-assisted cabin concept',
+    summary: 'Designing an adaptive rest experience around AI and biometric sensing.',
     image: '/portfolio/hypnos-cockpit-1600.webp',
     imageSmall: '/portfolio/hypnos-cockpit-800.webp',
     imageAlt: 'Hýpnos Cockpit concept showing a wide dashboard interface and steering wheel inside a vehicle.',
     imageWidth: 1600,
     imageHeight: 1035,
-    tags: ['Automotive UI', 'Spatial experience', 'Interaction design'],
+    tags: ['Human–AI interaction', 'Automotive UI', 'Biometric sensing concept'],
     overview: [
-      'Hýpnos Cockpit explores an in-vehicle rest experience through cabin design, privacy, environmental controls, and a staged sleep-to-wake interface.',
+      'Hýpnos Cockpit is an AI-assisted cabin concept that explores how biometric sensing and adaptive controls could support rest inside a vehicle. The design connects privacy, environmental controls, and a staged sleep-to-wake interface.',
       'The concept follows the journey from preparing the cabin to waking up. Storyboards and interface studies connect seating, temperature, lighting, notifications, and a post-rest summary.',
     ],
     highlights: [
@@ -70,16 +70,16 @@ export const portfolioProjects: PortfolioProject[] = [
     id: 'P01',
     slug: 'psytrain',
     title: 'PsytrAIn',
-    category: 'VR counseling training',
-    summary: 'A space to practice the conversations that matter.',
+    category: 'AI avatar · VR concept',
+    summary: 'Exploring counseling practice with an AI avatar in virtual reality.',
     image: '/portfolio/psytrain-1600.webp',
     imageSmall: '/portfolio/psytrain-800.webp',
     imageAlt: 'PsytrAIn virtual training scene with a digital character seated on a gray sofa.',
     imageWidth: 1600,
     imageHeight: 1035,
-    tags: ['Virtual reality', 'AI interaction', 'Spatial UI'],
+    tags: ['Conversational AI', 'Virtual reality', 'Spatial UI'],
     overview: [
-      'PsytrAIn explores immersive counseling practice through an AI avatar, emotional cues, and a spatial training interface.',
+      'PsytrAIn is a VR counseling-training concept built around an AI avatar, emotional cues, and a spatial practice interface.',
       'The archived concept brings together training selection, conversation, help, and a results interface. It examines how emotional states can be expressed through the avatar’s face during practice.',
     ],
     highlights: [
@@ -104,18 +104,18 @@ export const portfolioProjects: PortfolioProject[] = [
     id: 'P19',
     slug: 'introme',
     title: 'IntroMe',
-    category: 'Conversational portfolio',
-    summary: 'A portfolio you can ask questions about.',
+    category: 'Generative video · AI avatar',
+    summary: 'A conversational portfolio built around a generative video avatar.',
     image: '/portfolio/introme-1600.webp',
     imageSmall: '/portfolio/introme-800.webp',
     imageAlt: 'Portrait of Ci Song in a light blue hoodie, used in the IntroMe personal avatar presentation.',
     imageWidth: 1600,
     imageHeight: 1114,
-    tags: ['AI avatar', 'Conversation design', 'Web experience'],
+    tags: ['Generative video', 'AI voice', 'Conversation design'],
     role: 'Independent project',
     period: 'Sep 2025 — Jan 2026',
     overview: [
-      'IntroMe is a personal AI avatar designed to introduce my work through conversation. It explores how visitors could ask about a project’s context and the decisions behind it, alongside browsing the images and written descriptions in my portfolio.',
+      'IntroMe explores generative video and conversational AI through a personal avatar made with HeyGen. My recorded appearance, voice direction and project knowledge shape a digital guide that introduces my work and responds to visitors’ questions.',
       'I developed the project independently, from its interaction question through avatar experiments, capture planning, knowledge and voice direction, response boundaries, and integration with my existing website.',
     ],
     highlights: [
@@ -188,8 +188,8 @@ export const portfolioProjects: PortfolioProject[] = [
     "id": "P03",
     "slug": "orbit",
     "title": "Orbit",
-    "category": "Wearable memory assistant",
-    "summary": "Connecting everyday objects with the places we leave them.",
+    "category": "Physical AI · Wearable concept",
+    "summary": "Exploring computer vision and spatial memory in a wearable AI assistant.",
     "image": "/portfolio/orbit-1100.webp",
     "imageSmall": "/portfolio/orbit-800.webp",
     "imageAlt": "Orbit wearable memory-assistant concept, showing a silver necklace device and its design description.",
@@ -197,12 +197,12 @@ export const portfolioProjects: PortfolioProject[] = [
     "imageHeight": 712,
     "imageFit": "contain",
     "tags": [
-      "Wearable design",
-      "Spatial interaction",
-      "Physical AI"
+      "Physical AI",
+      "Computer vision concept",
+      "Wearable design"
     ],
     "overview": [
-      "Orbit explores a wearable memory assistant that connects everyday objects with a spatial view of where they were placed.",
+      "Orbit is a physical AI concept for a wearable memory assistant. It proposes using computer vision and spatial mapping to help people recall where they left everyday objects.",
       "The concept brings together a wearable form and a memory-retrieval experience. The archived proposal identifies object recognition, spatial mapping, and AI feasibility validation as next steps."
     ],
     "highlights": [
@@ -272,8 +272,8 @@ export const portfolioProjects: PortfolioProject[] = [
     "id": "P20",
     "slug": "shotflow",
     "title": "ShotFlow",
-    "category": "Storyboarding & on-set workflow",
-    "summary": "From reference footage to a shoot-ready shot list.",
+    "category": "On-device AI · Filmmaking",
+    "summary": "Turning reference footage into a shot list with on-device deep learning.",
     "image": "/portfolio/shotflow-en-workspace-1290.webp",
     "imageSmall": "/portfolio/shotflow-en-workspace-800.webp",
     "imageAlt": "ShotFlow English native interface showing a project workspace, storyboard actions and shooting progress.",
@@ -281,18 +281,18 @@ export const portfolioProjects: PortfolioProject[] = [
     "imageHeight": 2796,
     "imageFit": "contain",
     "tags": [
-      "iOS product",
-      "Filmmaking workflow",
-      "Interaction design"
+      "Pretrained TransNet V2",
+      "Core ML",
+      "iOS product"
     ],
     "overview": [
-      "ShotFlow is an iOS tool for organizing reference footage, reviewing individual shots, and bringing a structured checklist to a shoot. The workflow connects project organization, shot-level reference playback, and shooting progress in one place.",
+      "ShotFlow uses a pretrained TransNet V2 deep learning model, converted to Core ML, to detect shot boundaries locally on iPhone. It turns reference footage into individual shots that users can review, refine and bring into a shooting plan.",
       "The product centers on using a phone to review and organize references while working with professional cameras. Development materials document local video analysis, source-based shot grouping, shot editing, and an on-set checklist. The project is in active development."
     ],
     "highlights": [
       {
-        "title": "Organize the references",
-        "body": "A project workspace keeps source videos, analysis progress, and the resulting shots together."
+        "title": "From pretrained model to product",
+        "body": "A local Core ML integration connects TransNet V2 boundary detection with source timestamps, a reviewable shot list and an on-set workflow."
       },
       {
         "title": "Review shot by shot",

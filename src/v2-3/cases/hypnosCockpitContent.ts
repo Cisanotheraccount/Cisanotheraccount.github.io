@@ -967,10 +967,10 @@ const item = (chapter: Chapter, titleIndex: number | undefined, bodyIndexes: num
 export const hypnosCockpitCase: HarvardCaseData = {
   slug: 'hypnos-cockpit',
   title: 'Hýpnos Cockpit',
-  subtitle: 'A future immersive sleeping cabin built using AI multimodal perception models and in-vehicle digital hardware and software',
+  subtitle: 'An AI-assisted rest cabin concept: exploring how biometric sensing and adaptive controls could shape a more personal sleep-to-wake experience.',
   period: 'Jun. 2024 — May 2025',
-  kind: 'Personal Project',
-  tags: ['R&D', 'Automotive UI', '3D Modeling', 'User Journey Mapping'],
+  kind: 'AI-assisted cabin concept',
+  tags: ['Human–AI Interaction', 'Automotive UI', 'R&D', 'User Journey Mapping'],
   mark: media.mark,
   hero: media.cover,
   coverFrame: '159:4140',

@@ -2,7 +2,8 @@ import { useEffect, useLayoutEffect, useMemo, useRef, useState, type KeyboardEve
 import { ArrowLeft, ArrowRight, ArrowUpRight, X } from 'lucide-react';
 import catalogJson from './catalog.json';
 import type { PhotographyCatalog, PhotographyPhoto, PhotographySeries } from './catalog.types';
-import { ManagedPhoto, OriginalPhoto } from './media';
+import { ManagedPhoto } from './media';
+import { PhotoViewerImage } from './PhotoViewerImage';
 import { GlassCategoryNav } from './GlassCategoryNav';
 import { arrangePhotos, galleryMode } from './galleryLayout';
 import './site.css';
@@ -89,10 +90,9 @@ export function PhotographySite() {
       <div className="photo-track" style={{ transform: `translate3d(${category === 'concert' ? '-100%' : '0'}, 0, 0)` }}>
         {categories.map(item => {
           const series = catalog.series.filter(series => series.category === item.data);
-          const count = series.reduce((sum, series) => sum + series.photoIds.length, 0);
           return <section key={item.id} ref={node => { panels.current[item.id] = node; }} className="photo-panel" data-category={item.id} aria-labelledby={`${item.id}-title`} aria-hidden={item.id !== category}>
             <header className="photo-intro">
-              <p className="photo-kicker">Ci Song / Photography <span>{number(count)} photographs</span></p>
+              <p className="photo-kicker">Ci Song / Photography</p>
               <h1 id={`${item.id}-title`} tabIndex={-1}>{item.label}</h1>
               <p className="photo-description">{item.description}</p>
             </header>
@@ -138,7 +138,6 @@ function PhotoTile({ photo, width, height, priority, onOpen }: { photo: Photogra
 function PhotoDialog({ photos, initialPhotoId, returnFocus, onClose }: { photos: PhotographyPhoto[]; initialPhotoId: string; returnFocus: HTMLElement; onClose: () => void }) {
   const dialog = useRef<HTMLDialogElement>(null);
   const opener = useRef<HTMLElement | null>(returnFocus);
-  const touchStart = useRef<{ id: number; x: number; y: number } | null>(null);
   const [frame, setFrame] = useState(() => Math.max(0, photos.findIndex(photo => photo.id === initialPhotoId)));
   const photo = photos[frame];
   const series = seriesById.get(photo.seriesId);
@@ -168,35 +167,8 @@ function PhotoDialog({ photos, initialPhotoId, returnFocus, onClose }: { photos:
     if (event.key === 'ArrowLeft') { event.preventDefault(); step(-1); }
   }}>
     <header className="photo-dialog-header"><div><h2 id="photo-viewer-title">{series?.title}</h2><p id="photo-viewer-count" aria-live="polite" aria-atomic="true">{number(frame + 1)} / {number(photos.length)}</p></div><button type="button" onClick={onClose} aria-label="Close photograph">Close <X size={20} aria-hidden="true" /></button></header>
-    <div className="photo-dialog-stage" onTouchStart={event => { const touch = event.touches[0]; touchStart.current = event.touches.length === 1 && touch ? { id: touch.identifier, x: touch.clientX, y: touch.clientY } : null; }} onTouchCancel={() => { touchStart.current = null; }} onTouchEnd={event => {
-      const start = touchStart.current;
-      const end = Array.from(event.changedTouches).find(touch => touch.identifier === start?.id);
-      if (start && end && event.touches.length === 0) {
-        const x = end.clientX - start.x, y = end.clientY - start.y;
-        if (Math.abs(x) > 48 && Math.abs(x) > Math.abs(y) * 1.2) step(x < 0 ? 1 : -1);
-      }
-      touchStart.current = null;
-    }}><ViewerImage key={photo.id} photo={photo} /></div>
+    <div className="photo-dialog-stage"><PhotoViewerImage key={photo.id} photo={photo} onStep={step} /></div>
     <div className="photo-dialog-controls"><button type="button" onClick={() => step(-1)} aria-label="Previous photograph"><ArrowLeft size={22} aria-hidden="true" /></button><span>Ci Song / Photography</span><button type="button" onClick={() => step(1)} aria-label="Next photograph"><ArrowRight size={22} aria-hidden="true" /></button></div>
   </dialog>;
 }
 
-function ViewerImage({ photo }: { photo: PhotographyPhoto }) {
-  const [status, setStatus] = useState<'loading' | 'ready' | 'error'>('loading');
-  const [request, setRequest] = useState(0);
-  const [previewFailed, setPreviewFailed] = useState(false);
-  return <>
-    <div className="photo-dialog-frame">
-      <ManagedPhoto photo={photo} sizes="100vw" priority className="photo-dialog-image" onFailure={() => setPreviewFailed(true)} />
-      {previewFailed && status !== 'ready' && <span className="photo-media-loading">{status === 'error' ? 'Image unavailable' : 'Loading photograph…'}</span>}
-      {photo.original && <OriginalPhoto key={request} photo={photo} requestKey={request} className={`photo-dialog-image photo-dialog-original${status === 'ready' ? ' is-ready' : ''}`} onReady={() => setStatus('ready')} onFailure={() => setStatus('error')} />}
-    </div>
-    <div className="photo-resolution">
-      {photo.original && <>
-        <span role="status" aria-live="polite">{status === 'loading' ? 'Loading full resolution…' : status === 'ready' ? `Full resolution · ${photo.original.width} × ${photo.original.height}${photo.original.hdr ? ' · HDR' : ''}` : previewFailed ? 'Couldn’t load photograph.' : 'Showing preview.'}</span>
-        {(status === 'error' || request > 0) && <button type="button" aria-disabled={status !== 'error'} onClick={() => { if (status === 'error') { setStatus('loading'); setRequest(value => value + 1); } }}>{status === 'ready' ? 'Full resolution loaded' : status === 'loading' ? 'Loading…' : 'Retry full resolution'}</button>}
-        {status === 'error' && <a href={photo.original.src} target="_blank" rel="noreferrer">Open original <ArrowUpRight size={14} aria-hidden="true" /></a>}
-      </>}
-    </div>
-  </>;
-}

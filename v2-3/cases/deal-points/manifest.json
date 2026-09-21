@@ -1,0 +1,318 @@
+{
+  "schemaVersion": 1,
+  "slug": "deal-points",
+  "assets": [
+    {
+      "path": "/v2-3/cases/deal-points/cover-visual.png",
+      "sourceNode": "159:5917",
+      "width": 2337,
+      "height": 1299,
+      "bytes": 1926572,
+      "sha256": "21e90ffb19a1ca1d0e5bd74cffa72609d83f3c5a7916c7ece19c581b825cf898",
+      "mime": "image/png"
+    },
+    {
+      "path": "/v2-3/cases/deal-points/deal-points-mark.svg",
+      "sourceNode": "159:5923",
+      "width": 62,
+      "height": 60,
+      "bytes": 2326,
+      "sha256": "fcc574ab15d86aefdbeca2406286f25cd211da630fd79ad0aa13a49c98d74b06",
+      "mime": "image/svg+xml"
+    },
+    {
+      "path": "/v2-3/cases/deal-points/journey-map.png",
+      "sourceNode": "159:6092",
+      "width": 905,
+      "height": 569,
+      "bytes": 59904,
+      "sha256": "c4afb698f2b9480a9c395195899e03200b3be8fb51e826551cb11d19e22a8de1",
+      "mime": "image/png"
+    },
+    {
+      "path": "/v2-3/cases/deal-points/survey-reward-cards.png",
+      "sourceNode": "159:6235",
+      "width": 480,
+      "height": 480,
+      "bytes": 14923,
+      "sha256": "9cf9be4d033d645f768af1098393d4897a79ed3cb3835c478eb9ab072629ce71",
+      "mime": "image/png"
+    },
+    {
+      "path": "/v2-3/cases/deal-points/survey-card-count.png",
+      "sourceNode": "159:6257",
+      "width": 480,
+      "height": 480,
+      "bytes": 24517,
+      "sha256": "1eafd17f3c96886334e71ab39abe9651799a840983cf66939878c49693dead72",
+      "mime": "image/png"
+    },
+    {
+      "path": "/v2-3/cases/deal-points/reward-system-diagram.svg",
+      "sourceNode": "159:5946",
+      "width": 1410,
+      "height": 723,
+      "bytes": 84687,
+      "sha256": "10ae22d814887bd3647142d8ab4b49c9df5bf5849391068295aa140f157fcaa9",
+      "mime": "image/svg+xml",
+      "sourceCrop": {
+        "sourceWidth": 1224,
+        "sourceHeight": 792,
+        "regions": [
+          {
+            "nodeIds": [
+              "159:6011",
+              "159:6021",
+              "159:6029",
+              "159:6040",
+              "159:6043",
+              "159:6047"
+            ],
+            "x": 26,
+            "y": 453,
+            "width": 343,
+            "height": 70
+          },
+          {
+            "nodeIds": [
+              "159:6017",
+              "159:6051",
+              "159:6057",
+              "159:6072",
+              "159:6081"
+            ],
+            "x": 365,
+            "y": 362,
+            "width": 131,
+            "height": 241
+          }
+        ],
+        "x": 26,
+        "y": 362,
+        "width": 470,
+        "height": 241
+      }
+    },
+    {
+      "path": "/v2-3/cases/deal-points/hana-persona.png",
+      "sourceNode": "159:6268",
+      "width": 748,
+      "height": 496,
+      "bytes": 301171,
+      "sha256": "e4fc2230316d20924ed2891eb39791a97ad8fc3f190554d3820a1b32224c869e",
+      "mime": "image/png"
+    },
+    {
+      "path": "/v2-3/cases/deal-points/competitor-matrix.png",
+      "sourceNode": "159:6408",
+      "width": 1111,
+      "height": 317,
+      "bytes": 45289,
+      "sha256": "415e097c42b4d40e48da53cc0b0343ddaff2f03eee80b3271d2c4ab7f6f6e8c4",
+      "mime": "image/png"
+    },
+    {
+      "path": "/v2-3/cases/deal-points/finance-illustration.png",
+      "sourceNode": "159:6287",
+      "width": 1024,
+      "height": 1024,
+      "bytes": 228729,
+      "sha256": "7d1b16a5cbfb5e00c8103cb2f7f5190e3f9f69a84d4fedbd2e1786536658315b",
+      "mime": "image/png"
+    },
+    {
+      "path": "/v2-3/cases/deal-points/brainstorm-concept-01.png",
+      "sourceNode": "159:6286",
+      "width": 504,
+      "height": 327,
+      "bytes": 14440,
+      "sha256": "0fa8f7c17798c1078e7d6ffbc8ac678e5a84b5e898384e6296dd9e05ee01782f",
+      "mime": "image/png",
+      "sourceCrop": {
+        "x": 1917,
+        "y": 1437,
+        "width": 504,
+        "height": 327,
+        "sourceWidth": 3672,
+        "sourceHeight": 2376
+      }
+    },
+    {
+      "path": "/v2-3/cases/deal-points/brainstorm-concept-02.png",
+      "sourceNode": "159:6286",
+      "width": 504,
+      "height": 327,
+      "bytes": 9038,
+      "sha256": "31fe7263b8ac8b4ad9248019df73a5a54ddc6d28d4a4310990190dc4ca4e190e",
+      "mime": "image/png",
+      "sourceCrop": {
+        "x": 2505,
+        "y": 1437,
+        "width": 504,
+        "height": 327,
+        "sourceWidth": 3672,
+        "sourceHeight": 2376
+      }
+    },
+    {
+      "path": "/v2-3/cases/deal-points/brainstorm-concept-03.png",
+      "sourceNode": "159:6286",
+      "width": 504,
+      "height": 327,
+      "bytes": 9265,
+      "sha256": "d3b7fbfc1c7267f11bc96eb18089b6e855c2ae8816afe15a9c16b1fbe0a37c76",
+      "mime": "image/png",
+      "sourceCrop": {
+        "x": 3081,
+        "y": 1437,
+        "width": 504,
+        "height": 327,
+        "sourceWidth": 3672,
+        "sourceHeight": 2376
+      }
+    },
+    {
+      "path": "/v2-3/cases/deal-points/flow-01-welcome.png",
+      "sourceNode": "159:6832",
+      "width": 1124,
+      "height": 730,
+      "bytes": 221146,
+      "sha256": "e4ecca6db7e5f07a8236155ee0265ad426e7465c90e966ae10d12ada2cee3e99",
+      "mime": "image/png"
+    },
+    {
+      "path": "/v2-3/cases/deal-points/flow-02-cpp.png",
+      "sourceNode": "159:6856",
+      "width": 1124,
+      "height": 730,
+      "bytes": 267223,
+      "sha256": "ad52cdb95b4982b0784f72da001b1d1f077142d4d5d463bdcb818f3b246af40c",
+      "mime": "image/png"
+    },
+    {
+      "path": "/v2-3/cases/deal-points/flow-03-flight-deals.png",
+      "sourceNode": "159:6928",
+      "width": 843,
+      "height": 548,
+      "bytes": 474686,
+      "sha256": "eb76fa8bc34cd8db9b2de0c6a3574ce1d23ee9f76b4ce646b3c692cda15067cf",
+      "mime": "image/png"
+    },
+    {
+      "path": "/v2-3/cases/deal-points/flow-04-flight-deal-detail.png",
+      "sourceNode": "159:6995",
+      "width": 1124,
+      "height": 730,
+      "bytes": 673136,
+      "sha256": "ac1d4b9b64cc2e35ae73fa54a17d5c05452361659e2ca912569cb3187200eca4",
+      "mime": "image/png"
+    },
+    {
+      "path": "/v2-3/cases/deal-points/flow-05-flight-search.png",
+      "sourceNode": "159:7068",
+      "width": 1124,
+      "height": 730,
+      "bytes": 216825,
+      "sha256": "4d206c71ba15525a42f4d5bab0364748726fe373423612c4a8dfcf9da898b0a4",
+      "mime": "image/png"
+    },
+    {
+      "path": "/v2-3/cases/deal-points/flow-06-flight-detail.png",
+      "sourceNode": "159:7098",
+      "width": 1124,
+      "height": 730,
+      "bytes": 258815,
+      "sha256": "552b5e62a865ce9f0552b43edfb667331965e33daf35d9a28190feb6595df9df",
+      "mime": "image/png"
+    },
+    {
+      "path": "/v2-3/cases/deal-points/flow-07-flight-seat.png",
+      "sourceNode": "159:7122",
+      "width": 1124,
+      "height": 730,
+      "bytes": 457535,
+      "sha256": "c3cd4ec0def01b841156abacc8c3464f88d6c5858c80027119f65f89d332221e",
+      "mime": "image/png"
+    },
+    {
+      "path": "/v2-3/cases/deal-points/flow-08-flight-extension.png",
+      "sourceNode": "159:7153",
+      "width": 1124,
+      "height": 730,
+      "bytes": 178269,
+      "sha256": "cd66d2146db6c3d588098262696a666a384170169741c3a717752e66f3cddc69",
+      "mime": "image/png"
+    },
+    {
+      "path": "/v2-3/cases/deal-points/flow-09-wallet.png",
+      "sourceNode": "159:7230",
+      "width": 1124,
+      "height": 730,
+      "bytes": 577244,
+      "sha256": "a0b9586bee4e0ed494a39984f7abaf2b7bd2bb9eae0b726bd950a28d89422952",
+      "mime": "image/png"
+    },
+    {
+      "path": "/v2-3/cases/deal-points/flow-10-hotel-search.png",
+      "sourceNode": "159:7273",
+      "width": 843,
+      "height": 548,
+      "bytes": 559640,
+      "sha256": "6cb9256ed7e5c6c9f12951fa70f72ff4f9a58b10a11e7faca26324c273a4ad47",
+      "mime": "image/png"
+    },
+    {
+      "path": "/v2-3/cases/deal-points/flow-11-hotel-detail.png",
+      "sourceNode": "159:7294",
+      "width": 843,
+      "height": 548,
+      "bytes": 634808,
+      "sha256": "ce5ddc30010837adfcdce39f5bbd24a54545f5102ba002cd6a6188fa18a9d901",
+      "mime": "image/png"
+    },
+    {
+      "path": "/v2-3/cases/deal-points/flow-12-price-history.png",
+      "sourceNode": "159:7315",
+      "width": 1124,
+      "height": 730,
+      "bytes": 246180,
+      "sha256": "53d3d0b35de27f192766001873718eccb0d3314dd7b84fb61f664a935d9c3ce7",
+      "mime": "image/png"
+    },
+    {
+      "path": "/v2-3/cases/deal-points/payment-partnership.png",
+      "sourceNode": "159:7362",
+      "width": 860,
+      "height": 384,
+      "bytes": 17143,
+      "sha256": "0c010bf365ea261373e09c157e320ab3bb23dece6b4e1867287cac52d0578366",
+      "mime": "image/png"
+    },
+    {
+      "path": "/v2-3/cases/deal-points/partnership-illustration.png",
+      "sourceNode": "159:7372",
+      "width": 640,
+      "height": 640,
+      "bytes": 101223,
+      "sha256": "be3e9f3cd0eddcc5b14810c0b04e780883e1480fc1e0470a8a7bcb05b1c05cd6",
+      "mime": "image/png"
+    },
+    {
+      "path": "/v2-3/cases/deal-points/business-illustration.png",
+      "sourceNode": "159:7192",
+      "width": 572,
+      "height": 570,
+      "bytes": 187004,
+      "sha256": "3e61d4479d9d958f8ddc5540939a116d049309c2284a3ada452bb56a43b3056c",
+      "mime": "image/png",
+      "sourceCrop": {
+        "x": 3100,
+        "y": 1200,
+        "width": 572,
+        "height": 570,
+        "sourceWidth": 3672,
+        "sourceHeight": 2376
+      }
+    }
+  ]
+}

@@ -1,0 +1,27 @@
+{
+  "version": 1,
+  "files": [
+    {
+      "path": "v2-3/entry/logo.svg",
+      "sha256": "22a602ba52c5eb4e2821d64aed5d7a91b2e0330c6971e4dfb1dd24709ee107b3",
+      "bytes": 1253,
+      "width": 1160,
+      "height": 1040,
+      "mime": "image/svg+xml"
+    },
+    {
+      "path": "v2-3/entry/logo-mesh.json",
+      "mime": "application/json",
+      "bytes": 1833894,
+      "sha256": "aee9d573d8a5f2d3ee3fa5bb216c1cc9f12c52f732758c94040ebb5b69279914",
+      "vertices": 19475
+    }
+  ],
+  "source": {
+    "kind": "User-supplied personal logo SVG",
+    "path": "public/assets/gala-x-ci-logo-silver-fill.svg",
+    "sha256": "22a602ba52c5eb4e2821d64aed5d7a91b2e0330c6971e4dfb1dd24709ee107b3",
+    "description": "Unmodified silver-fill source and static fallback; the live glass uses its offline-generated closed Poisson mesh with the authored silhouette.",
+    "date": "2026-09-19"
+  }
+}

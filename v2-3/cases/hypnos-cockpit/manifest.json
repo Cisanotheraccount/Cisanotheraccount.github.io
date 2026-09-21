@@ -1,0 +1,347 @@
+{
+  "schemaVersion": 1,
+  "slug": "hypnos-cockpit",
+  "assets": [
+    {
+      "path": "/v2-3/cases/hypnos-cockpit/after-sleep-ui.png",
+      "sourceNode": "159:4638",
+      "width": 2352,
+      "height": 336,
+      "mime": "image/png",
+      "bytes": 740498,
+      "sha256": "707d097d77d8813ccd5c4ab187dcd37e881fdc057ba6cfd192bd1d77b5aec382"
+    },
+    {
+      "path": "/v2-3/cases/hypnos-cockpit/before-sleep-cabin.png",
+      "sourceNode": "159:4580",
+      "width": 1024,
+      "height": 388,
+      "mime": "image/png",
+      "bytes": 396230,
+      "sha256": "2f4cc31d17327f6f85128e5217f384db75243b8dccefb59a5b95f0bcbba55783"
+    },
+    {
+      "path": "/v2-3/cases/hypnos-cockpit/competitive-dembell.png",
+      "sourceNode": "159:4426",
+      "width": 1342,
+      "height": 528,
+      "mime": "image/png",
+      "bytes": 1145667,
+      "sha256": "63eb710825a32a6f176c61a2d0230fca140ec09a3cb46f343bc695dd31a6b9c6"
+    },
+    {
+      "path": "/v2-3/cases/hypnos-cockpit/competitive-jeep.png",
+      "sourceNode": "159:4402",
+      "width": 528,
+      "height": 298,
+      "mime": "image/png",
+      "bytes": 311922,
+      "sha256": "9737e5ed5a9adc3200d03ec1a47435a4d14a727782588eb26e53c4990260f349"
+    },
+    {
+      "path": "/v2-3/cases/hypnos-cockpit/competitive-li-l9.png",
+      "sourceNode": "159:4418",
+      "width": 1066,
+      "height": 526,
+      "mime": "image/png",
+      "bytes": 1057397,
+      "sha256": "054d3cb575bdb677877915366c86b001cbac7dd838dc042ad4426f77cc80a5ab"
+    },
+    {
+      "path": "/v2-3/cases/hypnos-cockpit/competitive-model-y.png",
+      "sourceNode": "159:4410",
+      "width": 814,
+      "height": 532,
+      "mime": "image/png",
+      "bytes": 814313,
+      "sha256": "e2236c957581d31dca233cb163348be9a89d8c45a4e82b4be2041781b8286173"
+    },
+    {
+      "path": "/v2-3/cases/hypnos-cockpit/competitive-vw-california.png",
+      "sourceNode": "159:4434",
+      "width": 818,
+      "height": 544,
+      "mime": "image/png",
+      "bytes": 768769,
+      "sha256": "1ccfd16846a9b789b9e4281402cdea0dc67c550846916a99b516f871054c3d1f"
+    },
+    {
+      "path": "/v2-3/cases/hypnos-cockpit/consumer-airline-seat.png",
+      "sourceNode": "159:4490",
+      "width": 1200,
+      "height": 800,
+      "mime": "image/png",
+      "bytes": 988770,
+      "sha256": "dbb37672d8bbcbc11f8c3edec7db4fc9f41e79800ddcaffb5e2491ef4b1acff8"
+    },
+    {
+      "path": "/v2-3/cases/hypnos-cockpit/consumer-eight-sleep.png",
+      "sourceNode": "159:4485",
+      "width": 1006,
+      "height": 502,
+      "mime": "image/png",
+      "bytes": 266926,
+      "sha256": "2eb62c358fe23eac8e88da992cd7edc7dc6dbb03b5ac523963ba321ff70d61d8"
+    },
+    {
+      "path": "/v2-3/cases/hypnos-cockpit/consumer-oura.png",
+      "sourceNode": "159:4480",
+      "width": 564,
+      "height": 564,
+      "mime": "image/png",
+      "bytes": 357047,
+      "sha256": "872474cb1848cfafca521cffa9b1a177ef7e154078f67d0d3f46a09ff824f6f7"
+    },
+    {
+      "path": "/v2-3/cases/hypnos-cockpit/cover-car-cabin.png",
+      "sourceNode": "159:4144",
+      "width": 1920,
+      "height": 700,
+      "mime": "image/png",
+      "bytes": 1771670,
+      "sha256": "1df1f17749ca1e68b1936bb8942049e0de90e7bb5a10d2a0d27b09c1826cfc52"
+    },
+    {
+      "path": "/v2-3/cases/hypnos-cockpit/drive-mode-cabin.png",
+      "sourceNode": "159:4555",
+      "width": 1112,
+      "height": 626,
+      "mime": "image/png",
+      "bytes": 1130435,
+      "sha256": "9632c89e9599a6c083c528945a3cb3a68c8ac4d240013b7618c77e31dbe8adfe"
+    },
+    {
+      "path": "/v2-3/cases/hypnos-cockpit/during-sleep-ui.png",
+      "sourceNode": "159:4591",
+      "width": 2132,
+      "height": 318,
+      "mime": "image/png",
+      "bytes": 564434,
+      "sha256": "4c196b422e4ba8cf7759f70cd325f5694d33be062b0c3b96812edf4837457b1e"
+    },
+    {
+      "path": "/v2-3/cases/hypnos-cockpit/hypnos-mark.svg",
+      "sourceNode": "159:4147",
+      "width": 52.3154,
+      "height": 64,
+      "mime": "image/svg+xml",
+      "bytes": 943,
+      "sha256": "31e4fbca3a31e335eafbb249c9d715823de1a28fc53bf68eed1cc24dbfcf299a"
+    },
+    {
+      "path": "/v2-3/cases/hypnos-cockpit/insight-chaotic-world.png",
+      "sourceNode": "159:4325",
+      "width": 1024,
+      "height": 683,
+      "mime": "image/png",
+      "bytes": 521998,
+      "sha256": "a19acf8149ff5ee71698f830f5d3e8d4f290194d18cfd23cd184011a31dba182"
+    },
+    {
+      "path": "/v2-3/cases/hypnos-cockpit/insight-micro-rests.png",
+      "sourceNode": "159:4331",
+      "width": 1024,
+      "height": 683,
+      "mime": "image/png",
+      "bytes": 628422,
+      "sha256": "1b2ceac22cece99874690dd23ec8637ed266cd5b3bacecb1c36597f3afd5b992"
+    },
+    {
+      "path": "/v2-3/cases/hypnos-cockpit/insight-transit-sanctuary.png",
+      "sourceNode": "159:4337",
+      "width": 1024,
+      "height": 683,
+      "mime": "image/png",
+      "bytes": 432365,
+      "sha256": "6ed127dcba74b064e3f4d2874aee946a8e7db9308fbc571cf3a145ccaf0ac0a4"
+    },
+    {
+      "path": "/v2-3/cases/hypnos-cockpit/mobile-sleep-preparation.png",
+      "sourceNode": "159:4582",
+      "width": 164,
+      "height": 357,
+      "mime": "image/png",
+      "bytes": 69493,
+      "sha256": "9630e8c95396f09035ac206d9b44888e64a0ba8312afe2b5d170c915683658ab"
+    },
+    {
+      "path": "/v2-3/cases/hypnos-cockpit/persona-portrait.png",
+      "sourceNode": "159:4207",
+      "width": 961,
+      "height": 961,
+      "mime": "image/png",
+      "bytes": 625165,
+      "sha256": "f51c60c0de3a8598a71bfd4f11c583d26b07ecbcd50194120aa47f1fa573d351",
+      "sourceCrop": {
+        "x": 158,
+        "y": 554,
+        "width": 961,
+        "height": 961,
+        "sourceWidth": 1276,
+        "sourceHeight": 2270
+      }
+    },
+    {
+      "path": "/v2-3/cases/hypnos-cockpit/pipeline-cabin.jpg",
+      "sourceNode": "159:4366",
+      "width": 1200,
+      "height": 668,
+      "mime": "image/jpeg",
+      "bytes": 137277,
+      "sha256": "b68fd6b20feec002c11812b4cbe24b06787a8f7660d3bc9e2da9e90e597ec6f9"
+    },
+    {
+      "path": "/v2-3/cases/hypnos-cockpit/pipeline-power.jpg",
+      "sourceNode": "159:4362",
+      "width": 2048,
+      "height": 1152,
+      "mime": "image/jpeg",
+      "bytes": 216496,
+      "sha256": "a98829f70d0934ec09231fe7bd3f394ee4c370d19eec72c5ba1d8d00e19503e8"
+    },
+    {
+      "path": "/v2-3/cases/hypnos-cockpit/pipeline-seat.jpg",
+      "sourceNode": "159:4358",
+      "width": 1200,
+      "height": 675,
+      "mime": "image/jpeg",
+      "bytes": 86846,
+      "sha256": "ed6ecf9cc0d74935176bf2be2de2715e30cb178068d9bf9a0b6702fef439b4c1"
+    },
+    {
+      "path": "/v2-3/cases/hypnos-cockpit/pipeline-sensors.jpg",
+      "sourceNode": "159:4354",
+      "width": 1024,
+      "height": 1024,
+      "mime": "image/jpeg",
+      "bytes": 55554,
+      "sha256": "36185a3d86691100f7ee76838d9ee8d09f7c1a7eda856bf641aa8e628d2a37f2"
+    },
+    {
+      "path": "/v2-3/cases/hypnos-cockpit/pipeline-thermal.png",
+      "sourceNode": "159:4350",
+      "width": 916,
+      "height": 962,
+      "mime": "image/png",
+      "bytes": 532117,
+      "sha256": "d803f95634cadf58eb1ea0918b82ec710ab93cd5c4411f2e09795c09fd811da1"
+    },
+    {
+      "path": "/v2-3/cases/hypnos-cockpit/rest-mode-cabin.png",
+      "sourceNode": "159:4563",
+      "width": 1112,
+      "height": 626,
+      "mime": "image/png",
+      "bytes": 1029010,
+      "sha256": "e43fbb46dff3abfcf8141f0da7ed363db900c4e91b1e9148d277c09c7a3f8d3b"
+    },
+    {
+      "path": "/v2-3/cases/hypnos-cockpit/roadmap-ai-function.png",
+      "sourceNode": "159:4670",
+      "width": 1536,
+      "height": 1024,
+      "mime": "image/png",
+      "bytes": 1911462,
+      "sha256": "dda68530f204f7c9ba6ea681b268c8332055718518db4eaca50ab9f58e204cc4"
+    },
+    {
+      "path": "/v2-3/cases/hypnos-cockpit/roadmap-prototype.png",
+      "sourceNode": "159:4671",
+      "width": 1024,
+      "height": 683,
+      "mime": "image/png",
+      "bytes": 986658,
+      "sha256": "fba5116f4def38bd9ba179f2619186e9490acfd7cc5be4259a678b09155aad3e"
+    },
+    {
+      "path": "/v2-3/cases/hypnos-cockpit/roadmap-vr-test.png",
+      "sourceNode": "159:4669",
+      "width": 1024,
+      "height": 683,
+      "mime": "image/png",
+      "bytes": 931431,
+      "sha256": "38e5ab39e8957001954371dc202ef7501c6f8d62167e36bcdebe2acc58a2d395"
+    },
+    {
+      "path": "/v2-3/cases/hypnos-cockpit/satisfaction-chart.png",
+      "sourceNode": "159:4646",
+      "width": 160,
+      "height": 180,
+      "mime": "image/png",
+      "bytes": 36773,
+      "sha256": "1b2c0f27f8cf01a27425cf77d5d998361106c71ecf44eb5579d0fdbb864585a5"
+    },
+    {
+      "path": "/v2-3/cases/hypnos-cockpit/scenario-camping.jpg",
+      "sourceNode": "159:4218",
+      "width": 736,
+      "height": 736,
+      "mime": "image/jpeg",
+      "bytes": 90598,
+      "sha256": "be5a4cc633386de6bdf6fcdfe2aca80c9729d8a3982d8cb0e6bae18073582033"
+    },
+    {
+      "path": "/v2-3/cases/hypnos-cockpit/scenario-commute.jpg",
+      "sourceNode": "159:4214",
+      "width": 736,
+      "height": 1308,
+      "mime": "image/jpeg",
+      "bytes": 170287,
+      "sha256": "a79302a7cb912679f3bc185181a5a8ea0d5a3109693f40dd0840be4796ad5b3a"
+    },
+    {
+      "path": "/v2-3/cases/hypnos-cockpit/scenario-long-drive.jpg",
+      "sourceNode": "159:4222",
+      "width": 564,
+      "height": 564,
+      "mime": "image/jpeg",
+      "bytes": 39017,
+      "sha256": "85bc68e327b55f6025b6d242c09aa0c41fa5c82eb15a34de4906cbb79b3f3f1c"
+    },
+    {
+      "path": "/v2-3/cases/hypnos-cockpit/scenario-nap.jpg",
+      "sourceNode": "159:4210",
+      "width": 740,
+      "height": 450,
+      "mime": "image/jpeg",
+      "bytes": 54018,
+      "sha256": "77441118baab6fec16b71411fff7bd81a31ffca60d3a738e83d975e0822a8c9c"
+    },
+    {
+      "path": "/v2-3/cases/hypnos-cockpit/seat-plan-drive.png",
+      "sourceNode": "159:4571",
+      "width": 1080,
+      "height": 1920,
+      "mime": "image/png",
+      "bytes": 4007126,
+      "sha256": "eb15387b27b0f45c87fb8428932f61c74876af73cac3db63b124e5dc08ad0b37"
+    },
+    {
+      "path": "/v2-3/cases/hypnos-cockpit/seat-plan-rest.png",
+      "sourceNode": "159:4567",
+      "width": 1080,
+      "height": 1920,
+      "mime": "image/png",
+      "bytes": 4247785,
+      "sha256": "ee5b0743b42e21ab39e1af565bb3a6f5679d9058175901c2fa779d42046ed3f2"
+    },
+    {
+      "path": "/v2-3/cases/hypnos-cockpit/sleep-flow-storyboard.png",
+      "sourceNode": "159:4502",
+      "width": 1188,
+      "height": 390,
+      "mime": "image/png",
+      "bytes": 749588,
+      "sha256": "4150a3cdb090b39a17139092c1925ab02c28ec5733980f180135522ae25cd738"
+    },
+    {
+      "path": "/v2-3/cases/hypnos-cockpit/system-integration-wireframe.png",
+      "sourceNode": "159:4387",
+      "width": 430,
+      "height": 193,
+      "mime": "image/png",
+      "bytes": 148296,
+      "sha256": "4dfcff3de3c46c009b80f1ec25a5149f607f05b42b1f49a83cf8be3e36aa8e52"
+    }
+  ]
+}

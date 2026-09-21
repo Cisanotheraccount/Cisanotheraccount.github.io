@@ -1,6 +1,7 @@
 import type { ReactNode, RefObject } from 'react';
 import type { HarvardCaseData, HarvardMedia, HarvardSection } from './harvardCaseTypes';
 import './harvardCase.css';
+import './psytrainCase.css';
 
 export type HarvardStudy = {
   image: string; alt: string; caption: string; width: number; height: number;
@@ -21,7 +22,7 @@ function Copy({ paragraphs }: { paragraphs?: string[] }) {
 
 export function HarvardCase({ data, heading, slot, renderStudy }: Props) {
   const media = (asset: HarvardMedia, eager = false) => <div className="hc-media" key={asset.id} data-source-node={asset.sourceNode} data-surface={asset.background}>
-    {renderStudy({ ...asset, caption: asset.caption ?? asset.alt, sizes: '(max-width: 760px) calc(100vw - 44px), (max-width: 1000px) calc(100vw - 64px), 80vw', loading: eager ? 'eager' : 'lazy' })}
+    {renderStudy({ ...asset, caption: asset.caption ?? asset.alt, sizes: asset.sizes ?? '(max-width: 760px) calc(100vw - 44px), (max-width: 1000px) calc(100vw - 64px), 80vw', loading: eager ? 'eager' : 'lazy' })}
   </div>;
   const section = (block: HarvardSection) => <section className="hc-section" key={block.id} data-layout={block.layout} data-section-id={block.id} data-source-nodes={block.sourceNodes?.join(' ')} aria-labelledby={block.title ? `${data.slug}-${block.id}` : undefined}>
     {(block.title || block.body?.length) && <div className="hc-section-copy">
@@ -30,11 +31,14 @@ export function HarvardCase({ data, heading, slot, renderStudy }: Props) {
     </div>}
     {!!block.media?.length && <div className="hc-media-set" data-count={block.media.length} data-portrait={block.media.every(asset => asset.height / asset.width > 1.3) || undefined}>{block.media.map(asset => media(asset))}</div>}
     {block.table && <div className="hc-table-scroll" data-columns={block.table.columns.length} tabIndex={0} role="region" aria-label={block.table.caption}><table><caption>{block.table.caption}</caption><thead><tr>{block.table.columns.map((label, i) => <th key={i} scope="col">{label}</th>)}</tr></thead><tbody>{block.table.rows.map((row, i) => <tr key={i}>{row.map((value, j) => j === 0 ? <th key={j} scope="row">{value}</th> : <td key={j}>{value}</td>)}</tr>)}</tbody></table></div>}
+    {block.itemsTitle && <h5 className="hc-items-title">{block.itemsTitle}</h5>}
     {!!block.items?.length && <div className="hc-items" role={block.layout === 'steps' ? 'list' : undefined} data-count={block.items.length} data-portrait={block.items.every(item => item.media && item.media.height / item.media.width > 1.3) || undefined}>{block.items.map((item, i) => <div className="hc-item" role={block.layout === 'steps' ? 'listitem' : undefined} key={i} data-source-nodes={item.sourceNodes?.join(' ')}>
       <div className="hc-item-heading">{block.layout === 'steps' && <span className="hc-step-number">{number(i)}</span>}{item.title && !(block.layout === 'steps' && /^\d+$/.test(item.title.trim())) && <h5>{item.title}</h5>}</div>
       {item.media && media(item.media)}
+      {!!item.gallery?.length && <div className="hc-item-gallery">{item.gallery.map(asset => media(asset))}</div>}
       <Copy paragraphs={item.body}/>
     </div>)}</div>}
+    {!!block.transcript?.length && <details className="hc-transcript"><summary>Read text</summary><div>{block.transcript.map((item, i) => <div key={i} data-source-nodes={item.sourceNodes?.join(' ')}>{item.title && <h5>{item.title}</h5>}<Copy paragraphs={item.body}/></div>)}</div></details>}
   </section>;
 
   return <div className="hc-case" data-case={data.slug}>

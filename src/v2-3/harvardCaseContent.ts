@@ -1,9 +1,11 @@
 import { hypnosCockpitCase } from './cases/hypnosCockpitContent';
 import { dealPointsCase } from './cases/dealPointsContent';
 import { orbitCase } from './cases/orbitContent';
+import { psytrainCase } from './cases/psytrainContent';
 import type { HarvardCaseData } from './harvardCaseTypes';
 
 const cases: Record<string, HarvardCaseData> = {
+  psytrain: psytrainCase,
   'hypnos-cockpit': hypnosCockpitCase,
   'deal-points': dealPointsCase,
   orbit: orbitCase,

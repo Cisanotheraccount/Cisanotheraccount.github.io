@@ -3,7 +3,7 @@ import { createHash } from 'node:crypto';
 import { readFile } from 'node:fs/promises';
 import path from 'node:path';
 
-export const harvardCaseSlugs = ['hypnos-cockpit', 'deal-points', 'orbit'];
+export const harvardCaseSlugs = ['hypnos-cockpit', 'deal-points', 'orbit', 'psytrain'];
 const mimeTypes = { '.svg': 'image/svg+xml', '.png': 'image/png', '.webp': 'image/webp', '.jpg': 'image/jpeg', '.jpeg': 'image/jpeg' };
 
 // The release admits only explicitly reviewed assets. Source inventories and

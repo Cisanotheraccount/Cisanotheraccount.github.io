@@ -518,6 +518,476 @@
       "sha256": "1940c135cf0cb663f0369e96968684348e420007856e87d20dd56d8d87cd0daf"
     },
     {
+      "path": "v2-3/cases/psytrain/avatar-ai-logic-themed-1280.webp",
+      "bytes": 404020,
+      "sha256": "17b06132a90074629aa493a5257c25abc67d1999d978847e7663e664c3170718"
+    },
+    {
+      "path": "v2-3/cases/psytrain/avatar-ai-logic-themed-1920.webp",
+      "bytes": 746950,
+      "sha256": "ca6cc6ffa318369ae9b5cb26d1c2407cd6762e578e83737b6b9f3cf1806e1841"
+    },
+    {
+      "path": "v2-3/cases/psytrain/avatar-ai-logic-themed-640.webp",
+      "bytes": 137858,
+      "sha256": "4597c8f57634814c65b3505d2ca1f9a1b534e150f948aac1d6f9c319136fee2c"
+    },
+    {
+      "path": "v2-3/cases/psytrain/avatar-ai-logic-themed.png",
+      "bytes": 7992343,
+      "sha256": "d7831e88ba4f1935bdcaaa783b4f95b1dfe949c25dab823abc8a26548e42c0d1"
+    },
+    {
+      "path": "v2-3/cases/psytrain/hero-counseling-scene-1280.webp",
+      "bytes": 49722,
+      "sha256": "dfda4067adb302912150c89e925875f9a2c41f176b341fcad69c0c8151f7078b"
+    },
+    {
+      "path": "v2-3/cases/psytrain/hero-counseling-scene-2560.webp",
+      "bytes": 122104,
+      "sha256": "6c99d41be7305124e6cbf2589cabef832ccdb26093a55e486f823729cd939e17"
+    },
+    {
+      "path": "v2-3/cases/psytrain/hero-counseling-scene-3840.webp",
+      "bytes": 219536,
+      "sha256": "2a831174b5ba8af261e58b0c1a6bcde95399e85a7ecfe77794588e34d84b8e98"
+    },
+    {
+      "path": "v2-3/cases/psytrain/hero-counseling-scene.png",
+      "bytes": 6432565,
+      "sha256": "8996df81245aa1e4de82bd7cd00c77c938b80f05b26d3dd3e3f771bf3c04efbc"
+    },
+    {
+      "path": "v2-3/cases/psytrain/manifest.json",
+      "bytes": 43679,
+      "sha256": "6d97529b7c198073e2e43cb2a6bf4bb809d01d6817cc2912bafb817d82448f6c"
+    },
+    {
+      "path": "v2-3/cases/psytrain/psytrain-mark.svg",
+      "bytes": 2011,
+      "sha256": "dbc509f922569d4a3eab9f7eeb2fab16e1db7f1e28fa0c863c122ac951a4be79"
+    },
+    {
+      "path": "v2-3/cases/psytrain/research-competitor-replika-1200.webp",
+      "bytes": 71504,
+      "sha256": "23102cf490f1cc2493682640d8b83b31d18119a3c8e6bcb175804bad2fd0b273"
+    },
+    {
+      "path": "v2-3/cases/psytrain/research-competitor-replika-640.webp",
+      "bytes": 33652,
+      "sha256": "e0047324a262cfcf95afa8c2d9513e4b817d8e046861c31b9278b715f8123f94"
+    },
+    {
+      "path": "v2-3/cases/psytrain/research-competitor-replika.jpeg",
+      "bytes": 267256,
+      "sha256": "e70c30671bfabad867ddccb4b20d02f7c797e996d7f9e85931ff33eec71e1622"
+    },
+    {
+      "path": "v2-3/cases/psytrain/research-competitor-spring-health.png",
+      "bytes": 22135,
+      "sha256": "959540951e9ec3cc8f4582b5142438c6b45ed1d34c891db0b47e16a45cd9b5a5"
+    },
+    {
+      "path": "v2-3/cases/psytrain/research-competitor-wysa-1280.webp",
+      "bytes": 73794,
+      "sha256": "8b2f6db858597091bc5436e2b9b755f59e0749a52761d13744e453c32ef95670"
+    },
+    {
+      "path": "v2-3/cases/psytrain/research-competitor-wysa-1500.webp",
+      "bytes": 89740,
+      "sha256": "c19c3f88181fb72529bf31c420856bafb740dae2242539a21e2bffbaad1c3a08"
+    },
+    {
+      "path": "v2-3/cases/psytrain/research-competitor-wysa-640.webp",
+      "bytes": 31050,
+      "sha256": "e23a381ce7db4da6a659fb10cadda60b8a4282f5aadc1e5d9de93fa5c33abd20"
+    },
+    {
+      "path": "v2-3/cases/psytrain/research-competitor-wysa.png",
+      "bytes": 695194,
+      "sha256": "6129c6a9d32a0a1eabfb22e2cd4a3f80d31eec6d5ff92520d49e30239fa0475d"
+    },
+    {
+      "path": "v2-3/cases/psytrain/research-competitor-youper-1280.webp",
+      "bytes": 64530,
+      "sha256": "dd8ae13a1eadbc06d0aea2243bc3113a5b28d1651c7847be08275e129007ffae"
+    },
+    {
+      "path": "v2-3/cases/psytrain/research-competitor-youper-1920.webp",
+      "bytes": 102064,
+      "sha256": "26635d22f2867efb0d13df5cb0a9e39c284128d27fb97ca2cdfee3e4918557bb"
+    },
+    {
+      "path": "v2-3/cases/psytrain/research-competitor-youper-640.webp",
+      "bytes": 26776,
+      "sha256": "fb7d90ac56070fe252db941076e61e3bdd2792f4a14271f38bfac1ec40983849"
+    },
+    {
+      "path": "v2-3/cases/psytrain/research-competitor-youper.png",
+      "bytes": 521889,
+      "sha256": "5418feff7eeeeed755c9b1d2b462f4107a360f77872f726c5f210c40a2c82ba5"
+    },
+    {
+      "path": "v2-3/cases/psytrain/research-mission-card-1-1280.webp",
+      "bytes": 111478,
+      "sha256": "00581bb771ad3f5b344f63a94261dd0a58dfba947ebd0986ce64f5c13824c1e2"
+    },
+    {
+      "path": "v2-3/cases/psytrain/research-mission-card-1-1920.webp",
+      "bytes": 182052,
+      "sha256": "4e8187f5e99f7182ed1602041c66289af921d673d450e02d07e44260e8b47916"
+    },
+    {
+      "path": "v2-3/cases/psytrain/research-mission-card-1-640.webp",
+      "bytes": 45384,
+      "sha256": "05a13e1b047a6333edffa3f4735e92bd907c9bc7b1b4c635eaa47d129d10fe0c"
+    },
+    {
+      "path": "v2-3/cases/psytrain/research-mission-card-1.png",
+      "bytes": 539517,
+      "sha256": "4dfcde3e4f6cafb2ee0da419fad149b4bb679a10bef4c581e56c86191037768e"
+    },
+    {
+      "path": "v2-3/cases/psytrain/research-mission-card-2-1280.webp",
+      "bytes": 215506,
+      "sha256": "eebd3f49da579c279fb5d90cc053462a1905be47f0c654ff84d7e3d8eeac83a9"
+    },
+    {
+      "path": "v2-3/cases/psytrain/research-mission-card-2-1920.webp",
+      "bytes": 365366,
+      "sha256": "f4e3b0c77e61647dbe219defb17ddcd802c1227bcd38a6ec1a97599e0d709c44"
+    },
+    {
+      "path": "v2-3/cases/psytrain/research-mission-card-2-640.webp",
+      "bytes": 81574,
+      "sha256": "128879ecb0b8da68ba27d2f2fbabb02eeef7d4ebb7b29e5422753ec542387f68"
+    },
+    {
+      "path": "v2-3/cases/psytrain/research-mission-card-2.png",
+      "bytes": 769181,
+      "sha256": "5b9f65519fa91799698f1396e9a69a19a502c62df0a0e87a11e66f6312636ad4"
+    },
+    {
+      "path": "v2-3/cases/psytrain/research-painpoint-feedback-1280.webp",
+      "bytes": 73328,
+      "sha256": "6f3bb560b7b0129053226347ba147f2f0dc0f5dce52e261454933e1957701b68"
+    },
+    {
+      "path": "v2-3/cases/psytrain/research-painpoint-feedback-1920.webp",
+      "bytes": 217532,
+      "sha256": "b9745b3fd9b1eacc41639830fde8f4baa634bc8cb786ba861913f58a1322638d"
+    },
+    {
+      "path": "v2-3/cases/psytrain/research-painpoint-feedback-640.webp",
+      "bytes": 26716,
+      "sha256": "d0a827240ba3a125ffef6af1ee4a292a3fe0d7f01a36638b03a804a4b336f42c"
+    },
+    {
+      "path": "v2-3/cases/psytrain/research-painpoint-feedback.png",
+      "bytes": 4759729,
+      "sha256": "9368fbb47d9e76cc1d78f6ddd2f26cc6285ff95922cdf352760181b3f5135df0"
+    },
+    {
+      "path": "v2-3/cases/psytrain/research-painpoint-growth-1280.webp",
+      "bytes": 99598,
+      "sha256": "10fbdd83401132b96f839f50248f313a9dcf40be5f07e4ea85f1e81760ffcc9e"
+    },
+    {
+      "path": "v2-3/cases/psytrain/research-painpoint-growth-1920.webp",
+      "bytes": 243614,
+      "sha256": "44b7e33b71071700f35fd53ddc35a56547dd0f5b37bb1796dcacdb42d22bb82a"
+    },
+    {
+      "path": "v2-3/cases/psytrain/research-painpoint-growth-640.webp",
+      "bytes": 38004,
+      "sha256": "83fbdcd8f32587550e5c9189e97b575ac5cbf64ef2ba019fadf43a32be748cbe"
+    },
+    {
+      "path": "v2-3/cases/psytrain/research-painpoint-growth.png",
+      "bytes": 4871560,
+      "sha256": "2f859e428b170231e4a9056b2e4eb1a630348997d4514ea94a384db530b72b76"
+    },
+    {
+      "path": "v2-3/cases/psytrain/research-painpoint-safety-1280.webp",
+      "bytes": 102174,
+      "sha256": "5b2622bc922d6078428c69fae84cd13ae788d0a795dccd6d20cdf4fdd2138872"
+    },
+    {
+      "path": "v2-3/cases/psytrain/research-painpoint-safety-1920.webp",
+      "bytes": 257546,
+      "sha256": "1063ec5c67a86a55abe313aa079933b391758d475e22df11df52867f59d94367"
+    },
+    {
+      "path": "v2-3/cases/psytrain/research-painpoint-safety-640.webp",
+      "bytes": 31072,
+      "sha256": "cc280e1ae3a3cd5d020e516008c472fceba4d3539fb2535fb45d49ed3c1fe513"
+    },
+    {
+      "path": "v2-3/cases/psytrain/research-painpoint-safety.png",
+      "bytes": 5064159,
+      "sha256": "1d51ff87cb1b9b1ad512e7037a3376d13e8b7a3c5061b1960712b9dc93f3f849"
+    },
+    {
+      "path": "v2-3/cases/psytrain/research-painpoint-scenarios-1280.webp",
+      "bytes": 70000,
+      "sha256": "de87456a2b477a9a59bed70630de26b3b711f5daae16abb963755963a6879ad9"
+    },
+    {
+      "path": "v2-3/cases/psytrain/research-painpoint-scenarios-1920.webp",
+      "bytes": 148866,
+      "sha256": "a9338a494e8ce8a1f9be4261c479e660551e3d58debbf46dc900e0355687b48c"
+    },
+    {
+      "path": "v2-3/cases/psytrain/research-painpoint-scenarios-640.webp",
+      "bytes": 27654,
+      "sha256": "6ebf2078d51ae36fe2438b0994625b69a186da96075c37665dd3c78e961036c6"
+    },
+    {
+      "path": "v2-3/cases/psytrain/research-painpoint-scenarios.png",
+      "bytes": 4165942,
+      "sha256": "ca77032a7c56a348f8ab1c8f27ad6645d64a97d00136ee34ded0d6fe259ebda0"
+    },
+    {
+      "path": "v2-3/cases/psytrain/research-roleplay-feedback-1280.webp",
+      "bytes": 77830,
+      "sha256": "3a67f6cdd05efb9c6126eedff944bb70fed5dbe287a574fee104ca0bec4a9913"
+    },
+    {
+      "path": "v2-3/cases/psytrain/research-roleplay-feedback-1920.webp",
+      "bytes": 119612,
+      "sha256": "466195530cc072cec22eae2b4f69e8625ecb7fdb5e9988d35577ee6d1335a909"
+    },
+    {
+      "path": "v2-3/cases/psytrain/research-roleplay-feedback-640.webp",
+      "bytes": 37632,
+      "sha256": "0f8aac6af40c2258cb2893aad770a1d0e3a9af0bb6b7f000a9588d70c4f6d122"
+    },
+    {
+      "path": "v2-3/cases/psytrain/research-roleplay-feedback.png",
+      "bytes": 302866,
+      "sha256": "edac8a122cfd4ba5b5d328ecf3cc02663da3d3c86ed08b3f94ebc5283c514854"
+    },
+    {
+      "path": "v2-3/cases/psytrain/research-roleplay-peer-1280.webp",
+      "bytes": 137466,
+      "sha256": "f73bcf34ed03a8e573af7e218e75e51198d9f286af7ba914f08d23d0de9edb18"
+    },
+    {
+      "path": "v2-3/cases/psytrain/research-roleplay-peer-1920.webp",
+      "bytes": 211976,
+      "sha256": "ab62788b2a0ed302de26697650ad4f0e889c0deb3be8b1cf3a5daea4469a29d2"
+    },
+    {
+      "path": "v2-3/cases/psytrain/research-roleplay-peer-640.webp",
+      "bytes": 63460,
+      "sha256": "cdd08e20316b967ada394f5e7777dec4901eea8be526edf65a4e386651c29588"
+    },
+    {
+      "path": "v2-3/cases/psytrain/research-roleplay-peer.png",
+      "bytes": 452414,
+      "sha256": "436341047107427a45179b8920e0ba236097b8fc9c1b83cd1cdfc7b5112460ce"
+    },
+    {
+      "path": "v2-3/cases/psytrain/research-roleplay-script-1280.webp",
+      "bytes": 177148,
+      "sha256": "86e7a9204d4dc49edad9e0446e4fa98c81db19a9111be51e582dea0bd4ec1ef6"
+    },
+    {
+      "path": "v2-3/cases/psytrain/research-roleplay-script-1920.webp",
+      "bytes": 278778,
+      "sha256": "4ec9eef717d6ec326c6039b5a2a9566931b1401a947017318e88859ecc99d928"
+    },
+    {
+      "path": "v2-3/cases/psytrain/research-roleplay-script-640.webp",
+      "bytes": 81572,
+      "sha256": "efc658623f34be747fd02cae0878302155403815e59a6219c87711572c917654"
+    },
+    {
+      "path": "v2-3/cases/psytrain/research-roleplay-script.png",
+      "bytes": 557227,
+      "sha256": "7b5c91dd3ea030600b2a718ac1f273fdef59208827282359e1db4e0d15b91ec3"
+    },
+    {
+      "path": "v2-3/cases/psytrain/system-avatar-rationale-complete-1036.webp",
+      "bytes": 482388,
+      "sha256": "6e80f01937c18039ea2a2fec718f5f05dccb7f5e2d6fcb3dbbc0f6c748cdf3cb"
+    },
+    {
+      "path": "v2-3/cases/psytrain/system-avatar-rationale-complete-640.webp",
+      "bytes": 384246,
+      "sha256": "65ffc89b533084fcfa87b330c3dcea9e21fd4b3dac5caf1734f533bb91e4b735"
+    },
+    {
+      "path": "v2-3/cases/psytrain/system-avatar-rationale-complete.png",
+      "bytes": 2779281,
+      "sha256": "a7378262889fcc56dda0eb32d66847c2f11d9e6a83bc79082db803163a9d1559"
+    },
+    {
+      "path": "v2-3/cases/psytrain/system-brainstorm-transparent-1280.webp",
+      "bytes": 462310,
+      "sha256": "c2eabb4f8da29b04f1d58d6be5d01e4754d2edbd0fa31ec38a3e034763433b9a"
+    },
+    {
+      "path": "v2-3/cases/psytrain/system-brainstorm-transparent-1609.webp",
+      "bytes": 554282,
+      "sha256": "747cbcf2770ae099eb4a0fe947fc551fb26f9186fe4184d8b87655f8a6029eed"
+    },
+    {
+      "path": "v2-3/cases/psytrain/system-brainstorm-transparent-640.webp",
+      "bytes": 167168,
+      "sha256": "30da5edce57f00594511e43c411faec853783e8432370adeb935bc480bcfa951"
+    },
+    {
+      "path": "v2-3/cases/psytrain/system-brainstorm-transparent.png",
+      "bytes": 4089438,
+      "sha256": "1c75bbc9164e64b708178522b474c79415122f3f2fe9ecaf8e211076ac9ebd30"
+    },
+    {
+      "path": "v2-3/cases/psytrain/system-ideation-conversation-1280.webp",
+      "bytes": 58890,
+      "sha256": "4c2e10ee7335485f57066d3fb210a1a143d1c23a5efc83f3ab9446e465ef3c62"
+    },
+    {
+      "path": "v2-3/cases/psytrain/system-ideation-conversation-1920.webp",
+      "bytes": 99830,
+      "sha256": "87e0ed4f7bea89e9c346573e61b4a23b3f749933f0edd0324e85dca1672a1b02"
+    },
+    {
+      "path": "v2-3/cases/psytrain/system-ideation-conversation-640.webp",
+      "bytes": 23652,
+      "sha256": "f3e3e0946f628a0353aa1ec01f107314e2d169ab5fd2477043eaf6bae0f140aa"
+    },
+    {
+      "path": "v2-3/cases/psytrain/system-ideation-conversation.png",
+      "bytes": 420300,
+      "sha256": "a659119eed324018de5adc122685272a97893fc09a3dbc18188050f4c386ca3e"
+    },
+    {
+      "path": "v2-3/cases/psytrain/system-ideation-landing-1280.webp",
+      "bytes": 41906,
+      "sha256": "3c4e31adcd24ee5c29b59cf50cc5427aef9b85ec11c980dc6a7711af1d44573c"
+    },
+    {
+      "path": "v2-3/cases/psytrain/system-ideation-landing-1920.webp",
+      "bytes": 71986,
+      "sha256": "76999a904945f82f85c3f84aed5f7576f6492bdf66ce8a81e32876d2e2f45437"
+    },
+    {
+      "path": "v2-3/cases/psytrain/system-ideation-landing-640.webp",
+      "bytes": 16626,
+      "sha256": "b0110a5b3e1acf54cb3c94cd72c1d214ffcb3f447d2f93edf628c0047a001548"
+    },
+    {
+      "path": "v2-3/cases/psytrain/system-ideation-landing.png",
+      "bytes": 356415,
+      "sha256": "1f4ffb21eda781ac597bd76c15093d35627ababa93e52584431543d5ec225711"
+    },
+    {
+      "path": "v2-3/cases/psytrain/system-ideation-result-1280.webp",
+      "bytes": 60488,
+      "sha256": "03fe5f539bc2309a744660ebdd3b509d5fefd4c78ecb2439345fdfba309c1d5e"
+    },
+    {
+      "path": "v2-3/cases/psytrain/system-ideation-result-1920.webp",
+      "bytes": 103414,
+      "sha256": "bb8d99324fc43ec08d8d16e544fab3a810decc4fb38fa40497a4eb2b6779483c"
+    },
+    {
+      "path": "v2-3/cases/psytrain/system-ideation-result-640.webp",
+      "bytes": 24498,
+      "sha256": "fc255ff07e2a56ae27b51f59020be94f145b74d559b7b87cac9a67bacb469a53"
+    },
+    {
+      "path": "v2-3/cases/psytrain/system-ideation-result.png",
+      "bytes": 389505,
+      "sha256": "426aad9d4c7f24ab4a4a6105f8c322aa8dfe8c3819a0b4009648316cfa8de47c"
+    },
+    {
+      "path": "v2-3/cases/psytrain/ui-landing-screen-1280.webp",
+      "bytes": 148992,
+      "sha256": "b42707359218d9b22155347121142914e48cef692144d2063f2e8c884e66cc17"
+    },
+    {
+      "path": "v2-3/cases/psytrain/ui-landing-screen-1920.webp",
+      "bytes": 246374,
+      "sha256": "872f1e54c4bc4c7cfcf7acaec9a96c91971e8d85f8313759d7ea5a8f114fd65d"
+    },
+    {
+      "path": "v2-3/cases/psytrain/ui-landing-screen-640.webp",
+      "bytes": 49990,
+      "sha256": "7b4fd4a9b7bbb1b5889f6d3e3e95c58d74eb35f4b79cbe78bbb821b7a17b36a6"
+    },
+    {
+      "path": "v2-3/cases/psytrain/ui-landing-screen.png",
+      "bytes": 8127572,
+      "sha256": "65e0a7922d834025ac8a9f1eefe9a1884d45da891d78638b3223347ce8d9f6d5"
+    },
+    {
+      "path": "v2-3/cases/psytrain/ui-live-emotion-avatar-1280.webp",
+      "bytes": 56304,
+      "sha256": "fdf753baab3ae33add9b6d68dc04446202bc28897dfd9e69e23013a72a786c7c"
+    },
+    {
+      "path": "v2-3/cases/psytrain/ui-live-emotion-avatar-1920.webp",
+      "bytes": 104312,
+      "sha256": "8e52f74998a0c473d7241927329f54a1ec1788699006efc371cb8f7e2457e4d0"
+    },
+    {
+      "path": "v2-3/cases/psytrain/ui-live-emotion-avatar-640.webp",
+      "bytes": 19526,
+      "sha256": "924838d96293ba9a251bf6297e74a3a1d71283337016060c126010044ae31d43"
+    },
+    {
+      "path": "v2-3/cases/psytrain/ui-live-emotion-avatar.png",
+      "bytes": 1889869,
+      "sha256": "c522206c5a6f41a504d8fcb692854a29f601ae14301f8ea64cd89fcbe4476c56"
+    },
+    {
+      "path": "v2-3/cases/psytrain/ui-navigation-flowchart-transparent.svg",
+      "bytes": 84225,
+      "sha256": "c01a1772c9aa9eb61589c1b1e392c568642f29beaf8a30034d9e27d09fe7dedf"
+    },
+    {
+      "path": "v2-3/cases/psytrain/ui-result-screen-1280.webp",
+      "bytes": 145014,
+      "sha256": "f76a4f34dcd78adc80316a5f2e17d034cf90962d699061a27e5680ad3dc5d47e"
+    },
+    {
+      "path": "v2-3/cases/psytrain/ui-result-screen-1920.webp",
+      "bytes": 271352,
+      "sha256": "47c90a1d009a1746c60dbaada07f5213d91fe2dad038fc09f0f58593fee96c72"
+    },
+    {
+      "path": "v2-3/cases/psytrain/ui-result-screen-640.webp",
+      "bytes": 37830,
+      "sha256": "6b764bab9341c6b214a9e389debe0503f6c96140e09dfc1340e99078a422ef08"
+    },
+    {
+      "path": "v2-3/cases/psytrain/ui-result-screen.png",
+      "bytes": 7095726,
+      "sha256": "616b3c4769be981b0ebc4aa60a2f03852cfe0e62a7b3d4eb943bac2aef8fa51b"
+    },
+    {
+      "path": "v2-3/cases/psytrain/ui-training-screen-1280.webp",
+      "bytes": 77770,
+      "sha256": "aa56aadec3a7057817ef6b445fd943debdeec631a2c751cbd5d0fda770b945c5"
+    },
+    {
+      "path": "v2-3/cases/psytrain/ui-training-screen-1920.webp",
+      "bytes": 130630,
+      "sha256": "8982e3bed4c7629d166fabbf505d1b1be4e840267498696377ede7935c2ae272"
+    },
+    {
+      "path": "v2-3/cases/psytrain/ui-training-screen-640.webp",
+      "bytes": 26616,
+      "sha256": "9012d70293e1ca10ec9310ff1692793d2d3c6e33cff599d5ceaf2218efb9158d"
+    },
+    {
+      "path": "v2-3/cases/psytrain/ui-training-screen.png",
+      "bytes": 5484798,
+      "sha256": "9a985ddc55bee98cad39ea439d35ebf44b6eb9283ba2b6a6228bb22534ac8444"
+    },
+    {
       "path": "v2-3/entry/logo-mesh.json",
       "bytes": 1833894,
       "sha256": "aee9d573d8a5f2d3ee3fa5bb216c1cc9f12c52f732758c94040ebb5b69279914"

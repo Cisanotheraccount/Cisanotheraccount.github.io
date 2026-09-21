@@ -1,4 +1,4 @@
-export type HarvardSlug = 'hypnos-cockpit' | 'deal-points' | 'orbit';
+export type HarvardSlug = 'hypnos-cockpit' | 'deal-points' | 'orbit' | 'psytrain';
 
 export type HarvardMedia = {
   id: string;
@@ -9,6 +9,7 @@ export type HarvardMedia = {
   alt: string;
   caption?: string;
   srcSet?: string;
+  sizes?: string;
   background?: 'light' | 'dark' | 'transparent';
 };
 
@@ -16,6 +17,7 @@ export type HarvardItem = {
   title?: string;
   body?: string[];
   media?: HarvardMedia;
+  gallery?: HarvardMedia[];
   sourceNodes?: string[];
 };
 
@@ -25,7 +27,9 @@ export type HarvardSection = {
   body?: string[];
   layout: 'split' | 'wide' | 'grid' | 'steps' | 'cards' | 'comparison';
   media?: HarvardMedia[];
+  itemsTitle?: string;
   items?: HarvardItem[];
+  transcript?: Pick<HarvardItem, 'title' | 'body' | 'sourceNodes'>[];
   table?: { caption: string; columns: string[]; rows: string[][] };
   sourceNodes?: string[];
 };

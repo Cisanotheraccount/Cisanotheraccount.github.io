@@ -1,0 +1,147 @@
+/* PsytrAIn keeps the source's quiet green palette and the shared case semantics. */
+[data-harvard="psytrain"] {
+  --hc-bg: #f4f7f2; --hc-ink: #173d2b; --hc-muted: #536357;
+  --hc-accent: #39734e; --hc-rule: #35533b2b; --hc-panel: #e3eee0;
+  --hc-soft: #ffffff8c; --hc-toolbar: #f4f7f2; color-scheme: light;
+}
+[data-case="psytrain"] .hc-hero-heading h2 { color: #427b50; }
+[data-case="psytrain"] .hc-hero-media .gxc-study > button { border: 0; }
+[data-case="psytrain"] .hc-hero-media .gxc-study img { max-height: 760px; object-fit: cover; }
+[data-case="psytrain"] .hc-contents { margin-top: 18px; }
+[data-case="psytrain"] .hc-chapter-heading h3 { max-width: 960px; }
+[data-case="psytrain"] .hc-section h4 { text-wrap: balance; }
+[data-case="psytrain"] .hc-copy { max-width: 76ch; }
+[data-case="psytrain"] .hc-section[data-layout="cards"] .hc-item { background: #e8efe3; border-radius: 22px; border: 1px solid var(--hc-rule); }
+[data-case="psytrain"] .hc-section[data-layout="comparison"] .hc-items { background: #fff7; }
+[data-case="psytrain"] .hc-table-scroll { background: #fff8; border-radius: 18px; }
+[data-case="psytrain"] .hc-table-scroll table { line-height: 1.65; }
+[data-case="psytrain"] .hc-table-scroll thead { background: #dcebd7; }
+[data-case="psytrain"] .hc-table-scroll tbody th { font-weight: 500; }
+[data-case="psytrain"] .hc-table-scroll td { color: var(--hc-muted); }
+[data-case="psytrain"] .hc-item-gallery { display: grid; grid-template-columns: repeat(2,minmax(0,1fr)); gap: 16px; align-items: start; }
+[data-case="psytrain"] .hc-item-gallery .gxc-study img { height: 260px; object-fit: contain; }
+[data-case="psytrain"] [data-section-id="research-design-mission"] .gxc-study img { max-height: 490px; }
+[data-case="psytrain"] [data-section-id="research-design-mission"] .hc-media-set { grid-template-columns: repeat(2,minmax(0,1fr)); gap: 16px; }
+[data-case="psytrain"] [data-section-id="research-traditional-workflow"] .gxc-study img { height: 230px; object-fit: contain; }
+[data-case="psytrain"] [data-section-id="research-pain-point"] .hc-item { display: grid; grid-template-columns: minmax(0,1fr) 100px; gap: 0 24px; align-items: start; }
+[data-case="psytrain"] [data-section-id="research-pain-point"] .hc-item > .hc-media { grid-column: 2; grid-row: 1 / span 2; }
+[data-case="psytrain"] [data-section-id="research-pain-point"] .hc-copy { grid-column: 1; margin-top: 0; }
+[data-case="psytrain"] [data-section-id="research-pain-point"] .gxc-study > button { border: 0; border-radius: 50%; }
+[data-case="psytrain"] [data-section-id="research-existing-ai-products"] .hc-table-scroll table { min-width: 820px; }
+[data-case="psytrain"] [data-section-id="research-existing-ai-products"] .hc-items { grid-template-columns: repeat(4,minmax(0,1fr)); margin-top: 34px; gap: 22px; }
+[data-case="psytrain"] .hc-items-title { font: 500 21px/1.35 var(--font-display); margin-top: 32px; }
+[data-case="psytrain"] [data-section-id="research-existing-ai-products"] .hc-items-title + .hc-items { margin-top: 20px; }
+[data-case="psytrain"] [data-section-id="research-existing-ai-products"] .hc-item h5 { font-size: 18px; }
+[data-case="psytrain"] [data-section-id="research-existing-ai-products"] .gxc-study img { aspect-ratio: 16 / 10; object-fit: contain; }
+[data-case="psytrain"] [data-section-id="emotion-to-face-expression-mapping"] .hc-items { grid-template-columns: repeat(4,minmax(0,1fr)); gap: 32px 24px; }
+[data-case="psytrain"] [data-section-id="emotion-to-face-expression-mapping"] .hc-item h5 { font-size: 18px; margin-bottom: 12px; }
+[data-case="psytrain"] [data-section-id="emotion-to-face-expression-mapping"] .gxc-study img { aspect-ratio: 1; object-fit: contain; }
+[data-case="psytrain"] [data-section-id="ui-training-screens"] .hc-items { grid-template-columns: 1fr; gap: 54px; }
+[data-case="psytrain"] [data-section-id="ui-training-screens"] .hc-item { display: grid; grid-template-columns: minmax(0,.65fr) minmax(0,1.35fr); grid-template-rows: min-content 1fr; gap: 0 48px; align-items: start; border-top: 1px solid var(--hc-rule); padding-top: 32px; }
+[data-case="psytrain"] [data-section-id="ui-training-screens"] .hc-item > .hc-media { grid-column: 2; grid-row: 1 / span 2; }
+[data-case="psytrain"] [data-section-id="ui-training-screens"] .hc-item > .hc-copy { grid-column: 1; margin-top: 0; }
+[data-case="psytrain"] [data-section-id="ui-training-screens"] .hc-item:nth-child(even) { grid-template-columns: minmax(0,1.35fr) minmax(0,.65fr); }
+[data-case="psytrain"] [data-section-id="ui-training-screens"] .hc-item:nth-child(even) > .hc-media { grid-column: 1; }
+[data-case="psytrain"] [data-section-id="ui-training-screens"] .hc-item:nth-child(even) > .hc-item-heading,
+[data-case="psytrain"] [data-section-id="ui-training-screens"] .hc-item:nth-child(even) > .hc-copy { grid-column: 2; }
+[data-case="psytrain"] [data-section-id="ui-navigation-flow"] .gxc-study img { max-height: 640px; }
+[data-case="psytrain"] [data-section-id="ui-live-avatar"] .gxc-study > button { background: #e4f0eb; }
+[data-case="psytrain"] [data-section-id="ui-live-avatar"] .gxc-study img { aspect-ratio: 1; max-height: 540px; object-fit: cover; }
+/* The source flow chart is transparent: it should sit directly on the case ground. */
+[data-case="psytrain"] [data-section-id="ui-navigation-flow"] .gxc-study > button { background: transparent; border: 0; border-radius: 0; box-shadow: none; }
+[data-case="psytrain"] [data-section-id="ui-navigation-flow"] .hc-item h5 { font-size: 18px; margin-bottom: 0; }
+[data-case="psytrain"] [data-section-id="research-existing-ai-products"] caption { font-size: 0; padding: 0; }
+
+@media (min-width:1001px) {
+  [data-case="psytrain"] [data-section-id="ui-navigation-flow"] { display: grid; grid-template-columns: minmax(0,1fr) minmax(0,1fr); gap: 30px 64px; align-items: start; }
+  [data-case="psytrain"] [data-section-id="ui-navigation-flow"] > .hc-section-copy { grid-column: 1 / -1; margin-bottom: 0; }
+  [data-case="psytrain"] [data-section-id="ui-navigation-flow"] > .hc-items { grid-template-columns: 1fr; gap: 0; margin-top: 0; }
+  [data-case="psytrain"] [data-section-id="ui-navigation-flow"] .hc-item { padding: 24px 0; }
+  [data-case="psytrain"] [data-section-id="ui-navigation-flow"] .hc-item .hc-copy { margin-top: 12px; padding-left: 45px; }
+}
+
+@media (min-width:1100px) {
+  [data-case="psytrain"] .hc-intro { display: grid; grid-template-columns: minmax(0,1fr); padding-top: 42px; }
+  [data-case="psytrain"] .hc-hero-heading { grid-area: 1 / 1; align-self: start; z-index: 1; width: 47%; padding: 46px 0 0 46px; pointer-events: none; }
+  [data-case="psytrain"] .hc-hero-heading > * { pointer-events: auto; }
+  [data-case="psytrain"] .hc-kicker { justify-content: flex-end; flex-direction: row-reverse; gap: 15px; margin-bottom: 35px; }
+  [data-case="psytrain"] .hc-project-mark { width: 31px; height: 31px; }
+  [data-case="psytrain"] .hc-kicker .gxc-mono { font-size: 9px; letter-spacing: .065em; }
+  [data-case="psytrain"] .hc-hero-heading h2 { font-size: clamp(76px,8.2vw,124px); }
+  [data-case="psytrain"] .hc-subtitle { max-width: 435px; font-size: 20px; line-height: 1.6; margin-top: 24px; color: #365442; }
+  [data-case="psytrain"] .hc-project-meta { display: block; padding-top: 32px; font-size: 11px; color: #365442; }
+  [data-case="psytrain"] .hc-project-meta ul { gap: 10px 18px; margin-top: 14px; }
+  [data-case="psytrain"] .hc-hero-media { grid-area: 1 / 1; margin-bottom: 0; }
+  [data-case="psytrain"] .hc-hero-media .gxc-study img { min-height: 600px; }
+}
+@media (max-width:1099px) {
+  [data-case="psytrain"] .hc-hero-heading { max-width: 800px; }
+  [data-case="psytrain"] .hc-hero-media .gxc-study img { aspect-ratio: 16 / 10; object-position: 74% 50%; }
+}
+@media (max-width:1000px) {
+  [data-case="psytrain"] [data-section-id="research-pain-point"] .hc-item { display: block; }
+  [data-case="psytrain"] [data-section-id="research-pain-point"] .hc-media { max-width: 100px; margin-bottom: 22px; }
+  [data-case="psytrain"] [data-section-id="ui-training-screens"] .hc-item,
+  [data-case="psytrain"] [data-section-id="ui-training-screens"] .hc-item:nth-child(even) { display: block; }
+  [data-case="psytrain"] [data-section-id="ui-training-screens"] .hc-item > .hc-copy { margin-top: 22px; }
+  [data-case="psytrain"] [data-section-id="emotion-to-face-expression-mapping"] .hc-items { grid-template-columns: repeat(3,minmax(0,1fr)); }
+}
+@media (max-width:760px) {
+  [data-case="psytrain"] [data-section-id="research-existing-ai-products"] .hc-items { grid-template-columns: repeat(2,minmax(0,1fr)); }
+  [data-case="psytrain"] .hc-intro { padding-top: 34px; }
+  [data-case="psytrain"] .hc-hero-heading h2 { font-size: clamp(53px,16vw,90px); }
+  [data-case="psytrain"] .hc-hero-media .gxc-study img { aspect-ratio: 4 / 3; object-position: 80% 50%; }
+  [data-case="psytrain"] .hc-contents { margin-top: 6px; }
+  [data-case="psytrain"] [data-section-id="emotion-to-face-expression-mapping"] .hc-items { grid-template-columns: repeat(2,minmax(0,1fr)); gap: 28px 16px; }
+  [data-case="psytrain"] [data-section-id="emotion-to-face-expression-mapping"] .hc-item h5 { font-size: 17px; }
+  [data-case="psytrain"] [data-section-id="emotion-to-face-expression-mapping"] .gxc-study figcaption { font-size: 10px; }
+}
+
+/* Complete source compositions retain their own connections and internal hierarchy. */
+[data-case="psytrain"] :is([data-section-id="system-reference-cluster"], [data-section-id="system-flow-sketches"], [data-section-id="system-avatar-aesthetic-rationale"], [data-section-id="ai-logic-layers"]) .gxc-study > button {
+  background: transparent; border: 0; border-radius: 0; box-shadow: none;
+}
+[data-case="psytrain"] :is([data-section-id="system-reference-cluster"], [data-section-id="system-flow-sketches"], [data-section-id="system-avatar-aesthetic-rationale"], [data-section-id="ai-logic-layers"]) .gxc-study img { max-height: none; height: auto; object-fit: contain; }
+[data-case="psytrain"] :is([data-section-id="system-reference-cluster"], [data-section-id="system-avatar-aesthetic-rationale"], [data-section-id="ai-logic-layers"]) figcaption { display: none; }
+[data-case="psytrain"] [data-section-id="system-reference-cluster"] .hc-media-set { grid-template-columns: minmax(0,560px); justify-content: center; padding: 24px 16px; }
+[data-case="psytrain"] [data-section-id="system-avatar-aesthetic-rationale"] .hc-media-set { grid-template-columns: minmax(0,500px); justify-content: center; padding: 16px; }
+[data-case="psytrain"] [data-section-id="system-flow-sketches"] .hc-media-set { grid-template-columns: minmax(0,1040px); justify-content: center; gap: 38px; }
+[data-case="psytrain"] [data-section-id="system-flow-sketches"] figcaption { font-size: 14px; padding-top: 12px; }
+[data-case="psytrain"] [data-section-id="ai-logic-layers"] .hc-media-set { grid-template-columns: minmax(0,1140px); justify-content: center; padding: 16px 0; }
+[data-case="psytrain"] .hc-transcript { margin-top: 28px; border-block: 1px solid var(--hc-rule); }
+[data-case="psytrain"] .hc-transcript summary { min-height: 48px; padding: 14px 4px; cursor: pointer; font-size: 14px; color: var(--hc-accent); }
+[data-case="psytrain"] .hc-transcript summary:focus-visible { outline: 2px solid var(--hc-accent); outline-offset: 4px; }
+[data-case="psytrain"] .hc-transcript > div { display: grid; gap: 28px; padding: 20px 0 32px; }
+[data-case="psytrain"] .hc-transcript h5 { font: 500 18px/1.5 var(--font-display); }
+[data-case="psytrain"] .hc-transcript .hc-copy { margin-top: 12px; }
+
+/* Keep the long companion diagrams together without making either a narrow, isolated column. */
+@media (min-width:761px) {
+  #psytrain-chapter-system-design .hc-chapter-body {
+    grid-template-columns: minmax(0,1.5fr) minmax(0,1fr);
+    column-gap: clamp(28px,5vw,72px);
+    row-gap: 68px;
+    align-items: start;
+  }
+  #psytrain-chapter-system-design [data-section-id="system-reference-cluster"],
+  #psytrain-chapter-system-design [data-section-id="system-training-rationales"] { grid-column: 1 / -1; }
+  #psytrain-chapter-system-design [data-section-id="system-flow-sketches"] { grid-column: 1; }
+  #psytrain-chapter-system-design [data-section-id="system-avatar-aesthetic-rationale"] { grid-column: 2; }
+  #psytrain-chapter-system-design [data-section-id="system-flow-sketches"] .hc-media-set {
+    grid-template-columns: 1fr;
+    justify-content: stretch;
+    gap: 28px;
+  }
+  #psytrain-chapter-system-design [data-section-id="system-avatar-aesthetic-rationale"] .hc-media-set {
+    grid-template-columns: 1fr;
+    justify-content: stretch;
+    padding: 0;
+  }
+}
+@media (max-width:760px) {
+  [data-case="psytrain"] [data-section-id="system-reference-cluster"] .hc-media-set,
+  [data-case="psytrain"] [data-section-id="system-avatar-aesthetic-rationale"] .hc-media-set { padding: 16px 0; }
+  [data-case="psytrain"] [data-section-id="system-flow-sketches"] .hc-media-set { gap: 26px; }
+}
+
+[data-case="psytrain"] :is([data-section-id="research-traditional-workflow"],[data-section-id="research-pain-point"],[data-section-id="research-existing-ai-products"],[data-section-id="emotion-to-face-expression-mapping"],[data-section-id="research-design-mission"],[data-section-id="ui-training-screens"],[data-section-id="ui-live-avatar"],[data-section-id="ui-navigation-flow"]) figcaption { display: none; }

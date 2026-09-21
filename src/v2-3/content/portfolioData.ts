@@ -22,6 +22,7 @@ export interface PortfolioProject {
   overview: string[];
   highlights: { title: string; body: string }[];
   externalLinks: { label: string; url: string }[];
+  video?: { provider: 'youtube'; id: string; title: string };
   role?: string;
   period?: string;
   liveDemo?: {
@@ -320,6 +321,7 @@ export const portfolioProjects: PortfolioProject[] = [
   {
     id: 'P08',
     slug: 'cyber-city',
+    video: { provider: 'youtube', id: 'ZXkFvkEzTj0', title: 'Restart' },
     title: 'Cyber City',
     category: '3D environment & moving image',
     summary: 'A virtual city built in Maya.',
@@ -345,6 +347,7 @@ export const portfolioProjects: PortfolioProject[] = [
   {
     id: 'P09',
     slug: 'crystal-city',
+    video: { provider: 'youtube', id: 'XHEck7ViX74', title: 'Crystal City' },
     title: 'Crystal City',
     category: 'Light, space & moving image',
     summary: 'An imagined city between transparency and light.',
@@ -371,6 +374,7 @@ export const portfolioProjects: PortfolioProject[] = [
   {
     id: 'P07',
     slug: 'last-one',
+    video: { provider: 'youtube', id: '359ZBX6A7V8', title: 'Last_One' },
     title: 'Last_One',
     category: 'Animation & moving image',
     summary: 'A character moving through imagined worlds.',
@@ -396,6 +400,7 @@ export const portfolioProjects: PortfolioProject[] = [
   {
     id: 'P06',
     slug: 'gala-x-ci-vr-gallery',
+    video: { provider: 'youtube', id: '70033a2SJx0', title: 'Gala x Ci VR Gallery' },
     title: 'Gala x Ci VR Gallery',
     category: 'Virtual exhibition',
     summary: 'Immersive projects gathered in a shared virtual space.',

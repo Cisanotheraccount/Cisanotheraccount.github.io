@@ -16,3 +16,6 @@ v-next/review/
 v-next/snapshots/
 tsconfig.tsbuildinfo
 __pycache__/
+
+# Generated independent 2.3 build inventory
+release-baselines/2.3-build.json

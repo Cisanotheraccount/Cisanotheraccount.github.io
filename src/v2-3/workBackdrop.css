@@ -1,0 +1,24 @@
+/* A viewport-sized photograph, clipped to the work section. This is a sibling
+   of the z1 work canvas, never a background inside the z2 work stacking context. */
+.gxc-work-backdrop {
+  position: fixed; inset: 0; z-index: 0; overflow: hidden;
+  pointer-events: none; background: #090a0c;
+  visibility: hidden;
+  --work-primary: 102, 114, 132;
+  --work-secondary: 119, 112, 108;
+}
+.gxc-work-backdrop[data-visible=true] { visibility: visible; }
+.gxc-work-backdrop-photo { position: absolute; max-width: none; }
+.gxc-work-backdrop-light {
+  position: absolute; inset: 0;
+  background:
+    radial-gradient(ellipse 86% 88% at 1% 39%, rgba(var(--work-primary), var(--work-primary-alpha)) 0%, rgba(var(--work-primary), 0) 76%),
+    radial-gradient(ellipse 82% 96% at 99% 73%, rgba(var(--work-secondary), var(--work-secondary-alpha)) 0%, rgba(var(--work-secondary), 0) 78%);
+}
+.gxc-work-backdrop-twinkles { position: absolute; inset: 0; mix-blend-mode: screen; }
+.gxc-work-backdrop-twinkles > span {
+  position: absolute; top: 0; left: 0; background-repeat: no-repeat;
+  border-radius: 50%;
+  will-change: opacity;
+}
+.gxc-work-backdrop-twinkles > span[hidden] { display: none; }

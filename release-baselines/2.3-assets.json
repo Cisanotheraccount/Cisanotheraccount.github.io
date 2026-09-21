@@ -1,0 +1,536 @@
+{
+  "version": 1,
+  "purpose": "Explicit public dependencies of the integrated independent 2.3 release",
+  "files": [
+    {
+      "path": "v2-3/cases/deal-points/brainstorm-concept-01.png",
+      "bytes": 14440,
+      "sha256": "0fa8f7c17798c1078e7d6ffbc8ac678e5a84b5e898384e6296dd9e05ee01782f"
+    },
+    {
+      "path": "v2-3/cases/deal-points/brainstorm-concept-02.png",
+      "bytes": 9038,
+      "sha256": "31fe7263b8ac8b4ad9248019df73a5a54ddc6d28d4a4310990190dc4ca4e190e"
+    },
+    {
+      "path": "v2-3/cases/deal-points/brainstorm-concept-03.png",
+      "bytes": 9265,
+      "sha256": "d3b7fbfc1c7267f11bc96eb18089b6e855c2ae8816afe15a9c16b1fbe0a37c76"
+    },
+    {
+      "path": "v2-3/cases/deal-points/business-illustration.png",
+      "bytes": 187004,
+      "sha256": "3e61d4479d9d958f8ddc5540939a116d049309c2284a3ada452bb56a43b3056c"
+    },
+    {
+      "path": "v2-3/cases/deal-points/competitor-matrix.png",
+      "bytes": 45289,
+      "sha256": "415e097c42b4d40e48da53cc0b0343ddaff2f03eee80b3271d2c4ab7f6f6e8c4"
+    },
+    {
+      "path": "v2-3/cases/deal-points/cover-visual.png",
+      "bytes": 1926572,
+      "sha256": "21e90ffb19a1ca1d0e5bd74cffa72609d83f3c5a7916c7ece19c581b825cf898"
+    },
+    {
+      "path": "v2-3/cases/deal-points/deal-points-mark.svg",
+      "bytes": 2326,
+      "sha256": "fcc574ab15d86aefdbeca2406286f25cd211da630fd79ad0aa13a49c98d74b06"
+    },
+    {
+      "path": "v2-3/cases/deal-points/finance-illustration.png",
+      "bytes": 228729,
+      "sha256": "7d1b16a5cbfb5e00c8103cb2f7f5190e3f9f69a84d4fedbd2e1786536658315b"
+    },
+    {
+      "path": "v2-3/cases/deal-points/flow-01-welcome.png",
+      "bytes": 221146,
+      "sha256": "e4ecca6db7e5f07a8236155ee0265ad426e7465c90e966ae10d12ada2cee3e99"
+    },
+    {
+      "path": "v2-3/cases/deal-points/flow-02-cpp.png",
+      "bytes": 267223,
+      "sha256": "ad52cdb95b4982b0784f72da001b1d1f077142d4d5d463bdcb818f3b246af40c"
+    },
+    {
+      "path": "v2-3/cases/deal-points/flow-03-flight-deals.png",
+      "bytes": 474686,
+      "sha256": "eb76fa8bc34cd8db9b2de0c6a3574ce1d23ee9f76b4ce646b3c692cda15067cf"
+    },
+    {
+      "path": "v2-3/cases/deal-points/flow-04-flight-deal-detail.png",
+      "bytes": 673136,
+      "sha256": "ac1d4b9b64cc2e35ae73fa54a17d5c05452361659e2ca912569cb3187200eca4"
+    },
+    {
+      "path": "v2-3/cases/deal-points/flow-05-flight-search.png",
+      "bytes": 216825,
+      "sha256": "4d206c71ba15525a42f4d5bab0364748726fe373423612c4a8dfcf9da898b0a4"
+    },
+    {
+      "path": "v2-3/cases/deal-points/flow-06-flight-detail.png",
+      "bytes": 258815,
+      "sha256": "552b5e62a865ce9f0552b43edfb667331965e33daf35d9a28190feb6595df9df"
+    },
+    {
+      "path": "v2-3/cases/deal-points/flow-07-flight-seat.png",
+      "bytes": 457535,
+      "sha256": "c3cd4ec0def01b841156abacc8c3464f88d6c5858c80027119f65f89d332221e"
+    },
+    {
+      "path": "v2-3/cases/deal-points/flow-08-flight-extension.png",
+      "bytes": 178269,
+      "sha256": "cd66d2146db6c3d588098262696a666a384170169741c3a717752e66f3cddc69"
+    },
+    {
+      "path": "v2-3/cases/deal-points/flow-09-wallet.png",
+      "bytes": 577244,
+      "sha256": "a0b9586bee4e0ed494a39984f7abaf2b7bd2bb9eae0b726bd950a28d89422952"
+    },
+    {
+      "path": "v2-3/cases/deal-points/flow-10-hotel-search.png",
+      "bytes": 559640,
+      "sha256": "6cb9256ed7e5c6c9f12951fa70f72ff4f9a58b10a11e7faca26324c273a4ad47"
+    },
+    {
+      "path": "v2-3/cases/deal-points/flow-11-hotel-detail.png",
+      "bytes": 634808,
+      "sha256": "ce5ddc30010837adfcdce39f5bbd24a54545f5102ba002cd6a6188fa18a9d901"
+    },
+    {
+      "path": "v2-3/cases/deal-points/flow-12-price-history.png",
+      "bytes": 246180,
+      "sha256": "53d3d0b35de27f192766001873718eccb0d3314dd7b84fb61f664a935d9c3ce7"
+    },
+    {
+      "path": "v2-3/cases/deal-points/hana-persona.png",
+      "bytes": 301171,
+      "sha256": "e4fc2230316d20924ed2891eb39791a97ad8fc3f190554d3820a1b32224c869e"
+    },
+    {
+      "path": "v2-3/cases/deal-points/journey-map.png",
+      "bytes": 59904,
+      "sha256": "c4afb698f2b9480a9c395195899e03200b3be8fb51e826551cb11d19e22a8de1"
+    },
+    {
+      "path": "v2-3/cases/deal-points/manifest.json",
+      "bytes": 9227,
+      "sha256": "a2f247fb6a4ca1ffbf8e0149e5832c81a5ae73ea20f1553aa9adf11887b38464"
+    },
+    {
+      "path": "v2-3/cases/deal-points/partnership-illustration.png",
+      "bytes": 101223,
+      "sha256": "be3e9f3cd0eddcc5b14810c0b04e780883e1480fc1e0470a8a7bcb05b1c05cd6"
+    },
+    {
+      "path": "v2-3/cases/deal-points/payment-partnership.png",
+      "bytes": 17143,
+      "sha256": "0c010bf365ea261373e09c157e320ab3bb23dece6b4e1867287cac52d0578366"
+    },
+    {
+      "path": "v2-3/cases/deal-points/reward-system-diagram.svg",
+      "bytes": 84687,
+      "sha256": "10ae22d814887bd3647142d8ab4b49c9df5bf5849391068295aa140f157fcaa9"
+    },
+    {
+      "path": "v2-3/cases/deal-points/survey-card-count.png",
+      "bytes": 24517,
+      "sha256": "1eafd17f3c96886334e71ab39abe9651799a840983cf66939878c49693dead72"
+    },
+    {
+      "path": "v2-3/cases/deal-points/survey-reward-cards.png",
+      "bytes": 14923,
+      "sha256": "9cf9be4d033d645f768af1098393d4897a79ed3cb3835c478eb9ab072629ce71"
+    },
+    {
+      "path": "v2-3/cases/hypnos-cockpit/after-sleep-ui.png",
+      "bytes": 740498,
+      "sha256": "707d097d77d8813ccd5c4ab187dcd37e881fdc057ba6cfd192bd1d77b5aec382"
+    },
+    {
+      "path": "v2-3/cases/hypnos-cockpit/before-sleep-cabin.png",
+      "bytes": 396230,
+      "sha256": "2f4cc31d17327f6f85128e5217f384db75243b8dccefb59a5b95f0bcbba55783"
+    },
+    {
+      "path": "v2-3/cases/hypnos-cockpit/competitive-dembell.png",
+      "bytes": 1145667,
+      "sha256": "63eb710825a32a6f176c61a2d0230fca140ec09a3cb46f343bc695dd31a6b9c6"
+    },
+    {
+      "path": "v2-3/cases/hypnos-cockpit/competitive-jeep.png",
+      "bytes": 311922,
+      "sha256": "9737e5ed5a9adc3200d03ec1a47435a4d14a727782588eb26e53c4990260f349"
+    },
+    {
+      "path": "v2-3/cases/hypnos-cockpit/competitive-li-l9.png",
+      "bytes": 1057397,
+      "sha256": "054d3cb575bdb677877915366c86b001cbac7dd838dc042ad4426f77cc80a5ab"
+    },
+    {
+      "path": "v2-3/cases/hypnos-cockpit/competitive-model-y.png",
+      "bytes": 814313,
+      "sha256": "e2236c957581d31dca233cb163348be9a89d8c45a4e82b4be2041781b8286173"
+    },
+    {
+      "path": "v2-3/cases/hypnos-cockpit/competitive-vw-california.png",
+      "bytes": 768769,
+      "sha256": "1ccfd16846a9b789b9e4281402cdea0dc67c550846916a99b516f871054c3d1f"
+    },
+    {
+      "path": "v2-3/cases/hypnos-cockpit/consumer-airline-seat.png",
+      "bytes": 988770,
+      "sha256": "dbb37672d8bbcbc11f8c3edec7db4fc9f41e79800ddcaffb5e2491ef4b1acff8"
+    },
+    {
+      "path": "v2-3/cases/hypnos-cockpit/consumer-eight-sleep.png",
+      "bytes": 266926,
+      "sha256": "2eb62c358fe23eac8e88da992cd7edc7dc6dbb03b5ac523963ba321ff70d61d8"
+    },
+    {
+      "path": "v2-3/cases/hypnos-cockpit/consumer-oura.png",
+      "bytes": 357047,
+      "sha256": "872474cb1848cfafca521cffa9b1a177ef7e154078f67d0d3f46a09ff824f6f7"
+    },
+    {
+      "path": "v2-3/cases/hypnos-cockpit/cover-car-cabin.png",
+      "bytes": 1771670,
+      "sha256": "1df1f17749ca1e68b1936bb8942049e0de90e7bb5a10d2a0d27b09c1826cfc52"
+    },
+    {
+      "path": "v2-3/cases/hypnos-cockpit/drive-mode-cabin.png",
+      "bytes": 1130435,
+      "sha256": "9632c89e9599a6c083c528945a3cb3a68c8ac4d240013b7618c77e31dbe8adfe"
+    },
+    {
+      "path": "v2-3/cases/hypnos-cockpit/during-sleep-ui.png",
+      "bytes": 564434,
+      "sha256": "4c196b422e4ba8cf7759f70cd325f5694d33be062b0c3b96812edf4837457b1e"
+    },
+    {
+      "path": "v2-3/cases/hypnos-cockpit/hypnos-mark.svg",
+      "bytes": 943,
+      "sha256": "31e4fbca3a31e335eafbb249c9d715823de1a28fc53bf68eed1cc24dbfcf299a"
+    },
+    {
+      "path": "v2-3/cases/hypnos-cockpit/insight-chaotic-world.png",
+      "bytes": 521998,
+      "sha256": "a19acf8149ff5ee71698f830f5d3e8d4f290194d18cfd23cd184011a31dba182"
+    },
+    {
+      "path": "v2-3/cases/hypnos-cockpit/insight-micro-rests.png",
+      "bytes": 628422,
+      "sha256": "1b2ceac22cece99874690dd23ec8637ed266cd5b3bacecb1c36597f3afd5b992"
+    },
+    {
+      "path": "v2-3/cases/hypnos-cockpit/insight-transit-sanctuary.png",
+      "bytes": 432365,
+      "sha256": "6ed127dcba74b064e3f4d2874aee946a8e7db9308fbc571cf3a145ccaf0ac0a4"
+    },
+    {
+      "path": "v2-3/cases/hypnos-cockpit/manifest.json",
+      "bytes": 10841,
+      "sha256": "81ae69b20882403b60fc285e6cc29e4667b8025ca27d6613539ca38accebe32e"
+    },
+    {
+      "path": "v2-3/cases/hypnos-cockpit/mobile-sleep-preparation.png",
+      "bytes": 69493,
+      "sha256": "9630e8c95396f09035ac206d9b44888e64a0ba8312afe2b5d170c915683658ab"
+    },
+    {
+      "path": "v2-3/cases/hypnos-cockpit/persona-portrait.png",
+      "bytes": 625165,
+      "sha256": "f51c60c0de3a8598a71bfd4f11c583d26b07ecbcd50194120aa47f1fa573d351"
+    },
+    {
+      "path": "v2-3/cases/hypnos-cockpit/pipeline-cabin.jpg",
+      "bytes": 137277,
+      "sha256": "b68fd6b20feec002c11812b4cbe24b06787a8f7660d3bc9e2da9e90e597ec6f9"
+    },
+    {
+      "path": "v2-3/cases/hypnos-cockpit/pipeline-power.jpg",
+      "bytes": 216496,
+      "sha256": "a98829f70d0934ec09231fe7bd3f394ee4c370d19eec72c5ba1d8d00e19503e8"
+    },
+    {
+      "path": "v2-3/cases/hypnos-cockpit/pipeline-seat.jpg",
+      "bytes": 86846,
+      "sha256": "ed6ecf9cc0d74935176bf2be2de2715e30cb178068d9bf9a0b6702fef439b4c1"
+    },
+    {
+      "path": "v2-3/cases/hypnos-cockpit/pipeline-sensors.jpg",
+      "bytes": 55554,
+      "sha256": "36185a3d86691100f7ee76838d9ee8d09f7c1a7eda856bf641aa8e628d2a37f2"
+    },
+    {
+      "path": "v2-3/cases/hypnos-cockpit/pipeline-thermal.png",
+      "bytes": 532117,
+      "sha256": "d803f95634cadf58eb1ea0918b82ec710ab93cd5c4411f2e09795c09fd811da1"
+    },
+    {
+      "path": "v2-3/cases/hypnos-cockpit/rest-mode-cabin.png",
+      "bytes": 1029010,
+      "sha256": "e43fbb46dff3abfcf8141f0da7ed363db900c4e91b1e9148d277c09c7a3f8d3b"
+    },
+    {
+      "path": "v2-3/cases/hypnos-cockpit/roadmap-ai-function.png",
+      "bytes": 1911462,
+      "sha256": "dda68530f204f7c9ba6ea681b268c8332055718518db4eaca50ab9f58e204cc4"
+    },
+    {
+      "path": "v2-3/cases/hypnos-cockpit/roadmap-prototype.png",
+      "bytes": 986658,
+      "sha256": "fba5116f4def38bd9ba179f2619186e9490acfd7cc5be4259a678b09155aad3e"
+    },
+    {
+      "path": "v2-3/cases/hypnos-cockpit/roadmap-vr-test.png",
+      "bytes": 931431,
+      "sha256": "38e5ab39e8957001954371dc202ef7501c6f8d62167e36bcdebe2acc58a2d395"
+    },
+    {
+      "path": "v2-3/cases/hypnos-cockpit/satisfaction-chart.png",
+      "bytes": 36773,
+      "sha256": "1b2c0f27f8cf01a27425cf77d5d998361106c71ecf44eb5579d0fdbb864585a5"
+    },
+    {
+      "path": "v2-3/cases/hypnos-cockpit/scenario-camping.jpg",
+      "bytes": 90598,
+      "sha256": "be5a4cc633386de6bdf6fcdfe2aca80c9729d8a3982d8cb0e6bae18073582033"
+    },
+    {
+      "path": "v2-3/cases/hypnos-cockpit/scenario-commute.jpg",
+      "bytes": 170287,
+      "sha256": "a79302a7cb912679f3bc185181a5a8ea0d5a3109693f40dd0840be4796ad5b3a"
+    },
+    {
+      "path": "v2-3/cases/hypnos-cockpit/scenario-long-drive.jpg",
+      "bytes": 39017,
+      "sha256": "85bc68e327b55f6025b6d242c09aa0c41fa5c82eb15a34de4906cbb79b3f3f1c"
+    },
+    {
+      "path": "v2-3/cases/hypnos-cockpit/scenario-nap.jpg",
+      "bytes": 54018,
+      "sha256": "77441118baab6fec16b71411fff7bd81a31ffca60d3a738e83d975e0822a8c9c"
+    },
+    {
+      "path": "v2-3/cases/hypnos-cockpit/seat-plan-drive.png",
+      "bytes": 4007126,
+      "sha256": "eb15387b27b0f45c87fb8428932f61c74876af73cac3db63b124e5dc08ad0b37"
+    },
+    {
+      "path": "v2-3/cases/hypnos-cockpit/seat-plan-rest.png",
+      "bytes": 4247785,
+      "sha256": "ee5b0743b42e21ab39e1af565bb3a6f5679d9058175901c2fa779d42046ed3f2"
+    },
+    {
+      "path": "v2-3/cases/hypnos-cockpit/sleep-flow-storyboard.png",
+      "bytes": 749588,
+      "sha256": "4150a3cdb090b39a17139092c1925ab02c28ec5733980f180135522ae25cd738"
+    },
+    {
+      "path": "v2-3/cases/hypnos-cockpit/system-integration-wireframe.png",
+      "bytes": 148296,
+      "sha256": "4dfcff3de3c46c009b80f1ec25a5149f607f05b42b1f49a83cf8be3e36aa8e52"
+    },
+    {
+      "path": "v2-3/cases/orbit/brainstorm-1.png",
+      "bytes": 483022,
+      "sha256": "02e2693c0ff97389a99dbef4b4bf34a327db31ed992b72e5602161695ae1e910"
+    },
+    {
+      "path": "v2-3/cases/orbit/brainstorm-2.png",
+      "bytes": 1080769,
+      "sha256": "969c4828b51cb462d85c98513c1f2017375e70eda085d54b437131b969550b93"
+    },
+    {
+      "path": "v2-3/cases/orbit/brainstorm-3.png",
+      "bytes": 1193682,
+      "sha256": "b862567f053f3fdd6c546b00b811eab41050b2b45d89ae94e019623b046a1cd4"
+    },
+    {
+      "path": "v2-3/cases/orbit/brainstorm-4.png",
+      "bytes": 1072273,
+      "sha256": "b81064e6c77ca77372fe486b1491f314d3abfe4378b0a3611309289e542a78ec"
+    },
+    {
+      "path": "v2-3/cases/orbit/brainstorm-5.png",
+      "bytes": 880071,
+      "sha256": "17b63be9621a8fd398edc3ffa44782c670b0a770096454918ba387e5c43eb371"
+    },
+    {
+      "path": "v2-3/cases/orbit/competitive-map-hd.png",
+      "bytes": 69583,
+      "sha256": "af5fa4e83cbc439c2eb12d0654947389b9f36f9060f01349a2ddc2f5f0c8d59e"
+    },
+    {
+      "path": "v2-3/cases/orbit/cover-hero.png",
+      "bytes": 1278831,
+      "sha256": "d5430d60af6fff073fc243479a24fc572e10f5a5a58c1f0af455a8a5301ee3eb"
+    },
+    {
+      "path": "v2-3/cases/orbit/ethan-lifestyle-ratings.png",
+      "bytes": 58189,
+      "sha256": "adcdad4e95d2061db920b21192d72d8c992ecb56d5a458e13828effe97d9fc24"
+    },
+    {
+      "path": "v2-3/cases/orbit/hardware-architecture-hd.png",
+      "bytes": 122956,
+      "sha256": "22ae931c0d2e17c277c3aea0fb5e0a1e0b92e139723ff572a7cdd789baf1f33f"
+    },
+    {
+      "path": "v2-3/cases/orbit/hardware-breakdown-hd.png",
+      "bytes": 606520,
+      "sha256": "0ee55feaf81643bc6eed3a11ba2f2a2bbbb8f653e5f1279e8490514ec06519d9"
+    },
+    {
+      "path": "v2-3/cases/orbit/manifest.json",
+      "bytes": 10540,
+      "sha256": "645e6f582d712d5622890b4295001fce78489690a10eef75995e0666261e43de"
+    },
+    {
+      "path": "v2-3/cases/orbit/misplacement-frequency-hd.png",
+      "bytes": 54097,
+      "sha256": "5af98be789652cff6b1126cc828e040d47f173ea94b7a350771e3460b163b0a9"
+    },
+    {
+      "path": "v2-3/cases/orbit/orbit-mark.svg",
+      "bytes": 1412,
+      "sha256": "63bfad5db02efdd51dd25c788ec46606fabfa24fca5555aaeade0671a875db83"
+    },
+    {
+      "path": "v2-3/cases/orbit/persona-derek-portrait.png",
+      "bytes": 456540,
+      "sha256": "cf77ccead7046487b3bac22e2e61130e5aae54b26e4f0cc4e5d085c13f8f7833"
+    },
+    {
+      "path": "v2-3/cases/orbit/persona-fiona-portrait.png",
+      "bytes": 644330,
+      "sha256": "3ae7a82ed8e7a46888cf35a466c595499c8034e0df0dc083ff2ae60854db99a4"
+    },
+    {
+      "path": "v2-3/cases/orbit/persona-rina-portrait.png",
+      "bytes": 464412,
+      "sha256": "47f448b0f614d43ec8003fdb63edb1eb217c70d9cb0089e8739acf1ef3647a8c"
+    },
+    {
+      "path": "v2-3/cases/orbit/solution-airtag.png",
+      "bytes": 213125,
+      "sha256": "ac781183a262ec75907bad9597e593b9306765f616c8a3f7372d398e4f1f03bb"
+    },
+    {
+      "path": "v2-3/cases/orbit/solution-echo-look.png",
+      "bytes": 323113,
+      "sha256": "b699e592bf4d5f540f264dc768804f42b837573ccaeb921f5b639f37bf701cff"
+    },
+    {
+      "path": "v2-3/cases/orbit/solution-go-finder.png",
+      "bytes": 2128068,
+      "sha256": "0ee52c5a7910fe105d221d04c0a93e0c1ee92bfd9973edbbcbe6b9276d8e0ffb"
+    },
+    {
+      "path": "v2-3/cases/orbit/solution-hippocam.png",
+      "bytes": 1838662,
+      "sha256": "a0e7bf0d57a05d90a90c7eb929cf274b78e8288f63b76b4c33cb82b9cb5bc71b"
+    },
+    {
+      "path": "v2-3/cases/orbit/solution-limitless.png",
+      "bytes": 1962209,
+      "sha256": "1ea1ec8b4d804a56c4c8a62375110712be716151d3fc6aea502f8183ad01182a"
+    },
+    {
+      "path": "v2-3/cases/orbit/solution-mempal.jpeg",
+      "bytes": 49043,
+      "sha256": "fba4ec17fd3d46b7bedb2bbc6585fb05a09c6b048adb8df9bee14115293bc7e7"
+    },
+    {
+      "path": "v2-3/cases/orbit/solution-ray-ban.png",
+      "bytes": 912708,
+      "sha256": "7c687fb0454b95f53bbc29886cd153c3357d6755aa415d35d811d6f1ac8b921c"
+    },
+    {
+      "path": "v2-3/cases/orbit/solution-sensecam.jpeg",
+      "bytes": 47771,
+      "sha256": "a85108e74a89232707986436b1800a2302c81c12629de7a2e68b2d5f20642181"
+    },
+    {
+      "path": "v2-3/cases/orbit/storyboard-1-art.png",
+      "bytes": 587682,
+      "sha256": "ccebcd43d20eaba12575ee070774fdd4eb4c22d09ce59f90f0090c038fc2fc2c"
+    },
+    {
+      "path": "v2-3/cases/orbit/storyboard-2-art.png",
+      "bytes": 798187,
+      "sha256": "38ce2f955df9f4dc8b82b55e37adb41e7eac1884caf1384555aef07e446ded94"
+    },
+    {
+      "path": "v2-3/cases/orbit/storyboard-3-art.png",
+      "bytes": 558734,
+      "sha256": "5e4b8106e5c5191e49507c7d4b94a87a10ec67e10af4cebe766204067daf5c9f"
+    },
+    {
+      "path": "v2-3/cases/orbit/storyboard-4-art.png",
+      "bytes": 719723,
+      "sha256": "28959fe2bb4b6f6d3de7f61231e21a048461456a42f29a85aaf904f32709f2b4"
+    },
+    {
+      "path": "v2-3/cases/orbit/storyboard-5-art.png",
+      "bytes": 786976,
+      "sha256": "c0ffdc541d3dadf96d48ec1bda3c1cdb3b5875cc29654be75e83118fa6a644cb"
+    },
+    {
+      "path": "v2-3/cases/orbit/ui-product-context-crop.png",
+      "bytes": 977783,
+      "sha256": "392c956a2d9d1e80a7eb5a9af3773b0ace0ffb91fbc69ec719f230d6ce96dcaf"
+    },
+    {
+      "path": "v2-3/cases/orbit/ui-screen-1-hd.png",
+      "bytes": 827691,
+      "sha256": "f05be400baa50e093b2a3e8c96ebffcb375310c3a3ccbfe1c166ca65c4445390"
+    },
+    {
+      "path": "v2-3/cases/orbit/ui-screen-2-hd.png",
+      "bytes": 388590,
+      "sha256": "491eb0f19e9005cb2fae08a4ff287a46d63fe8a596eeaca3c5df3d92f250abc9"
+    },
+    {
+      "path": "v2-3/cases/orbit/ui-screen-3-hd.png",
+      "bytes": 171183,
+      "sha256": "47c60c1f6ce6144dc61595a1abc73b0403f4a33bbb68da7367f80176f18ea328"
+    },
+    {
+      "path": "v2-3/cases/orbit/ui-screen-4-hd.png",
+      "bytes": 141403,
+      "sha256": "5e27c395708b1404021ef4af0f803d39134d862c399c4761731f89892c42865e"
+    },
+    {
+      "path": "v2-3/cases/orbit/ui-screen-5-hd.png",
+      "bytes": 86418,
+      "sha256": "1ce4ea0796daf2908476ab6f12ae789615de66dad92e9cbdca12c6bd4d7b74c8"
+    },
+    {
+      "path": "v2-3/cases/orbit/ui-screen-6-hd.png",
+      "bytes": 393302,
+      "sha256": "ee056237e40cc6899f8f28a76b2b7ced90e419452a69787ca4e8e08f4df6138f"
+    },
+    {
+      "path": "v2-3/cases/orbit/wearable-evaluation-hd.png",
+      "bytes": 493269,
+      "sha256": "1940c135cf0cb663f0369e96968684348e420007856e87d20dd56d8d87cd0daf"
+    },
+    {
+      "path": "v2-3/entry/logo-mesh.json",
+      "bytes": 1833894,
+      "sha256": "aee9d573d8a5f2d3ee3fa5bb216c1cc9f12c52f732758c94040ebb5b69279914"
+    },
+    {
+      "path": "v2-3/entry/logo.svg",
+      "bytes": 1253,
+      "sha256": "22a602ba52c5eb4e2821d64aed5d7a91b2e0330c6971e4dfb1dd24709ee107b3"
+    },
+    {
+      "path": "v2-3/entry/manifest.json",
+      "bytes": 884,
+      "sha256": "eb00aef1cc87566783c3be33924dbc3193ba93001267a6801478f63dd404e359"
+    }
+  ]
+}

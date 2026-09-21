@@ -1,9 +1,9 @@
-import { ArrowUpRight } from 'lucide-react';
+import { ArrowUpRight, Play } from 'lucide-react';
 import type { PortfolioProject } from './content/portfolioData';
 import './projectVideo.css';
 
 /** Native player: only the active detail owns an iframe, so leaving stops playback. */
-export function ProjectVideo({ project, active }: { project: PortfolioProject; active: boolean }) {
+export function ProjectVideo({ project, active, requested = true, onRequest }: { project: PortfolioProject; active: boolean; requested?: boolean; onRequest?(): void }) {
   const video = project.video;
   if (!video) return null;
   const watchUrl = `https://www.youtube.com/watch?v=${video.id}`;
@@ -11,7 +11,7 @@ export function ProjectVideo({ project, active }: { project: PortfolioProject; a
 
   return <figure className="gxc-project-video" aria-label={`${project.title} project video`}>
     <div className="gxc-project-video-frame">
-      {active ? <iframe
+      {active && requested ? <iframe
         key={video.id}
         src={embedUrl}
         title={`${video.title} — ${project.title} video`}
@@ -22,6 +22,7 @@ export function ProjectVideo({ project, active }: { project: PortfolioProject; a
         allowFullScreen
         referrerPolicy="strict-origin-when-cross-origin"
       /> : <img src={project.image} alt={project.imageAlt} width={project.imageWidth} height={project.imageHeight}/>}
+      {!requested && onRequest && <button className="gxc-project-video-load" onClick={onRequest}><Play size={22} aria-hidden="true"/><span>Load video</span><small>YouTube · plays here</small></button>}
     </div>
     <figcaption>
       <span>{video.title}</span>

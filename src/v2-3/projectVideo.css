@@ -3,6 +3,13 @@
 .gxc-project-video-frame iframe,
 .gxc-project-video-frame img { position: absolute; inset: 0; display: block; width: 100%; height: 100%; border: 0; object-fit: contain; }
 .gxc-project-video-frame iframe:focus-visible { outline: 2px solid #f1f0ed; outline-offset: 4px; }
+.gxc-project-video-load { position: absolute; inset: 0; display: flex; flex-direction: column; align-items: center; justify-content: center; gap: 12px; width: 100%; min-height: 200px; color: #fff; background: #08060e70; cursor: pointer; }
+.gxc-project-video-load > svg { box-sizing: content-box; padding: 20px; border: 1px solid #ffffffb0; border-radius: 50%; transition: transform 160ms ease; }
+.gxc-project-video-load > span { font-size: 18px; font-weight: 500; }
+.gxc-project-video-load > small { font-size: 12px; }
+.gxc-project-video-load:active > svg { transform: scale(.95); }
+@media (hover: hover) { .gxc-project-video-load:hover > svg { transform: scale(1.06); } }
+@media (prefers-reduced-motion: reduce) { .gxc-project-video-load > svg { transition: none; } }
 .gxc-project-video figcaption { display: flex; flex-wrap: wrap; align-items: center; justify-content: space-between; gap: 8px 24px; padding-top: 10px; color: #a6aab4; font-size: 12px; line-height: 1.6; }
 .gxc-project-video figcaption a { display: inline-flex; align-items: center; min-height: 44px; gap: 9px; color: #f1f0ed; }
 @media (max-width: 760px) { .gxc-project-video figcaption { font-size: 11px; } }

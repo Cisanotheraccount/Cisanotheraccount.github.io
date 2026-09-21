@@ -19,7 +19,7 @@ import { mobileThumbnail, useMobileThumbnailMode, workImageSizes, workLayout } f
 import ShotFlowDemo from './ShotFlowDemo';
 import { ShotFlowPhoneFrame } from './ShotFlowPhoneFrame';
 import { IntroMeCase } from './IntroMeCase';
-import { ProjectVideo } from './ProjectVideo';
+import { FilmCase } from './FilmCase';
 import { introMeMedia } from './introMeCaseContent';
 import { HarvardCase } from './HarvardCase';
 import { harvardCase } from './harvardCaseContent';
@@ -430,7 +430,7 @@ function ProjectDialog({ project, brandFromHome, onHome, entrySource, source, in
   useLayoutEffect(() => {
     if (!shown) return;
     // Dedicated cases transition into the image itself, excluding caption and copy.
-    const media = shown.video ? slot.current?.querySelector('.gxc-project-video-frame') : ['shotflow', 'introme'].includes(shown.slug) || harvardCase(shown.slug) ? slot.current?.querySelector('button') : slot.current;
+    const media = shown.video ? slot.current : ['shotflow', 'introme'].includes(shown.slug) || harvardCase(shown.slug) ? slot.current?.querySelector('button') : slot.current;
     const measure = () => { const r = media?.getBoundingClientRect(); if (r) setTarget({ x: r.x, y: r.y, width: r.width, height: r.height }); };
     measure(); const observer = new ResizeObserver(measure); if (media) observer.observe(media);
     heading.current?.focus({ preventScroll: true });
@@ -440,14 +440,14 @@ function ProjectDialog({ project, brandFromHome, onHome, entrySource, source, in
   const studies: Study[] = shown ? [...((galleries as Record<string, Study[]>)[shown.slug] ?? []), ...(shown.gallery ?? [])] : [];
   const next = shown ? workProjects[(workProjects.indexOf(shown) + 1) % workProjects.length] : workProjects[0];
   const harvard = shown ? harvardCase(shown.slug) : undefined;
-  return createPortal(<dialog ref={dialog} className="gxc-detail-dialog" data-harvard={harvard?.slug} aria-labelledby="gxc-detail-title" onCancel={e => { e.preventDefault(); if (zoom) setZoom(null); else onClose(); }}>
+  return createPortal(<dialog ref={dialog} className="gxc-detail-dialog" data-harvard={harvard?.slug} data-film={shown?.video ? shown.slug : undefined} aria-labelledby="gxc-detail-title" onCancel={e => { e.preventDefault(); if (zoom) setZoom(null); else onClose(); }}>
     <motion.div className="gxc-detail-bg" style={{ opacity }}/>
     {shown && <div ref={scroller} className="gxc-detail-scroll" data-native-scroll>
       <motion.div className="gxc-detail-toolbar" style={{ opacity }}><button onClick={onClose} aria-label={entrySource === 'hero' ? 'Back to home' : 'Back to work'}><ArrowLeft size={17}/><span className="gxc-back-full">{entrySource === 'hero' ? 'Back to home' : 'Back to work'}</span><span className="gxc-back-short" aria-hidden="true">Back</span></button><button onClick={onClose} aria-label="Close project"><X size={20}/></button></motion.div>
       <motion.article className="gxc-detail-content" style={{ opacity: contentOpacity }}>
-        {shown.slug === 'shotflow' ? <ShotFlowCase item={shown} heading={heading} slot={slot} onZoom={setZoom} active={project?.slug === 'shotflow' && !zoom}/> : shown.slug === 'introme' ? <IntroMeCase item={shown} heading={heading} slot={slot} renderStudy={study => <StudyImage study={study} onZoom={setZoom}/>} instant={instant} active={project?.slug === 'introme' && !zoom}/> : harvard ? <HarvardCase data={harvard} heading={heading} slot={slot} renderStudy={study => <StudyImage study={study} onZoom={setZoom}/>}/> : <>
+        {shown.slug === 'shotflow' ? <ShotFlowCase item={shown} heading={heading} slot={slot} onZoom={setZoom} active={project?.slug === 'shotflow' && !zoom}/> : shown.slug === 'introme' ? <IntroMeCase item={shown} heading={heading} slot={slot} renderStudy={study => <StudyImage study={study} onZoom={setZoom}/>} instant={instant} active={project?.slug === 'introme' && !zoom}/> : harvard ? <HarvardCase data={harvard} heading={heading} slot={slot} renderStudy={study => <StudyImage study={study} onZoom={setZoom}/>}/> : shown.video ? <FilmCase key={shown.slug} item={shown} heading={heading} slot={slot} active={project?.slug === shown.slug && !zoom} instant={instant} studies={studies} renderStudy={study => <StudyImage study={study} onZoom={setZoom}/>}/> : <>
         <header className="gxc-detail-heading"><span className="gxc-mono">{shown.category}</span><h2 ref={heading} id="gxc-detail-title" tabIndex={-1}>{shown.title}</h2><p>{shown.summary}</p></header>
-        <div ref={slot} className={shown.video ? 'gxc-detail-video' : 'gxc-detail-cover cover-' + shown.slug} data-fit={shown.imageFit ?? 'cover'}>{shown.video ? <ProjectVideo key={shown.slug} project={shown} active={project?.slug === shown.slug && !zoom}/> : <img src={shown.image} alt={shown.imageAlt} width={shown.imageWidth} height={shown.imageHeight}/>}</div>
+        <div ref={slot} className={'gxc-detail-cover cover-' + shown.slug} data-fit={shown.imageFit ?? 'cover'}><img src={shown.image} alt={shown.imageAlt} width={shown.imageWidth} height={shown.imageHeight}/></div>
         <div className="gxc-detail-overview"><aside><span className="gxc-mono">PROJECT OVERVIEW</span>{shown.role && <p><small>ROLE</small>{shown.role}</p>}{shown.period && <p><small>PERIOD</small>{shown.period}</p>}<p><small>EXPLORING</small>{shown.tags.join(' / ')}</p></aside><div>{shown.overview.map(text => <p key={text}>{text}</p>)}{shown.externalLinks.length > 0 && <div className="gxc-material-links">{shown.externalLinks.map(link => <a key={link.url} className="gxc-text-link" href={link.url} target="_blank" rel="noreferrer">{link.label}<ArrowUpRight size={17}/></a>)}</div>}</div></div>
         <div className="gxc-detail-highlights">{shown.highlights.map((h, i) => <section key={h.title}><span className="gxc-mono">{number(i)}</span><h3>{h.title}</h3><p>{h.body}</p></section>)}</div>{studies.length > 0 && <div className="gxc-studies"><div className="gxc-studies-heading"><span className="gxc-mono">PROCESS & DESIGN STUDIES</span><h3>A closer look.</h3></div>{studies.map(study => <StudyImage study={study} key={study.image} onZoom={setZoom}/>)}</div>}
         </>}

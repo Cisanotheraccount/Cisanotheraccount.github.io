@@ -12,7 +12,7 @@
       "path": "photography/index.html",
       "source": "photography-assets/app/photography.index.html",
       "bytes": 518,
-      "sha256": "2acb4216c524f9762a91b2eb583b94916f0e92804113b51ef4db01cf37609cc7",
+      "sha256": "2c56d0af394de2787013ac1e243ef3faa75827168a09b5f1dfc48ea24291191f",
       "mime": "text/html; charset=utf-8"
     },
     {
@@ -30,17 +30,17 @@
       "mime": "font/woff2"
     },
     {
-      "path": "photography-assets/app/photography-6BG8b9zU.js",
-      "source": "photography-assets/app/photography-6BG8b9zU.js",
-      "bytes": 187680,
-      "sha256": "b5e362d1b4280197871a8e170d2d9ba44beca4956f2a9d4b486fca9e5d06e234",
+      "path": "photography-assets/app/photography-BiIRhFSi.js",
+      "source": "photography-assets/app/photography-BiIRhFSi.js",
+      "bytes": 196321,
+      "sha256": "ead92a99924d10ac429b71aa843180a1abf2e9c3d5a66bf17feb625439716122",
       "mime": "text/javascript; charset=utf-8"
     },
     {
-      "path": "photography-assets/app/photography-DPLaIBM_.css",
-      "source": "photography-assets/app/photography-DPLaIBM_.css",
-      "bytes": 44604,
-      "sha256": "2a04d78a6a8f0c4abc5ca23a8cd576c32fe56afd86480275beed950df73680a6",
+      "path": "photography-assets/app/photography-Dq5PfcqV.css",
+      "source": "photography-assets/app/photography-Dq5PfcqV.css",
+      "bytes": 10812,
+      "sha256": "8332afc0fe99b04ae19472a4179fe1e9f673a764375099699211cecb2a233cfa",
       "mime": "text/css; charset=utf-8"
     },
     {
@@ -419,6 +419,27 @@
       "source": "photography-assets/selected-20260921/gxc-cf81f30b2860.jpg",
       "bytes": 364163,
       "sha256": "b2d5108722aa16e6b3c72dfa2c11db42e16f2a26f3be0f2421d625d9940fff3a",
+      "mime": "image/jpeg"
+    },
+    {
+      "path": "photography-assets/background/stars-1536.jpg",
+      "source": "photography-assets/background/stars-1536.jpg",
+      "bytes": 908420,
+      "sha256": "232f40ab2e291368fce8b48e652f9ff21438bd287a971041fb6f5e272b574e5b",
+      "mime": "image/jpeg"
+    },
+    {
+      "path": "photography-assets/background/stars-2560.jpg",
+      "source": "photography-assets/background/stars-2560.jpg",
+      "bytes": 2478850,
+      "sha256": "454a4e4e6b53d48560186a529997387dde28fd0e5cf801403bfddcf741643f94",
+      "mime": "image/jpeg"
+    },
+    {
+      "path": "photography-assets/background/stars-4096.jpg",
+      "source": "photography-assets/background/stars-4096.jpg",
+      "bytes": 6427893,
+      "sha256": "716d4d82ce11503e1bc4d1cdf263180497fc185a873a6e0b706f7265d77b18bc",
       "mime": "image/jpeg"
     }
   ]

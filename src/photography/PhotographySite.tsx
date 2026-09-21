@@ -1,202 +1,202 @@
-import { useEffect, useMemo, useRef, useState, type KeyboardEvent as ReactKeyboardEvent } from 'react';
-import { ArrowDown, ArrowLeft, ArrowRight, ArrowUpRight, X } from 'lucide-react';
+import { useEffect, useLayoutEffect, useMemo, useRef, useState, type KeyboardEvent as ReactKeyboardEvent } from 'react';
+import { ArrowLeft, ArrowRight, ArrowUpRight, X } from 'lucide-react';
 import catalogJson from './catalog.json';
-import type { PhotographyCatalog, PhotographyCategory, PhotographyPhoto, PhotographySeries } from './catalog.types';
+import type { PhotographyCatalog, PhotographyPhoto, PhotographySeries } from './catalog.types';
 import { ManagedPhoto, OriginalPhoto } from './media';
-import '../photography.css';
+import { GlassCategoryNav } from './GlassCategoryNav';
+import { arrangePhotos, galleryMode } from './galleryLayout';
 import './site.css';
 
+type Category = 'landscape' | 'concert';
 const catalog = catalogJson as PhotographyCatalog;
-const filters: Array<'All' | PhotographyCategory> = ['All', 'Landscapes', 'Portraits', 'Restaurants', 'Spaces', 'Live'];
-
-function number(value: number) {
-  return String(value).padStart(2, '0');
-}
-
-function fileSize(bytes: number) {
-  if (!Number.isFinite(bytes) || bytes <= 0) return '';
-  const megabytes = bytes / 1_000_000;
-  return `${megabytes >= 100 ? Math.round(megabytes) : megabytes.toFixed(1)} MB`;
-}
+const categories = [
+  { id: 'landscape' as const, label: 'Landscape', data: 'Landscapes', description: 'Cities, landscapes, and the skies above.' },
+  { id: 'concert' as const, label: 'Concert', data: 'Live', description: 'Artists, audiences, and the energy of live music.' },
+];
+const photosById = new Map(catalog.photos.map(photo => [photo.id, photo]));
+const seriesById = new Map(catalog.series.map(series => [series.id, series]));
+const categoryPhotos = (category: Category) => catalog.series
+  .filter(series => series.category === categories.find(item => item.id === category)?.data)
+  .flatMap(series => series.photoIds.map(id => photosById.get(id)).filter((photo): photo is PhotographyPhoto => !!photo));
+const number = (value: number) => String(value).padStart(2, '0');
+const fromHash = (): Category => window.location.hash === '#concert' ? 'concert' : 'landscape';
+const reducedMotion = () => window.matchMedia('(prefers-reduced-motion: reduce)').matches;
 
 function trapFocus(event: ReactKeyboardEvent<HTMLDialogElement>) {
   if (event.key !== 'Tab' || event.altKey || event.ctrlKey || event.metaKey) return;
   const focusable = Array.from(event.currentTarget.querySelectorAll<HTMLElement>('a[href], button:not(:disabled), [tabindex]:not([tabindex="-1"])'))
-    .filter((element) => element.tabIndex >= 0 && element.getClientRects().length > 0);
-  if (focusable.length === 0) return;
+    .filter(element => element.tabIndex >= 0 && element.getClientRects().length > 0);
+  if (!focusable.length) return;
   const current = focusable.indexOf(document.activeElement as HTMLElement);
-  const next = current < 0
-    ? (event.shiftKey ? focusable.length - 1 : 0)
-    : (current + (event.shiftKey ? -1 : 1) + focusable.length) % focusable.length;
+  const next = current < 0 ? (event.shiftKey ? focusable.length - 1 : 0) : (current + (event.shiftKey ? -1 : 1) + focusable.length) % focusable.length;
   event.preventDefault();
   focusable[next].focus();
 }
 
-function catalogState(input: PhotographyCatalog) {
-  const photosById = new Map(input.photos.map((photo) => [photo.id, photo]));
-  const series = input.series.filter((item) => photosById.has(item.coverId) && item.photoIds.some((id) => photosById.has(id)));
-  return { photosById, series };
-}
-
 export function PhotographySite() {
-  const { photosById, series } = useMemo(() => catalogState(catalog), []);
-  const hero = photosById.get(catalog.heroPhotoId) ?? photosById.get(series[0]?.coverId);
-  const [category, setCategory] = useState<'All' | PhotographyCategory>('All');
-  const [opened, setOpened] = useState<PhotographySeries | null>(null);
-  const visibleCategories = filters.filter((filter) => filter === 'All' || series.some((item) => item.category === filter));
-  const visibleSeries = series.filter((item) => category === 'All' || item.category === category);
+  const [category, setCategory] = useState<Category>(fromHash);
+  const [opened, setOpened] = useState<{ category: Category; photoId: string; opener: HTMLElement } | null>(null);
+  const panels = useRef<Partial<Record<Category, HTMLElement | null>>>({});
+  const [viewport, setViewport] = useState(() => ({ width: window.innerWidth, height: window.innerHeight, galleryWidth: window.innerWidth - 32 }));
 
-  useEffect(() => {
-    document.title = 'Ci Song — Photography';
+  useLayoutEffect(() => {
     document.documentElement.dataset.photography = 'true';
-    return () => { delete document.documentElement.dataset.photography; };
+    const measure = () => {
+      const panel = panels.current.landscape;
+      if (!panel) return;
+      const style = getComputedStyle(panel);
+      setViewport({ width: window.innerWidth, height: window.innerHeight, galleryWidth: panel.clientWidth - parseFloat(style.paddingLeft) - parseFloat(style.paddingRight) });
+    };
+    measure();
+    const observer = new ResizeObserver(measure);
+    if (panels.current.landscape) observer.observe(panels.current.landscape);
+    window.addEventListener('resize', measure);
+    return () => { observer.disconnect(); window.removeEventListener('resize', measure); delete document.documentElement.dataset.photography; };
   }, []);
 
   useEffect(() => {
-    if (category !== 'All' && !visibleCategories.includes(category)) setCategory('All');
-  }, [category, visibleCategories]);
+    const sync = () => { setOpened(null); setCategory(fromHash()); };
+    window.addEventListener('hashchange', sync);
+    window.addEventListener('popstate', sync);
+    return () => { window.removeEventListener('hashchange', sync); window.removeEventListener('popstate', sync); };
+  }, []);
+
+  useLayoutEffect(() => {
+    for (const item of categories) {
+      const panel = panels.current[item.id];
+      if (panel) panel.inert = item.id !== category;
+    }
+    document.title = `${categories.find(item => item.id === category)?.label} — Ci Song Photography`;
+  }, [category]);
+
+  const navigate = (next: Category, keyboard = false) => {
+    if (category !== next) {
+      window.history.pushState(null, '', `#${next}`);
+      setCategory(next);
+    }
+    if (keyboard) requestAnimationFrame(() => panels.current[next]?.querySelector<HTMLElement>('h1')?.focus({ preventScroll: true }));
+  };
+  const backToTop = (id: Category) => panels.current[id]?.scrollTo({ top: 0, behavior: reducedMotion() ? 'instant' : 'smooth' });
+  const mode = galleryMode(viewport.width, viewport.height);
+  const gap = viewport.width <= 1366 ? 8 : 12;
 
   return <div className="photo-site">
-    <a href="#photo-main" className="skip-link">Skip to content</a>
-    <header className="photo-header">
-      <a className="wordmark" href="/photography/" aria-label="Gala X Ci Photography home">Gala <span className="brand-x">X</span> Ci<span className="wordmark-dot" aria-hidden="true">.</span></a>
-      <nav aria-label="Photography navigation">
-        <a className="nav-link" href="#selected">Work</a>
-        <a className="nav-link" href="#photo-contact">Contact</a>
-      </nav>
-      <a className="photo-design-link" href="/galaxci/">Design portfolio <ArrowUpRight size={15} aria-hidden="true" /></a>
-    </header>
-    <main id="photo-main" tabIndex={-1}>
-      <section className="photo-hero" aria-labelledby="photo-title">
-        <div className="photo-hero-line"><span>Ci Song / Photography</span><span>{number(series.length)} series</span></div>
-        <h1 id="photo-title"><span>Gala</span><span>X</span><span>Ci</span></h1>
-        <div className="photo-hero-discipline"><p>Photography<br />by Ci Song.</p><a href="#selected" className="text-link">View photographs <ArrowDown size={19} strokeWidth={1.5} aria-hidden="true" /></a></div>
-        {hero ? <figure className="photo-cover">
-          <ManagedPhoto photo={hero} sizes="100vw" priority className="photo-cover-image" />
-          <figcaption className="photo-cover-caption"><span>Selected photograph</span><a href="#selected">Explore the work <ArrowDown size={16} aria-hidden="true" /></a></figcaption>
-        </figure> : <div className="photo-catalog-error" role="status"><p>Photography is unavailable right now.</p><button type="button" onClick={() => window.location.reload()}>Retry</button></div>}
-      </section>
-      <section id="selected" className="photo-selected" aria-labelledby="selected-title">
-        <div className="photo-section-intro"><span className="photo-kicker">01 / Photographs</span><h2 id="selected-title">Selected <em>work.</em></h2><p>Photographs organized<br />by series.</p></div>
-        <div className="photo-filters" role="group" aria-label="Filter photography by category">
-          {visibleCategories.map((item) => {
-            const count = item === 'All' ? series.length : series.filter((entry) => entry.category === item).length;
-            return <button type="button" key={item} aria-pressed={item === category} onClick={() => setCategory(item)}>{item}<span aria-hidden="true">{number(count)}</span></button>;
-          })}
-        </div>
-        <p className="photo-preview-note" role="status">{visibleSeries.length} series</p>
-        <div className="photo-grid">
-          {visibleSeries.map((item, index) => {
-            const cover = photosById.get(item.coverId);
-            if (!cover) return null;
-            return <PhotoSeriesCard item={item} cover={cover} index={index} key={item.id} onOpen={() => setOpened(item)} />;
-          })}
-        </div>
-      </section>
-      <section id="photo-contact" className="photo-contact" aria-labelledby="photo-contact-title"><div><span className="photo-kicker">02 / Inquiries</span><h2 id="photo-contact-title">Let’s make<br /><em>something real.</em></h2></div><div className="photo-contact-info"><p>For photography inquiries, get in touch with a little about your project.</p><a href="mailto:galaxci.song@gmail.com?subject=Photography%20inquiry">galaxci.song@gmail.com<ArrowUpRight size={20} aria-hidden="true" /></a></div></section>
+    <div className="photo-background" aria-hidden="true"><picture><img src="/photography-assets/background/stars-1536.jpg" srcSet="/photography-assets/background/stars-1536.jpg 1536w, /photography-assets/background/stars-2560.jpg 2560w, /photography-assets/background/stars-4096.jpg 4096w" sizes="100vw" alt="" width="8192" height="5464" /></picture></div>
+    <a className="photo-skip" href={`#${category}`} onClick={event => { event.preventDefault(); panels.current[category]?.querySelector<HTMLElement>('h1')?.focus({ preventScroll: true }); backToTop(category); }}>Skip to photographs</a>
+    <a className="photo-brand" href="/galaxci/" aria-label="Gala X Ci — design portfolio">Gala <span>X</span> Ci<span className="photo-brand-sub">Photography</span></a>
+    <GlassCategoryNav active={category} onNavigate={navigate} />
+    <main className="photo-viewport" aria-label="Photography">
+      <div className="photo-track" style={{ transform: `translate3d(${category === 'concert' ? '-100%' : '0'}, 0, 0)` }}>
+        {categories.map(item => {
+          const series = catalog.series.filter(series => series.category === item.data);
+          const count = series.reduce((sum, series) => sum + series.photoIds.length, 0);
+          return <section key={item.id} ref={node => { panels.current[item.id] = node; }} className="photo-panel" data-category={item.id} aria-labelledby={`${item.id}-title`} aria-hidden={item.id !== category}>
+            <header className="photo-intro">
+              <p className="photo-kicker">Ci Song / Photography <span>{number(count)} photographs</span></p>
+              <h1 id={`${item.id}-title`} tabIndex={-1}>{item.label}</h1>
+              <p className="photo-description">{item.description}</p>
+            </header>
+            <div className="photo-series-list">
+              {series.map((series, index) => <PhotoSeries key={series.id} item={series} index={index} width={viewport.galleryWidth} height={viewport.height} gap={gap} mode={mode} active={item.id === category} onOpen={(photoId, opener) => setOpened({ category: item.id, photoId, opener })} />)}
+            </div>
+            <section className="photo-contact" aria-labelledby={`${item.id}-contact-title`}>
+              <div className="photo-contact-top photo-kicker"><span>Let’s work together</span><span>Photography inquiries</span></div>
+              <h2 id={`${item.id}-contact-title`}>Let’s make<br /><em>something real.</em><a className="photo-contact-arrow" href="mailto:galaxci.song@gmail.com" aria-label="Email Ci Song"><ArrowUpRight strokeWidth={1} aria-hidden="true" /></a></h2>
+              <a className="photo-email" href="mailto:galaxci.song@gmail.com?subject=Photography%20inquiry">galaxci.song@gmail.com</a>
+              <footer className="photo-footer"><span>GALA X CI / CI SONG</span><div><a href="/galaxci/">Design portfolio <ArrowUpRight size={14} aria-hidden="true" /></a><a href={`#${item.id}`} onClick={event => { event.preventDefault(); backToTop(item.id); }}>Back to top ↑</a></div></footer>
+            </section>
+          </section>;
+        })}
+      </div>
     </main>
-    <footer className="photo-footer"><span>© {new Date().getFullYear()} Ci Song</span><a href="/galaxci/">Gala X Ci / Design <ArrowUpRight size={14} aria-hidden="true" /></a><a href="#photo-main">Back to top ↑</a></footer>
-    {opened && <SeriesDialog item={opened} photosById={photosById} onClose={() => setOpened(null)} />}
+    {opened && <PhotoDialog key={opened.category} photos={categoryPhotos(opened.category)} initialPhotoId={opened.photoId} returnFocus={opened.opener} onClose={() => setOpened(null)} />}
   </div>;
 }
 
-function PhotoSeriesCard({ item, cover, index, onOpen }: { item: PhotographySeries; cover: PhotographyPhoto; index: number; onOpen: () => void }) {
-  const [failed, setFailed] = useState(false);
-  const [retry, setRetry] = useState(0);
-  const [forceJpeg, setForceJpeg] = useState(false);
-  const label = <span className="photo-card-caption"><span>{item.title}</span><span>{item.category} / {number(index + 1)}</span></span>;
-  return <article className="photo-card">
-    {failed ? <div className="photo-card-image photo-card-image-error"><div className="photo-media-error" role="status"><span>Image unavailable</span><button type="button" onClick={() => { setFailed(false); setForceJpeg(true); setRetry((value) => value + 1); }}>Retry</button></div>{label}</div> : <button type="button" className="photo-card-open" onClick={onOpen} aria-label={`Open ${item.title} series`}><span className="photo-card-image"><ManagedPhoto key={retry} photo={cover} sizes="(max-width: 600px) 100vw, (max-width: 950px) 48vw, 54vw" forceJpeg={forceJpeg} onFailure={() => setFailed(true)} /></span>{label}</button>}
-  </article>;
+function PhotoSeries({ item, index, width, height, gap, mode, active, onOpen }: { item: PhotographySeries; index: number; width: number; height: number; gap: number; mode: 1 | 2 | 3; active: boolean; onOpen: (id: string, opener: HTMLElement) => void }) {
+  const photos = useMemo(() => item.photoIds.map(id => photosById.get(id)).filter((photo): photo is PhotographyPhoto => !!photo), [item]);
+  const rows = useMemo(() => arrangePhotos(photos, width, gap, mode, height), [photos, width, gap, mode, height]);
+  return <section className="photo-series" aria-labelledby={`series-${item.id}`}>
+    <div className="photo-series-heading"><h2 id={`series-${item.id}`}>{item.title}</h2><span>{number(photos.length)} photographs</span></div>
+    <div className="photo-rows" style={{ gap }}>
+      {rows.map((row, rowIndex) => <div className="photo-row" key={row.photos[0].id} style={{ gap, height: row.height }}>
+        {row.photos.map((photo, photoIndex) => <PhotoTile key={photo.id} photo={photo} width={row.widths[photoIndex]} height={row.height} priority={active && index === 0 && rowIndex === 0} onOpen={opener => onOpen(photo.id, opener)} />)}
+      </div>)}
+    </div>
+  </section>;
 }
 
-function SeriesDialog({ item, photosById, onClose }: { item: PhotographySeries; photosById: Map<string, PhotographyPhoto>; onClose: () => void }) {
+function PhotoTile({ photo, width, height, priority, onOpen }: { photo: PhotographyPhoto; width: number; height: number; priority: boolean; onOpen: (opener: HTMLElement) => void }) {
+  const [failed, setFailed] = useState(false);
+  const [retry, setRetry] = useState(0);
+  return <div className="photo-tile" style={{ width, height }} data-photo-id={photo.id}>
+    {failed ? <div className="photo-media-error" role="status"><span>Image unavailable</span><button type="button" onClick={() => { setFailed(false); setRetry(value => value + 1); }}>Retry image</button><button type="button" data-photo-open onClick={event => onOpen(event.currentTarget)}>Open photograph</button></div> :
+      <button className="photo-open" data-photo-open type="button" onClick={event => onOpen(event.currentTarget)} aria-label={`View ${photo.alt}`}><ManagedPhoto key={retry} photo={photo} sizes={`${Math.ceil(width)}px`} priority={priority} onFailure={() => setFailed(true)} /></button>}
+  </div>;
+}
+
+function PhotoDialog({ photos, initialPhotoId, returnFocus, onClose }: { photos: PhotographyPhoto[]; initialPhotoId: string; returnFocus: HTMLElement; onClose: () => void }) {
   const dialog = useRef<HTMLDialogElement>(null);
-  const opener = useRef<HTMLElement | null>(null);
+  const opener = useRef<HTMLElement | null>(returnFocus);
   const touchStart = useRef<{ id: number; x: number; y: number } | null>(null);
-  const fullRequestId = useRef(0);
-  const [frame, setFrame] = useState(0);
-  const [full, setFull] = useState<{ photoId: string; requestId: number; status: 'loading' | 'ready' | 'error' } | null>(null);
-  const photos = item.photoIds.map((id) => photosById.get(id)).filter((photo): photo is PhotographyPhoto => Boolean(photo));
-  const photo = photos[frame] ?? photos[0];
+  const [frame, setFrame] = useState(() => Math.max(0, photos.findIndex(photo => photo.id === initialPhotoId)));
+  const photo = photos[frame];
+  const series = seriesById.get(photo.seriesId);
   const step = (direction: number) => {
-    fullRequestId.current += 1;
-    setFull(null);
-    setFrame((value) => (value + direction + photos.length) % photos.length);
+    // Keep focus on a persistent control when the keyed image/retry UI unmounts.
+    dialog.current?.querySelector<HTMLButtonElement>(`button[aria-label="${direction > 0 ? 'Next' : 'Previous'} photograph"]`)?.focus({ preventScroll: true });
+    setFrame(value => (value + direction + photos.length) % photos.length);
   };
 
   useEffect(() => {
     const element = dialog.current;
     if (!element) return;
-    opener.current = document.activeElement instanceof HTMLElement ? document.activeElement : null;
-    const scrollY = window.scrollY;
-    const previous = { position: document.body.style.position, top: document.body.style.top, width: document.body.style.width, overflow: document.body.style.overflow };
     document.documentElement.dataset.photoDialogOpen = 'true';
-    document.body.style.position = 'fixed';
-    document.body.style.top = `-${scrollY}px`;
-    document.body.style.width = '100%';
-    document.body.style.overflow = 'hidden';
     element.showModal();
     element.querySelector<HTMLElement>('button')?.focus({ preventScroll: true });
     return () => {
       if (element.open) element.close();
       delete document.documentElement.dataset.photoDialogOpen;
-      document.body.style.position = previous.position;
-      document.body.style.top = previous.top;
-      document.body.style.width = previous.width;
-      document.body.style.overflow = previous.overflow;
-      window.scrollTo(0, scrollY);
-      if (opener.current?.isConnected) opener.current.focus({ preventScroll: true });
+      const target = opener.current?.isConnected ? opener.current : document.querySelector<HTMLElement>(`[data-photo-id="${initialPhotoId}"] [data-photo-open]`);
+      if (target && !target.closest('[inert]')) target.focus({ preventScroll: true });
     };
   }, []);
 
-  if (!photo) return null;
-  const original = photo.original;
-  const activeFull = full?.photoId === photo.id ? full : null;
-  const requestFull = () => {
-    const requestId = fullRequestId.current + 1;
-    fullRequestId.current = requestId;
-    setFull({ photoId: photo.id, requestId, status: 'loading' });
-  };
-  const settleFull = (requestId: number, status: 'ready' | 'error') => {
-    setFull((current) => current?.requestId === requestId && current.photoId === photo.id ? { ...current, status } : current);
-  };
-  const fullLabel = activeFull?.status === 'loading'
-    ? 'Loading full resolution…'
-    : activeFull?.status === 'ready'
-      ? 'Full resolution loaded'
-      : activeFull?.status === 'error'
-        ? 'Retry full resolution'
-        : 'Full resolution';
-  return <dialog className="photo-dialog" ref={dialog} onCancel={(event) => { event.preventDefault(); onClose(); }} onKeyDown={(event) => {
+  return <dialog className="photo-dialog" ref={dialog} aria-labelledby="photo-viewer-title" aria-describedby="photo-viewer-count" onCancel={event => { event.preventDefault(); onClose(); }} onKeyDown={event => {
     trapFocus(event);
     if (event.key === 'ArrowRight') { event.preventDefault(); step(1); }
     if (event.key === 'ArrowLeft') { event.preventDefault(); step(-1); }
-  }} aria-labelledby="photo-series-title" aria-describedby="photo-series-count">
-    <header><span>Ci Song / Photography</span><button type="button" onClick={onClose} aria-label="Close series">Close <X size={20} aria-hidden="true" /></button></header>
-    <div className="photo-dialog-body">
-      <div className="photo-dialog-title"><div><h2 id="photo-series-title">{item.title}</h2><p>{item.category}</p></div><p id="photo-series-count" aria-live="polite" aria-atomic="true">{number(frame + 1)} / {number(photos.length)}</p></div>
-      <div className="photo-dialog-frame" onTouchStart={(event) => { const touch = event.touches[0]; touchStart.current = event.touches.length === 1 && touch ? { id: touch.identifier, x: touch.clientX, y: touch.clientY } : null; }} onTouchCancel={() => { touchStart.current = null; }} onTouchEnd={(event) => { const start = touchStart.current; const end = Array.from(event.changedTouches).find((touch) => touch.identifier === start?.id); if (start && end && event.touches.length === 0) { const x = end.clientX - start.x; const y = end.clientY - start.y; if (Math.abs(x) > 48 && Math.abs(x) > Math.abs(y) * 1.2) step(x < 0 ? 1 : -1); } touchStart.current = null; }}>
-        <ManagedPhoto key={photo.id} photo={photo} sizes="(max-width: 700px) 100vw, 88vw" priority className="photo-dialog-image" />
-        {original && activeFull && <OriginalPhoto
-          key={`${photo.id}-${activeFull.requestId}`}
-          photo={photo}
-          requestKey={activeFull.requestId}
-          className={`photo-dialog-image photo-dialog-original${activeFull.status === 'ready' ? ' is-ready' : ''}`}
-          onReady={() => settleFull(activeFull.requestId, 'ready')}
-          onFailure={() => settleFull(activeFull.requestId, 'error')}
-        />}
-      </div>
-      {original && <div className="photo-resolution">
-        <button type="button" className="photo-resolution-button" onClick={() => { if (activeFull?.status !== 'loading' && activeFull?.status !== 'ready') requestFull(); }} aria-disabled={activeFull?.status === 'loading' || activeFull?.status === 'ready'}>{fullLabel}</button>
-        <div className="photo-resolution-detail">
-          {!activeFull && <span>{original.width} × {original.height}{fileSize(original.bytes) ? ` · ${fileSize(original.bytes)}` : ''}</span>}
-          {activeFull?.status === 'loading' && <span role="status" aria-live="polite">Loading the original image…</span>}
-          {activeFull?.status === 'ready' && <span role="status" aria-live="polite">Full resolution ready.</span>}
-          {activeFull?.status === 'error' && <><span role="alert">Couldn’t load full resolution.</span><a href={original.src} target="_blank" rel="noreferrer">Open original file <ArrowUpRight size={14} aria-hidden="true" /></a></>}
-        </div>
-      </div>}
-      {photos.length > 1 && <div className="photo-dialog-controls"><button type="button" onClick={() => step(-1)} aria-label="Previous photograph"><ArrowLeft size={22} aria-hidden="true" /></button><span aria-hidden="true">{number(frame + 1)} / {number(photos.length)}</span><button type="button" onClick={() => step(1)} aria-label="Next photograph"><ArrowRight size={22} aria-hidden="true" /></button></div>}
-    </div>
+  }}>
+    <header className="photo-dialog-header"><div><h2 id="photo-viewer-title">{series?.title}</h2><p id="photo-viewer-count" aria-live="polite" aria-atomic="true">{number(frame + 1)} / {number(photos.length)}</p></div><button type="button" onClick={onClose} aria-label="Close photograph">Close <X size={20} aria-hidden="true" /></button></header>
+    <div className="photo-dialog-stage" onTouchStart={event => { const touch = event.touches[0]; touchStart.current = event.touches.length === 1 && touch ? { id: touch.identifier, x: touch.clientX, y: touch.clientY } : null; }} onTouchCancel={() => { touchStart.current = null; }} onTouchEnd={event => {
+      const start = touchStart.current;
+      const end = Array.from(event.changedTouches).find(touch => touch.identifier === start?.id);
+      if (start && end && event.touches.length === 0) {
+        const x = end.clientX - start.x, y = end.clientY - start.y;
+        if (Math.abs(x) > 48 && Math.abs(x) > Math.abs(y) * 1.2) step(x < 0 ? 1 : -1);
+      }
+      touchStart.current = null;
+    }}><ViewerImage key={photo.id} photo={photo} /></div>
+    <div className="photo-dialog-controls"><button type="button" onClick={() => step(-1)} aria-label="Previous photograph"><ArrowLeft size={22} aria-hidden="true" /></button><span>Ci Song / Photography</span><button type="button" onClick={() => step(1)} aria-label="Next photograph"><ArrowRight size={22} aria-hidden="true" /></button></div>
   </dialog>;
+}
+
+function ViewerImage({ photo }: { photo: PhotographyPhoto }) {
+  const [status, setStatus] = useState<'loading' | 'ready' | 'error'>('loading');
+  const [request, setRequest] = useState(0);
+  const [previewFailed, setPreviewFailed] = useState(false);
+  return <>
+    <div className="photo-dialog-frame">
+      <ManagedPhoto photo={photo} sizes="100vw" priority className="photo-dialog-image" onFailure={() => setPreviewFailed(true)} />
+      {previewFailed && status !== 'ready' && <span className="photo-media-loading">{status === 'error' ? 'Image unavailable' : 'Loading photograph…'}</span>}
+      {photo.original && <OriginalPhoto key={request} photo={photo} requestKey={request} className={`photo-dialog-image photo-dialog-original${status === 'ready' ? ' is-ready' : ''}`} onReady={() => setStatus('ready')} onFailure={() => setStatus('error')} />}
+    </div>
+    <div className="photo-resolution">
+      {photo.original && <>
+        <span role="status" aria-live="polite">{status === 'loading' ? 'Loading full resolution…' : status === 'ready' ? `Full resolution · ${photo.original.width} × ${photo.original.height}${photo.original.hdr ? ' · HDR' : ''}` : previewFailed ? 'Couldn’t load photograph.' : 'Showing preview.'}</span>
+        {(status === 'error' || request > 0) && <button type="button" aria-disabled={status !== 'error'} onClick={() => { if (status === 'error') { setStatus('loading'); setRequest(value => value + 1); } }}>{status === 'ready' ? 'Full resolution loaded' : status === 'loading' ? 'Loading…' : 'Retry full resolution'}</button>}
+        {status === 'error' && <a href={photo.original.src} target="_blank" rel="noreferrer">Open original <ArrowUpRight size={14} aria-hidden="true" /></a>}
+      </>}
+    </div>
+  </>;
 }

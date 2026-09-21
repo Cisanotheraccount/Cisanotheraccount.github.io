@@ -3,7 +3,7 @@ import { createHash } from 'node:crypto';
 import { copyFile, mkdir, readFile, readdir, rm, writeFile } from 'node:fs/promises';
 import { build } from 'vite';
 import path from 'node:path';
-import { appNamespace, catalogOutputPath, photoEntry, projectRoot, releaseManifestPath, validatePhotographyCatalog } from './photography-release.mjs';
+import { appNamespace, catalogOutputPath, photoEntry, photographyBackgrounds, projectRoot, releaseManifestPath, validatePhotographyCatalog } from './photography-release.mjs';
 
 const args = process.argv.slice(2);
 const value = flag => { const index = args.indexOf(flag); return index === -1 ? undefined : args[index + 1]; };
@@ -45,6 +45,11 @@ for (const resource of summary.variantPaths) {
   const source = path.join(publicRoot, resource); const destination = path.join(output, resource);
   await mkdir(path.dirname(destination), { recursive: true }); await copyFile(source, destination);
 }
+for (const background of photographyBackgrounds) {
+  const source = path.join(publicRoot, background.nativeSource); const destination = path.join(output, background.path);
+  await mkdir(path.dirname(destination), { recursive: true }); await copyFile(source, destination);
+  assert.equal(sha256(await readFile(destination)), sha256(await readFile(source)), `Photography background copy changed bytes: ${background.path}`);
+}
 await mkdir(path.dirname(path.join(output, catalogOutputPath)), { recursive: true });
 await writeFile(path.join(output, catalogOutputPath), JSON.stringify(catalog) + '\n');
 assert(await readFile(path.join(output, photoEntry), 'utf8'), 'Vite did not produce photography/index.html');
@@ -60,11 +65,16 @@ if (commitReceipt) {
     await mkdir(path.dirname(path.join(publicRoot, source)), { recursive: true });
     await copyFile(path.join(output, source), path.join(publicRoot, source));
   }
+  for (const background of photographyBackgrounds) {
+    await mkdir(path.dirname(path.join(publicRoot, background.path)), { recursive: true });
+    await copyFile(path.join(output, background.path), path.join(publicRoot, background.path));
+  }
   const files = [await receiptFile(publicRoot, photoEntry, entrySource)];
   for (const rel of await filesUnder(path.join(output, appNamespace))) {
     files.push(await receiptFile(publicRoot, appNamespace + rel, appNamespace + rel));
   }
   for (const resource of summary.variantPaths) files.push(await receiptFile(publicRoot, resource, resource));
+  for (const background of photographyBackgrounds) files.push(await receiptFile(publicRoot, background.path, background.path));
   const paths = new Set(files.map(file => file.path));
   assert(paths.has(catalogOutputPath), 'Release receipt is missing the public catalog');
   assert.equal(paths.size, files.length, 'Release receipt has duplicate paths');

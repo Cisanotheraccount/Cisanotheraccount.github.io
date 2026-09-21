@@ -87,7 +87,7 @@ export function ManagedPhoto({ photo, sizes, priority = false, className, loadin
 }
 
 /**
- * Mounted only after a visitor requests the original. It stays visually hidden
+ * Mounted automatically for the current photograph in the fullscreen viewer. It stays visually hidden
  * until the browser has loaded and decoded the file, leaving the preview in place.
  */
 export function OriginalPhoto({ photo, requestKey, className, onReady, onFailure }: OriginalPhotoProps) {
@@ -111,7 +111,7 @@ export function OriginalPhoto({ photo, requestKey, className, onReady, onFailure
         onReady();
         return;
       }
-      void image.decode().then(onReady, onFailure);
+      void image.decode().then(() => { if (image.isConnected) onReady(); }, () => { if (image.isConnected) onFailure(); });
     }}
     onError={onFailure}
   />;

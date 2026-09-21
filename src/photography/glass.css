@@ -1,0 +1,129 @@
+/* The optical filter is the project's vendored simple-liquid-glass material.
+   Copyright (c) 2026 Sam Asante, MIT. Notices remain beside the vendored source
+   in src/photography/vendor/simple-liquid-glass/THIRD_PARTY_NOTICES.md. */
+.photo-glass-nav {
+  --photo-glass-index: 0;
+  position: fixed;
+  z-index: 80;
+  top: 20px;
+  right: 16px;
+  width: min(244px, calc(100vw - 176px));
+  min-width: 208px;
+  height: 52px;
+  padding: 4px;
+  overflow: hidden;
+  border: 0;
+  border-radius: 26px;
+  background: transparent;
+  box-shadow: 0 8px 26px #00000021, 0 1px 3px #00000018;
+  color: #fff;
+  isolation: isolate;
+}
+
+.photo-glass-nav[data-active='concert'] { --photo-glass-index: 1; }
+
+.photo-glass-nav__defs {
+  position: absolute;
+  width: 0;
+  height: 0;
+  overflow: hidden;
+  pointer-events: none;
+}
+
+.photo-glass-nav__optics {
+  position: absolute;
+  z-index: 0;
+  inset: 0;
+  border-radius: inherit;
+  background: linear-gradient(155deg, #ffffff0e 0%, #ffffff04 40%, #ffffff02 75%, #ffffff08);
+  box-shadow: inset 0 .8px .9px #ffffff9c, inset 0 -.65px 1px #ffffff40;
+  pointer-events: none;
+}
+
+.photo-glass-nav__optics::after {
+  position: absolute;
+  inset: 0;
+  border-radius: inherit;
+  background: rgb(0 0 0 / 3.5%);
+  content: '';
+}
+
+.photo-glass-nav[data-glass='frosted'] .photo-glass-nav__optics {
+  background: linear-gradient(150deg, #f0f4ff0a, #ffffff02 52%, #eaf2ff06);
+  box-shadow: inset 0 .5px .5px #ffffff73, inset 0 -.5px 1px #ffffff20;
+}
+
+.photo-glass-nav[data-glass='frosted'] .photo-glass-nav__optics::after {
+  background: rgb(0 0 0 / 8%);
+}
+
+.photo-glass-nav__indicator {
+  position: absolute;
+  z-index: 1;
+  top: 4px;
+  left: 4px;
+  width: calc((100% - 8px) / 2);
+  height: 44px;
+  border-radius: 22px;
+  background: linear-gradient(150deg, #ffffff19, #ffffff08);
+  box-shadow: inset 0 .5px 1px #ffffff40, 0 1px 4px #0000000d;
+  transform: translate3d(calc(var(--photo-glass-index) * 100%), 0, 0);
+  transition: transform 500ms cubic-bezier(.22, 1, .36, 1);
+  pointer-events: none;
+}
+
+.photo-glass-nav__links {
+  position: relative;
+  z-index: 2;
+  display: grid;
+  grid-template-columns: repeat(2, minmax(0, 1fr));
+  width: 100%;
+  height: 44px;
+}
+
+.photo-glass-nav__links a {
+  display: inline-flex;
+  min-width: 44px;
+  min-height: 44px;
+  align-items: center;
+  justify-content: center;
+  padding: 0 12px;
+  border-radius: 22px;
+  color: #fff;
+  font-family: Inter, sans-serif;
+  font-size: 12px;
+  font-weight: 600;
+  letter-spacing: .01em;
+  line-height: 1;
+  text-align: center;
+  text-decoration: none;
+  text-shadow: 0 1px 2px #000b;
+  -webkit-text-stroke: .35px #000000d9;
+  paint-order: stroke fill;
+  -webkit-tap-highlight-color: transparent;
+}
+
+.photo-glass-nav__links a:focus-visible {
+  outline: 2px solid #fff;
+  outline-offset: -3px;
+  box-shadow: 0 0 0 2px #000b;
+}
+
+@media (hover: hover) and (pointer: fine) {
+  .photo-glass-nav__links a:hover { text-shadow: 0 1px 2px #000, 0 0 8px #fff6; }
+}
+
+@media (max-width: 600px) {
+  .photo-glass-nav {
+    top: 12px;
+    right: 8px;
+    width: min(208px, calc(100vw - 112px));
+    min-width: 164px;
+  }
+
+  .photo-glass-nav__links a { padding-inline: 8px; }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .photo-glass-nav__indicator { transition: none; }
+}

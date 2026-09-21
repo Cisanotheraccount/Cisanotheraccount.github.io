@@ -10,6 +10,11 @@ export const photoNamespace = 'photography-assets/';
 export const appNamespace = 'photography-assets/app/';
 export const releaseManifestPath = appNamespace + 'release-manifest.json';
 export const catalogOutputPath = appNamespace + 'catalog.json';
+export const photographyBackgrounds = Object.freeze([
+  { path: photoNamespace + 'background/stars-1536.jpg', nativeSource: 'v-next/background/stars-1536.jpg' },
+  { path: photoNamespace + 'background/stars-2560.jpg', nativeSource: 'v-next/background/stars-2560.jpg' },
+  { path: photoNamespace + 'background/stars-4096.jpg', nativeSource: 'v-next/background/stars-4096.jpg' },
+]);
 const sha256 = bytes => createHash('sha256').update(bytes).digest('hex');
 const mimeFor = file => ({
   '.html': 'text/html; charset=utf-8', '.js': 'text/javascript; charset=utf-8', '.css': 'text/css; charset=utf-8',
@@ -131,6 +136,9 @@ export async function readPhotographyRelease(releaseRoot = path.join(projectRoot
     assert.equal(file.mime, mimeFor(file.path), `Incorrect MIME receipt: ${file.path}`);
   }
   assert(seen.has(photoEntry) && seen.has(catalogOutputPath), 'Release must include photography entry and catalog');
+  for (const background of photographyBackgrounds) {
+    assert(seen.has(background.path), `Release must include photography background: ${background.path}`);
+  }
   const catalog = JSON.parse(await readFile(path.join(releaseRoot, catalogOutputPath), 'utf8'));
   const summary = validatePhotographyCatalog(catalog);
   assert.deepEqual({ photos: summary.photos, landscapes: summary.landscapes, live: summary.live, hdrPhotos: summary.hdrPhotos }, { photos: manifest.catalog.photos, landscapes: manifest.catalog.landscapes, live: manifest.catalog.live, hdrPhotos: manifest.catalog.hdrPhotos }, 'Catalog summary changed');

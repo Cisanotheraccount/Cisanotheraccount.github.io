@@ -5,6 +5,7 @@
  * Source records and web-export provenance: public/portfolio/asset-sources.json.
  * Unknown dates and individual responsibilities are deliberately omitted.
  */
+import { localizeMain } from '../../localization/main';
 export interface PortfolioProject {
   id: string;
   slug: string;
@@ -32,7 +33,7 @@ export interface PortfolioProject {
   };
 }
 
-export const portfolioProjects: PortfolioProject[] = [
+const sourcePortfolioProjects: PortfolioProject[] = [
   {
     id: 'P04',
     slug: 'hypnos-cockpit',
@@ -444,6 +445,7 @@ function selectProjects(slugs: readonly string[]): PortfolioProject[] {
     return project;
   });
 }
+export const portfolioProjects = localizeMain(sourcePortfolioProjects);
 export const workProjects = selectProjects(['psytrain', 'shotflow', 'introme', 'hypnos-cockpit', 'deal-points', 'orbit', 'cyber-city', 'crystal-city', 'last-one', 'gala-x-ci-vr-gallery']);
 export const floatingProjects = workProjects.slice(0, 6);
 export const heroProjects = workProjects.slice(0, 3);

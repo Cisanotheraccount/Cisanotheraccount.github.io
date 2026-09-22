@@ -1,3 +1,4 @@
+import { sceneText } from '../localization/scene';
 import { useEffect, useRef, useState } from 'react';
 import type { GlassScene } from './glassScene';
 import { heroPhoto, subscribeHeroPhoto } from './heroPhoto';
@@ -78,7 +79,7 @@ export function GlassHero({ disabled, suspended }: { disabled: boolean; suspende
     if (!ready || disabled || suspended || !host.current || !touch.current) return;
     return bindHeroTouch(touch.current, host.current);
   }, [ready, disabled, suspended]);
-  return <div ref={area} className="gxc-wordmark-space" role="img" aria-label="galaxci, a connected glass signature against a starry sky">
+  return <div ref={area} className="gxc-wordmark-space" role="img" aria-label={sceneText('galaxci, a connected glass signature against a starry sky')}>
     {!ready && <div className="gxc-wordmark-fallback"><img src="/v-next/galaxci-glass-poster.webp" alt="" width="2133" height="933"/></div>}
     <div ref={host} className="gxc-canvas" data-ready={ready ? 'true' : 'false'} aria-hidden="true"/>
     <div ref={touch} className="gxc-glass-touch" data-touch-available="false" data-touch-state="inactive" aria-hidden="true"/>

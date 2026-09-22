@@ -3,11 +3,12 @@ import { dealPointsCase } from './cases/dealPointsContent';
 import { orbitCase } from './cases/orbitContent';
 import { psytrainCase } from './cases/psytrainContent';
 import type { HarvardCaseData } from './harvardCaseTypes';
+import { localizeHarvard } from '../localization/harvard';
 
 const cases: Record<string, HarvardCaseData> = {
-  psytrain: psytrainCase,
-  'hypnos-cockpit': hypnosCockpitCase,
-  'deal-points': dealPointsCase,
-  orbit: orbitCase,
+  psytrain: localizeHarvard(psytrainCase),
+  'hypnos-cockpit': localizeHarvard(hypnosCockpitCase),
+  'deal-points': localizeHarvard(dealPointsCase),
+  orbit: localizeHarvard(orbitCase),
 };
 export const harvardCase = (slug: string): HarvardCaseData | undefined => cases[slug];

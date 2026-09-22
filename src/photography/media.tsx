@@ -1,5 +1,6 @@
 import { useState, type ImgHTMLAttributes } from 'react';
 import type { PhotographyPhoto, PhotoVariant } from './catalog.types';
+import { photographyText as t } from '../localization/photography';
 
 type ManagedPhotoProps = Omit<ImgHTMLAttributes<HTMLImageElement>, 'src' | 'srcSet' | 'width' | 'height' | 'alt'> & {
   photo: PhotographyPhoto;
@@ -48,12 +49,12 @@ export function ManagedPhoto({ photo, sizes, priority = false, className, loadin
   const fallback = closestVariant(nativeCandidates, photo.width) ?? closestVariant(webp, photo.width);
 
   if (!fallback && !onFailure) {
-    return <div className="photo-media-error" role="status">Image unavailable</div>;
+    return <div className="photo-media-error" role="status">{t('Image unavailable')}</div>;
   }
 
   if (failed) {
     if (onFailure) return null;
-    return <div className="photo-media-error" role="status"><span>Image unavailable</span><button type="button" onClick={() => { setFailed(false); setLoaded(false); setForceJpeg(true); setRetryKey((value) => value + 1); }}>Retry</button></div>;
+    return <div className="photo-media-error" role="status"><span>{t('Image unavailable')}</span><button type="button" onClick={() => { setFailed(false); setLoaded(false); setForceJpeg(true); setRetryKey((value) => value + 1); }}>{t('Retry')}</button></div>;
   }
 
   if (!fallback) return null;
@@ -66,7 +67,7 @@ export function ManagedPhoto({ photo, sizes, priority = false, className, loadin
     sizes={sizes}
     width={photo.width}
     height={photo.height}
-    alt={photo.alt}
+    alt={t(photo.alt)}
     loading={loading ?? (priority ? 'eager' : 'lazy')}
     decoding="async"
     {...(priority ? { fetchPriority: 'high' as const } : {})}
@@ -82,7 +83,7 @@ export function ManagedPhoto({ photo, sizes, priority = false, className, loadin
 
   return <div className="photo-media" aria-busy={!loaded}>
     {media}
-    {!loaded && <span className="photo-media-loading" role="status">Loading image</span>}
+    {!loaded && <span className="photo-media-loading" role="status">{t('Loading image')}</span>}
   </div>;
 }
 

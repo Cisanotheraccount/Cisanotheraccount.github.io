@@ -1,5 +1,6 @@
 import { useLayoutEffect, useRef } from 'react';
 import { motion, useMotionValue, useTransform, type MotionValue } from 'motion/react';
+import { t } from '../localization/main';
 import type { MouseEvent } from 'react';
 import { BrandMark } from './BrandMark';
 
@@ -33,6 +34,6 @@ export function DetailBrand({ progress, entering, fromHome, onHome }: {
       document.removeEventListener('gxc:brand-layout', measure);
     };
   }, [homeX, homeY, centerX, centerY]);
-  return <motion.a ref={link} className="gxc-brand gxc-detail-brand" href="#top" aria-label="Gala X Ci, back to home" onClick={onHome}
+  return <motion.a ref={link} className="gxc-brand gxc-detail-brand" href="#top" aria-label={t('Gala X Ci, back to home')} onClick={onHome}
     style={{ x, y }}><BrandMark secondary /></motion.a>;
 }

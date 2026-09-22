@@ -1,0 +1,164 @@
+{
+  "version": 1,
+  "locale": "zh-CN",
+  "baseVersion": "2.3",
+  "files": [
+    {
+      "path": "assets/zh/glassScene-Bwo0rQ1m.js",
+      "bytes": 1916369,
+      "sha256": "be0b3b899315fad09651373297db4ec3eb53b60a5d1138388221bde5675a3e52"
+    },
+    {
+      "path": "assets/zh/photography-C6m5WNGB.js",
+      "bytes": 64363,
+      "sha256": "9c9c396eb65be31536cc0cde66c011ee552cdad6e12944efe59f479fb01b890a"
+    },
+    {
+      "path": "assets/zh/photography-DO_CSZqJ.css",
+      "bytes": 12907,
+      "sha256": "93487b128b086e6aba8d4453026cb547b3dc1c2f541e5a3c573200fd0f397f7f"
+    },
+    {
+      "path": "assets/zh/portfolio-2fK2uLPR.css",
+      "bytes": 114861,
+      "sha256": "3858a27c12c8690c7d8c3c7143092427fb8c978229192f70f1e8ee06f124fc40"
+    },
+    {
+      "path": "assets/zh/portfolio-DqqIU93X.js",
+      "bytes": 873480,
+      "sha256": "049d143e1c28ddc9a5489f84aac2055f4384d7b190eb261791f6e5a16c6cfd8c"
+    },
+    {
+      "path": "assets/zh/three.module-D3cuFTkQ.js",
+      "bytes": 532918,
+      "sha256": "d145167acc6b6fcec06711740f934da04076df721cd9f91bbc853ed23c0d9530"
+    },
+    {
+      "path": "assets/zh/workScene-Dso0LUjY.js",
+      "bytes": 19877,
+      "sha256": "6599ce2815ced6e3b9b4d652f3d5903a2010f378385715d964d23eed0f485553"
+    },
+    {
+      "path": "assets/zh/zh-D--QzK-K.js",
+      "bytes": 147069,
+      "sha256": "6c5c47f2e4aa0cadec96dec9117e728c861f8b8616196d5719794f1b7cbf01e1"
+    },
+    {
+      "path": "assets/zh/zh-ffhG3Rg4.css",
+      "bytes": 814,
+      "sha256": "1fd434c3b17b0e1c41834157157b89f44a2f9b85af2a453cbfb746fc6b544233"
+    },
+    {
+      "path": "zh/index.html",
+      "bytes": 22020,
+      "sha256": "5b58d22ba6f834acdc4522129207cca4308caae4699284f341d55335a7512a7e"
+    },
+    {
+      "path": "zh/photography/index.html",
+      "bytes": 753,
+      "sha256": "be74dabb20b5fafd6d750380bb14659595e6b1caf61a95aa7cfaf471e92d230c"
+    }
+  ],
+  "sharedMedia": [
+    {
+      "path": "assets/2-3/ai-tool-1600-CWQEL7yc.webp",
+      "bytes": 194388,
+      "sha256": "8e12ee0e1c9b4547914f7834b7dbbe22937f3ef7050ff90d408e1307b69b4731"
+    },
+    {
+      "path": "assets/2-3/ai-tool-800-HXoMFKR-.webp",
+      "bytes": 72756,
+      "sha256": "9737b952ba91bdac7ef1da39cf231a9a183ba830dd4b7fbc054e1e23bcce34a9"
+    },
+    {
+      "path": "assets/2-3/character-1600-DAh_IbGd.webp",
+      "bytes": 216710,
+      "sha256": "33f72541bd50c8a60265495eb73bef2c207060d78d7a92466df3c52ac530796f"
+    },
+    {
+      "path": "assets/2-3/character-800-Dhz2OFcg.webp",
+      "bytes": 71666,
+      "sha256": "e459f1e6191670ddd4668a4b47c221ef1ff50dd030e54cd64aab71c0d8b0932d"
+    },
+    {
+      "path": "assets/2-3/concept-avatar-626-DCs8bbxX.webp",
+      "bytes": 64292,
+      "sha256": "a7a8a4144d838217a77078713878650800a174bfe075a142888b619c0489d5a9"
+    },
+    {
+      "path": "assets/2-3/logo-highlight-B6Y-wOU1.png",
+      "bytes": 55770,
+      "sha256": "f27a8e718f23a33847f6ad2438bb49245d61f0350962993fd48ac2b39bf8d640"
+    },
+    {
+      "path": "assets/2-3/logo-mask-BxkHjDUw.png",
+      "bytes": 9063,
+      "sha256": "2a57a4305c21b341fce5617f0d59a1c36868f917e8446d28f9f020951a27caae"
+    },
+    {
+      "path": "assets/2-3/logo-optics-DXEfhW6D.png",
+      "bytes": 78801,
+      "sha256": "a7a1a1bcf5b1baa3c8ad811e3b8f7102464eaf00d54e768484b543d93e91b993"
+    },
+    {
+      "path": "assets/2-3/portrait-1600-MHuIq4X0.webp",
+      "bytes": 58518,
+      "sha256": "6924b9ebad56f2de0c62647b5b18f2159083c4b6fc17df0ab6e972f7ed9e42a1"
+    },
+    {
+      "path": "assets/2-3/portrait-800-Dvw9b5Ow.webp",
+      "bytes": 22430,
+      "sha256": "390cd6e874040ce3bc16b848d5f8a7dd93057d9e7808b622f5858d8890eaa5ac"
+    },
+    {
+      "path": "assets/2-3/proposal-website-1600-C3DVsB_h.webp",
+      "bytes": 240246,
+      "sha256": "f4d2f19d062628ebf48e3309553432d026e70ba994960dc3da427f74e16056fd"
+    },
+    {
+      "path": "assets/2-3/proposal-website-800-sV9L0G_v.webp",
+      "bytes": 80954,
+      "sha256": "c0e37b757f189a7a1b8a7f130dd8e64a7cb438a3c59ac8c53f994779c6d0dbde"
+    },
+    {
+      "path": "assets/2-3/recording-original-1600-Bcvizyx9.webp",
+      "bytes": 277174,
+      "sha256": "8db62ff28fe6b76406c7cca6b1ddbfed538e28b588efcd21745ace153733d013"
+    },
+    {
+      "path": "assets/2-3/recording-original-800-CgfCJCrL.webp",
+      "bytes": 120430,
+      "sha256": "54a348dd0294a89c48ea703b46d5b34e738ad5be522d432e901032563bd40b7c"
+    },
+    {
+      "path": "assets/2-3/scan-1600-CZNYfNZW.webp",
+      "bytes": 569066,
+      "sha256": "2ff6cd6b15eb1621b39edf8a1be9d7de50705b4c2cdcef944378d1b22bc5ea95"
+    },
+    {
+      "path": "assets/2-3/scan-800-CgmPwy7O.webp",
+      "bytes": 181812,
+      "sha256": "5c7d9d1d9101c00df4afdc5529dee51a15bed5a7f71194757b29bdea8ac440ab"
+    },
+    {
+      "path": "assets/2-3/voice-settings-1600-DKLE3Z6I.webp",
+      "bytes": 40916,
+      "sha256": "1353de82670ba4c3b0565f1853f93c6afc35da59e73819dd6df684ba798f5d77"
+    },
+    {
+      "path": "assets/2-3/voice-settings-800-B-9991gk.webp",
+      "bytes": 16032,
+      "sha256": "b1624866d217025ffed297bc55de56996b691456fa80a225064d8bb3887e6fbf"
+    },
+    {
+      "path": "assets/2-3/website-1600-fVWwMTYQ.webp",
+      "bytes": 243186,
+      "sha256": "079e745dddfecfb8ff7b4d21ced6d8ae4e202a810b3526c0639b7cb41690ac48"
+    },
+    {
+      "path": "assets/2-3/website-800-D-IB67Zo.webp",
+      "bytes": 62608,
+      "sha256": "90dae4b9d7a572eb41871754412201c19f31641703fe2ca7e3351a15fff013f0"
+    }
+  ]
+}

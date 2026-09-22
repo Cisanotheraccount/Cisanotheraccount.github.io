@@ -19,7 +19,11 @@
     "build:2.3": "tsc -p tsconfig.v2-3.json && node scripts/build-integrated-v23.mjs",
     "preview:2.3": "vite preview --host 127.0.0.1 --outDir .cache/integrated-2-3-dist --port 5206 --strictPort",
     "test:release:2.3": "node scripts/test-release-v23.mjs",
-    "release:latest": "node scripts/promote-latest-release.mjs"
+    "release:latest": "node scripts/promote-latest-release.mjs",
+    "dev:zh": "vite --config vite.zh.config.ts",
+    "build:zh": "tsc -p tsconfig.zh.json && node scripts/build-zh.mjs",
+    "preview:zh": "vite preview --host 127.0.0.1 --outDir .cache/zh-dist --port 5219 --strictPort",
+    "test:zh": "node scripts/test-zh.mjs"
   },
   "dependencies": {
     "lenis": "1.3.26",

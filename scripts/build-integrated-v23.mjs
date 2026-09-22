@@ -1,4 +1,5 @@
 import { build } from 'vite';
+import { applyZhRelease } from './zh-release.mjs';
 import react from '@vitejs/plugin-react';
 import assert from 'node:assert/strict';
 import { cp, mkdir, readFile, rename, rm, writeFile } from 'node:fs/promises';
@@ -41,6 +42,7 @@ try {
   }
   assert.equal(sha256(await readFile(contentSource)), contentSha, 'IntroMe changed during compilation');
   const compiled = await captureCompiled23(candidate, contentSha);
+  await applyZhRelease(candidate);
   const report = await verifyOutput23(candidate, compiled);
   await mkdir(path.dirname(output23), { recursive: true });
   await rm(previousOutput, { recursive: true, force: true });

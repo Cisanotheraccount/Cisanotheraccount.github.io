@@ -1,4 +1,5 @@
 import assert from 'node:assert/strict';
+import { applyZhRelease } from './zh-release.mjs';
 import { mkdir, readFile, writeFile } from 'node:fs/promises';
 import path from 'node:path';
 import { fileURLToPath } from 'node:url';
@@ -83,6 +84,7 @@ export async function promoteLatest(directory, { verifyOnly = false } = {}) {
   for (const [filename, contents] of generated) {
     assert.equal(await readFile(path.join(directory, filename), 'utf8'), contents, `Generated entry differs: ${filename}`);
   }
+  await applyZhRelease(directory, { verifyOnly });
   return { version, stable: '/galaxci/', target: serveAtRoot && customDomain === 'galaxci.com' ? '/' : `/galaxci/${version}/`, rootEntry: serveAtRoot, customDomain, legacyRoutes: Object.keys(redirects).length, archive: '/galaxci/2.0/', verified: true };
 }
 

@@ -1,4 +1,5 @@
 import assert from 'node:assert/strict';
+import { applyZhRelease } from './zh-release.mjs';
 import { createHash } from 'node:crypto';
 import { copyFile, mkdir, readFile, readdir } from 'node:fs/promises';
 import path from 'node:path';
@@ -104,6 +105,7 @@ export async function verifyOutput23(directory = output23, compiled) {
   const previousPaths = new Set(previous.files.map(file => file.path));
   const assetPaths = new Set(assets.files.map(file => file.path));
   const photographyPaths = new Set(photography.manifest.files.map(file => file.path));
+  const chinesePaths = new Set((await applyZhRelease(directory, { verifyOnly: true })).files.map(file => file.path));
   const compiledPaths = new Set();
   for (const file of compiled.files) {
     checkPath(file.path);
@@ -123,7 +125,7 @@ export async function verifyOutput23(directory = output23, compiled) {
   assert(html.includes('/assets/2-3/') && html.includes('2.3'), 'Missing independent 2.3 entry');
   assert(!/LOCAL DEMO|LOCAL PREVIEW|temporary preview/i.test(html), 'Local preview label in production entry');
   for (const rel of paths) {
-    assert(previousPaths.has(rel) || assetPaths.has(rel) || compiledPaths.has(rel) || photographyPaths.has(rel), 'Unregistered output file: ' + rel);
+    assert(previousPaths.has(rel) || assetPaths.has(rel) || compiledPaths.has(rel) || photographyPaths.has(rel) || chinesePaths.has(rel), 'Unregistered output file: ' + rel);
   }
   for (const rel of paths.filter(rel => rel === photoEntry || rel.startsWith('photography-assets/'))) {
     assert(photographyPaths.has(rel), 'Unregistered photography output file: ' + rel);

@@ -10,6 +10,7 @@ import {
 import { ArrowUpRight, Minus, Plus } from 'lucide-react';
 import type { PhotographyPhoto } from './catalog.types';
 import { ManagedPhoto, OriginalPhoto } from './media';
+import { photographyText as t } from '../localization/photography';
 import './viewerZoom.css';
 
 const MIN_SCALE = 1;
@@ -245,7 +246,7 @@ export function PhotoViewerImage({ photo, onStep }: { photo: PhotographyPhoto; o
       ref={viewport}
       className={`photo-zoom-viewport${view.scale > MIN_SCALE ? ' is-zoomed' : ''}${dragging ? ' is-dragging' : ''}`}
       role="region"
-      aria-label={`Zoomable photograph: ${photo.alt}`}
+      aria-label={`${t('Zoomable photograph: ')}${t(photo.alt)}`}
       tabIndex={0}
       data-zoom-scale={view.scale.toFixed(3)}
       data-zoom-x={view.x.toFixed(2)}
@@ -274,22 +275,22 @@ export function PhotoViewerImage({ photo, onStep }: { photo: PhotographyPhoto; o
         }}
       >
         <ManagedPhoto photo={photo} sizes="100vw" priority className="photo-dialog-image" draggable={false} onFailure={() => setPreviewFailed(true)} />
-        {previewFailed && status !== 'ready' && <span className="photo-media-loading">{status === 'error' ? 'Image unavailable' : 'Loading photograph…'}</span>}
+        {previewFailed && status !== 'ready' && <span className="photo-media-loading">{status === 'error' ? t('Image unavailable') : t('Loading photograph…')}</span>}
         {photo.original && <OriginalPhoto key={request} photo={photo} requestKey={request} className={`photo-dialog-image photo-dialog-original${status === 'ready' ? ' is-ready' : ''}`} onReady={() => setStatus('ready')} onFailure={() => setStatus('error')} />}
       </div>}
     </div>
     <div className="photo-viewer-meta">
-      <div className="photo-zoom-toolbar" role="toolbar" aria-label="Photograph zoom controls">
-        <button type="button" onClick={() => zoomAt(viewRef.current.scale / 1.25, 0, 0)} aria-label="Zoom out" aria-keyshortcuts="-"><Minus size={16} aria-hidden="true" /></button>
-        <output aria-live="polite" aria-label={`Zoom ${zoomLabel}`}>{zoomLabel}</output>
-        <button type="button" onClick={() => zoomAt(viewRef.current.scale * 1.25, 0, 0)} aria-label="Zoom in" aria-keyshortcuts="+"><Plus size={16} aria-hidden="true" /></button>
-        <button type="button" onClick={resetFit} aria-label="Fit image" aria-keyshortcuts="0">Fit</button>
+      <div className="photo-zoom-toolbar" role="toolbar" aria-label={t('Photograph zoom controls')}>
+        <button type="button" onClick={() => zoomAt(viewRef.current.scale / 1.25, 0, 0)} aria-label={t('Zoom out')} aria-keyshortcuts="-"><Minus size={16} aria-hidden="true" /></button>
+        <output aria-live="polite" aria-label={`${t('Zoom ')}${zoomLabel}`}>{zoomLabel}</output>
+        <button type="button" onClick={() => zoomAt(viewRef.current.scale * 1.25, 0, 0)} aria-label={t('Zoom in')} aria-keyshortcuts="+"><Plus size={16} aria-hidden="true" /></button>
+        <button type="button" onClick={resetFit} aria-label={t('Fit image')} aria-keyshortcuts="0">{t('Fit')}</button>
       </div>
       <div className="photo-resolution">
         {photo.original && <>
-          <span role="status" aria-live="polite">{status === 'loading' ? 'Loading full resolution…' : status === 'ready' ? `Full resolution · ${photo.original.width} × ${photo.original.height}${photo.original.hdr ? ' · HDR' : ''}` : previewFailed ? 'Couldn’t load photograph.' : 'Showing preview.'}</span>
-          {(status === 'error' || request > 0) && <button type="button" aria-disabled={status !== 'error'} onClick={() => { if (status === 'error') { setStatus('loading'); setRequest(value => value + 1); } }}>{status === 'ready' ? 'Full resolution loaded' : status === 'loading' ? 'Loading…' : 'Retry full resolution'}</button>}
-          {status === 'error' && <a href={photo.original.src} target="_blank" rel="noreferrer">Open original <ArrowUpRight size={14} aria-hidden="true" /></a>}
+          <span role="status" aria-live="polite">{status === 'loading' ? t('Loading full resolution…') : status === 'ready' ? `${t('Full resolution')} · ${photo.original.width} × ${photo.original.height}${photo.original.hdr ? ` · ${t('HDR')}` : ''}` : previewFailed ? t('Couldn’t load photograph.') : t('Showing preview.')}</span>
+          {(status === 'error' || request > 0) && <button type="button" aria-disabled={status !== 'error'} onClick={() => { if (status === 'error') { setStatus('loading'); setRequest(value => value + 1); } }}>{status === 'ready' ? t('Full resolution loaded') : status === 'loading' ? t('Loading…') : t('Retry full resolution')}</button>}
+          {status === 'error' && <a href={photo.original.src} target="_blank" rel="noreferrer">{t('Open original')} <ArrowUpRight size={14} aria-hidden="true" /></a>}
         </>}
       </div>
     </div>

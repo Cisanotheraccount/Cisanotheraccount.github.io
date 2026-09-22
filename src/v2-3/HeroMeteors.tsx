@@ -1,3 +1,4 @@
+import { sceneText } from '../localization/scene';
 import { useEffect, useId, useLayoutEffect, useRef, type MouseEvent, type SyntheticEvent } from 'react';
 import { floatingProjects, type PortfolioProject } from './content/portfolioData';
 import { getFrameSnapshot, requestFrame, scrollToPage, subscribeFrame } from './runtime';
@@ -230,8 +231,8 @@ export function HeroMeteors({ paused, reduced, suspended, onOpen }: HeroMeteorsP
       <path d="M4 7 L500 5.8 L500 8.2 Z" fill={`url(#${gradient}-${index})`}/><circle cx="4" cy="7" r="1.9" fill="#f8faff"/>
     </svg>)}</div>
     <div className="gxc-project-fallback" aria-hidden="true" data-reduced={reduced ? 'true' : 'false'}>{floatingProjects.map((project, index) => <div className="gxc-meteor-visual" data-project={project.slug} key={project.id} ref={node => { fallbackMarks.current[index] = node; }} style={{ display: 'none' }}><span className="gxc-meteor-symbol"><img src={'/v-next/project-marks/' + projectMarks[project.slug].file} onError={event => recoverMark(event, project.slug)} width={38} height={38} alt=""/></span><span className="gxc-meteor-label">{projectMarks[project.slug].shortName}</span></div>)}</div>
-    <div ref={root} className="gxc-meteors" data-reduced={reduced ? 'true' : 'false'} aria-label="Explore projects in the sky" role="navigation">
-      {floatingProjects.map((project, index) => <a key={project.id} ref={element => { anchors.current[index] = element; }} className="gxc-meteor-mark" data-project={project.slug} data-entry="hero" href={'#/work/' + project.slug} tabIndex={-1} aria-label={'Explore ' + project.title} hidden={initiallyHidden.current}
+    <div ref={root} className="gxc-meteors" data-reduced={reduced ? 'true' : 'false'} aria-label={sceneText('Explore projects in the sky')} role="navigation">
+      {floatingProjects.map((project, index) => <a key={project.id} ref={element => { anchors.current[index] = element; }} className="gxc-meteor-mark" data-project={project.slug} data-entry="hero" href={'#/work/' + project.slug} tabIndex={-1} aria-label={sceneText('Explore ') + project.title} hidden={initiallyHidden.current}
         onFocus={() => freeze(index, 'focused', true)} onBlur={() => { freeze(index, 'focused', false); freeze(index, 'pressed', false); }}
         onPointerEnter={event => { if (event.pointerType === 'mouse') freeze(index, 'hovered', true); }} onPointerLeave={() => freeze(index, 'hovered', false)}
         onPointerDown={() => freeze(index, 'pressed', true)} onPointerCancel={() => freeze(index, 'pressed', false)} onClick={event => onOpen(event, project)}>

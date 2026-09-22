@@ -1,5 +1,6 @@
 import type { ReactNode, RefObject } from 'react';
 import type { HarvardCaseData, HarvardMedia, HarvardSection } from './harvardCaseTypes';
+import { tHarvard } from '../localization/harvard';
 import './harvardCase.css';
 import './psytrainCase.css';
 
@@ -38,20 +39,20 @@ export function HarvardCase({ data, heading, slot, renderStudy }: Props) {
       {!!item.gallery?.length && <div className="hc-item-gallery">{item.gallery.map(asset => media(asset))}</div>}
       <Copy paragraphs={item.body}/>
     </div>)}</div>}
-    {!!block.transcript?.length && <details className="hc-transcript"><summary>Read text</summary><div>{block.transcript.map((item, i) => <div key={i} data-source-nodes={item.sourceNodes?.join(' ')}>{item.title && <h5>{item.title}</h5>}<Copy paragraphs={item.body}/></div>)}</div></details>}
+    {!!block.transcript?.length && <details className="hc-transcript"><summary>{tHarvard('Read text')}</summary><div>{block.transcript.map((item, i) => <div key={i} data-source-nodes={item.sourceNodes?.join(' ')}>{item.title && <h5>{item.title}</h5>}<Copy paragraphs={item.body}/></div>)}</div></details>}
   </section>;
 
   return <div className="hc-case" data-case={data.slug}>
     <section className="hc-intro" data-source-frame={data.coverFrame} aria-labelledby="gxc-detail-title">
       <header className="hc-hero-heading">
-        <div className="hc-kicker"><span className="gxc-mono">SELECTED WORK / {data.kind}</span>{data.mark && <img className="hc-project-mark" src={data.mark.image} alt="" width={data.mark.width} height={data.mark.height}/>}</div>
+        <div className="hc-kicker"><span className="gxc-mono">{tHarvard('SELECTED WORK')} / {data.kind}</span>{data.mark && <img className="hc-project-mark" src={data.mark.image} alt="" width={data.mark.width} height={data.mark.height}/>}</div>
         <h2 ref={heading} id="gxc-detail-title" tabIndex={-1}>{data.title}</h2>
         {data.subtitle && <p className="hc-subtitle">{data.subtitle}</p>}
-        <div className="hc-project-meta"><p>{data.period}</p><ul aria-label="Project disciplines">{data.tags.map((tag, i) => <li key={i}>{tag}</li>)}</ul></div>
+        <div className="hc-project-meta"><p>{data.period}</p><ul aria-label={tHarvard('Project disciplines')}>{data.tags.map((tag, i) => <li key={i}>{tag}</li>)}</ul></div>
       </header>
       <div className="hc-hero-media" ref={slot}>{media(data.hero, true)}</div>
     </section>
-    <nav className="hc-contents" aria-label={`${data.title} chapters`}>{data.chapters.map((chapter, i) => <button key={chapter.id} onClick={() => {
+    <nav className="hc-contents" aria-label={`${data.title} ${tHarvard('chapters')}`}>{data.chapters.map((chapter, i) => <button key={chapter.id} onClick={() => {
       const target = document.getElementById(`${data.slug}-chapter-${chapter.id}`);
       target?.scrollIntoView({ block: 'start', behavior: 'instant' });
       target?.querySelector<HTMLElement>('h3')?.focus({ preventScroll: true });

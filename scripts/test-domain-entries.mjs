@@ -1,9 +1,10 @@
 import assert from 'node:assert/strict';
-import { mkdtemp, mkdir, readFile, writeFile, rm } from 'node:fs/promises';
+import { mkdtemp, mkdir, readFile, writeFile, rm, copyFile } from 'node:fs/promises';
 import { tmpdir } from 'node:os';
 import path from 'node:path';
 import { fileURLToPath } from 'node:url';
 import { runInNewContext } from 'node:vm';
+import { zhReceipt, verifyZh } from './zh-release.mjs';
 import { promoteLatest, legacyRedirect, latestRedirect } from './promote-latest-release.mjs';
 
 const root = path.resolve(path.dirname(fileURLToPath(import.meta.url)), '..');
@@ -11,6 +12,19 @@ const { version } = JSON.parse(await readFile(path.join(root, 'release-baselines
 const fixture = await mkdtemp(path.join(tmpdir(), 'galaxci-domain-'));
 const entry = `<!doctype html><title>Gala X Ci ${version}</title><script src="/assets/example.js"></script>`;
 try {
+  // A reviewed Chinese package references unchanged 2.3 media. Populate those
+  // dependencies from the verified build before exercising the entry overlay.
+  let chinese;
+  try { chinese = JSON.parse(await readFile(zhReceipt, 'utf8')); }
+  catch (error) { if (error.code !== 'ENOENT') throw error; }
+  if (chinese) {
+    const build = path.join(root, '.cache/integrated-2-3-dist');
+    await verifyZh(build, chinese, { verifyShared: true });
+    for (const file of chinese.sharedMedia ?? []) {
+      await mkdir(path.dirname(path.join(fixture, file.path)), { recursive: true });
+      await copyFile(path.join(build, file.path), path.join(fixture, file.path));
+    }
+  }
   await mkdir(path.join(fixture, `galaxci/${version}`), { recursive: true });
   await writeFile(path.join(fixture, '.nojekyll'), '');
   await writeFile(path.join(fixture, `galaxci/${version}/index.html`), entry);

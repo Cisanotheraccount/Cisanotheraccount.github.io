@@ -6,13 +6,15 @@ import { ManagedPhoto } from './media';
 import { PhotoViewerImage } from './PhotoViewerImage';
 import { GlassCategoryNav } from './GlassCategoryNav';
 import { arrangePhotos, galleryMode } from './galleryLayout';
+import { photographyText as t } from '../localization/photography';
+import { isChinese, sitePath } from '../localization/locale';
 import './site.css';
 
 type Category = 'landscape' | 'concert';
 const catalog = catalogJson as PhotographyCatalog;
 const categories = [
-  { id: 'landscape' as const, label: 'Landscape', data: 'Landscapes', description: 'Cities, landscapes, and the skies above.' },
-  { id: 'concert' as const, label: 'Concert', data: 'Live', description: 'Artists, audiences, and the energy of live music.' },
+  { id: 'landscape' as const, label: t('Landscape'), data: 'Landscapes', description: t('Cities, landscapes, and the skies above.') },
+  { id: 'concert' as const, label: t('Concert'), data: 'Live', description: t('Artists, audiences, and the energy of live music.') },
 ];
 const photosById = new Map(catalog.photos.map(photo => [photo.id, photo]));
 const seriesById = new Map(catalog.series.map(series => [series.id, series]));
@@ -67,7 +69,7 @@ export function PhotographySite() {
       const panel = panels.current[item.id];
       if (panel) panel.inert = item.id !== category;
     }
-    document.title = `${categories.find(item => item.id === category)?.label} — Ci Song Photography`;
+    document.title = `${categories.find(item => item.id === category)?.label} — Ci Song ${t('Photography')}`;
   }, [category]);
 
   const navigate = (next: Category, keyboard = false) => {
@@ -83,16 +85,16 @@ export function PhotographySite() {
 
   return <div className="photo-site">
     <div className="photo-background" aria-hidden="true"><picture><img src="/photography-assets/background/stars-1536.jpg" srcSet="/photography-assets/background/stars-1536.jpg 1536w, /photography-assets/background/stars-2560.jpg 2560w, /photography-assets/background/stars-4096.jpg 4096w" sizes="100vw" alt="" width="8192" height="5464" /></picture></div>
-    <a className="photo-skip" href={`#${category}`} onClick={event => { event.preventDefault(); panels.current[category]?.querySelector<HTMLElement>('h1')?.focus({ preventScroll: true }); backToTop(category); }}>Skip to photographs</a>
-    <a className="photo-brand" href="/galaxci/" aria-label="Gala X Ci — design portfolio">Gala <span>X</span> Ci<span className="photo-brand-sub">Photography</span></a>
+    <a className="photo-skip" href={`#${category}`} onClick={event => { event.preventDefault(); panels.current[category]?.querySelector<HTMLElement>('h1')?.focus({ preventScroll: true }); backToTop(category); }}>{t('Skip to photographs')}</a>
+    <a className="photo-brand" href={isChinese ? sitePath('home') : '/galaxci/'} aria-label={t('Gala X Ci — design portfolio')}>Gala <span>X</span> Ci<span className="photo-brand-sub">{t('Photography')}</span></a>
     <GlassCategoryNav active={category} onNavigate={navigate} />
-    <main className="photo-viewport" aria-label="Photography">
+    <main className="photo-viewport" aria-label={t('Photography')}>
       <div className="photo-track" style={{ transform: `translate3d(${category === 'concert' ? '-100%' : '0'}, 0, 0)` }}>
         {categories.map(item => {
           const series = catalog.series.filter(series => series.category === item.data);
           return <section key={item.id} ref={node => { panels.current[item.id] = node; }} className="photo-panel" data-category={item.id} aria-labelledby={`${item.id}-title`} aria-hidden={item.id !== category}>
             <header className="photo-intro">
-              <p className="photo-kicker">Ci Song / Photography</p>
+              <p className="photo-kicker">{t('Ci Song / Photography')}</p>
               <h1 id={`${item.id}-title`} tabIndex={-1}>{item.label}</h1>
               <p className="photo-description">{item.description}</p>
             </header>
@@ -100,10 +102,10 @@ export function PhotographySite() {
               {series.map((series, index) => <PhotoSeries key={series.id} item={series} index={index} width={viewport.galleryWidth} height={viewport.height} gap={gap} mode={mode} active={item.id === category} onOpen={(photoId, opener) => setOpened({ category: item.id, photoId, opener })} />)}
             </div>
             <section className="photo-contact" aria-labelledby={`${item.id}-contact-title`}>
-              <div className="photo-contact-top photo-kicker"><span>Let’s work together</span><span>Photography inquiries</span></div>
-              <h2 id={`${item.id}-contact-title`}>Let’s make<br /><em>something real.</em><a className="photo-contact-arrow" href="mailto:galaxci.song@gmail.com" aria-label="Email Ci Song"><ArrowUpRight strokeWidth={1} aria-hidden="true" /></a></h2>
-              <a className="photo-email" href="mailto:galaxci.song@gmail.com?subject=Photography%20inquiry">galaxci.song@gmail.com</a>
-              <footer className="photo-footer"><span>GALA X CI / CI SONG</span><div><a href="/galaxci/">Design portfolio <ArrowUpRight size={14} aria-hidden="true" /></a><a href={`#${item.id}`} onClick={event => { event.preventDefault(); backToTop(item.id); }}>Back to top ↑</a></div></footer>
+              <div className="photo-contact-top photo-kicker"><span>{t('Let’s work together')}</span><span>{t('Photography inquiries')}</span></div>
+              <h2 id={`${item.id}-contact-title`}>{t('Let’s make')}<br /><em>{t('something real.')}</em><a className="photo-contact-arrow" href="mailto:galaxci.song@gmail.com" aria-label={t('Email Ci Song')}><ArrowUpRight strokeWidth={1} aria-hidden="true" /></a></h2>
+              <a className="photo-email" href={`mailto:galaxci.song@gmail.com?subject=${encodeURIComponent(t('Photography inquiry'))}`}>galaxci.song@gmail.com</a>
+              <footer className="photo-footer"><span>GALA X CI / CI SONG</span><div><a href={isChinese ? sitePath('home') : '/galaxci/'}>{t('Design portfolio')} <ArrowUpRight size={14} aria-hidden="true" /></a><a href={`#${item.id}`} onClick={event => { event.preventDefault(); backToTop(item.id); }}>{t('Back to top ↑')}</a></div></footer>
             </section>
           </section>;
         })}
@@ -117,7 +119,7 @@ function PhotoSeries({ item, index, width, height, gap, mode, active, onOpen }: 
   const photos = useMemo(() => item.photoIds.map(id => photosById.get(id)).filter((photo): photo is PhotographyPhoto => !!photo), [item]);
   const rows = useMemo(() => arrangePhotos(photos, width, gap, mode, height), [photos, width, gap, mode, height]);
   return <section className="photo-series" aria-labelledby={`series-${item.id}`}>
-    <div className="photo-series-heading"><h2 id={`series-${item.id}`}>{item.title}</h2><span>{number(photos.length)} photographs</span></div>
+    <div className="photo-series-heading"><h2 id={`series-${item.id}`}>{t(item.title)}</h2><span>{number(photos.length)} {t('photographs')}</span></div>
     <div className="photo-rows" style={{ gap }}>
       {rows.map((row, rowIndex) => <div className="photo-row" key={row.photos[0].id} style={{ gap, height: row.height }}>
         {row.photos.map((photo, photoIndex) => <PhotoTile key={photo.id} photo={photo} width={row.widths[photoIndex]} height={row.height} priority={active && index === 0 && rowIndex === 0} onOpen={opener => onOpen(photo.id, opener)} />)}
@@ -130,8 +132,8 @@ function PhotoTile({ photo, width, height, priority, onOpen }: { photo: Photogra
   const [failed, setFailed] = useState(false);
   const [retry, setRetry] = useState(0);
   return <div className="photo-tile" style={{ width, height }} data-photo-id={photo.id}>
-    {failed ? <div className="photo-media-error" role="status"><span>Image unavailable</span><button type="button" onClick={() => { setFailed(false); setRetry(value => value + 1); }}>Retry image</button><button type="button" data-photo-open onClick={event => onOpen(event.currentTarget)}>Open photograph</button></div> :
-      <button className="photo-open" data-photo-open type="button" onClick={event => onOpen(event.currentTarget)} aria-label={`View ${photo.alt}`}><ManagedPhoto key={retry} photo={photo} sizes={`${Math.ceil(width)}px`} priority={priority} onFailure={() => setFailed(true)} /></button>}
+    {failed ? <div className="photo-media-error" role="status"><span>{t('Image unavailable')}</span><button type="button" onClick={() => { setFailed(false); setRetry(value => value + 1); }}>{t('Retry image')}</button><button type="button" data-photo-open onClick={event => onOpen(event.currentTarget)}>{t('Open photograph')}</button></div> :
+      <button className="photo-open" data-photo-open type="button" onClick={event => onOpen(event.currentTarget)} aria-label={`${t('View')} ${t(photo.alt)}`}><ManagedPhoto key={retry} photo={photo} sizes={`${Math.ceil(width)}px`} priority={priority} onFailure={() => setFailed(true)} /></button>}
   </div>;
 }
 
@@ -143,7 +145,7 @@ function PhotoDialog({ photos, initialPhotoId, returnFocus, onClose }: { photos:
   const series = seriesById.get(photo.seriesId);
   const step = (direction: number) => {
     // Keep focus on a persistent control when the keyed image/retry UI unmounts.
-    dialog.current?.querySelector<HTMLButtonElement>(`button[aria-label="${direction > 0 ? 'Next' : 'Previous'} photograph"]`)?.focus({ preventScroll: true });
+    dialog.current?.querySelector<HTMLButtonElement>(`button[data-photo-step="${direction > 0 ? 'next' : 'previous'}"]`)?.focus({ preventScroll: true });
     setFrame(value => (value + direction + photos.length) % photos.length);
   };
 
@@ -166,9 +168,8 @@ function PhotoDialog({ photos, initialPhotoId, returnFocus, onClose }: { photos:
     if (event.key === 'ArrowRight') { event.preventDefault(); step(1); }
     if (event.key === 'ArrowLeft') { event.preventDefault(); step(-1); }
   }}>
-    <header className="photo-dialog-header"><div><h2 id="photo-viewer-title">{series?.title}</h2><p id="photo-viewer-count" aria-live="polite" aria-atomic="true">{number(frame + 1)} / {number(photos.length)}</p></div><button type="button" onClick={onClose} aria-label="Close photograph">Close <X size={20} aria-hidden="true" /></button></header>
+    <header className="photo-dialog-header"><div><h2 id="photo-viewer-title">{series ? t(series.title) : ''}</h2><p id="photo-viewer-count" aria-live="polite" aria-atomic="true">{number(frame + 1)} / {number(photos.length)}</p></div><button type="button" onClick={onClose} aria-label={t('Close photograph')}>{t('Close')} <X size={20} aria-hidden="true" /></button></header>
     <div className="photo-dialog-stage"><PhotoViewerImage key={photo.id} photo={photo} onStep={step} /></div>
-    <div className="photo-dialog-controls"><button type="button" onClick={() => step(-1)} aria-label="Previous photograph"><ArrowLeft size={22} aria-hidden="true" /></button><span>Ci Song / Photography</span><button type="button" onClick={() => step(1)} aria-label="Next photograph"><ArrowRight size={22} aria-hidden="true" /></button></div>
+    <div className="photo-dialog-controls"><button type="button" data-photo-step="previous" onClick={() => step(-1)} aria-label={t('Previous photograph')}><ArrowLeft size={22} aria-hidden="true" /></button><span>{t('Ci Song / Photography')}</span><button type="button" data-photo-step="next" onClick={() => step(1)} aria-label={t('Next photograph')}><ArrowRight size={22} aria-hidden="true" /></button></div>
   </dialog>;
 }
-

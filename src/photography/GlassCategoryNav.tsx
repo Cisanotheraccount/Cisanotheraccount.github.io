@@ -8,6 +8,7 @@ import {
 } from 'react';
 import { MaterialFilterContents } from './vendor/simple-liquid-glass/MaterialFilter';
 import { createLensMapGenerator } from './vendor/simple-liquid-glass/displacement';
+import { photographyText as t } from '../localization/photography';
 import './glass.css';
 
 export type PhotographyGlassCategory = 'landscape' | 'concert';
@@ -131,7 +132,7 @@ export function GlassCategoryNav({ active, onNavigate }: GlassCategoryNavProps) 
     <nav
       ref={surfaceRef}
       className="photo-glass-nav"
-      aria-label="Photography categories"
+      aria-label={t('Photography categories')}
       data-active={active}
       data-glass={ready ? 'refraction' : 'frosted'}
     >
@@ -171,10 +172,10 @@ export function GlassCategoryNav({ active, onNavigate }: GlassCategoryNavProps) 
       <span className="photo-glass-nav__indicator" aria-hidden="true" />
       <span className="photo-glass-nav__links">
         <a href="#landscape" aria-current={active === 'landscape' ? 'page' : undefined} onClick={navigate('landscape')}>
-          Landscape
+          {t('Landscape')}
         </a>
         <a href="#concert" aria-current={active === 'concert' ? 'page' : undefined} onClick={navigate('concert')}>
-          Concert
+          {t('Concert')}
         </a>
       </span>
     </nav>

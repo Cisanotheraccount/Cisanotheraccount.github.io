@@ -1,0 +1,5 @@
+{
+  "extends": "./tsconfig.json",
+  "include": ["src/v2-3", "src/photography", "src/localization", "src/vite-env.d.ts"],
+  "exclude": []
+}

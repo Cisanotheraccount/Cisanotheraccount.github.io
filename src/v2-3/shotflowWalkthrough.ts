@@ -1,6 +1,7 @@
 import manifest from '../../public/v2-1/shotflow-import-v2/manifest.json';
 import threeManifest from '../../public/v2-1/shotflow-three-v3/manifest.json';
 import presentation from '../../public/v2-1/shotflow-clean-v4/manifest.json';
+import { localizeMain } from '../localization/main';
 
 /** Subtitle-free presentation derivatives; original capture metadata stays immutable. */
 export const shotFlowAsset = (url: string) => (presentation.replacements as Record<string, string>)[url] ?? url;
@@ -20,7 +21,7 @@ type ShotFlowManifest = {
 };
 
 // Captures and bounds come from the isolated native run; no simulated shot data.
-const originalCapture = manifest as unknown as ShotFlowManifest;
+const originalCapture = localizeMain(manifest as unknown as ShotFlowManifest);
 export const shotFlowCapture: ShotFlowManifest = {
   ...originalCapture,
   states: Object.fromEntries(Object.entries(originalCapture.states).map(([id, state]) => [id, { ...state, image: shotFlowAsset(state.image) }])) as Record<StateId, Capture>,
@@ -64,7 +65,7 @@ export function nextUnfinishedDemoShot(completed: readonly string[], fromId: str
 }
 
 type Step = { id: StateId; label: string; title: string; description: string; action: string; kind?: 'analysis' | 'storyboard' | 'player' };
-export const shotFlowWalkthrough: readonly Step[] = [
+export const shotFlowWalkthrough: readonly Step[] = localizeMain([
   { id: 'projects', label: 'Your projects', title: 'Start with a new project.', description: 'One reference, one place to begin. Tap the new-project control to start this guided example.', action: 'Create a project' },
   { id: 'new-project', label: 'Create project', title: 'Give the reference a home.', description: 'This walkthrough uses a prepared project named Reference Study. Create it to add the source video.', action: 'Create Reference Study' },
   { id: 'add-reference', label: 'Add a reference', title: 'Bring in a video.', description: 'Choose Photos to add the prepared reference from the phone’s photo library.', action: 'Choose from Photos' },
@@ -74,4 +75,4 @@ export const shotFlowWalkthrough: readonly Step[] = [
   { id: 'workspace', label: 'Project ready', title: 'A project, ready to explore.', description: `The complete reference has become ${shotFlowShotCount} shots. Open the storyboard to see the result, with its source and timing preserved. Other shot suggestions remain unconfirmed in this build.`, action: 'Open the generated storyboard' },
   { id: 'storyboard', kind: 'storyboard', label: 'Generated storyboard', title: 'See how the reference breaks down.', description: `Scroll through all ${shotFlowShotCount} shots from the actual analysis. Shots 5–7 are available to play and mark complete in this guided example. The other shots remain available to browse.`, action: `Open shot ${shotFlowRepresentative?.order ?? ''}` },
   { id: 'player', kind: 'player', label: 'Reference playback', title: 'Watch the shots, one by one.', description: 'Play three consecutive shots, then move between them to compare framing, timing and movement. Each segment keeps the boundaries produced by the real analysis.', action: 'Play reference shot' },
-];
+]);

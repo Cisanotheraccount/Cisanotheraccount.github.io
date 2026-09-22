@@ -1,4 +1,4 @@
-import { useEffect, useLayoutEffect, useMemo, useRef, useState, type KeyboardEvent as ReactKeyboardEvent } from 'react';
+import { useEffect, useLayoutEffect, useMemo, useRef, useState, type KeyboardEvent as ReactKeyboardEvent, type MutableRefObject } from 'react';
 import { ArrowLeft, ArrowRight, ArrowUpRight, X } from 'lucide-react';
 import catalogJson from './catalog.json';
 import type { PhotographyCatalog, PhotographyPhoto, PhotographySeries } from './catalog.types';
@@ -24,6 +24,84 @@ const categoryPhotos = (category: Category) => catalog.series
 const number = (value: number) => String(value).padStart(2, '0');
 const fromHash = (): Category => window.location.hash === '#concert' ? 'concert' : 'landscape';
 const reducedMotion = () => window.matchMedia('(prefers-reduced-motion: reduce)').matches;
+
+type PhotoAdmission = { admitted: Set<string>; visible: Set<string> };
+
+function sameIds(left: Set<string>, right: Set<string>) {
+  if (left.size !== right.size) return false;
+  for (const id of left) if (!right.has(id)) return false;
+  return true;
+}
+
+function usePhotoAdmission(category: Category, paused: boolean, panels: MutableRefObject<Partial<Record<Category, HTMLElement | null>>>, layoutKey: string) {
+  const [admission, setAdmission] = useState<PhotoAdmission>(() => ({ admitted: new Set(), visible: new Set() }));
+
+  useLayoutEffect(() => {
+    const panel = panels.current[category];
+    if (!panel) return;
+    let frame = 0;
+    let disposed = false;
+
+    const measure = () => {
+      frame = 0;
+      if (paused || document.visibilityState === 'hidden') return;
+      const photos = categoryPhotos(category);
+      const panelBounds = panel.getBoundingClientRect();
+      const tiles = new Map(Array.from(panel.querySelectorAll<HTMLElement>('[data-photo-id]')).map(tile => [tile.dataset.photoId, tile]));
+      const visible = new Set<string>();
+      let lastVisible = -1;
+      let firstBelowViewport = photos.length;
+
+      photos.forEach((photo, index) => {
+        const tile = tiles.get(photo.id);
+        if (!tile) return;
+        const bounds = tile.getBoundingClientRect();
+        // Compare only vertical bounds: horizontal track translation must not hide the
+        // newly active panel from admission while its category slide is in progress.
+        if (bounds.bottom > panelBounds.top && bounds.top < panelBounds.bottom) {
+          visible.add(photo.id);
+          lastVisible = index;
+        }
+        if (firstBelowViewport === photos.length && bounds.bottom > panelBounds.top) firstBelowViewport = index;
+      });
+
+      const nextStart = lastVisible >= 0 ? lastVisible + 1 : firstBelowViewport;
+      const requested = new Set(visible);
+      photos.slice(nextStart, nextStart + 3).forEach(photo => requested.add(photo.id));
+      setAdmission(previous => {
+        const admitted = new Set(previous.admitted);
+        requested.forEach(id => admitted.add(id));
+        return sameIds(admitted, previous.admitted) && sameIds(visible, previous.visible) ? previous : { admitted, visible };
+      });
+    };
+    const schedule = () => {
+      if (disposed) return;
+      if (frame) cancelAnimationFrame(frame);
+      frame = requestAnimationFrame(measure);
+    };
+    const resume = () => { if (document.visibilityState !== 'hidden') schedule(); };
+
+    panel.addEventListener('scroll', schedule, { passive: true });
+    window.addEventListener('pageshow', schedule);
+    document.addEventListener('visibilitychange', resume);
+    const observer = new ResizeObserver(schedule);
+    observer.observe(panel);
+    void document.fonts?.ready.then(schedule);
+    // Layout effects flush this first admission before paint, so a category
+    // switch does not briefly expose an empty active viewport.
+    measure();
+    return () => {
+      disposed = true;
+      if (frame) cancelAnimationFrame(frame);
+      observer.disconnect();
+      panel.removeEventListener('scroll', schedule);
+      window.removeEventListener('pageshow', schedule);
+      document.removeEventListener('visibilitychange', resume);
+    };
+  }, [category, paused, panels, layoutKey]);
+
+  return admission;
+}
 
 function trapFocus(event: ReactKeyboardEvent<HTMLDialogElement>) {
   if (event.key !== 'Tab' || event.altKey || event.ctrlKey || event.metaKey) return;
@@ -82,6 +160,7 @@ export function PhotographySite() {
   const backToTop = (id: Category) => panels.current[id]?.scrollTo({ top: 0, behavior: reducedMotion() ? 'instant' : 'smooth' });
   const mode = galleryMode(viewport.width, viewport.height);
   const gap = viewport.width <= 1366 ? 8 : 12;
+  const admission = usePhotoAdmission(category, !!opened, panels, `${viewport.galleryWidth}:${viewport.height}:${mode}:${gap}`);
 
   return <div className="photo-site">
     <div className="photo-background" aria-hidden="true"><picture><img src="/photography-assets/background/stars-1536.jpg" srcSet="/photography-assets/background/stars-1536.jpg 1536w, /photography-assets/background/stars-2560.jpg 2560w, /photography-assets/background/stars-4096.jpg 4096w" sizes="100vw" alt="" width="8192" height="5464" /></picture></div>
@@ -99,7 +178,7 @@ export function PhotographySite() {
               <p className="photo-description">{item.description}</p>
             </header>
             <div className="photo-series-list">
-              {series.map((series, index) => <PhotoSeries key={series.id} item={series} index={index} width={viewport.galleryWidth} height={viewport.height} gap={gap} mode={mode} active={item.id === category} onOpen={(photoId, opener) => setOpened({ category: item.id, photoId, opener })} />)}
+              {series.map(series => <PhotoSeries key={series.id} item={series} width={viewport.galleryWidth} height={viewport.height} gap={gap} mode={mode} admitted={admission.admitted} visible={admission.visible} onOpen={(photoId, opener) => setOpened({ category: item.id, photoId, opener })} />)}
             </div>
             <section className="photo-contact" aria-labelledby={`${item.id}-contact-title`}>
               <div className="photo-contact-top photo-kicker"><span>{t('Let’s work together')}</span><span>{t('Photography inquiries')}</span></div>
@@ -115,25 +194,25 @@ export function PhotographySite() {
   </div>;
 }
 
-function PhotoSeries({ item, index, width, height, gap, mode, active, onOpen }: { item: PhotographySeries; index: number; width: number; height: number; gap: number; mode: 1 | 2 | 3; active: boolean; onOpen: (id: string, opener: HTMLElement) => void }) {
+function PhotoSeries({ item, width, height, gap, mode, admitted, visible, onOpen }: { item: PhotographySeries; width: number; height: number; gap: number; mode: 1 | 2 | 3; admitted: Set<string>; visible: Set<string>; onOpen: (id: string, opener: HTMLElement) => void }) {
   const photos = useMemo(() => item.photoIds.map(id => photosById.get(id)).filter((photo): photo is PhotographyPhoto => !!photo), [item]);
   const rows = useMemo(() => arrangePhotos(photos, width, gap, mode, height), [photos, width, gap, mode, height]);
   return <section className="photo-series" aria-labelledby={`series-${item.id}`}>
     <div className="photo-series-heading"><h2 id={`series-${item.id}`}>{t(item.title)}</h2><span>{number(photos.length)} {t('photographs')}</span></div>
     <div className="photo-rows" style={{ gap }}>
-      {rows.map((row, rowIndex) => <div className="photo-row" key={row.photos[0].id} style={{ gap, height: row.height }}>
-        {row.photos.map((photo, photoIndex) => <PhotoTile key={photo.id} photo={photo} width={row.widths[photoIndex]} height={row.height} priority={active && index === 0 && rowIndex === 0} onOpen={opener => onOpen(photo.id, opener)} />)}
+      {rows.map(row => <div className="photo-row" key={row.photos[0].id} style={{ gap, height: row.height }}>
+        {row.photos.map((photo, photoIndex) => <PhotoTile key={photo.id} photo={photo} width={row.widths[photoIndex]} height={row.height} admitted={admitted.has(photo.id)} priority={visible.has(photo.id)} onOpen={opener => onOpen(photo.id, opener)} />)}
       </div>)}
     </div>
   </section>;
 }
 
-function PhotoTile({ photo, width, height, priority, onOpen }: { photo: PhotographyPhoto; width: number; height: number; priority: boolean; onOpen: (opener: HTMLElement) => void }) {
+function PhotoTile({ photo, width, height, admitted, priority, onOpen }: { photo: PhotographyPhoto; width: number; height: number; admitted: boolean; priority: boolean; onOpen: (opener: HTMLElement) => void }) {
   const [failed, setFailed] = useState(false);
   const [retry, setRetry] = useState(0);
   return <div className="photo-tile" style={{ width, height }} data-photo-id={photo.id}>
     {failed ? <div className="photo-media-error" role="status"><span>{t('Image unavailable')}</span><button type="button" onClick={() => { setFailed(false); setRetry(value => value + 1); }}>{t('Retry image')}</button><button type="button" data-photo-open onClick={event => onOpen(event.currentTarget)}>{t('Open photograph')}</button></div> :
-      <button className="photo-open" data-photo-open type="button" onClick={event => onOpen(event.currentTarget)} aria-label={`${t('View')} ${t(photo.alt)}`}><ManagedPhoto key={retry} photo={photo} sizes={`${Math.ceil(width)}px`} priority={priority} onFailure={() => setFailed(true)} /></button>}
+      <button className="photo-open" data-photo-open type="button" onClick={event => onOpen(event.currentTarget)} aria-label={`${t('View')} ${t(photo.alt)}`}>{admitted && <ManagedPhoto key={retry} photo={photo} sizes={`${Math.ceil(width)}px`} loading="eager" fetchPriority={priority ? 'high' : 'low'} priority={priority} onFailure={() => setFailed(true)} />}</button>}
   </div>;
 }
 

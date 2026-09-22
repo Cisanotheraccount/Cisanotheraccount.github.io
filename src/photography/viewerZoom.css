@@ -18,8 +18,6 @@
 
 .photo-dialog-frame.photo-zoom-plane {
   position: absolute;
-  transform-origin: 0 0;
-  will-change: transform;
   user-select: none;
 }
 
@@ -115,8 +113,4 @@
     justify-content: center;
     white-space: normal;
   }
-}
-
-@media (prefers-reduced-motion: reduce) {
-  .photo-dialog-frame.photo-zoom-plane { will-change: auto; }
 }

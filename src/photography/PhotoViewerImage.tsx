@@ -241,6 +241,20 @@ export function PhotoViewerImage({ photo, onStep }: { photo: PhotographyPhoto; o
   const fitted = layout.current;
   const zoomLabel = `${Math.round(view.scale * 100) / 100}×`;
 
+  useEffect(() => {
+    if (status !== 'ready') return;
+    // WebKit can retain a JPEG decode sized for the earlier, smaller layout.
+    // Once zoom settles, refresh that decode at the new size without changing
+    // src or remounting the image (both could start another network request).
+    const timer = window.setTimeout(() => {
+      const image = viewport.current?.querySelector<HTMLImageElement>('.photo-dialog-original');
+      if (image?.isConnected && typeof image.decode === 'function') {
+        void image.decode().catch(() => { /* Keep the already displayed image if a refinement is cancelled. */ });
+      }
+    }, 80);
+    return () => window.clearTimeout(timer);
+  }, [view.scale, fitted?.imageWidth, fitted?.imageHeight, status, request]);
+
   return <>
     <div
       ref={viewport}
@@ -267,11 +281,12 @@ export function PhotoViewerImage({ photo, onStep }: { photo: PhotographyPhoto; o
       {fitted && <div
         className="photo-dialog-frame photo-zoom-plane"
         style={{
-          width: fitted.imageWidth,
-          height: fitted.imageHeight,
-          left: '50%',
-          top: '50%',
-          transform: `translate3d(${view.x - fitted.imageWidth * view.scale / 2}px, ${view.y - fitted.imageHeight * view.scale / 2}px, 0) scale(${view.scale})`,
+          // Rasterize the native JPEG at the displayed size. Scaling a promoted
+          // fit-sized layer can keep its low-resolution backing store when zoomed.
+          width: fitted.imageWidth * view.scale,
+          height: fitted.imageHeight * view.scale,
+          left: (fitted.viewportWidth - fitted.imageWidth * view.scale) / 2 + view.x,
+          top: (fitted.viewportHeight - fitted.imageHeight * view.scale) / 2 + view.y,
         }}
       >
         <ManagedPhoto photo={photo} sizes="100vw" priority className="photo-dialog-image" draggable={false} onFailure={() => setPreviewFailed(true)} />

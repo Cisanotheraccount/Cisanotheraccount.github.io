@@ -12,7 +12,7 @@
       "path": "photography/index.html",
       "source": "photography-assets/app/photography.index.html",
       "bytes": 518,
-      "sha256": "4751cf162c378fcd2fb1c21cf246181ca31b571316cc1a3c0cad3981e9202291",
+      "sha256": "806ac45a1b5bfa74a93507361d41fe8b3cf5f2981d273de81d4a2717443d8f48",
       "mime": "text/html; charset=utf-8"
     },
     {
@@ -30,18 +30,18 @@
       "mime": "font/woff2"
     },
     {
-      "path": "photography-assets/app/photography-D8G-TDa0.js",
-      "source": "photography-assets/app/photography-D8G-TDa0.js",
-      "bytes": 201900,
-      "sha256": "e1384e24dd6ec697472fe83cd81da9203a05d06a724f180c81feb6002f01aa32",
-      "mime": "text/javascript; charset=utf-8"
+      "path": "photography-assets/app/photography-DBYiM4Kp.css",
+      "source": "photography-assets/app/photography-DBYiM4Kp.css",
+      "bytes": 12823,
+      "sha256": "5f52defccbacc4c4c5e0912f9b8f0073c4dce0762d50389f97faa6d38ee303e8",
+      "mime": "text/css; charset=utf-8"
     },
     {
-      "path": "photography-assets/app/photography-lg8QUSTr.css",
-      "source": "photography-assets/app/photography-lg8QUSTr.css",
-      "bytes": 12959,
-      "sha256": "e1fd1198eb787f916f513f3da363a23f1d8d1968dd72873cf8c14c1bab91191e",
-      "mime": "text/css; charset=utf-8"
+      "path": "photography-assets/app/photography-DGwwAKFm.js",
+      "source": "photography-assets/app/photography-DGwwAKFm.js",
+      "bytes": 213357,
+      "sha256": "8c3eeed9b9fe08847bc1a8ad59ef5039bbad450b92cc7d27fe7b605d13d09aa7",
+      "mime": "text/javascript; charset=utf-8"
     },
     {
       "path": "photography-assets/app/space-grotesk-latin-DPT1xrvW.woff2",

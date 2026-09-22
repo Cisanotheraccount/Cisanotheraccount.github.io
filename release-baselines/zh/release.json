@@ -9,6 +9,16 @@
       "sha256": "be0b3b899315fad09651373297db4ec3eb53b60a5d1138388221bde5675a3e52"
     },
     {
+      "path": "assets/zh/index-4773A1Fn.js",
+      "bytes": 213357,
+      "sha256": "8c3eeed9b9fe08847bc1a8ad59ef5039bbad450b92cc7d27fe7b605d13d09aa7"
+    },
+    {
+      "path": "assets/zh/index-BtetHbVR.css",
+      "bytes": 13584,
+      "sha256": "01a8524bcad35b167cfd7f025fbc33d0f9ea903f7ec77e1b932ea02891cad9e2"
+    },
+    {
       "path": "assets/zh/photography-C6m5WNGB.js",
       "bytes": 64363,
       "sha256": "9c9c396eb65be31536cc0cde66c011ee552cdad6e12944efe59f479fb01b890a"
@@ -55,8 +65,8 @@
     },
     {
       "path": "zh/photography/index.html",
-      "bytes": 753,
-      "sha256": "be74dabb20b5fafd6d750380bb14659595e6b1caf61a95aa7cfaf471e92d230c"
+      "bytes": 595,
+      "sha256": "47c870da3271f9adf141bd046463ca769388ff2bb254556e27e419fd1be1e2b9"
     }
   ],
   "sharedMedia": [

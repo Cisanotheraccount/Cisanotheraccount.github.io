@@ -4,16 +4,19 @@ import path from 'node:path';
 import { fileURLToPath } from 'node:url';
 
 const root = path.resolve(path.dirname(fileURLToPath(import.meta.url)), '..');
-export function latestRedirect(version) {
+export function latestRedirect(version, { serveAtRoot = false, customDomain = null } = {}) {
   assert(/^\d+\.\d+(?:\.\d+)?$/.test(version), 'Use an explicit numeric release version');
   assert(version !== '2.0', '2.0 is the frozen archive, not a mutable latest release');
-  const target = `/galaxci/${version}/`;
+  assert(customDomain === null || customDomain === 'galaxci.com', 'Only the authorized project domain may be bound');
+  const useRoot = serveAtRoot && customDomain === 'galaxci.com';
+  const target = useRoot ? '/' : `/galaxci/${version}/`;
+  const canonical = useRoot ? 'https://galaxci.com/' : 'https://cisanotheraccount.github.io/galaxci/';
   return `<!doctype html>
 <html lang="en"><head><meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1">
 <title>Gala X Ci — Ci Song</title>
 <meta name="description" content="Ci Song — Creative Technologist. Explore interactive experiences, creative tools and immersive environments.">
-<link rel="canonical" href="https://cisanotheraccount.github.io/galaxci/">
+<link rel="canonical" href="${canonical}">
 <style>html{background:#090a0c;color:#f1f0ed;font-family:system-ui,sans-serif}body{margin:2rem}a{color:inherit}</style>
 <script>location.replace(${JSON.stringify(target)} + location.search + location.hash);</script>
 <noscript><meta http-equiv="refresh" content="0;url=${target}"></noscript>
@@ -37,7 +40,7 @@ export function legacyRedirect(target) {
 
 export async function promoteLatest(directory, { verifyOnly = false } = {}) {
   const { version, serveAtRoot = false, customDomain = null } = JSON.parse(await readFile(path.join(root, 'release-baselines/latest.json'), 'utf8'));
-  const html = latestRedirect(version);
+  const html = latestRedirect(version, { serveAtRoot, customDomain });
   // Only operate on a complete website artifact with an already-built target.
   await readFile(path.join(directory, '.nojekyll'));
   const target = `galaxci/${version}/index.html`;
@@ -80,7 +83,7 @@ export async function promoteLatest(directory, { verifyOnly = false } = {}) {
   for (const [filename, contents] of generated) {
     assert.equal(await readFile(path.join(directory, filename), 'utf8'), contents, `Generated entry differs: ${filename}`);
   }
-  return { version, stable: '/galaxci/', target: `/galaxci/${version}/`, rootEntry: serveAtRoot, customDomain, legacyRoutes: Object.keys(redirects).length, archive: '/galaxci/2.0/', verified: true };
+  return { version, stable: '/galaxci/', target: serveAtRoot && customDomain === 'galaxci.com' ? '/' : `/galaxci/${version}/`, rootEntry: serveAtRoot, customDomain, legacyRoutes: Object.keys(redirects).length, archive: '/galaxci/2.0/', verified: true };
 }
 
 if (process.argv[1] && path.resolve(process.argv[1]) === fileURLToPath(import.meta.url)) {

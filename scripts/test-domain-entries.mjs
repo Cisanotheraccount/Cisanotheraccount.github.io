@@ -3,7 +3,8 @@ import { mkdtemp, mkdir, readFile, writeFile, rm } from 'node:fs/promises';
 import { tmpdir } from 'node:os';
 import path from 'node:path';
 import { fileURLToPath } from 'node:url';
-import { promoteLatest, legacyRedirect } from './promote-latest-release.mjs';
+import { runInNewContext } from 'node:vm';
+import { promoteLatest, legacyRedirect, latestRedirect } from './promote-latest-release.mjs';
 
 const root = path.resolve(path.dirname(fileURLToPath(import.meta.url)), '..');
 const { version } = JSON.parse(await readFile(path.join(root, 'release-baselines/latest.json'), 'utf8'));
@@ -33,6 +34,23 @@ try {
   }
   assert(legacyRedirect('/#/work/psytrain').includes('location.search + "#/work/psytrain"'));
   assert(legacyRedirect('/photography/').includes('location.search + location.hash'));
+  for (const [options, target, canonical] of [
+    [{ serveAtRoot: true, customDomain: 'galaxci.com' }, '/', 'https://galaxci.com/'],
+    [{ serveAtRoot: true }, `/galaxci/${version}/`, 'https://cisanotheraccount.github.io/galaxci/'],
+    [{}, `/galaxci/${version}/`, 'https://cisanotheraccount.github.io/galaxci/'],
+  ]) {
+    const html = latestRedirect(version, options);
+    for (const [search, hash] of [['', ''], ['?v=old-link&x=%26', '#/work/shotflow'], ['?x=1', '#work']]) {
+      let destination;
+      runInNewContext(html.match(/<script>([\s\S]*?)<\/script>/)[1], {
+        location: { search, hash, replace: value => { destination = value; } },
+      });
+      assert.equal(destination, target + search + hash, 'Preserve query/hash at the canonical destination');
+    }
+    assert(html.includes(`rel="canonical" href="${canonical}"`));
+    assert(html.includes(`content="0;url=${target}"`));
+  }
+  assert.throws(() => latestRedirect(version, { customDomain: 'example.com' }));
   console.log('Domain entries passed: exact root copy, legacy routes, verify-only drift, collision and frozen archive guards.');
 } finally {
   await rm(fixture, { recursive: true, force: true });

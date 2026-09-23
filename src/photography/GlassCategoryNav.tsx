@@ -11,10 +11,11 @@ import { createLensMapGenerator } from './vendor/simple-liquid-glass/displacemen
 import { photographyText as t } from '../localization/photography';
 import './glass.css';
 
-export type PhotographyGlassCategory = 'landscape' | 'concert';
+export type PhotographyGlassCategory = 'landscape' | 'concert' | 'video';
 
 export type GlassCategoryNavProps = {
   active: PhotographyGlassCategory;
+  showVideo?: boolean;
   onNavigate: (category: PhotographyGlassCategory, keyboard: boolean) => void;
 };
 
@@ -56,7 +57,7 @@ const glass = {
   specular: 0.82,
 } as const;
 
-export function GlassCategoryNav({ active, onNavigate }: GlassCategoryNavProps) {
+export function GlassCategoryNav({ active, showVideo = false, onNavigate }: GlassCategoryNavProps) {
   const surfaceRef = useRef<HTMLElement>(null);
   const feImageRef = useRef<SVGFEImageElement>(null);
   const filterId = `photo-glass-${useId().replace(/:/g, '')}`;
@@ -134,6 +135,7 @@ export function GlassCategoryNav({ active, onNavigate }: GlassCategoryNavProps) 
       className="photo-glass-nav"
       aria-label={t('Photography categories')}
       data-active={active}
+      data-count={showVideo ? 3 : 2}
       data-glass={ready ? 'refraction' : 'frosted'}
     >
       <svg className="photo-glass-nav__defs" aria-hidden="true" width="0" height="0" focusable="false">
@@ -177,6 +179,9 @@ export function GlassCategoryNav({ active, onNavigate }: GlassCategoryNavProps) 
         <a href="#concert" aria-current={active === 'concert' ? 'page' : undefined} onClick={navigate('concert')}>
           {t('Concert')}
         </a>
+        {showVideo && <a href="#video" aria-current={active === 'video' ? 'page' : undefined} onClick={navigate('video')}>
+          {t('Video')}
+        </a>}
       </span>
     </nav>
   );

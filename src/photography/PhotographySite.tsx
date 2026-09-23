@@ -5,24 +5,38 @@ import type { PhotographyCatalog, PhotographyPhoto, PhotographySeries } from './
 import { ManagedPhoto } from './media';
 import { PhotoViewerImage } from './PhotoViewerImage';
 import { GlassCategoryNav } from './GlassCategoryNav';
+import type { PhotographyGlassCategory } from './GlassCategoryNav';
+import { VideoGallery } from './VideoGallery';
+import { photographyVideoCatalog } from './videoCatalog';
 import { arrangePhotos, galleryMode } from './galleryLayout';
 import { photographyText as t } from '../localization/photography';
 import { isChinese, sitePath } from '../localization/locale';
 import './site.css';
 
-type Category = 'landscape' | 'concert';
+type Category = PhotographyGlassCategory;
+type PhotoCategory = Exclude<Category, 'video'>;
+// Only the dedicated English Photography builder defines this constant. Missing in every other
+// entry (including both Chinese release builders) means off, independent of env.
+declare const __PHOTOGRAPHY_VIDEO_ENABLED__: boolean;
+const videoEnabled = (typeof __PHOTOGRAPHY_VIDEO_ENABLED__ !== 'undefined' && __PHOTOGRAPHY_VIDEO_ENABLED__ === true) && !isChinese;
 const catalog = catalogJson as PhotographyCatalog;
-const categories = [
+const photoCategories = [
   { id: 'landscape' as const, label: t('Landscape'), data: 'Landscapes', description: t('Cities, landscapes, and the skies above.') },
   { id: 'concert' as const, label: t('Concert'), data: 'Live', description: t('Artists, audiences, and the energy of live music.') },
 ];
+const categories = videoEnabled
+  ? [...photoCategories, { id: 'video' as const, label: 'Video', data: null, description: 'Selected films and visual stories.' }]
+  : photoCategories;
 const photosById = new Map(catalog.photos.map(photo => [photo.id, photo]));
 const seriesById = new Map(catalog.series.map(series => [series.id, series]));
 const categoryPhotos = (category: Category) => catalog.series
-  .filter(series => series.category === categories.find(item => item.id === category)?.data)
+  .filter(series => series.category === photoCategories.find(item => item.id === category)?.data)
   .flatMap(series => series.photoIds.map(id => photosById.get(id)).filter((photo): photo is PhotographyPhoto => !!photo));
 const number = (value: number) => String(value).padStart(2, '0');
-const fromHash = (): Category => window.location.hash === '#concert' ? 'concert' : 'landscape';
+const fromHash = (): Category => {
+  if (videoEnabled && window.location.hash === '#video') return 'video';
+  return window.location.hash === '#concert' ? 'concert' : 'landscape';
+};
 const reducedMotion = () => window.matchMedia('(prefers-reduced-motion: reduce)').matches;
 
 type PhotoAdmission = { admitted: Set<string>; visible: Set<string> };
@@ -116,7 +130,7 @@ function trapFocus(event: ReactKeyboardEvent<HTMLDialogElement>) {
 
 export function PhotographySite() {
   const [category, setCategory] = useState<Category>(fromHash);
-  const [opened, setOpened] = useState<{ category: Category; photoId: string; opener: HTMLElement } | null>(null);
+  const [opened, setOpened] = useState<{ category: PhotoCategory; photoId: string; opener: HTMLElement } | null>(null);
   const panels = useRef<Partial<Record<Category, HTMLElement | null>>>({});
   const [viewport, setViewport] = useState(() => ({ width: window.innerWidth, height: window.innerHeight, galleryWidth: window.innerWidth - 32 }));
 
@@ -162,15 +176,17 @@ export function PhotographySite() {
   const gap = viewport.width <= 1366 ? 8 : 12;
   const admission = usePhotoAdmission(category, !!opened, panels, `${viewport.galleryWidth}:${viewport.height}:${mode}:${gap}`);
 
-  return <div className="photo-site">
+  const categoryIndex = Math.max(0, categories.findIndex(item => item.id === category));
+
+  return <div className="photo-site" data-video-enabled={videoEnabled ? 'true' : undefined}>
     <div className="photo-background" aria-hidden="true"><picture><img src="/photography-assets/background/stars-1536.jpg" srcSet="/photography-assets/background/stars-1536.jpg 1536w, /photography-assets/background/stars-2560.jpg 2560w, /photography-assets/background/stars-4096.jpg 4096w" sizes="100vw" alt="" width="8192" height="5464" /></picture></div>
-    <a className="photo-skip" href={`#${category}`} onClick={event => { event.preventDefault(); panels.current[category]?.querySelector<HTMLElement>('h1')?.focus({ preventScroll: true }); backToTop(category); }}>{t('Skip to photographs')}</a>
+    <a className="photo-skip" href={`#${category}`} onClick={event => { event.preventDefault(); panels.current[category]?.querySelector<HTMLElement>('h1')?.focus({ preventScroll: true }); backToTop(category); }}>{videoEnabled ? t('Skip to current collection') : t('Skip to photographs')}</a>
     <a className="photo-brand" href={isChinese ? sitePath('home') : '/galaxci/'} aria-label={t('Gala X Ci — design portfolio')}>Gala <span>X</span> Ci<span className="photo-brand-sub">{t('Photography')}</span></a>
-    <GlassCategoryNav active={category} onNavigate={navigate} />
+    <GlassCategoryNav active={category} showVideo={videoEnabled} onNavigate={navigate} />
     <main className="photo-viewport" aria-label={t('Photography')}>
-      <div className="photo-track" style={{ transform: `translate3d(${category === 'concert' ? '-100%' : '0'}, 0, 0)` }}>
+      <div className="photo-track" style={{ transform: `translate3d(-${categoryIndex * 100}%, 0, 0)` }}>
         {categories.map(item => {
-          const series = catalog.series.filter(series => series.category === item.data);
+          const series = item.data ? catalog.series.filter(series => series.category === item.data) : [];
           return <section key={item.id} ref={node => { panels.current[item.id] = node; }} className="photo-panel" data-category={item.id} aria-labelledby={`${item.id}-title`} aria-hidden={item.id !== category}>
             <header className="photo-intro">
               <p className="photo-kicker">{t('Ci Song / Photography')}</p>
@@ -178,8 +194,9 @@ export function PhotographySite() {
               <p className="photo-description">{item.description}</p>
             </header>
             <div className="photo-series-list">
-              {series.map(series => <PhotoSeries key={series.id} item={series} width={viewport.galleryWidth} height={viewport.height} gap={gap} mode={mode} admitted={admission.admitted} visible={admission.visible} onOpen={(photoId, opener) => setOpened({ category: item.id, photoId, opener })} />)}
+              {series.map(series => <PhotoSeries key={series.id} item={series} width={viewport.galleryWidth} height={viewport.height} gap={gap} mode={mode} admitted={admission.admitted} visible={admission.visible} onOpen={(photoId, opener) => setOpened({ category: item.id as PhotoCategory, photoId, opener })} />)}
             </div>
+            {item.id === 'video' && <VideoGallery items={photographyVideoCatalog} active={category === 'video'} />}
             <section className="photo-contact" aria-labelledby={`${item.id}-contact-title`}>
               <div className="photo-contact-top photo-kicker"><span>{t('Let’s work together')}</span><span>{t('Photography inquiries')}</span></div>
               <h2 id={`${item.id}-contact-title`}>{t('Let’s make')}<br /><em>{t('something real.')}</em><a className="photo-contact-arrow" href="mailto:galaxci.song@gmail.com" aria-label={t('Email Ci Song')}><ArrowUpRight strokeWidth={1} aria-hidden="true" /></a></h2>

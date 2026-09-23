@@ -4,6 +4,8 @@ import { copyFile, mkdir, readFile, readdir, rm } from 'node:fs/promises';
 import path from 'node:path';
 import { fileURLToPath } from 'node:url';
 
+import { validatePhotographyVideos, videoCatalogOutputPath } from './photography-video-release.mjs';
+
 export const projectRoot = path.resolve(path.dirname(fileURLToPath(import.meta.url)), '..');
 export const photoEntry = 'photography/index.html';
 export const photoNamespace = 'photography-assets/';
@@ -121,7 +123,7 @@ export function validatePhotographyCatalog(catalog) {
 export async function readPhotographyRelease(releaseRoot = path.join(projectRoot, 'public')) {
   const manifestFile = path.join(releaseRoot, releaseManifestPath);
   const manifest = JSON.parse(await readFile(manifestFile, 'utf8'));
-  exactKeys(manifest, ['version', 'catalog', 'files'], 'photography release manifest');
+  exactKeys(manifest, ['version', 'catalog', 'files', ...(manifest.videos ? ['videos'] : [])], 'photography release manifest');
   assert.equal(manifest.version, 1, 'Unsupported photography release manifest');
   exactKeys(manifest.catalog, ['path', 'photos', 'landscapes', 'live', 'hdrPhotos'], 'release catalog summary');
   assert.equal(manifest.catalog.path, catalogOutputPath, 'Unexpected public catalog location');
@@ -143,7 +145,17 @@ export async function readPhotographyRelease(releaseRoot = path.join(projectRoot
   const summary = validatePhotographyCatalog(catalog);
   assert.deepEqual({ photos: summary.photos, landscapes: summary.landscapes, live: summary.live, hdrPhotos: summary.hdrPhotos }, { photos: manifest.catalog.photos, landscapes: manifest.catalog.landscapes, live: manifest.catalog.live, hdrPhotos: manifest.catalog.hdrPhotos }, 'Catalog summary changed');
   for (const resource of summary.variantPaths) assert(seen.has(resource), `Catalog resource missing from release: ${resource}`);
-  return { manifest, catalog, summary };
+  let videos;
+  if (manifest.videos) {
+    exactKeys(manifest.videos, ['path', 'videos', 'realEstate', 'interviews'], 'video summary');
+    assert.equal(manifest.videos.path, videoCatalogOutputPath);
+    assert(seen.has(videoCatalogOutputPath), 'Release is missing video catalog');
+    videos = JSON.parse(await readFile(path.join(releaseRoot, videoCatalogOutputPath), 'utf8'));
+    const videoSummary = validatePhotographyVideos(videos);
+    assert.deepEqual(manifest.videos, { path: videoCatalogOutputPath, videos: videoSummary.videos, realEstate: videoSummary.realEstate, interviews: videoSummary.interviews });
+    for (const resource of videoSummary.posterPaths) assert(seen.has(resource), `Video poster missing from release: ${resource}`);
+  } else assert(!seen.has(videoCatalogOutputPath), 'Video catalog requires a release summary');
+  return { manifest, catalog, summary, videos };
 }
 
 export async function verifyPhotographyRelease(releaseRoot = path.join(projectRoot, 'public')) {

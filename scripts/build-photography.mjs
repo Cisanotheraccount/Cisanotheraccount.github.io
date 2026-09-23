@@ -5,9 +5,13 @@ import { build } from 'vite';
 import path from 'node:path';
 import { appNamespace, catalogOutputPath, photoEntry, photographyBackgrounds, projectRoot, releaseManifestPath, validatePhotographyCatalog } from './photography-release.mjs';
 
+import { validatePhotographyVideos, videoCatalogOutputPath } from './photography-video-release.mjs';
+
 const args = process.argv.slice(2);
 const value = flag => { const index = args.indexOf(flag); return index === -1 ? undefined : args[index + 1]; };
 const root = path.resolve(value('--root') ?? projectRoot);
+assert(!args.includes('--video-pilot'), 'The single-video pilot has been superseded by the reviewed English video catalog');
+const videosEnabled = true;
 const output = path.resolve(value('--out') ?? path.join(root, '.cache/photography-dist'));
 const commitReceipt = args.includes('--write-release');
 const publicRoot = path.join(root, 'public');
@@ -35,13 +39,21 @@ async function receiptFile(publicRoot, outputPath, source) {
   return { path: outputPath, source, bytes: bytes.length, sha256: sha256(bytes), mime: mimeFor(outputPath) };
 }
 
+const videos = JSON.parse(await readFile(path.join(root, 'src/photography/video-catalog.json'), 'utf8'));
+const videoSummary = validatePhotographyVideos(videos);
 const catalogFile = path.join(root, 'src/photography/catalog.json');
 const catalog = JSON.parse(await readFile(catalogFile, 'utf8'));
 const summary = validatePhotographyCatalog(catalog);
 await rm(output, { recursive: true, force: true });
 await build({ configFile: path.join(root, 'vite.photography.config.ts'), root, base: '/', publicDir: false,
+  // This release is English-only. Translation work in another task must neither
+  // enter this bundle nor change its reproducible hash. Chinese builders are separate.
+  plugins: [{ name: 'english-photography-copy', enforce: 'pre', load(id) {
+    if (id === path.join(root, 'src/localization/photography.ts')) return 'export const photographyText = text => text;';
+  } }],
+  define: { __PHOTOGRAPHY_VIDEO_ENABLED__: JSON.stringify(videosEnabled) },
   build: { outDir: output, emptyOutDir: true, copyPublicDir: false, assetsDir: 'photography-assets/app', rollupOptions: { input: { photography: path.join(root, 'photography/index.html') } } } });
-for (const resource of summary.variantPaths) {
+for (const resource of [...summary.variantPaths, ...videoSummary.posterPaths]) {
   const source = path.join(publicRoot, resource); const destination = path.join(output, resource);
   await mkdir(path.dirname(destination), { recursive: true }); await copyFile(source, destination);
 }
@@ -53,6 +65,8 @@ for (const background of photographyBackgrounds) {
 await mkdir(path.dirname(path.join(output, catalogOutputPath)), { recursive: true });
 await writeFile(path.join(output, catalogOutputPath), JSON.stringify(catalog) + '\n');
 assert(await readFile(path.join(output, photoEntry), 'utf8'), 'Vite did not produce photography/index.html');
+
+await writeFile(path.join(output, videoCatalogOutputPath), JSON.stringify(videos) + '\n');
 
 if (commitReceipt) {
   // This creates a reviewable public package; it does not publish it or touch a full-site baseline.
@@ -73,12 +87,12 @@ if (commitReceipt) {
   for (const rel of await filesUnder(path.join(output, appNamespace))) {
     files.push(await receiptFile(publicRoot, appNamespace + rel, appNamespace + rel));
   }
-  for (const resource of summary.variantPaths) files.push(await receiptFile(publicRoot, resource, resource));
+  for (const resource of [...summary.variantPaths, ...videoSummary.posterPaths]) files.push(await receiptFile(publicRoot, resource, resource));
   for (const background of photographyBackgrounds) files.push(await receiptFile(publicRoot, background.path, background.path));
   const paths = new Set(files.map(file => file.path));
   assert(paths.has(catalogOutputPath), 'Release receipt is missing the public catalog');
   assert.equal(paths.size, files.length, 'Release receipt has duplicate paths');
-  const manifest = { version: 1, catalog: { path: catalogOutputPath, photos: summary.photos, landscapes: summary.landscapes, live: summary.live, hdrPhotos: summary.hdrPhotos }, files };
+  const manifest = { version: 1, catalog: { path: catalogOutputPath, photos: summary.photos, landscapes: summary.landscapes, live: summary.live, hdrPhotos: summary.hdrPhotos }, videos: { path: videoCatalogOutputPath, videos: videoSummary.videos, realEstate: videoSummary.realEstate, interviews: videoSummary.interviews }, files };
   await writeFile(path.join(publicRoot, releaseManifestPath), JSON.stringify(manifest, null, 2) + '\n');
 }
-console.log(JSON.stringify({ output, photos: summary.photos, landscapes: summary.landscapes, live: summary.live, hdrPhotos: summary.hdrPhotos, receipt: commitReceipt ? releaseManifestPath : 'not written; use --write-release after review', publication: 'not performed by build' }, null, 2));
+console.log(JSON.stringify({ output, photos: summary.photos, landscapes: summary.landscapes, live: summary.live, hdrPhotos: summary.hdrPhotos, videos: videoSummary.videos, receipt: commitReceipt ? releaseManifestPath : 'not written', publication: 'not performed by build' }, null, 2));

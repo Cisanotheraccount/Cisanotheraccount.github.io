@@ -7,12 +7,18 @@
     "live": 21,
     "hdrPhotos": 2
   },
+  "videos": {
+    "path": "photography-assets/app/video-catalog.json",
+    "videos": 20,
+    "realEstate": 11,
+    "interviews": 9
+  },
   "files": [
     {
       "path": "photography/index.html",
       "source": "photography-assets/app/photography.index.html",
       "bytes": 518,
-      "sha256": "4004b3101e37f711b4413dcc17ec71934e9bf12e9a2f4618f896e003441d3a0c",
+      "sha256": "476d6f03d6c10abfdaa7095fc6969dfb8628398e16abcb4f453417dbce391f5c",
       "mime": "text/html; charset=utf-8"
     },
     {
@@ -30,18 +36,18 @@
       "mime": "font/woff2"
     },
     {
-      "path": "photography-assets/app/photography-CCBMkAVA.css",
-      "source": "photography-assets/app/photography-CCBMkAVA.css",
-      "bytes": 13039,
-      "sha256": "4199c9c14246790099896d31395a8da0f896353481244fb8f4d29beb514d04e1",
-      "mime": "text/css; charset=utf-8"
+      "path": "photography-assets/app/photography-D1MOoZfZ.js",
+      "source": "photography-assets/app/photography-D1MOoZfZ.js",
+      "bytes": 229487,
+      "sha256": "a88ab9df93b4cf722a293aa44b2e148c47b4df60e1a3cb466b47aaac588f2b9f",
+      "mime": "text/javascript; charset=utf-8"
     },
     {
-      "path": "photography-assets/app/photography-D5AHEie-.js",
-      "source": "photography-assets/app/photography-D5AHEie-.js",
-      "bytes": 213368,
-      "sha256": "5de883ef682a84ab2e1fd1284b7e1f94ad6050de09f3da80a6e6624d4ddb051f",
-      "mime": "text/javascript; charset=utf-8"
+      "path": "photography-assets/app/photography-z7ZKJN4Q.css",
+      "source": "photography-assets/app/photography-z7ZKJN4Q.css",
+      "bytes": 23539,
+      "sha256": "0d25a325975000dffc7a7bfeef9db6a208f0c8d37a574b8fdc3798f3d001bf30",
+      "mime": "text/css; charset=utf-8"
     },
     {
       "path": "photography-assets/app/space-grotesk-latin-DPT1xrvW.woff2",
@@ -49,6 +55,13 @@
       "bytes": 22320,
       "sha256": "a0d054c4af557de20afd6ca59f47ab353bcaec49c63ff04b6c9d39d0f8910557",
       "mime": "font/woff2"
+    },
+    {
+      "path": "photography-assets/app/video-catalog.json",
+      "source": "photography-assets/app/video-catalog.json",
+      "bytes": 11886,
+      "sha256": "e46fa65d46c405cade52d78ae7febce1ef7fd551baf2296b86de930cc361e0ad",
+      "mime": "application/json; charset=utf-8"
     },
     {
       "path": "photography-assets/selected-20260921/gxc-a27c3e4e1e27.jpg",
@@ -419,6 +432,146 @@
       "source": "photography-assets/selected-20260921/gxc-cf81f30b2860.jpg",
       "bytes": 364163,
       "sha256": "b2d5108722aa16e6b3c72dfa2c11db42e16f2a26f3be0f2421d625d9940fff3a",
+      "mime": "image/jpeg"
+    },
+    {
+      "path": "photography-assets/video-20260923/69dece64000000000803d808.jpg",
+      "source": "photography-assets/video-20260923/69dece64000000000803d808.jpg",
+      "bytes": 92787,
+      "sha256": "3b3ea61a72ee2dae34c105a350a660a2de6cc50f19b13c43b404c0f8f06a8d40",
+      "mime": "image/jpeg"
+    },
+    {
+      "path": "photography-assets/video-20260923/69eca074000000000f03ac00.jpg",
+      "source": "photography-assets/video-20260923/69eca074000000000f03ac00.jpg",
+      "bytes": 140814,
+      "sha256": "d67b63a0bcc832a7a8b9eafb04e8bb1e5c154be54367f578326ccad482f8fb58",
+      "mime": "image/jpeg"
+    },
+    {
+      "path": "photography-assets/video-20260923/699a4cec000000002a03bb07.jpg",
+      "source": "photography-assets/video-20260923/699a4cec000000002a03bb07.jpg",
+      "bytes": 75580,
+      "sha256": "7635448eee876f91e342403a6be430602bab10d5ede6e9a4313c368e2fb4c9ab",
+      "mime": "image/jpeg"
+    },
+    {
+      "path": "photography-assets/video-20260923/69d90f15000000001d019755.jpg",
+      "source": "photography-assets/video-20260923/69d90f15000000001d019755.jpg",
+      "bytes": 124734,
+      "sha256": "955f3d45e734d35664a5316ecfbf45620d615650d35f453cd9d2d8a619e50bd3",
+      "mime": "image/jpeg"
+    },
+    {
+      "path": "photography-assets/video-20260923/69f519c50000000013020400.jpg",
+      "source": "photography-assets/video-20260923/69f519c50000000013020400.jpg",
+      "bytes": 105577,
+      "sha256": "d08df93d6907ab08853c656001141d93f8f89789be70177982f94bf3c689d53b",
+      "mime": "image/jpeg"
+    },
+    {
+      "path": "photography-assets/video-20260923/69e57035000000000902c1c9.jpg",
+      "source": "photography-assets/video-20260923/69e57035000000000902c1c9.jpg",
+      "bytes": 186215,
+      "sha256": "570ec8f88f483ff670b12be2024c64740f5ab6a223e798e33cacec291d4791aa",
+      "mime": "image/jpeg"
+    },
+    {
+      "path": "photography-assets/video-20260923/6a3bbb65000000000e031402.jpg",
+      "source": "photography-assets/video-20260923/6a3bbb65000000000e031402.jpg",
+      "bytes": 101718,
+      "sha256": "b6292dec1d3363b80ebffe96115892c8b25999658bfe7df698e64fc72923cf82",
+      "mime": "image/jpeg"
+    },
+    {
+      "path": "photography-assets/video-20260923/6a7294e8000000000502b573.jpg",
+      "source": "photography-assets/video-20260923/6a7294e8000000000502b573.jpg",
+      "bytes": 72738,
+      "sha256": "0ea81645222f5c93f8e034c7923121c17e683436b1025abda363fed61d3ec041",
+      "mime": "image/jpeg"
+    },
+    {
+      "path": "photography-assets/video-20260923/6aafe6e2000000000e03f000.jpg",
+      "source": "photography-assets/video-20260923/6aafe6e2000000000e03f000.jpg",
+      "bytes": 107634,
+      "sha256": "ce815d06be285aef61bbb17b27db4a8b59c64938ad6b76d43a38a7968960f629",
+      "mime": "image/jpeg"
+    },
+    {
+      "path": "photography-assets/video-20260923/6a05f53f0000000013020400.jpg",
+      "source": "photography-assets/video-20260923/6a05f53f0000000013020400.jpg",
+      "bytes": 115351,
+      "sha256": "4af13b2ffb82872ba3c24cd0b717b7f95809385e93816162a924e360c4e73294",
+      "mime": "image/jpeg"
+    },
+    {
+      "path": "photography-assets/video-20260923/6a957b40000000000e03f000.jpg",
+      "source": "photography-assets/video-20260923/6a957b40000000000e03f000.jpg",
+      "bytes": 122448,
+      "sha256": "e2d0540b4953e69c7f972d4cfb30ca1d5f6df7a0aef9a1334095be3cec8b8aca",
+      "mime": "image/jpeg"
+    },
+    {
+      "path": "photography-assets/video-20260923/6a66bbab00000000110068c7.jpg",
+      "source": "photography-assets/video-20260923/6a66bbab00000000110068c7.jpg",
+      "bytes": 92463,
+      "sha256": "8aedf02ce601a20471b50937aa0a153f7ae5c64e2ed69b65df408a69d484b6ca",
+      "mime": "image/jpeg"
+    },
+    {
+      "path": "photography-assets/video-20260923/69ec14fd000000003501ce02.jpg",
+      "source": "photography-assets/video-20260923/69ec14fd000000003501ce02.jpg",
+      "bytes": 105881,
+      "sha256": "050b89d762259c733ac623673a42dfc4c755cdea894e7478c975178fe92a5dee",
+      "mime": "image/jpeg"
+    },
+    {
+      "path": "photography-assets/video-20260923/69a0ee360000000016008623.jpg",
+      "source": "photography-assets/video-20260923/69a0ee360000000016008623.jpg",
+      "bytes": 88461,
+      "sha256": "2bce696452c79f163d9cee76f08a99e8e81c7b01e76dc4260093e0ac8ef957ba",
+      "mime": "image/jpeg"
+    },
+    {
+      "path": "photography-assets/video-20260923/69c5f1390000000023007c83.jpg",
+      "source": "photography-assets/video-20260923/69c5f1390000000023007c83.jpg",
+      "bytes": 81872,
+      "sha256": "2504d70d17a09b1eafa5ed263ad72dd46487cd25bd47d4ef0708e11d2370b7ae",
+      "mime": "image/jpeg"
+    },
+    {
+      "path": "photography-assets/video-20260923/6a49afb40000000006030ce3.jpg",
+      "source": "photography-assets/video-20260923/6a49afb40000000006030ce3.jpg",
+      "bytes": 198723,
+      "sha256": "310be3d3f81a9c781d8d8c9144f7ae2ebf1823be2446d9d28c368dcf54c86a7d",
+      "mime": "image/jpeg"
+    },
+    {
+      "path": "photography-assets/video-20260923/6aae0089000000002502edbf.jpg",
+      "source": "photography-assets/video-20260923/6aae0089000000002502edbf.jpg",
+      "bytes": 88575,
+      "sha256": "a9c5c07c5976f942af841ae468763cb8a5afe91eabeae578da5572f421fabbb6",
+      "mime": "image/jpeg"
+    },
+    {
+      "path": "photography-assets/video-20260923/69d7238400000000230241e2.jpg",
+      "source": "photography-assets/video-20260923/69d7238400000000230241e2.jpg",
+      "bytes": 110368,
+      "sha256": "4eea8eecd5f2be7c5e3f39921556ad70acb388ac67f44b635a2b8f176b495c17",
+      "mime": "image/jpeg"
+    },
+    {
+      "path": "photography-assets/video-20260923/69acc9d5000000000e00c10b.jpg",
+      "source": "photography-assets/video-20260923/69acc9d5000000000e00c10b.jpg",
+      "bytes": 108802,
+      "sha256": "40f00fa00734f366e5375310e3a421eacb1c25f853c9f52304b62c821d55a22d",
+      "mime": "image/jpeg"
+    },
+    {
+      "path": "photography-assets/video-20260923/6a333cd6000000002101bcb5.jpg",
+      "source": "photography-assets/video-20260923/6a333cd6000000002101bcb5.jpg",
+      "bytes": 118642,
+      "sha256": "8faee1b3de8a888341a3fa3f3ef4d1b601adc5b18d20543ef8ce92752a79f332",
       "mime": "image/jpeg"
     },
     {

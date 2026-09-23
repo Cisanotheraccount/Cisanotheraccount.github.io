@@ -15,17 +15,41 @@
   --fc-toolbar: #10100e;
   --fc-accent: #ffd34d;
 }
-.gxc-detail-dialog[data-film="crystal-city"] { --fc-paper: #e5ecec; --fc-ink: #193239; --fc-muted: #526b71; --fc-line: #1932392d; --fc-toolbar: #15292e; --fc-accent: #42676e; }
+.gxc-detail-dialog[data-film="crystal-city"] {
+  --fc-paper: #171a1c;
+  --fc-ink: #f5eee5;
+  --fc-muted: #c3b8ac;
+  --fc-line: #edb16b30;
+  --fc-toolbar: #171a1c;
+  --fc-accent: #edb16b;
+  --fc-hero-end: #29221d;
+  --fc-body-mid: #202327;
+}
 .gxc-detail-dialog[data-film="cyber-city"] { --fc-paper: #191323; --fc-ink: #f1e9f5; --fc-muted: #bdb0cd; --fc-line: #d5bcec30; --fc-toolbar: #191323; --fc-accent: #9fe1e5; }
-.gxc-detail-dialog[data-film="gala-x-ci-vr-gallery"] { --fc-paper: #e8e3ee; --fc-ink: #30243e; --fc-muted: #6c5c7a; --fc-line: #30243e2d; --fc-toolbar: #211c2c; --fc-accent: #725987; }
+.gxc-detail-dialog[data-film="gala-x-ci-vr-gallery"] {
+  --fc-paper: #11131f;
+  --fc-ink: #f3eff8;
+  --fc-muted: #bab6c9;
+  --fc-line: #d7b4cc30;
+  --fc-toolbar: #11131f;
+  --fc-accent: #d7b4cc;
+  --fc-hero-end: #1d192c;
+  --fc-body-mid: #142130;
+}
+.gxc-detail-dialog:is([data-film="crystal-city"], [data-film="gala-x-ci-vr-gallery"]) {
+  --fc-toolbar-ink: var(--fc-ink);
+  --fc-hero-ink: var(--fc-ink);
+  --fc-link: var(--fc-accent);
+  --fc-body-background: linear-gradient(180deg, var(--fc-hero-end) 0px, var(--fc-body-mid) 240px, var(--fc-paper) 720px);
+}
 .gxc-detail-dialog[data-film] .gxc-detail-bg { background: var(--fc-paper); }
-.gxc-detail-dialog[data-film] .gxc-detail-toolbar { background: var(--fc-toolbar); color: #f5f1f7; border-color: #ffffff18; }
-.gxc-detail-dialog[data-film] .gxc-detail-brand { color: #f5f1f7; }
+.gxc-detail-dialog[data-film] .gxc-detail-toolbar { background: var(--fc-toolbar); color: var(--fc-toolbar-ink, #f5f1f7); border-color: #ffffff18; }
+.gxc-detail-dialog[data-film] .gxc-detail-brand { color: var(--fc-toolbar-ink, #f5f1f7); }
 .gxc-detail-dialog[data-film] .gxc-detail-content { width: 100%; max-width: none; padding: 0; }
-.fc-hero { position: relative; isolation: isolate; display: flex; align-items: end; min-height: 620px; height: calc(100svh - 84px); max-height: 1100px; color: #fff; background: #12101c; }
+.fc-hero { position: relative; isolation: isolate; display: flex; align-items: end; min-height: 620px; height: calc(100svh - 84px); max-height: 1100px; color: var(--fc-hero-ink, #fff); background: #12101c; }
 .fc-artwork { position: absolute; inset: 0; }
 .fc-artwork img { display: block; width: 100%; height: 100%; object-fit: cover; }
-.fc-hero::after { content: ''; position: absolute; inset: 0; z-index: -1; background: linear-gradient(180deg, transparent 25%, #0b07162b 48%, #0b0716e8 100%); }
+.fc-hero::after { content: ''; position: absolute; inset: 0; z-index: -1; background: linear-gradient(180deg, transparent 25%, #0b07162b 48%, var(--fc-hero-end, #0b0716e8) 100%); }
 .fc-artwork { z-index: -2; }
 .fc-hero-copy { width: 100%; padding: 76px var(--gutter) 48px; }
 .fc-category { display: block; font-size: 10px; letter-spacing: .13em; text-transform: uppercase; }
@@ -38,6 +62,8 @@
 .gxc-detail-dialog[data-film="last-one"] .fc-hero::after { display: none; }
 .gxc-detail-dialog[data-film="gala-x-ci-vr-gallery"] .fc-hero h2 { max-width: 1000px; font-size: clamp(64px, 8vw, 130px); }
 .fc-body, .gxc-detail-dialog[data-film] .gxc-next-project { max-width: 1600px; margin: auto; padding-left: var(--gutter); padding-right: var(--gutter); }
+/* Keep the seam-to-paper fade full-width, outside the bounded reading column. */
+.fc-body-surface { background: var(--fc-body-background, transparent); }
 .fc-body { padding-top: 84px; }
 .fc-screening { scroll-margin-top: 110px; }
 .fc-section-heading { display: grid; grid-template-columns: 1fr 2fr; align-items: end; column-gap: 48px; margin-bottom: 28px; }
@@ -46,7 +72,7 @@
 .fc-inline-note { grid-column: 2; margin-top: 12px; color: var(--fc-muted); font-size: 13px; }
 .gxc-detail-dialog[data-film] .gxc-project-video-frame img { object-fit: cover; }
 .gxc-detail-dialog[data-film] .gxc-project-video figcaption { color: var(--fc-muted); }
-.gxc-detail-dialog[data-film] .gxc-project-video figcaption a { color: var(--fc-ink); }
+.gxc-detail-dialog[data-film] .gxc-project-video figcaption a { color: var(--fc-link, var(--fc-ink)); }
 .fc-network-note { max-width: 620px; color: var(--fc-muted); font-size: 12px; line-height: 1.7; margin-top: 8px; }
 .fc-overview { display: grid; grid-template-columns: 1fr 2fr; gap: 48px; padding: 88px 0 70px; margin-top: 48px; border-top: 1px solid var(--fc-line); }
 .fc-overview aside > .gxc-mono { color: var(--fc-muted); font-size: 10px; }
@@ -81,7 +107,7 @@
 }
 @media (max-width: 1000px) {
   /* Keep the complete film frame on narrow screens; copy gets its own space. */
-  .fc-hero { display: flex; flex-direction: column; align-items: stretch; min-height: 0; height: auto; max-height: none; background: var(--fc-toolbar); }
+  .fc-hero { display: flex; flex-direction: column; align-items: stretch; min-height: 0; height: auto; max-height: none; background: var(--fc-hero-end, var(--fc-toolbar)); }
   .fc-artwork { position: relative; inset: auto; z-index: auto; }
   .fc-artwork img { width: 100%; height: auto; object-fit: contain; }
   .fc-hero::after { display: none; }

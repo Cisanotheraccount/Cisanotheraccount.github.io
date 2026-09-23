@@ -1,6 +1,7 @@
 import { useCallback, useEffect, useLayoutEffect, useRef, useState } from 'react';
 import { ArrowUpRight, Expand, Pause, Play, RotateCcw, Volume2, VolumeX, X } from 'lucide-react';
 import type { PhotographyVideoItem } from './videoCatalog';
+import { browserAllowsVideoPreload, VIDEO_PRELOAD_TIMEOUT_MS } from './videoPreload';
 import './video.css';
 
 type Phase = 'idle' | 'loading' | 'ready' | 'playing' | 'error' | 'blocked';
@@ -16,8 +17,8 @@ function unload(video: HTMLVideoElement | null) {
   video.load();
 }
 
-export function PhotographyVideo({ item, started, muted, register, onStart, onClose, onMutedChange }: {
-  item: PhotographyVideoItem; started: boolean; muted: boolean;
+export function PhotographyVideo({ item, started, muted, prewarm, register, onStart, onClose, onMutedChange }: {
+  item: PhotographyVideoItem; started: boolean; muted: boolean; prewarm: boolean;
   register: (id: string, video: HTMLVideoElement) => () => void;
   onStart: () => void; onClose: () => void; onMutedChange: (muted: boolean) => void;
 }) {
@@ -26,6 +27,8 @@ export function PhotographyVideo({ item, started, muted, register, onStart, onCl
   const coverRef = useRef<HTMLButtonElement>(null), fullButtonRef = useRef<HTMLButtonElement>(null);
   const primaryControlRef = useRef<HTMLButtonElement>(null);
   const activeRef = useRef(false), fullscreenRef = useRef(false), fullscreenPending = useRef(false);
+  const hoverPlayback = useRef(false), mouseInside = useRef(false);
+  const prewarmAttempted = useRef(false);
   const requestId = useRef(0), restoreTime = useRef(0), lastProgressAt = useRef(0);
   const pausedPosition = useRef<number | null>(null);
   const fullscreenLayout = useRef<{ card: HTMLElement; panel: HTMLElement; height: string; top: number } | null>(null);
@@ -34,6 +37,7 @@ export function PhotographyVideo({ item, started, muted, register, onStart, onCl
   const [paused, setPaused] = useState(true), [volume, setVolume] = useState(1);
   const [volumeSupported, setVolumeSupported] = useState(!/iPhone|iPod/.test(navigator.userAgent));
   const [fullscreen, setFullscreen] = useState(false);
+  const [prewarmState, setPrewarmState] = useState<'idle' | 'loading' | 'ready' | 'timeout'>('idle');
   const titleId = `video-title-${item.id}`;
   const restoreInlineLayout = useCallback(() => {
     const layout = fullscreenLayout.current;
@@ -85,6 +89,7 @@ export function PhotographyVideo({ item, started, muted, register, onStart, onCl
   useLayoutEffect(() => {
     if (started) return;
     const video = videoRef.current, wasActive = activeRef.current;
+    hoverPlayback.current = false;
     activeRef.current = false; ++requestId.current;
     if (document.fullscreenElement === shellRef.current) void document.exitFullscreen().catch(() => undefined);
     if (video?.webkitDisplayingFullscreen) video.webkitExitFullscreen?.();
@@ -92,6 +97,27 @@ export function PhotographyVideo({ item, started, muted, register, onStart, onCl
     restoreTime.current = 0; pausedPosition.current = null;
     setCurrentTime(0); setDuration(item.duration); setPaused(true); setPhase('idle');
   }, [started, item.duration]);
+  useEffect(() => {
+    if (!prewarm) {
+      prewarmAttempted.current = false;
+      setPrewarmState('idle');
+      return;
+    }
+    if (started || activeRef.current || prewarmAttempted.current || !browserAllowsVideoPreload()) return;
+    prewarmAttempted.current = true;
+    const controller = new AbortController();
+    let finished = false;
+    const finish = (state: 'ready' | 'timeout' | 'idle') => {
+      if (finished) return;
+      finished = true; window.clearTimeout(timer); setPrewarmState(state);
+    };
+    setPrewarmState('loading');
+    const timer = window.setTimeout(() => { controller.abort(); finish('timeout'); }, VIDEO_PRELOAD_TIMEOUT_MS);
+    void fetch(item.source, { method: 'HEAD', mode: 'no-cors', cache: 'force-cache', signal: controller.signal })
+      .then(() => finish('ready'))
+      .catch(error => { if (!controller.signal.aborted) finish(error instanceof TypeError ? 'idle' : 'timeout'); });
+    return () => { controller.abort(); finish('idle'); };
+  }, [item.source, prewarm, started]);
   useEffect(() => {
     const media = mediaRef.current, video = videoRef.current, shell = shellRef.current;
     if (!media || !video || !shell) return;
@@ -138,37 +164,66 @@ export function PhotographyVideo({ item, started, muted, register, onStart, onCl
     }, 1000);
     return () => window.clearInterval(timer);
   }, [phase, pause]);
-  const loadAndPlay = (retry = false) => {
+  const loadAndPlay = (retry = false, focusControl = true) => {
     const video = videoRef.current, source = sourceRef.current;
     if (!video || !source) return;
     if (!activeRef.current) { activeRef.current = true; video.muted = true; onMutedChange(true); onStart(); }
     restoreTime.current = retry ? pausedPosition.current ?? video.currentTime : 0;
     pausedPosition.current = null;
-    source.setAttribute('src', item.source); source.setAttribute('type', 'video/mp4');
-    video.load(); play();
-    primaryControlRef.current?.focus({ preventScroll: true });
+    const prepared = !retry && !video.error && source.getAttribute('src') === item.source
+      && video.networkState !== HTMLMediaElement.NETWORK_NO_SOURCE;
+    if (!prepared) {
+      source.setAttribute('src', item.source); source.setAttribute('type', 'video/mp4');
+      video.load();
+    }
+    play();
+    if (focusControl) primaryControlRef.current?.focus({ preventScroll: true });
+  };
+  const startHoverPlayback = (pointerType: string) => {
+    const video = videoRef.current;
+    if (pointerType !== 'mouse' || !browserAllowsVideoPreload() || mouseInside.current) return;
+    // Replacing a control icon can emit another enter event without a card exit.
+    mouseInside.current = true;
+    if (!video || document.visibilityState === 'hidden' || !visible()
+      || fullscreenRef.current || fullscreenPending.current || phase === 'error' || phase === 'blocked') return;
+    // A manually playing card keeps its sound and remains independent of the pointer.
+    if (activeRef.current && !video.paused) return;
+    hoverPlayback.current = true;
+    video.muted = true; onMutedChange(true);
+    if (activeRef.current) play(); else loadAndPlay(false, false);
+  };
+  const stopHoverPlayback = () => {
+    mouseInside.current = false;
+    if (!hoverPlayback.current) return;
+    hoverPlayback.current = false;
+    if (!fullscreenRef.current && !fullscreenPending.current) pause(true);
   };
   const togglePlayback = () => {
+    hoverPlayback.current = false;
     if (!activeRef.current || phase === 'error') loadAndPlay(phase === 'error');
     else if (videoRef.current?.paused) play(); else pause();
   };
   const changeVolume = (value: number) => {
+    hoverPlayback.current = false;
     const video = videoRef.current;
     if (!video || !started) return;
     video.volume = value; setVolume(video.volume); onMutedChange(value === 0);
   };
   const toggleMuted = () => {
+    hoverPlayback.current = false;
     if (!started) return;
     if (muted && volume === 0 && videoRef.current) { videoRef.current.volume = 1; setVolume(1); }
     onMutedChange(!muted);
   };
   const restart = () => {
+    hoverPlayback.current = false;
     if (phase === 'error') { loadAndPlay(true); return; }
     const video = videoRef.current;
     if (!video || !activeRef.current) return;
     pausedPosition.current = null; video.currentTime = 0; setCurrentTime(0); play();
   };
   const close = () => {
+    hoverPlayback.current = false;
     pause(); pausedPosition.current = null; activeRef.current = false; unload(videoRef.current);
     if (document.fullscreenElement === shellRef.current) void document.exitFullscreen().catch(() => undefined);
     if (videoRef.current?.webkitDisplayingFullscreen) videoRef.current.webkitExitFullscreen?.();
@@ -176,6 +231,7 @@ export function PhotographyVideo({ item, started, muted, register, onStart, onCl
     requestAnimationFrame(() => { if (!shellRef.current?.closest('[inert]')) coverRef.current?.focus({ preventScroll: true }); });
   };
   const toggleFullscreen = () => {
+    hoverPlayback.current = false;
     const shell = shellRef.current, video = videoRef.current;
     if (!shell || !video || !activeRef.current) return;
     if (document.fullscreenElement === shell) { void document.exitFullscreen().catch(() => undefined); return; }
@@ -195,7 +251,10 @@ export function PhotographyVideo({ item, started, muted, register, onStart, onCl
   const progress = duration > 0 ? Math.min(100, currentTime / duration * 100) : 0;
   const status = !started ? 'Ready to play muted' : phase === 'error' ? 'Video could not be loaded'
     : phase === 'blocked' ? 'Press Play to try again' : phase === 'loading' ? 'Loading video' : paused ? 'Video paused' : 'Video playing';
-  return <div ref={shellRef} className="photo-video-player-shell" role="group" aria-labelledby={titleId} data-started={started} data-fullscreen={fullscreen}
+  return <div ref={shellRef} className="photo-video-player-shell" role="group" aria-labelledby={titleId} data-started={started} data-fullscreen={fullscreen} data-prewarm={prewarmState}
+    onPointerEnter={event => startHoverPlayback(event.pointerType)}
+    onPointerLeave={event => { if (event.pointerType === 'mouse') stopHoverPlayback(); }}
+    onPointerDownCapture={() => { hoverPlayback.current = false; }}
     onKeyDown={event => {
       if (event.altKey || event.ctrlKey || event.metaKey || (event.target as HTMLElement).matches('input, a')) return;
       if (event.key.toLowerCase() === 'm' && started) { event.preventDefault(); toggleMuted(); }
@@ -231,7 +290,7 @@ export function PhotographyVideo({ item, started, muted, register, onStart, onCl
         onVolumeChange={event => { setVolume(event.currentTarget.volume); if (activeRef.current) onMutedChange(event.currentTarget.muted); }}>
         <source ref={sourceRef} type="video/mp4" onError={() => { if (activeRef.current) { pause(); setPhase('error'); } }} />
       </video>
-      {!started && <button ref={coverRef} type="button" className="photo-video-cover-button" aria-label={`Play ${item.title} muted`} onClick={() => loadAndPlay()}>
+      {!started && <button ref={coverRef} type="button" className="photo-video-cover-button" aria-label={`Play ${item.title} muted`} onClick={() => { hoverPlayback.current = false; loadAndPlay(); }}>
         <span className="photo-video-cover"><img src={item.poster} alt="" width={item.dimensions.width} height={item.dimensions.height} loading="lazy" decoding="async" />
           <span className="photo-video-cover-play" aria-hidden="true"><Play fill="currentColor" /></span>
           <span className="photo-video-cover-duration" aria-hidden="true">{time(item.duration)}</span></span>
@@ -250,7 +309,7 @@ export function PhotographyVideo({ item, started, muted, register, onStart, onCl
         <input type="range" className="photo-video-seek" min={0} max={duration || 1} step="any" value={Math.min(currentTime, duration)} disabled={!started || phase === 'error'}
           aria-label="Video progress" aria-valuetext={`${time(currentTime)} of ${time(duration)}`}
           style={{ backgroundImage: `linear-gradient(to right, #f2f0eb ${progress}%, #ffffff42 ${progress}%)` }}
-          onChange={event => { const video = videoRef.current; if (video && Number.isFinite(video.duration)) { const value = Number(event.currentTarget.value); if (pausedPosition.current !== null) pausedPosition.current = value; video.currentTime = value; setCurrentTime(value); } }} />
+          onChange={event => { hoverPlayback.current = false; const video = videoRef.current; if (video && Number.isFinite(video.duration)) { const value = Number(event.currentTarget.value); if (pausedPosition.current !== null) pausedPosition.current = value; video.currentTime = value; setCurrentTime(value); } }} />
         <span aria-hidden="true">{time(duration)}</span></div>
       <div className="photo-video-actions">
         <button className="photo-video-control" type="button" disabled={!started} onClick={toggleMuted} aria-label={muted ? 'Turn sound on' : 'Mute video'} aria-keyshortcuts="M">

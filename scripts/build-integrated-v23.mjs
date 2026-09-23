@@ -8,6 +8,7 @@ import { root, output23, buildManifestPath23, sha256, captureCompiled23, copyPre
 import { verifyEntry23Release } from './entry-release-v23.mjs';
 import { verifyHarvardCaseRelease } from './harvard-case-release-v23.mjs';
 import { applyPhotographyRelease, verifyPhotographyRelease } from './photography-release.mjs';
+import { thumbnailRuntimeManifest, assertPublicRuntime } from './zh-runtime-data.mjs';
 
 const staging = path.join(root, '.site-build/integrated-2-3');
 const candidate = path.join(root, '.site-build/integrated-2-3-complete');
@@ -22,7 +23,15 @@ const photography = await verifyPhotographyRelease(path.join(root, 'public'));
 await rm(staging, { recursive: true, force: true });
 await rm(candidate, { recursive: true, force: true });
 try {
-  await build({ configFile: false, root, base: '/', plugins: [react()], cacheDir: path.join(root, '.site-cache/vite-2-3-integrated'), publicDir: path.join(root, 'public'),
+  await build({ configFile: false, root, base: '/', plugins: [{
+    name: 'galaxci-public-thumbnail-data',
+    enforce: 'pre',
+    async load(id) {
+      if (id !== path.join(root, 'public/v2-1/thumbnails/manifest.json')) return null;
+      // Keep editorial provenance in the source manifest, outside browser data.
+      return JSON.stringify(thumbnailRuntimeManifest(JSON.parse(await readFile(id, 'utf8'))));
+    },
+  }, react()], cacheDir: path.join(root, '.site-cache/vite-2-3-integrated'), publicDir: path.join(root, 'public'),
     build: { outDir: staging, emptyOutDir: true, copyPublicDir: false, assetsDir: 'assets/2-3', rollupOptions: { input: { version23: path.join(root, 'v2-3/index.html') } } } });
   assert.deepEqual(await verifyNewAssets(), assets, 'Assets changed during compilation');
   assert.deepEqual((await verifyPhotographyRelease(path.join(root, 'public'))).manifest, photography.manifest,
@@ -42,6 +51,9 @@ try {
   }
   assert.equal(sha256(await readFile(contentSource)), contentSha, 'IntroMe changed during compilation');
   const compiled = await captureCompiled23(candidate, contentSha);
+  for (const file of compiled.files) {
+    if (/\.(?:js|css|html)$/.test(file.path)) assertPublicRuntime(await readFile(path.join(candidate, file.path), 'utf8'), file.path);
+  }
   await applyZhRelease(candidate);
   const report = await verifyOutput23(candidate, compiled);
   await mkdir(path.dirname(output23), { recursive: true });

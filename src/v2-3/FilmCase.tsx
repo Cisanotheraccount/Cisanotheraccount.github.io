@@ -37,7 +37,7 @@ export function FilmCase({ item, heading, slot, active, instant, studies, render
       </div>
     </header>
 
-    <div className="fc-body">
+    <div className="fc-body-surface"><div className="fc-body">
       <section ref={screening} id="fc-screening" className="fc-screening" tabIndex={-1} aria-labelledby="fc-film-title">
         <div className="fc-section-heading"><span className="gxc-mono">{t('01 / THE FILM')}</span><h3 id="fc-film-title">{item.video?.title}</h3><span className="fc-inline-note">{t('Watch here, in the page.')}</span></div>
         <ProjectVideo project={item} active={active} requested={requested} onRequest={watch}/>
@@ -50,6 +50,6 @@ export function FilmCase({ item, heading, slot, active, instant, studies, render
       </section>
       <div className="fc-highlights">{item.highlights.map((highlight, index) => <section key={highlight.title}><span className="gxc-mono">{String(index + 1).padStart(2, '0')}</span><h3>{highlight.title}</h3><p>{highlight.body}</p></section>)}</div>
       {studies.length > 0 && <section className="fc-stills" aria-labelledby="fc-stills-title"><div className="fc-section-heading"><span className="gxc-mono">{t('03 / SELECTED FRAMES')}</span><h3 id="fc-stills-title">{t('Inside the world.')}</h3></div><div className="fc-stills-grid">{studies.map(study => <div key={study.image}>{renderStudy(study)}</div>)}</div></section>}
-    </div>
+    </div></div>
   </div>;
 }

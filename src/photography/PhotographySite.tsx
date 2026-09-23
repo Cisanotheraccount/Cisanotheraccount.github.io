@@ -6,6 +6,7 @@ import { ManagedPhoto } from './media';
 import { PhotoViewerImage } from './PhotoViewerImage';
 import { GlassCategoryNav } from './GlassCategoryNav';
 import type { PhotographyGlassCategory } from './GlassCategoryNav';
+import { PhotographyBrand } from './PhotographyBrand';
 import { VideoGallery } from './VideoGallery';
 import { photographyVideoCatalog } from './videoCatalog';
 import { arrangePhotos, galleryMode } from './galleryLayout';
@@ -181,7 +182,7 @@ export function PhotographySite() {
   return <div className="photo-site" data-video-enabled={videoEnabled ? 'true' : undefined}>
     <div className="photo-background" aria-hidden="true"><picture><img src="/photography-assets/background/stars-1536.jpg" srcSet="/photography-assets/background/stars-1536.jpg 1536w, /photography-assets/background/stars-2560.jpg 2560w, /photography-assets/background/stars-4096.jpg 4096w" sizes="100vw" alt="" width="8192" height="5464" /></picture></div>
     <a className="photo-skip" href={`#${category}`} onClick={event => { event.preventDefault(); panels.current[category]?.querySelector<HTMLElement>('h1')?.focus({ preventScroll: true }); backToTop(category); }}>{videoEnabled ? t('Skip to current collection') : t('Skip to photographs')}</a>
-    <a className="photo-brand" href={isChinese ? sitePath('home') : '/galaxci/'} aria-label={t('Gala X Ci — design portfolio')}>Gala <span>X</span> Ci<span className="photo-brand-sub">{t('Photography')}</span></a>
+    <a className="photo-brand" href={isChinese ? sitePath('home') : '/galaxci/'} aria-label={t('Gala X Ci — design portfolio')}><PhotographyBrand subtitle={t('Photography')} /></a>
     <GlassCategoryNav active={category} showVideo={videoEnabled} onNavigate={navigate} />
     <main className="photo-viewport" aria-label={t('Photography')}>
       <div className="photo-track" style={{ transform: `translate3d(-${categoryIndex * 100}%, 0, 0)` }}>

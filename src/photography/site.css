@@ -18,8 +18,7 @@ p, h1, h2, h3, figure { margin: 0; }
 .photo-background::after { position: absolute; inset: 0; content: ''; background: rgb(0 0 0 / 70%); }
 .photo-skip { position: fixed; z-index: 200; top: 12px; left: 16px; padding: 16px; background: #f1f0ed; color: #090a0c; transform: translateY(-150%); }
 .photo-skip:focus { transform: none; }
-.photo-brand { position: fixed; z-index: 10; top: 22px; left: 24px; min-height: 44px; font: 500 23px/1 var(--font-display); letter-spacing: -.06em; text-shadow: 0 1px 8px #000; }
-.photo-brand > span:not(.photo-brand-sub) { margin: 0 2px; font-weight: 300; }
+.photo-brand { position: fixed; z-index: 10; top: 22px; left: 24px; display: flex; min-height: 44px; align-items: center; font: 600 19px/1 var(--font-display); letter-spacing: -.065em; text-shadow: 0 1px 8px #000; }
 .photo-brand-sub { display: block; margin-top: 7px; font: 500 9px/1 var(--font-body); letter-spacing: .13em; text-transform: uppercase; }
 .photo-viewport { position: fixed; inset: 0; overflow: hidden; }
 .photo-track { display: flex; width: 100%; height: 100%; transition: transform 500ms var(--photo-ease); }
@@ -77,7 +76,7 @@ html[data-photo-dialog-open] .photo-panel { overflow-y: hidden; }
 .photo-dialog-controls > span { color: var(--photo-muted); font-size: 10px; }
 @media (max-width: 1366px) { .photo-panel { padding: 0 8px; } }
 @media (max-width: 600px) {
-  .photo-brand { top: 20px; left: 16px; font-size: 19px; }
+  .photo-brand { top: 12px; left: 16px; font-size: clamp(11.5px, calc(7.857vw - 13.64px), 17px); }
   .photo-brand-sub { font-size: 8px; letter-spacing: .07em; }
   .photo-intro { padding: 110px 8px 34px; }
   .photo-intro h1 { margin-top: 17px; font-size: clamp(48px,13.5vw,72px); }

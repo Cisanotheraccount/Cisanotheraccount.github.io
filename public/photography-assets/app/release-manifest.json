@@ -18,7 +18,7 @@
       "path": "photography/index.html",
       "source": "photography-assets/app/photography.index.html",
       "bytes": 518,
-      "sha256": "f625f0238c5202396ac51ca902862821e6851342f19a2c9de386448bd687348c",
+      "sha256": "8bdb95ff0758e7c92888a7a866ce39f0f3e9bf03647c8e65f7dc50b7a92557b6",
       "mime": "text/html; charset=utf-8"
     },
     {
@@ -36,17 +36,38 @@
       "mime": "font/woff2"
     },
     {
-      "path": "photography-assets/app/photography-B20m2b_8.js",
-      "source": "photography-assets/app/photography-B20m2b_8.js",
-      "bytes": 244992,
-      "sha256": "f9d176fac20cdea6737316d487a00ecb8f94294326400d2ea7c0615f317ba314",
+      "path": "photography-assets/app/logo-highlight-B6Y-wOU1.png",
+      "source": "photography-assets/app/logo-highlight-B6Y-wOU1.png",
+      "bytes": 55770,
+      "sha256": "f27a8e718f23a33847f6ad2438bb49245d61f0350962993fd48ac2b39bf8d640",
+      "mime": "image/png"
+    },
+    {
+      "path": "photography-assets/app/logo-mask-BxkHjDUw.png",
+      "source": "photography-assets/app/logo-mask-BxkHjDUw.png",
+      "bytes": 9063,
+      "sha256": "2a57a4305c21b341fce5617f0d59a1c36868f917e8446d28f9f020951a27caae",
+      "mime": "image/png"
+    },
+    {
+      "path": "photography-assets/app/logo-optics-DXEfhW6D.png",
+      "source": "photography-assets/app/logo-optics-DXEfhW6D.png",
+      "bytes": 78801,
+      "sha256": "a7a1a1bcf5b1baa3c8ad811e3b8f7102464eaf00d54e768484b543d93e91b993",
+      "mime": "image/png"
+    },
+    {
+      "path": "photography-assets/app/photography-BjXhvH7n.js",
+      "source": "photography-assets/app/photography-BjXhvH7n.js",
+      "bytes": 249736,
+      "sha256": "fc2677b4ac15d7f812ee5f335594de7d3b487bc455747d1d6c9cbfc19493cf56",
       "mime": "text/javascript; charset=utf-8"
     },
     {
-      "path": "photography-assets/app/photography-z7ZKJN4Q.css",
-      "source": "photography-assets/app/photography-z7ZKJN4Q.css",
-      "bytes": 23539,
-      "sha256": "0d25a325975000dffc7a7bfeef9db6a208f0c8d37a574b8fdc3798f3d001bf30",
+      "path": "photography-assets/app/photography-D8gjYPUB.css",
+      "source": "photography-assets/app/photography-D8gjYPUB.css",
+      "bytes": 25149,
+      "sha256": "c4a268553f28da7ada8583e48d642c82aa6c02e15a55cce2df6e57590e730747",
       "mime": "text/css; charset=utf-8"
     },
     {

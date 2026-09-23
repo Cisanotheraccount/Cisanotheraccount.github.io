@@ -39,23 +39,26 @@ function exactKeys(value, keys, label) {
   assert(value && typeof value === 'object' && !Array.isArray(value), `${label} must be an object`);
   assert.deepEqual(Object.keys(value).sort(), [...keys].sort(), `Unexpected ${label} fields`);
 }
-function publicPhotoPath(src) {
-  assert(typeof src === 'string' && src.startsWith('/photography-assets/selected-20260921/') && !src.includes('?') && !src.includes('#'), `Photo variant must use the selected public namespace: ${src}`);
+function publicPhotoPath(photo, src) {
+  const expected = photo.category === 'Landscapes'
+    ? `/photography-assets/landscape-20260923/${photo.id}-1600.jpg`
+    : `/photography-assets/selected-20260921/${photo.id}.jpg`;
+  assert.equal(src, expected, `${photo.category} preview must use its reviewed public namespace: ${photo.id}`);
   return safePath(src.slice(1), 'variant source');
 }
 
 /** Validate the deliberately small public catalog schema. It has no provenance or EXIF fields. */
 export function validatePhotographyCatalog(catalog) {
   exactKeys(catalog, ['version', 'heroPhotoId', 'photos', 'series'], 'catalog');
-  assert.equal(catalog.version, 'selected-20260921', 'Catalog version must be selected-20260921');
+  assert.equal(catalog.version, 'landscape-20260923', 'Catalog version must be landscape-20260923');
   assert(typeof catalog.heroPhotoId === 'string' && catalog.heroPhotoId, 'Missing heroPhotoId');
-  assert(Array.isArray(catalog.photos) && catalog.photos.length === 53, 'Catalog must contain exactly 53 photos');
+  assert(Array.isArray(catalog.photos) && catalog.photos.length === 81, 'Catalog must contain exactly 81 photos');
   assert(Array.isArray(catalog.series) && catalog.series.length > 0, 'Catalog must contain series');
   const ids = new Set(); let landscapes = 0; let live = 0; let hdrPhotos = 0;
   const variantPaths = new Set();
   for (const photo of catalog.photos) {
     exactKeys(photo, ['id', 'category', 'seriesId', 'width', 'height', 'alt', 'variants', 'original'], `photo ${photo?.id ?? ''}`);
-    assert(typeof photo.id === 'string' && /^[a-z0-9][a-z0-9-]*$/.test(photo.id) && !ids.has(photo.id), `Invalid or duplicate photo id: ${photo.id}`);
+    assert(typeof photo.id === 'string' && /^gxc-[a-f0-9]{12}$/.test(photo.id) && !ids.has(photo.id), `Invalid, non-opaque, or duplicate photo id: ${photo.id}`);
     ids.add(photo.id);
     assert(['Landscapes', 'Live'].includes(photo.category), `Invalid category for ${photo.id}`);
     landscapes += photo.category === 'Landscapes'; live += photo.category === 'Live';
@@ -74,7 +77,7 @@ export function validatePhotographyCatalog(catalog) {
       assert(crossProductError <= Math.max(photo.width, photo.height), `Variant aspect ratio changed: ${photo.id}`);
       assert(['webp', 'jpeg'].includes(variant.format), `Invalid format for ${photo.id}`);
       assert(!formatWidths.has(`${variant.format}:${variant.width}`), `Duplicate ${variant.format} width for ${photo.id}`); formatWidths.add(`${variant.format}:${variant.width}`);
-      const variantPath = publicPhotoPath(variant.src);
+      const variantPath = publicPhotoPath(photo, variant.src);
       assert(!variantPaths.has(variantPath), `Duplicate photo resource: ${variantPath}`); variantPaths.add(variantPath);
       assert(variant.format === 'jpeg' ? /\.jpe?g$/i.test(variantPath) : /\.webp$/i.test(variantPath), `Format/path mismatch: ${variantPath}`);
       if (variant.hdr !== undefined) assert(typeof variant.hdr === 'boolean' && variant.format === 'jpeg', `HDR variant must be JPEG: ${photo.id}`);
@@ -90,7 +93,9 @@ export function validatePhotographyCatalog(catalog) {
     }
     const original = photo.original;
     exactKeys(original, Object.prototype.hasOwnProperty.call(original ?? {}, 'hdr') ? ['src', 'width', 'height', 'bytes', 'hdr'] : ['src', 'width', 'height', 'bytes'], `original for ${photo.id}`);
-    const originalPrefix = 'https://github.com/Cisanotheraccount/Cisanotheraccount.github.io/releases/download/photography-2026-09-21/';
+    const originalPrefix = photo.category === 'Landscapes'
+      ? 'https://github.com/Cisanotheraccount/Cisanotheraccount.github.io/releases/download/photography-landscape-2026-09-23/'
+      : 'https://github.com/Cisanotheraccount/Cisanotheraccount.github.io/releases/download/photography-2026-09-21/';
     assert.equal(original.src, originalPrefix + photo.id + '.jpg', `Original must use the reviewed GitHub release: ${photo.id}`);
     assert.equal(original.width, photo.width, `Original width changed: ${photo.id}`);
     assert.equal(original.height, photo.height, `Original height changed: ${photo.id}`);
@@ -99,9 +104,9 @@ export function validatePhotographyCatalog(catalog) {
     for (const variant of photo.variants) assert(Math.max(variant.width, variant.height) <= 1600, `Preview exceeds 1600 pixels: ${photo.id}`);
     hdrPhotos += hasHdrJpeg;
   }
-  assert.equal(landscapes, 32, 'Catalog must contain 32 Landscapes photos');
+  assert.equal(landscapes, 60, 'Catalog must contain 60 Landscapes photos');
   assert.equal(live, 21, 'Catalog must contain 21 Live photos');
-  assert.equal(hdrPhotos, 2, 'Catalog must contain exactly 2 photos with HDR JPEG variants');
+  assert.equal(hdrPhotos, 0, 'Catalog must contain only SDR photos');
   assert(ids.has(catalog.heroPhotoId), 'heroPhotoId is not in photos');
   const seriesIds = new Set(); const assigned = new Set();
   for (const series of catalog.series) {
@@ -116,6 +121,11 @@ export function validatePhotographyCatalog(catalog) {
       assigned.add(id);
     }
   }
+  const landscapeSeries = catalog.series.filter(series => series.category === 'Landscapes');
+  assert.equal(landscapeSeries.length, 1, 'Catalog must contain exactly one Landscape series');
+  assert.equal(landscapeSeries[0].id, 'landscape-color-flow', 'Landscape series id must remain landscape-color-flow');
+  assert.equal(landscapeSeries[0].title, 'Landscape', 'Landscape series title must remain Landscape');
+  assert.equal(landscapeSeries[0].photoIds.length, 60, 'Landscape series must contain all 60 Landscapes photos');
   assert.equal(assigned.size, catalog.photos.length, 'Every photo must appear in exactly one series');
   return { photos: catalog.photos.length, landscapes, live, hdrPhotos, variantPaths };
 }

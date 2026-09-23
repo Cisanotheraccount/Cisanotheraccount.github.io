@@ -194,8 +194,8 @@ const enPhoto = await importAt(await bundle(photoEntry, 'photo-en.mjs'), '/photo
 const zhPhoto = await importAt(await bundle(photoEntry, 'photo-zh.mjs'), '/zh/photography/', 'en-US');
 assert.equal(enPhoto.locale, 'en');
 assert.equal(zhPhoto.locale, 'zh-CN');
-assert.equal(zhPhoto.catalog.photos.length, 53);
-assert.equal(zhPhoto.catalog.series.length, 11);
+assert.equal(zhPhoto.catalog.photos.length, 81);
+assert.equal(zhPhoto.catalog.series.length, 9);
 assert.deepEqual(zhPhoto.catalog, enPhoto.catalog, 'Photography catalog and matching metadata remain source data in both locales');
 assert.deepEqual(zhPhoto.displayedCatalog.photos.map(photo => photo.id), enPhoto.displayedCatalog.photos.map(photo => photo.id));
 assert.deepEqual(zhPhoto.displayedCatalog.series.map(series => [series.id, series.category, series.photoIds]), enPhoto.displayedCatalog.series.map(series => [series.id, series.category, series.photoIds]), 'Photography translation must leave category matching keys and photo order intact');
@@ -203,8 +203,8 @@ assert.deepEqual(new Set(zhPhoto.catalog.series.map(series => series.category)),
 const photographyDictionary = JSON.parse(await readFile(path.join(root, 'src/localization/photography.zh.json'), 'utf8'));
 const photoAltKeys = new Set(zhPhoto.catalog.photos.map(photo => photo.alt));
 const seriesTitleKeys = new Set(zhPhoto.catalog.series.map(series => series.title));
-assert.equal([...photoAltKeys].filter(key => Object.hasOwn(photographyDictionary, key)).length, 53, 'Every unique photo alt needs an explicit Chinese translation');
-assert.equal([...seriesTitleKeys].filter(key => Object.hasOwn(photographyDictionary, key)).length, 11, 'Every series title needs an explicit Chinese translation');
+assert.equal([...photoAltKeys].filter(key => Object.hasOwn(photographyDictionary, key)).length, 81, 'Every unique photo alt needs an explicit Chinese translation');
+assert.equal([...seriesTitleKeys].filter(key => Object.hasOwn(photographyDictionary, key)).length, 9, 'Every series title needs an explicit Chinese translation');
 assert.ok(zhPhoto.displayedCatalog.photos.every(photo => photo.alt === photographyDictionary[zhPhoto.catalog.photos.find(source => source.id === photo.id).alt]), 'Every displayed photo alt must match its exact dictionary translation');
 assert.ok(zhPhoto.displayedCatalog.series.every(series => series.title === photographyDictionary[zhPhoto.catalog.series.find(source => source.id === series.id).title]), 'Every displayed series title must match its exact dictionary translation');
 

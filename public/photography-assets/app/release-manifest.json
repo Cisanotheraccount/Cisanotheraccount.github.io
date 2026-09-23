@@ -2,10 +2,10 @@
   "version": 1,
   "catalog": {
     "path": "photography-assets/app/catalog.json",
-    "photos": 53,
-    "landscapes": 32,
+    "photos": 81,
+    "landscapes": 60,
     "live": 21,
-    "hdrPhotos": 2
+    "hdrPhotos": 0
   },
   "videos": {
     "path": "photography-assets/app/video-catalog.json",
@@ -18,14 +18,14 @@
       "path": "photography/index.html",
       "source": "photography-assets/app/photography.index.html",
       "bytes": 518,
-      "sha256": "476d6f03d6c10abfdaa7095fc6969dfb8628398e16abcb4f453417dbce391f5c",
+      "sha256": "f625f0238c5202396ac51ca902862821e6851342f19a2c9de386448bd687348c",
       "mime": "text/html; charset=utf-8"
     },
     {
       "path": "photography-assets/app/catalog.json",
       "source": "photography-assets/app/catalog.json",
-      "bytes": 28354,
-      "sha256": "442b38d60f78e2c34174be54bb85f2862306396b4102381778a2ffd225c90c50",
+      "bytes": 43749,
+      "sha256": "9e02af5f208f612e9db9f45ef7b703fc33e8519a9ee4115221fe003be9b08c56",
       "mime": "application/json; charset=utf-8"
     },
     {
@@ -36,10 +36,10 @@
       "mime": "font/woff2"
     },
     {
-      "path": "photography-assets/app/photography-D1MOoZfZ.js",
-      "source": "photography-assets/app/photography-D1MOoZfZ.js",
-      "bytes": 229487,
-      "sha256": "a88ab9df93b4cf722a293aa44b2e148c47b4df60e1a3cb466b47aaac588f2b9f",
+      "path": "photography-assets/app/photography-B20m2b_8.js",
+      "source": "photography-assets/app/photography-B20m2b_8.js",
+      "bytes": 244992,
+      "sha256": "f9d176fac20cdea6737316d487a00ecb8f94294326400d2ea7c0615f317ba314",
       "mime": "text/javascript; charset=utf-8"
     },
     {
@@ -62,6 +62,426 @@
       "bytes": 11886,
       "sha256": "e46fa65d46c405cade52d78ae7febce1ef7fd551baf2296b86de930cc361e0ad",
       "mime": "application/json; charset=utf-8"
+    },
+    {
+      "path": "photography-assets/landscape-20260923/gxc-5c7423fa64c5-1600.jpg",
+      "source": "photography-assets/landscape-20260923/gxc-5c7423fa64c5-1600.jpg",
+      "bytes": 147132,
+      "sha256": "8c73d806ac614ab8ebec94429df56618136fb9c52ff61589c6a8b74e4aa3fbd3",
+      "mime": "image/jpeg"
+    },
+    {
+      "path": "photography-assets/landscape-20260923/gxc-5d8785ec8364-1600.jpg",
+      "source": "photography-assets/landscape-20260923/gxc-5d8785ec8364-1600.jpg",
+      "bytes": 165711,
+      "sha256": "a94b9918b9e61895c336d471775adb1bf07c15d08ca798d5eea6ceafe4cc70d8",
+      "mime": "image/jpeg"
+    },
+    {
+      "path": "photography-assets/landscape-20260923/gxc-807420958f8c-1600.jpg",
+      "source": "photography-assets/landscape-20260923/gxc-807420958f8c-1600.jpg",
+      "bytes": 302769,
+      "sha256": "8dfcb4ef2bb948ef7df00fa73f7b8f995fae6d24ca9885910a4b99bfb27c5a51",
+      "mime": "image/jpeg"
+    },
+    {
+      "path": "photography-assets/landscape-20260923/gxc-2cf6b29c1439-1600.jpg",
+      "source": "photography-assets/landscape-20260923/gxc-2cf6b29c1439-1600.jpg",
+      "bytes": 172335,
+      "sha256": "8e910d41a4fe0703e7dd92a77a65b467d8de08e1b9a61e4a5480a3664400bb2c",
+      "mime": "image/jpeg"
+    },
+    {
+      "path": "photography-assets/landscape-20260923/gxc-9b2130eef216-1600.jpg",
+      "source": "photography-assets/landscape-20260923/gxc-9b2130eef216-1600.jpg",
+      "bytes": 282722,
+      "sha256": "f2cd6e1a1df58366c1357c215b9ff0999bd0de5366fb0a6fb9ca1abf14271406",
+      "mime": "image/jpeg"
+    },
+    {
+      "path": "photography-assets/landscape-20260923/gxc-e97e5a6c965f-1600.jpg",
+      "source": "photography-assets/landscape-20260923/gxc-e97e5a6c965f-1600.jpg",
+      "bytes": 433223,
+      "sha256": "62201483741a312075d4142157476fdf045b563f42d6a8535b78221da5eb6643",
+      "mime": "image/jpeg"
+    },
+    {
+      "path": "photography-assets/landscape-20260923/gxc-1632afe19e5b-1600.jpg",
+      "source": "photography-assets/landscape-20260923/gxc-1632afe19e5b-1600.jpg",
+      "bytes": 358715,
+      "sha256": "43d5b53c78c59f198e8b7e21f70126818f29ce08f997009af1e22d4b059d94e8",
+      "mime": "image/jpeg"
+    },
+    {
+      "path": "photography-assets/landscape-20260923/gxc-138b5d7cdd68-1600.jpg",
+      "source": "photography-assets/landscape-20260923/gxc-138b5d7cdd68-1600.jpg",
+      "bytes": 453691,
+      "sha256": "add686ecfecf84adc4ff0f88a5c03ffd16bd85d73fbc5c7bae9019627dbe01b5",
+      "mime": "image/jpeg"
+    },
+    {
+      "path": "photography-assets/landscape-20260923/gxc-389d85bf4b0d-1600.jpg",
+      "source": "photography-assets/landscape-20260923/gxc-389d85bf4b0d-1600.jpg",
+      "bytes": 233235,
+      "sha256": "7299b56781442f4c69f98ed1151509e639f11d01ec894a2794624ba8c9b66788",
+      "mime": "image/jpeg"
+    },
+    {
+      "path": "photography-assets/landscape-20260923/gxc-e633cb3fc2cc-1600.jpg",
+      "source": "photography-assets/landscape-20260923/gxc-e633cb3fc2cc-1600.jpg",
+      "bytes": 147247,
+      "sha256": "895ff81a93e94d958a31151938980fe1d156cef96a4d479009c9875bf60c5766",
+      "mime": "image/jpeg"
+    },
+    {
+      "path": "photography-assets/landscape-20260923/gxc-84c424cb4bfd-1600.jpg",
+      "source": "photography-assets/landscape-20260923/gxc-84c424cb4bfd-1600.jpg",
+      "bytes": 324540,
+      "sha256": "41991820e0039b42343c763bc287a3a591d95fb7990d5baf294b7de348ffbd02",
+      "mime": "image/jpeg"
+    },
+    {
+      "path": "photography-assets/landscape-20260923/gxc-c2ff4c63e42a-1600.jpg",
+      "source": "photography-assets/landscape-20260923/gxc-c2ff4c63e42a-1600.jpg",
+      "bytes": 276632,
+      "sha256": "64d0cf6c2acfb0f2916dfe676ca2662c3b84667f76006ca547edc09a39d85260",
+      "mime": "image/jpeg"
+    },
+    {
+      "path": "photography-assets/landscape-20260923/gxc-4e7fc5761513-1600.jpg",
+      "source": "photography-assets/landscape-20260923/gxc-4e7fc5761513-1600.jpg",
+      "bytes": 299829,
+      "sha256": "a439a7265c02ac3056441c7855c14b8a80426f8bf1b05f6daef9a48fe88a46cd",
+      "mime": "image/jpeg"
+    },
+    {
+      "path": "photography-assets/landscape-20260923/gxc-27b3d8b0f2c6-1600.jpg",
+      "source": "photography-assets/landscape-20260923/gxc-27b3d8b0f2c6-1600.jpg",
+      "bytes": 270306,
+      "sha256": "ea62d08af518dd1fb5c4ee2ea87623c4977041422247341602c8131af9826f67",
+      "mime": "image/jpeg"
+    },
+    {
+      "path": "photography-assets/landscape-20260923/gxc-4409f3877c02-1600.jpg",
+      "source": "photography-assets/landscape-20260923/gxc-4409f3877c02-1600.jpg",
+      "bytes": 387513,
+      "sha256": "e76461a13dde259fbaf3fd2173726434e99eac932d0b89fed95b6f0c9b1ce464",
+      "mime": "image/jpeg"
+    },
+    {
+      "path": "photography-assets/landscape-20260923/gxc-51f89490ce06-1600.jpg",
+      "source": "photography-assets/landscape-20260923/gxc-51f89490ce06-1600.jpg",
+      "bytes": 290320,
+      "sha256": "a3c869bbb5a170cc0ec4ded2c123d6408e1fffd6f8675e780e253c397b6acc78",
+      "mime": "image/jpeg"
+    },
+    {
+      "path": "photography-assets/landscape-20260923/gxc-36ac1e7ae914-1600.jpg",
+      "source": "photography-assets/landscape-20260923/gxc-36ac1e7ae914-1600.jpg",
+      "bytes": 203093,
+      "sha256": "32d8ae704f37ec468b7434c4bec104a3ba1aa2f6eaf349209a72781190d66a89",
+      "mime": "image/jpeg"
+    },
+    {
+      "path": "photography-assets/landscape-20260923/gxc-b58f1df4c03a-1600.jpg",
+      "source": "photography-assets/landscape-20260923/gxc-b58f1df4c03a-1600.jpg",
+      "bytes": 81806,
+      "sha256": "cf2d83c650793d3849b78859d2938f14cb70a974c49d7c4f93384023dd7dcf6d",
+      "mime": "image/jpeg"
+    },
+    {
+      "path": "photography-assets/landscape-20260923/gxc-dc8c779730d4-1600.jpg",
+      "source": "photography-assets/landscape-20260923/gxc-dc8c779730d4-1600.jpg",
+      "bytes": 155715,
+      "sha256": "04e49da7bf8332e4dfc4301e2693bc4270f41efaeaf64ca4c71d763d9c37ce12",
+      "mime": "image/jpeg"
+    },
+    {
+      "path": "photography-assets/landscape-20260923/gxc-0f9a3ef8f795-1600.jpg",
+      "source": "photography-assets/landscape-20260923/gxc-0f9a3ef8f795-1600.jpg",
+      "bytes": 153499,
+      "sha256": "9350f2f4527c51ca6bc321331776a134e95c803d01d1d03c614c3c8efc5b68df",
+      "mime": "image/jpeg"
+    },
+    {
+      "path": "photography-assets/landscape-20260923/gxc-764fc0c16811-1600.jpg",
+      "source": "photography-assets/landscape-20260923/gxc-764fc0c16811-1600.jpg",
+      "bytes": 371713,
+      "sha256": "2b3aaf37b6ca75946272b972ff76ea741ac3bda7c0ce3fec8b6f5737f7e1e04a",
+      "mime": "image/jpeg"
+    },
+    {
+      "path": "photography-assets/landscape-20260923/gxc-341b319d52ec-1600.jpg",
+      "source": "photography-assets/landscape-20260923/gxc-341b319d52ec-1600.jpg",
+      "bytes": 271659,
+      "sha256": "04ffef7bf756326c50dba55b71575fda72a4fa8d79a32cc7397d6877063a6633",
+      "mime": "image/jpeg"
+    },
+    {
+      "path": "photography-assets/landscape-20260923/gxc-2810224a9bb6-1600.jpg",
+      "source": "photography-assets/landscape-20260923/gxc-2810224a9bb6-1600.jpg",
+      "bytes": 225204,
+      "sha256": "2ca92e4165eacf299abe5482d88480487226e18cd21e3fef0181f26e406eb2b8",
+      "mime": "image/jpeg"
+    },
+    {
+      "path": "photography-assets/landscape-20260923/gxc-313e26a18b20-1600.jpg",
+      "source": "photography-assets/landscape-20260923/gxc-313e26a18b20-1600.jpg",
+      "bytes": 254581,
+      "sha256": "3a480ce7f5f688d26662629aa37eea7cd7e8b314a671963e6fd489512d8acabb",
+      "mime": "image/jpeg"
+    },
+    {
+      "path": "photography-assets/landscape-20260923/gxc-40dc8be2af63-1600.jpg",
+      "source": "photography-assets/landscape-20260923/gxc-40dc8be2af63-1600.jpg",
+      "bytes": 302072,
+      "sha256": "4d29deb08a19a29083050999a089328b5269cc5372c93253a5d98f2d68b27e5d",
+      "mime": "image/jpeg"
+    },
+    {
+      "path": "photography-assets/landscape-20260923/gxc-f426fbc84577-1600.jpg",
+      "source": "photography-assets/landscape-20260923/gxc-f426fbc84577-1600.jpg",
+      "bytes": 290588,
+      "sha256": "80c225baa5c0d3918fb74f4a1f1a776b221724a2198cc98ca64d0945026ae0e6",
+      "mime": "image/jpeg"
+    },
+    {
+      "path": "photography-assets/landscape-20260923/gxc-f01ce60696f6-1600.jpg",
+      "source": "photography-assets/landscape-20260923/gxc-f01ce60696f6-1600.jpg",
+      "bytes": 372866,
+      "sha256": "d3a278aa5b894b1709890f84ea51d794b5e36be0018332873bb3b217dd8e5c4e",
+      "mime": "image/jpeg"
+    },
+    {
+      "path": "photography-assets/landscape-20260923/gxc-8c22e2e1b96c-1600.jpg",
+      "source": "photography-assets/landscape-20260923/gxc-8c22e2e1b96c-1600.jpg",
+      "bytes": 622796,
+      "sha256": "c8c8d85b98cc35a4ec0ed9d465bd6d319cc8f659ee2212e90b5dfd51088c9f60",
+      "mime": "image/jpeg"
+    },
+    {
+      "path": "photography-assets/landscape-20260923/gxc-c6c8b6694076-1600.jpg",
+      "source": "photography-assets/landscape-20260923/gxc-c6c8b6694076-1600.jpg",
+      "bytes": 507836,
+      "sha256": "6da64802f94e54e55b6506f929e1da2137c5b9ded2a767c407e23ca9a171e63f",
+      "mime": "image/jpeg"
+    },
+    {
+      "path": "photography-assets/landscape-20260923/gxc-599de7d8fecf-1600.jpg",
+      "source": "photography-assets/landscape-20260923/gxc-599de7d8fecf-1600.jpg",
+      "bytes": 338454,
+      "sha256": "978637b422c190f758ec1519b3d3446d4b7bf0e254a24c44b746c58dc3c55f89",
+      "mime": "image/jpeg"
+    },
+    {
+      "path": "photography-assets/landscape-20260923/gxc-f336f8e5841a-1600.jpg",
+      "source": "photography-assets/landscape-20260923/gxc-f336f8e5841a-1600.jpg",
+      "bytes": 538481,
+      "sha256": "aa25ff4ba99d97622bd118986d8137a6353153f81a916c78ad41970ccbb57e20",
+      "mime": "image/jpeg"
+    },
+    {
+      "path": "photography-assets/landscape-20260923/gxc-cf81f30b2860-1600.jpg",
+      "source": "photography-assets/landscape-20260923/gxc-cf81f30b2860-1600.jpg",
+      "bytes": 243492,
+      "sha256": "be89f64070597317117eb1e4051c97eb99df72d83361e85dd7dac55a329b1450",
+      "mime": "image/jpeg"
+    },
+    {
+      "path": "photography-assets/landscape-20260923/gxc-bbf7a0db0ec8-1600.jpg",
+      "source": "photography-assets/landscape-20260923/gxc-bbf7a0db0ec8-1600.jpg",
+      "bytes": 357518,
+      "sha256": "315697474cca8e2c5a17511fbc591b5599beac133f0f5dabeb81bbebb6a84f26",
+      "mime": "image/jpeg"
+    },
+    {
+      "path": "photography-assets/landscape-20260923/gxc-8b8273e9eb80-1600.jpg",
+      "source": "photography-assets/landscape-20260923/gxc-8b8273e9eb80-1600.jpg",
+      "bytes": 170831,
+      "sha256": "5aec0e246668816ee1253b8a9a78abf391a5ee5fc18b46e20291088c36f2c69a",
+      "mime": "image/jpeg"
+    },
+    {
+      "path": "photography-assets/landscape-20260923/gxc-24e1a231fc9d-1600.jpg",
+      "source": "photography-assets/landscape-20260923/gxc-24e1a231fc9d-1600.jpg",
+      "bytes": 230258,
+      "sha256": "283b69ed496e486d3ce54183ee8dd3b1bb038cb52af0535e7f0c7ba90ead0eab",
+      "mime": "image/jpeg"
+    },
+    {
+      "path": "photography-assets/landscape-20260923/gxc-dde679f416a6-1600.jpg",
+      "source": "photography-assets/landscape-20260923/gxc-dde679f416a6-1600.jpg",
+      "bytes": 333594,
+      "sha256": "18962a8ae6bf1029b83143fd4265543aef8f0de024860085d1206244454584f6",
+      "mime": "image/jpeg"
+    },
+    {
+      "path": "photography-assets/landscape-20260923/gxc-7b857b9aeca0-1600.jpg",
+      "source": "photography-assets/landscape-20260923/gxc-7b857b9aeca0-1600.jpg",
+      "bytes": 440585,
+      "sha256": "086838376cc864de6930285b8c200cf1bad7a1e25751d6303cec61d2f379c284",
+      "mime": "image/jpeg"
+    },
+    {
+      "path": "photography-assets/landscape-20260923/gxc-9e104f1970cd-1600.jpg",
+      "source": "photography-assets/landscape-20260923/gxc-9e104f1970cd-1600.jpg",
+      "bytes": 304782,
+      "sha256": "f4421fa5b9d3018b8160d37045e70a08ede78e4d0a53a3b259ac27cbfcce932f",
+      "mime": "image/jpeg"
+    },
+    {
+      "path": "photography-assets/landscape-20260923/gxc-3e1b97ba5ea0-1600.jpg",
+      "source": "photography-assets/landscape-20260923/gxc-3e1b97ba5ea0-1600.jpg",
+      "bytes": 263462,
+      "sha256": "ac4b672b4ac7307a8e475aa8f91b379aa1875b3b009358910b9e367959d80d04",
+      "mime": "image/jpeg"
+    },
+    {
+      "path": "photography-assets/landscape-20260923/gxc-814eda3c91cf-1600.jpg",
+      "source": "photography-assets/landscape-20260923/gxc-814eda3c91cf-1600.jpg",
+      "bytes": 279331,
+      "sha256": "ff1c1960b4fd22ea68c54c3a67028f2399bcea301f7b04c474597b39d6d01e21",
+      "mime": "image/jpeg"
+    },
+    {
+      "path": "photography-assets/landscape-20260923/gxc-d8e7ff5b5c6d-1600.jpg",
+      "source": "photography-assets/landscape-20260923/gxc-d8e7ff5b5c6d-1600.jpg",
+      "bytes": 452326,
+      "sha256": "c1173ad384b41f03176406dca3877ff6795d1649bf9f388f5e5e8a7f964d0747",
+      "mime": "image/jpeg"
+    },
+    {
+      "path": "photography-assets/landscape-20260923/gxc-191213ac3ff8-1600.jpg",
+      "source": "photography-assets/landscape-20260923/gxc-191213ac3ff8-1600.jpg",
+      "bytes": 259153,
+      "sha256": "c30c9103608b8381668d90256573ec8b3ca14538d4c519b6dfd1c95cf0ba45c1",
+      "mime": "image/jpeg"
+    },
+    {
+      "path": "photography-assets/landscape-20260923/gxc-beebf3c1a55a-1600.jpg",
+      "source": "photography-assets/landscape-20260923/gxc-beebf3c1a55a-1600.jpg",
+      "bytes": 314918,
+      "sha256": "601e7922f1ccf9ecae23316eedae30754f5e3e5be09ed8f58a10ba114e4f3107",
+      "mime": "image/jpeg"
+    },
+    {
+      "path": "photography-assets/landscape-20260923/gxc-bcee8b25e3de-1600.jpg",
+      "source": "photography-assets/landscape-20260923/gxc-bcee8b25e3de-1600.jpg",
+      "bytes": 321205,
+      "sha256": "b6963cd01ad00a83a73fe4b935dc2ef9a8e2008187437cc4941558801179a559",
+      "mime": "image/jpeg"
+    },
+    {
+      "path": "photography-assets/landscape-20260923/gxc-ba3fd9fac4ee-1600.jpg",
+      "source": "photography-assets/landscape-20260923/gxc-ba3fd9fac4ee-1600.jpg",
+      "bytes": 522041,
+      "sha256": "04a2d8fc7cbdf238ceda799eab3cabb5e17d5da0d2f1c934425a0b72f4d6601d",
+      "mime": "image/jpeg"
+    },
+    {
+      "path": "photography-assets/landscape-20260923/gxc-8d5456a17c0a-1600.jpg",
+      "source": "photography-assets/landscape-20260923/gxc-8d5456a17c0a-1600.jpg",
+      "bytes": 538027,
+      "sha256": "7fa2428329f949ac9334ba43a914a88f32d10cdc5a056c5be3c2b14bff5d199a",
+      "mime": "image/jpeg"
+    },
+    {
+      "path": "photography-assets/landscape-20260923/gxc-b77793036519-1600.jpg",
+      "source": "photography-assets/landscape-20260923/gxc-b77793036519-1600.jpg",
+      "bytes": 272037,
+      "sha256": "715bd3a8e2e16f94a09842a59206437e3548157aeeb280fdb8b41aa1acb1a200",
+      "mime": "image/jpeg"
+    },
+    {
+      "path": "photography-assets/landscape-20260923/gxc-8c213dae464d-1600.jpg",
+      "source": "photography-assets/landscape-20260923/gxc-8c213dae464d-1600.jpg",
+      "bytes": 704871,
+      "sha256": "c3c27938294d699e7e752ffe3c5baba8c197309752d81e9497ab9114cb39bb66",
+      "mime": "image/jpeg"
+    },
+    {
+      "path": "photography-assets/landscape-20260923/gxc-39dfe691f4e2-1600.jpg",
+      "source": "photography-assets/landscape-20260923/gxc-39dfe691f4e2-1600.jpg",
+      "bytes": 516373,
+      "sha256": "59295a82fc4db6d0d031c3564c448366b7bcf129f9150dec27618a18272f8d5e",
+      "mime": "image/jpeg"
+    },
+    {
+      "path": "photography-assets/landscape-20260923/gxc-4c455a41306a-1600.jpg",
+      "source": "photography-assets/landscape-20260923/gxc-4c455a41306a-1600.jpg",
+      "bytes": 257343,
+      "sha256": "dc425ef86352e5f62cf9819a16014d4536d248c5aa3cf4a2fd0f4cdbfb30aacd",
+      "mime": "image/jpeg"
+    },
+    {
+      "path": "photography-assets/landscape-20260923/gxc-952864ece62a-1600.jpg",
+      "source": "photography-assets/landscape-20260923/gxc-952864ece62a-1600.jpg",
+      "bytes": 265504,
+      "sha256": "ec238d75d554647f6f6fd28d86157b1c8318c72786a3e890a15baa2d18d83f29",
+      "mime": "image/jpeg"
+    },
+    {
+      "path": "photography-assets/landscape-20260923/gxc-8263188bb54c-1600.jpg",
+      "source": "photography-assets/landscape-20260923/gxc-8263188bb54c-1600.jpg",
+      "bytes": 91433,
+      "sha256": "89990ff50d8aedb93abe9f6b214a097112cc0b0cafb8cf384ab5c772ff70edaf",
+      "mime": "image/jpeg"
+    },
+    {
+      "path": "photography-assets/landscape-20260923/gxc-975015d30ea6-1600.jpg",
+      "source": "photography-assets/landscape-20260923/gxc-975015d30ea6-1600.jpg",
+      "bytes": 198945,
+      "sha256": "4ccd7e0bfb4d06e62532da28cfea8fe03dc26e6c35c73e0d631ef83078cb6f07",
+      "mime": "image/jpeg"
+    },
+    {
+      "path": "photography-assets/landscape-20260923/gxc-128709ca4314-1600.jpg",
+      "source": "photography-assets/landscape-20260923/gxc-128709ca4314-1600.jpg",
+      "bytes": 573057,
+      "sha256": "60b27b36f3b85c62e1c47e22e252e2fd4d0d0387805e2ac3e0702dca18cf03fe",
+      "mime": "image/jpeg"
+    },
+    {
+      "path": "photography-assets/landscape-20260923/gxc-eb59b1f94e28-1600.jpg",
+      "source": "photography-assets/landscape-20260923/gxc-eb59b1f94e28-1600.jpg",
+      "bytes": 606408,
+      "sha256": "e0ada31c54dc9de90970560308e10f9b525d6ac7da76ff714b3df10f551bfb44",
+      "mime": "image/jpeg"
+    },
+    {
+      "path": "photography-assets/landscape-20260923/gxc-db400f987243-1600.jpg",
+      "source": "photography-assets/landscape-20260923/gxc-db400f987243-1600.jpg",
+      "bytes": 367006,
+      "sha256": "4cdc18979c0d829b77ea3616583355bc9f11ee8a57e1ac1c06b2a6989ba109af",
+      "mime": "image/jpeg"
+    },
+    {
+      "path": "photography-assets/landscape-20260923/gxc-8019f533e31f-1600.jpg",
+      "source": "photography-assets/landscape-20260923/gxc-8019f533e31f-1600.jpg",
+      "bytes": 492977,
+      "sha256": "03d1b816d5d67644f96bf92dadce0e57d55b45c54323cac6e132f1169c3fdb4b",
+      "mime": "image/jpeg"
+    },
+    {
+      "path": "photography-assets/landscape-20260923/gxc-c68f80ab68d9-1600.jpg",
+      "source": "photography-assets/landscape-20260923/gxc-c68f80ab68d9-1600.jpg",
+      "bytes": 438392,
+      "sha256": "fdcd7f5c03a73e9f00eadc7a0164786e3835b332b28aeb5c9fda043c5a5a128e",
+      "mime": "image/jpeg"
+    },
+    {
+      "path": "photography-assets/landscape-20260923/gxc-e02cbcce65c3-1600.jpg",
+      "source": "photography-assets/landscape-20260923/gxc-e02cbcce65c3-1600.jpg",
+      "bytes": 369481,
+      "sha256": "07d8486e6dd75dec9ff2bbced63e0333d44dff6d678de28db92c2fc682d34bf7",
+      "mime": "image/jpeg"
+    },
+    {
+      "path": "photography-assets/landscape-20260923/gxc-9fd0009484bc-1600.jpg",
+      "source": "photography-assets/landscape-20260923/gxc-9fd0009484bc-1600.jpg",
+      "bytes": 221592,
+      "sha256": "431891987b9c43f5ab02f774cdaf4768572fdee5363e3e3e845bd79055dc2211",
+      "mime": "image/jpeg"
     },
     {
       "path": "photography-assets/selected-20260921/gxc-a27c3e4e1e27.jpg",
@@ -208,230 +628,6 @@
       "source": "photography-assets/selected-20260921/gxc-8a7d3ef07be8.jpg",
       "bytes": 357342,
       "sha256": "7b81021cde794a492bf38e96bd2f09a6fbe44a547ef9b8feb581dc4a954b88b8",
-      "mime": "image/jpeg"
-    },
-    {
-      "path": "photography-assets/selected-20260921/gxc-4409f3877c02.jpg",
-      "source": "photography-assets/selected-20260921/gxc-4409f3877c02.jpg",
-      "bytes": 629865,
-      "sha256": "a60fe00464a708713a42512f53270e75fdeaa68f7669cd10dd17eb777d01dd19",
-      "mime": "image/jpeg"
-    },
-    {
-      "path": "photography-assets/selected-20260921/gxc-9e104f1970cd.jpg",
-      "source": "photography-assets/selected-20260921/gxc-9e104f1970cd.jpg",
-      "bytes": 760301,
-      "sha256": "f2a6a29b2af6f4ff6bc2272474bf315fa0dc77e75b04be4935e4ec1087b4c4f2",
-      "mime": "image/jpeg"
-    },
-    {
-      "path": "photography-assets/selected-20260921/gxc-f426fbc84577.jpg",
-      "source": "photography-assets/selected-20260921/gxc-f426fbc84577.jpg",
-      "bytes": 451525,
-      "sha256": "147a980a0a24250de7763ea14cf50f1050786aa36d481cb58a6de83214776f7b",
-      "mime": "image/jpeg"
-    },
-    {
-      "path": "photography-assets/selected-20260921/gxc-f01ce60696f6.jpg",
-      "source": "photography-assets/selected-20260921/gxc-f01ce60696f6.jpg",
-      "bytes": 602266,
-      "sha256": "4ca77a48f21e5e2ad5a393e219f9c53b819b60d55722e4dfe98c70250b9bafa2",
-      "mime": "image/jpeg"
-    },
-    {
-      "path": "photography-assets/selected-20260921/gxc-d8e7ff5b5c6d.jpg",
-      "source": "photography-assets/selected-20260921/gxc-d8e7ff5b5c6d.jpg",
-      "bytes": 718856,
-      "sha256": "dac127e4f81dc82a55d0a4238b19bda315529dd01c532037a5bcbc2cb311e031",
-      "mime": "image/jpeg"
-    },
-    {
-      "path": "photography-assets/selected-20260921/gxc-27b3d8b0f2c6.jpg",
-      "source": "photography-assets/selected-20260921/gxc-27b3d8b0f2c6.jpg",
-      "bytes": 424399,
-      "sha256": "876b29198dec33de160a92f965d9deac796cd0a474deef87c0446b15cea55052",
-      "mime": "image/jpeg"
-    },
-    {
-      "path": "photography-assets/selected-20260921/gxc-4c455a41306a.jpg",
-      "source": "photography-assets/selected-20260921/gxc-4c455a41306a.jpg",
-      "bytes": 563517,
-      "sha256": "ec7c7c4b413ccbfb73499a46d6baf7cdcf31b3b96403fb93a9af550432979dc2",
-      "mime": "image/jpeg"
-    },
-    {
-      "path": "photography-assets/selected-20260921/gxc-db400f987243.jpg",
-      "source": "photography-assets/selected-20260921/gxc-db400f987243.jpg",
-      "bytes": 527609,
-      "sha256": "160bc7e2d7432d86f5c7891d22276e8654ead83447000f1d4a62fb1c4c7dc1fe",
-      "mime": "image/jpeg"
-    },
-    {
-      "path": "photography-assets/selected-20260921/gxc-e02cbcce65c3.jpg",
-      "source": "photography-assets/selected-20260921/gxc-e02cbcce65c3.jpg",
-      "bytes": 519453,
-      "sha256": "511b3efb114ae13e6476c2db4c657375e21f928bceca72974dc70f62475e17f3",
-      "mime": "image/jpeg"
-    },
-    {
-      "path": "photography-assets/selected-20260921/gxc-5d8785ec8364.jpg",
-      "source": "photography-assets/selected-20260921/gxc-5d8785ec8364.jpg",
-      "bytes": 167780,
-      "sha256": "f57e65e788220d39e1d5f2625d93e53bca75533bb8d1357155761e47c0d97cbd",
-      "mime": "image/jpeg"
-    },
-    {
-      "path": "photography-assets/selected-20260921/gxc-8263188bb54c.jpg",
-      "source": "photography-assets/selected-20260921/gxc-8263188bb54c.jpg",
-      "bytes": 129828,
-      "sha256": "dad5a8d8ee4a612fb2148a0561b93c4be75c915e731b6345006db150e5b067b1",
-      "mime": "image/jpeg"
-    },
-    {
-      "path": "photography-assets/selected-20260921/gxc-0f9a3ef8f795.jpg",
-      "source": "photography-assets/selected-20260921/gxc-0f9a3ef8f795.jpg",
-      "bytes": 253574,
-      "sha256": "29d64ddd6e78340f3d413692e624dfd749b9c6faed5308de98abc845b460c0af",
-      "mime": "image/jpeg"
-    },
-    {
-      "path": "photography-assets/selected-20260921/gxc-24e1a231fc9d.jpg",
-      "source": "photography-assets/selected-20260921/gxc-24e1a231fc9d.jpg",
-      "bytes": 356677,
-      "sha256": "ac9ebccd19e3596564ab5bc685cd1b4b5e07fe405106ad13b7d597b2edba5e5e",
-      "mime": "image/jpeg"
-    },
-    {
-      "path": "photography-assets/selected-20260921/gxc-40dc8be2af63.jpg",
-      "source": "photography-assets/selected-20260921/gxc-40dc8be2af63.jpg",
-      "bytes": 471951,
-      "sha256": "3619d49fe35daae1ee39098cf9a81ecaf6c8fe9e7a5c6c247c9c353ee0205973",
-      "mime": "image/jpeg"
-    },
-    {
-      "path": "photography-assets/selected-20260921/gxc-8c213dae464d.jpg",
-      "source": "photography-assets/selected-20260921/gxc-8c213dae464d.jpg",
-      "bytes": 1104181,
-      "sha256": "ae04b2c1df1f17115e5865f826191511d4fed429f6d870df45a7490343cb7816",
-      "mime": "image/jpeg"
-    },
-    {
-      "path": "photography-assets/selected-20260921/gxc-660c0a5f967b.jpg",
-      "source": "photography-assets/selected-20260921/gxc-660c0a5f967b.jpg",
-      "bytes": 150400,
-      "sha256": "f09d62bcf469e6bc09d2e40c7debbb91af34ee3b2f7903dea7e171e22d832e4c",
-      "mime": "image/jpeg"
-    },
-    {
-      "path": "photography-assets/selected-20260921/gxc-51f89490ce06.jpg",
-      "source": "photography-assets/selected-20260921/gxc-51f89490ce06.jpg",
-      "bytes": 148794,
-      "sha256": "e2b657b4157a9d4c73125285667b9b1e468af361f8ecdc2ef0328f98d382adf5",
-      "mime": "image/jpeg"
-    },
-    {
-      "path": "photography-assets/selected-20260921/gxc-3e1b97ba5ea0.jpg",
-      "source": "photography-assets/selected-20260921/gxc-3e1b97ba5ea0.jpg",
-      "bytes": 344226,
-      "sha256": "497cf1915ccb820f4626990c20a71feea04ad6fa9cbd5d4b83852a4a682e64e9",
-      "mime": "image/jpeg"
-    },
-    {
-      "path": "photography-assets/selected-20260921/gxc-f856f729b970.jpg",
-      "source": "photography-assets/selected-20260921/gxc-f856f729b970.jpg",
-      "bytes": 291727,
-      "sha256": "156bbb51f60a7530fab8b7df96da8341f3ec672abf89cb91979c54489e3c9fa2",
-      "mime": "image/jpeg"
-    },
-    {
-      "path": "photography-assets/selected-20260921/gxc-bbf7a0db0ec8.jpg",
-      "source": "photography-assets/selected-20260921/gxc-bbf7a0db0ec8.jpg",
-      "bytes": 545027,
-      "sha256": "ddc3cf66ad2eb735a4bec5488a6de795b423aec66154eab27ec7d560b1125797",
-      "mime": "image/jpeg"
-    },
-    {
-      "path": "photography-assets/selected-20260921/gxc-39dfe691f4e2.jpg",
-      "source": "photography-assets/selected-20260921/gxc-39dfe691f4e2.jpg",
-      "bytes": 899369,
-      "sha256": "1a7a9c438698c6c268e8a391d18dff779a867b96e49d08be28046a7377e1bc54",
-      "mime": "image/jpeg"
-    },
-    {
-      "path": "photography-assets/selected-20260921/gxc-d479f4e0db7d.jpg",
-      "source": "photography-assets/selected-20260921/gxc-d479f4e0db7d.jpg",
-      "bytes": 171768,
-      "sha256": "5e9253baac43c1a1eadcdace48bb717c12114ac4c1c62d9473d6df9aba9b728d",
-      "mime": "image/jpeg"
-    },
-    {
-      "path": "photography-assets/selected-20260921/gxc-e633cb3fc2cc.jpg",
-      "source": "photography-assets/selected-20260921/gxc-e633cb3fc2cc.jpg",
-      "bytes": 221516,
-      "sha256": "50b2b5a9d0cdcc4089f0f1aa320e3db81620d2631424b8341f7cff48ecbf5f36",
-      "mime": "image/jpeg"
-    },
-    {
-      "path": "photography-assets/selected-20260921/gxc-f1307d913995.jpg",
-      "source": "photography-assets/selected-20260921/gxc-f1307d913995.jpg",
-      "bytes": 430416,
-      "sha256": "047b77072e4563bf7553c7938d7ef2d225791080195bcc526b8d6d8b0fc2e638",
-      "mime": "image/jpeg"
-    },
-    {
-      "path": "photography-assets/selected-20260921/gxc-e80e67c0e581.jpg",
-      "source": "photography-assets/selected-20260921/gxc-e80e67c0e581.jpg",
-      "bytes": 327407,
-      "sha256": "f6a1a9b1901c5833c9e231a925ad74c7fadb336164984bd4315c9929e7884469",
-      "mime": "image/jpeg"
-    },
-    {
-      "path": "photography-assets/selected-20260921/gxc-49f3ca789edc.jpg",
-      "source": "photography-assets/selected-20260921/gxc-49f3ca789edc.jpg",
-      "bytes": 785867,
-      "sha256": "a15a1ba0717a1ba6ee7eb428490482b7e6bda026fad148fd12022799a5d0c05d",
-      "mime": "image/jpeg"
-    },
-    {
-      "path": "photography-assets/selected-20260921/gxc-8f83fdf5114a.jpg",
-      "source": "photography-assets/selected-20260921/gxc-8f83fdf5114a.jpg",
-      "bytes": 492823,
-      "sha256": "a2926839726cac8059bf7cb3fbc33835c804ea24a0e023ef845a30088c3f6f55",
-      "mime": "image/jpeg"
-    },
-    {
-      "path": "photography-assets/selected-20260921/gxc-1a214f055176.jpg",
-      "source": "photography-assets/selected-20260921/gxc-1a214f055176.jpg",
-      "bytes": 252837,
-      "sha256": "bd270572cf00194f3fc11519207946bf6673d406af6d9860e841eeda0b056534",
-      "mime": "image/jpeg"
-    },
-    {
-      "path": "photography-assets/selected-20260921/gxc-341b319d52ec.jpg",
-      "source": "photography-assets/selected-20260921/gxc-341b319d52ec.jpg",
-      "bytes": 421709,
-      "sha256": "dc32434c9bf7c9333bff94a538939185b8edfc034bddbaa68da9a16821f0ec67",
-      "mime": "image/jpeg"
-    },
-    {
-      "path": "photography-assets/selected-20260921/gxc-9c570187ffdb.jpg",
-      "source": "photography-assets/selected-20260921/gxc-9c570187ffdb.jpg",
-      "bytes": 593549,
-      "sha256": "ae0782104b96ffe4a9fe5deda269039a3e651dc5a7fdcd95fd83cacda391b737",
-      "mime": "image/jpeg"
-    },
-    {
-      "path": "photography-assets/selected-20260921/gxc-814eda3c91cf.jpg",
-      "source": "photography-assets/selected-20260921/gxc-814eda3c91cf.jpg",
-      "bytes": 419723,
-      "sha256": "8ceeeeff7b164cef27d65ae0b41acca34629922094e543841920c35df6f92ea4",
-      "mime": "image/jpeg"
-    },
-    {
-      "path": "photography-assets/selected-20260921/gxc-cf81f30b2860.jpg",
-      "source": "photography-assets/selected-20260921/gxc-cf81f30b2860.jpg",
-      "bytes": 364163,
-      "sha256": "b2d5108722aa16e6b3c72dfa2c11db42e16f2a26f3be0f2421d625d9940fff3a",
       "mime": "image/jpeg"
     },
     {

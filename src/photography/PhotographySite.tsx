@@ -194,7 +194,7 @@ export function PhotographySite() {
               <p className="photo-description">{item.description}</p>
             </header>
             <div className="photo-series-list">
-              {series.map(series => <PhotoSeries key={series.id} item={series} width={viewport.galleryWidth} height={viewport.height} gap={gap} mode={mode} admitted={admission.admitted} visible={admission.visible} onOpen={(photoId, opener) => setOpened({ category: item.id as PhotoCategory, photoId, opener })} />)}
+              {series.map(series => <PhotoSeries key={series.id} item={series} hideHeading={item.id === 'landscape'} width={viewport.galleryWidth} height={viewport.height} gap={gap} mode={mode} admitted={admission.admitted} visible={admission.visible} onOpen={(photoId, opener) => setOpened({ category: item.id as PhotoCategory, photoId, opener })} />)}
             </div>
             {item.id === 'video' && <VideoGallery items={photographyVideoCatalog} active={category === 'video'} />}
             <section className="photo-contact" aria-labelledby={`${item.id}-contact-title`}>
@@ -211,11 +211,11 @@ export function PhotographySite() {
   </div>;
 }
 
-function PhotoSeries({ item, width, height, gap, mode, admitted, visible, onOpen }: { item: PhotographySeries; width: number; height: number; gap: number; mode: 1 | 2 | 3; admitted: Set<string>; visible: Set<string>; onOpen: (id: string, opener: HTMLElement) => void }) {
+function PhotoSeries({ item, hideHeading, width, height, gap, mode, admitted, visible, onOpen }: { item: PhotographySeries; hideHeading: boolean; width: number; height: number; gap: number; mode: 1 | 2 | 3; admitted: Set<string>; visible: Set<string>; onOpen: (id: string, opener: HTMLElement) => void }) {
   const photos = useMemo(() => item.photoIds.map(id => photosById.get(id)).filter((photo): photo is PhotographyPhoto => !!photo), [item]);
   const rows = useMemo(() => arrangePhotos(photos, width, gap, mode, height), [photos, width, gap, mode, height]);
-  return <section className="photo-series" aria-labelledby={`series-${item.id}`}>
-    <div className="photo-series-heading"><h2 id={`series-${item.id}`}>{t(item.title)}</h2><span>{number(photos.length)} {t('photographs')}</span></div>
+  return <section className="photo-series" aria-label={hideHeading ? t(item.title) : undefined} aria-labelledby={hideHeading ? undefined : `series-${item.id}`}>
+    {!hideHeading && <div className="photo-series-heading"><h2 id={`series-${item.id}`}>{t(item.title)}</h2><span>{number(photos.length)} {t('photographs')}</span></div>}
     <div className="photo-rows" style={{ gap }}>
       {rows.map(row => <div className="photo-row" key={row.photos[0].id} style={{ gap, height: row.height }}>
         {row.photos.map((photo, photoIndex) => <PhotoTile key={photo.id} photo={photo} width={row.widths[photoIndex]} height={row.height} admitted={admitted.has(photo.id)} priority={visible.has(photo.id)} onOpen={opener => onOpen(photo.id, opener)} />)}

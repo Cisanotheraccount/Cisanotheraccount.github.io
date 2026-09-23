@@ -212,7 +212,7 @@ function PhotoTile({ photo, width, height, admitted, priority, onOpen }: { photo
   const [retry, setRetry] = useState(0);
   return <div className="photo-tile" style={{ width, height }} data-photo-id={photo.id}>
     {failed ? <div className="photo-media-error" role="status"><span>{t('Image unavailable')}</span><button type="button" onClick={() => { setFailed(false); setRetry(value => value + 1); }}>{t('Retry image')}</button><button type="button" data-photo-open onClick={event => onOpen(event.currentTarget)}>{t('Open photograph')}</button></div> :
-      <button className="photo-open" data-photo-open type="button" onClick={event => onOpen(event.currentTarget)} aria-label={`${t('View')} ${t(photo.alt)}`}>{admitted && <ManagedPhoto key={retry} photo={photo} sizes={`${Math.ceil(width)}px`} loading="eager" fetchPriority={priority ? 'high' : 'low'} priority={priority} onFailure={() => setFailed(true)} />}</button>}
+      <button className="photo-open" data-photo-open type="button" onContextMenu={event => event.preventDefault()} onDragStart={event => event.preventDefault()} onClick={event => onOpen(event.currentTarget)} aria-label={`${t('View')} ${t(photo.alt)}`}>{admitted && <ManagedPhoto key={retry} photo={photo} sizes={`${Math.ceil(width)}px`} loading="eager" fetchPriority={priority ? 'high' : 'low'} priority={priority} onFailure={() => setFailed(true)} />}</button>}
   </div>;
 }
 

@@ -72,6 +72,7 @@ export function ManagedPhoto({ photo, sizes, priority = false, className, loadin
     decoding="async"
     {...(priority ? { fetchPriority: 'high' as const } : {})}
     {...rest}
+    draggable={false}
     onLoad={() => setLoaded(true)}
     onError={() => { setFailed(true); onFailure?.(); }}
   />;
@@ -106,6 +107,7 @@ export function OriginalPhoto({ photo, requestKey, className, onReady, onFailure
     loading="eager"
     decoding="async"
     fetchPriority="high"
+    draggable={false}
     onLoad={(event) => {
       const image = event.currentTarget;
       if (typeof image.decode !== 'function') {

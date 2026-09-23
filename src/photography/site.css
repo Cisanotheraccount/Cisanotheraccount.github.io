@@ -38,6 +38,7 @@ html[data-photo-dialog-open] .photo-panel { overflow-y: hidden; }
 .photo-row { display: flex; align-items: flex-start; }
 .photo-tile { position: relative; flex: none; }
 .photo-open { display: block; width: 100%; height: 100%; padding: 0; background: transparent; }
+.photo-open, .photo-open img { -webkit-touch-callout: none; -webkit-user-select: none; user-select: none; -webkit-user-drag: none; }
 .photo-open:focus-visible { outline-offset: -4px; }
 .photo-media { position: relative; width: 100%; height: 100%; }
 .photo-media picture { display: block; width: 100%; height: 100%; }

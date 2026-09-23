@@ -7,7 +7,7 @@ import {
   type KeyboardEvent as ReactKeyboardEvent,
   type PointerEvent as ReactPointerEvent,
 } from 'react';
-import { ArrowUpRight, Minus, Plus } from 'lucide-react';
+import { Minus, Plus } from 'lucide-react';
 import type { PhotographyPhoto } from './catalog.types';
 import { ManagedPhoto, OriginalPhoto } from './media';
 import { photographyText as t } from '../localization/photography';
@@ -265,6 +265,8 @@ export function PhotoViewerImage({ photo, onStep }: { photo: PhotographyPhoto; o
       data-zoom-scale={view.scale.toFixed(3)}
       data-zoom-x={view.x.toFixed(2)}
       data-zoom-y={view.y.toFixed(2)}
+      onContextMenu={event => event.preventDefault()}
+      onDragStart={event => event.preventDefault()}
       onKeyDown={handleKeyDown}
       onPointerDown={handlePointerDown}
       onPointerMove={handlePointerMove}
@@ -305,7 +307,6 @@ export function PhotoViewerImage({ photo, onStep }: { photo: PhotographyPhoto; o
         {photo.original && <>
           <span role="status" aria-live="polite">{status === 'loading' ? t('Loading full resolution…') : status === 'ready' ? `${t('Full resolution')} · ${photo.original.width} × ${photo.original.height}${photo.original.hdr ? ` · ${t('HDR')}` : ''}` : previewFailed ? t('Couldn’t load photograph.') : t('Showing preview.')}</span>
           {(status === 'error' || request > 0) && <button type="button" aria-disabled={status !== 'error'} onClick={() => { if (status === 'error') { setStatus('loading'); setRequest(value => value + 1); } }}>{status === 'ready' ? t('Full resolution loaded') : status === 'loading' ? t('Loading…') : t('Retry full resolution')}</button>}
-          {status === 'error' && <a href={photo.original.src} target="_blank" rel="noreferrer">{t('Open original')} <ArrowUpRight size={14} aria-hidden="true" /></a>}
         </>}
       </div>
     </div>

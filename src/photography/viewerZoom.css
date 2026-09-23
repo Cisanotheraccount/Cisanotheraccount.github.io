@@ -7,6 +7,9 @@
   touch-action: none;
   cursor: zoom-in;
   overscroll-behavior: contain;
+  -webkit-touch-callout: none;
+  -webkit-user-select: none;
+  user-select: none;
 }
 
 .photo-zoom-viewport:focus-visible {
@@ -18,12 +21,15 @@
 
 .photo-dialog-frame.photo-zoom-plane {
   position: absolute;
+  -webkit-user-select: none;
   user-select: none;
 }
 
 .photo-zoom-plane .photo-media,
 .photo-zoom-plane .photo-dialog-original {
   pointer-events: none;
+  -webkit-touch-callout: none;
+  -webkit-user-select: none;
   user-select: none;
   -webkit-user-drag: none;
 }

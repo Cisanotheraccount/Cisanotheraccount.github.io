@@ -18,7 +18,7 @@
       "path": "photography/index.html",
       "source": "photography-assets/app/photography.index.html",
       "bytes": 518,
-      "sha256": "11e712dda69ad8edc3f6ed71d0c3844e3032e421715cef1c6d8dd411acacb3ab",
+      "sha256": "1c75d482edde64bf3f07e8dba8f5f0a8e8986d383011c2ebc549e84434e5db1c",
       "mime": "text/html; charset=utf-8"
     },
     {
@@ -57,10 +57,10 @@
       "mime": "image/png"
     },
     {
-      "path": "photography-assets/app/photography-6T3bylYM.js",
-      "source": "photography-assets/app/photography-6T3bylYM.js",
+      "path": "photography-assets/app/photography-BLxpGqe2.js",
+      "source": "photography-assets/app/photography-BLxpGqe2.js",
       "bytes": 256857,
-      "sha256": "2600129a7e05eeb3cb014b161f96b35959c1ee26f6c0214a38f0980dabef05bb",
+      "sha256": "4c518eb466df7b6314cf20dd472abc4f54792d0d47b735145a869789df195de4",
       "mime": "text/javascript; charset=utf-8"
     },
     {
@@ -81,7 +81,7 @@
       "path": "photography-assets/app/video-catalog.json",
       "source": "photography-assets/app/video-catalog.json",
       "bytes": 11886,
-      "sha256": "e46fa65d46c405cade52d78ae7febce1ef7fd551baf2296b86de930cc361e0ad",
+      "sha256": "b46a5345259a961686c6bc627f7ca07f3285ecb65c06df92989c564c14cf1a8b",
       "mime": "application/json; charset=utf-8"
     },
     {
@@ -652,20 +652,6 @@
       "mime": "image/jpeg"
     },
     {
-      "path": "photography-assets/video-20260923/69dece64000000000803d808.jpg",
-      "source": "photography-assets/video-20260923/69dece64000000000803d808.jpg",
-      "bytes": 92787,
-      "sha256": "3b3ea61a72ee2dae34c105a350a660a2de6cc50f19b13c43b404c0f8f06a8d40",
-      "mime": "image/jpeg"
-    },
-    {
-      "path": "photography-assets/video-20260923/69eca074000000000f03ac00.jpg",
-      "source": "photography-assets/video-20260923/69eca074000000000f03ac00.jpg",
-      "bytes": 140814,
-      "sha256": "d67b63a0bcc832a7a8b9eafb04e8bb1e5c154be54367f578326ccad482f8fb58",
-      "mime": "image/jpeg"
-    },
-    {
       "path": "photography-assets/video-20260923/699a4cec000000002a03bb07.jpg",
       "source": "photography-assets/video-20260923/699a4cec000000002a03bb07.jpg",
       "bytes": 75580,
@@ -680,17 +666,31 @@
       "mime": "image/jpeg"
     },
     {
-      "path": "photography-assets/video-20260923/69f519c50000000013020400.jpg",
-      "source": "photography-assets/video-20260923/69f519c50000000013020400.jpg",
-      "bytes": 105577,
-      "sha256": "d08df93d6907ab08853c656001141d93f8f89789be70177982f94bf3c689d53b",
-      "mime": "image/jpeg"
-    },
-    {
       "path": "photography-assets/video-20260923/69e57035000000000902c1c9.jpg",
       "source": "photography-assets/video-20260923/69e57035000000000902c1c9.jpg",
       "bytes": 186215,
       "sha256": "570ec8f88f483ff670b12be2024c64740f5ab6a223e798e33cacec291d4791aa",
+      "mime": "image/jpeg"
+    },
+    {
+      "path": "photography-assets/video-20260923/69dece64000000000803d808.jpg",
+      "source": "photography-assets/video-20260923/69dece64000000000803d808.jpg",
+      "bytes": 92787,
+      "sha256": "3b3ea61a72ee2dae34c105a350a660a2de6cc50f19b13c43b404c0f8f06a8d40",
+      "mime": "image/jpeg"
+    },
+    {
+      "path": "photography-assets/video-20260923/69eca074000000000f03ac00.jpg",
+      "source": "photography-assets/video-20260923/69eca074000000000f03ac00.jpg",
+      "bytes": 140814,
+      "sha256": "d67b63a0bcc832a7a8b9eafb04e8bb1e5c154be54367f578326ccad482f8fb58",
+      "mime": "image/jpeg"
+    },
+    {
+      "path": "photography-assets/video-20260923/69f519c50000000013020400.jpg",
+      "source": "photography-assets/video-20260923/69f519c50000000013020400.jpg",
+      "bytes": 105577,
+      "sha256": "d08df93d6907ab08853c656001141d93f8f89789be70177982f94bf3c689d53b",
       "mime": "image/jpeg"
     },
     {
@@ -729,6 +729,27 @@
       "mime": "image/jpeg"
     },
     {
+      "path": "photography-assets/video-20260923/6a49afb40000000006030ce3.jpg",
+      "source": "photography-assets/video-20260923/6a49afb40000000006030ce3.jpg",
+      "bytes": 198723,
+      "sha256": "310be3d3f81a9c781d8d8c9144f7ae2ebf1823be2446d9d28c368dcf54c86a7d",
+      "mime": "image/jpeg"
+    },
+    {
+      "path": "photography-assets/video-20260923/6aae0089000000002502edbf.jpg",
+      "source": "photography-assets/video-20260923/6aae0089000000002502edbf.jpg",
+      "bytes": 88575,
+      "sha256": "a9c5c07c5976f942af841ae468763cb8a5afe91eabeae578da5572f421fabbb6",
+      "mime": "image/jpeg"
+    },
+    {
+      "path": "photography-assets/video-20260923/69d7238400000000230241e2.jpg",
+      "source": "photography-assets/video-20260923/69d7238400000000230241e2.jpg",
+      "bytes": 110368,
+      "sha256": "4eea8eecd5f2be7c5e3f39921556ad70acb388ac67f44b635a2b8f176b495c17",
+      "mime": "image/jpeg"
+    },
+    {
       "path": "photography-assets/video-20260923/6a66bbab00000000110068c7.jpg",
       "source": "photography-assets/video-20260923/6a66bbab00000000110068c7.jpg",
       "bytes": 92463,
@@ -754,27 +775,6 @@
       "source": "photography-assets/video-20260923/69c5f1390000000023007c83.jpg",
       "bytes": 81872,
       "sha256": "2504d70d17a09b1eafa5ed263ad72dd46487cd25bd47d4ef0708e11d2370b7ae",
-      "mime": "image/jpeg"
-    },
-    {
-      "path": "photography-assets/video-20260923/6a49afb40000000006030ce3.jpg",
-      "source": "photography-assets/video-20260923/6a49afb40000000006030ce3.jpg",
-      "bytes": 198723,
-      "sha256": "310be3d3f81a9c781d8d8c9144f7ae2ebf1823be2446d9d28c368dcf54c86a7d",
-      "mime": "image/jpeg"
-    },
-    {
-      "path": "photography-assets/video-20260923/6aae0089000000002502edbf.jpg",
-      "source": "photography-assets/video-20260923/6aae0089000000002502edbf.jpg",
-      "bytes": 88575,
-      "sha256": "a9c5c07c5976f942af841ae468763cb8a5afe91eabeae578da5572f421fabbb6",
-      "mime": "image/jpeg"
-    },
-    {
-      "path": "photography-assets/video-20260923/69d7238400000000230241e2.jpg",
-      "source": "photography-assets/video-20260923/69d7238400000000230241e2.jpg",
-      "bytes": 110368,
-      "sha256": "4eea8eecd5f2be7c5e3f39921556ad70acb388ac67f44b635a2b8f176b495c17",
       "mime": "image/jpeg"
     },
     {

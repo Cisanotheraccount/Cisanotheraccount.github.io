@@ -4,8 +4,8 @@ import type { PhotographyVideoItem } from './videoCatalog';
 import { browserAllowsVideoPreload, browserConnection, VIDEO_PRELOAD_LIMIT } from './videoPreload';
 
 const groups = [
-  { id: 'real-estate', title: 'Real Estate', description: 'Spaces, details, and the way people move through them.' },
   { id: 'interviews', title: 'Interviews', description: 'People, ideas, and the lives behind them.' },
+  { id: 'real-estate', title: 'Real Estate', description: 'Spaces, details, and the way people move through them.' },
 ] as const;
 
 export function VideoGallery({ items, active }: { items: readonly PhotographyVideoItem[]; active: boolean }) {

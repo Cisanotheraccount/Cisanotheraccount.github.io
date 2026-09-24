@@ -1,0 +1,25 @@
+.gxc-live-brand-canvas { position: absolute; inset: 0; width: 100%; height: 100%; pointer-events: none; visibility: hidden; }
+.gxc-live-brand-canvas[data-ready=true] { visibility: visible; }
+:is(.gxc-brand-logo, .photo-brand-logo)[data-live-glass=true] > img { visibility: hidden; }
+
+/* Subtract only the mark's silhouette. A rectangular aperture exposes a stripe
+   when bright artwork passes behind the otherwise opaque toolbar. */
+.gxc-detail-dialog .gxc-detail-toolbar { background: transparent !important; }
+.gxc-detail-toolbar::before {
+  content: ''; position: absolute; inset: 0; z-index: -1; pointer-events: none;
+  background: var(--fc-toolbar, var(--hc-toolbar, #0b0d10f5));
+}
+.gxc-detail-dialog:has(.gxc-detail-brand .gxc-brand-logo[data-live-glass=true]) .gxc-detail-toolbar::before {
+  -webkit-mask-image: linear-gradient(#000 0 0), var(--brand-lens-mask);
+  mask-image: linear-gradient(#000 0 0), var(--brand-lens-mask);
+  -webkit-mask-size: 100% 100%, var(--brand-lens-width) var(--brand-lens-height);
+  mask-size: 100% 100%, var(--brand-lens-width) var(--brand-lens-height);
+  -webkit-mask-position: 0 0, var(--brand-lens-left) var(--brand-lens-top);
+  mask-position: 0 0, var(--brand-lens-left) var(--brand-lens-top);
+  -webkit-mask-repeat: no-repeat;
+  mask-repeat: no-repeat;
+  -webkit-mask-composite: xor;
+  mask-composite: exclude;
+}
+/* A stale entry-draw marker must never hide the fallback after context loss. */
+.gxc-brand-logo[data-glass-material=fallback] > img { visibility: visible !important; }

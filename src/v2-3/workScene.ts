@@ -1,3 +1,4 @@
+import { presentBrandBackdrop } from '../shared/brandGlass/backdrop';
 import * as THREE from 'three';
 import { getFrameSnapshot, getPerformanceSnapshot, nativeScrollNeedsFallback, reportGpuTime, requestFrame, setPerformanceReady, subscribeFrame, subscribeViewportChange } from './runtime';
 import { createGpuTimer } from './gpuTiming';
@@ -477,6 +478,7 @@ export async function mountWorkScene(host: HTMLElement, root: HTMLElement, disab
         if (host.style.height !== bufferHeight + 'px') host.style.height = bufferHeight + 'px';
         host.style.transform = `translate3d(0, ${drawTop}px, 0)`;
       }
+      presentBrandBackdrop(renderer.domElement);
       const paintedNow = performance.now();
       if (metricPaintedAt) sampleTouchMetric('workDrawIntervalMs', paintedNow - metricPaintedAt);
       metricPaintedAt = paintedNow; recordTouchMetric('workDraws');

@@ -4,27 +4,6 @@
 .photo-brand-logo > img { position: absolute; max-width: none; width: 107.6815967%; height: 109.8784997%; left: -3.8291947%; top: -4.9392499%; }
 .photo-brand-logo[data-live-glass='true'] > img { visibility: hidden; }
 .photo-brand-text { display: inline-block; }
-.photo-brand-logo-live { position: absolute; inset: 0; display: none; pointer-events: none; }
-.photo-brand-logo-live[data-ready='true'] { display: block; }
-.photo-brand-logo-defs { position: absolute; width: 0; height: 0; overflow: hidden; }
-.photo-brand-logo-optics, .photo-brand-logo-highlight {
-  position: absolute; inset: 0; pointer-events: none;
-  mask-repeat: no-repeat; mask-size: 100% 100%;
-  -webkit-mask-repeat: no-repeat; -webkit-mask-size: 100% 100%;
-}
-.photo-brand-logo-optics {
-  mask-image: var(--photo-logo-mask); -webkit-mask-image: var(--photo-logo-mask);
-  background: linear-gradient(135deg, #edf5ff09, #ffffff02 45%, #dfeaff0b);
-}
-.photo-brand-logo-highlight {
-  mask-image: var(--photo-logo-highlight); -webkit-mask-image: var(--photo-logo-highlight);
-  background: radial-gradient(ellipse at var(--photo-logo-light-x, 25%) var(--photo-logo-light-y, 15%), #fff, #e4efffd9 48%, #ffffffa8 82%);
-  opacity: .95;
-}
-.photo-brand-logo-live[data-refraction='false'] .photo-brand-logo-optics {
-  background: linear-gradient(135deg, #edf5ff0b, #ffffff03 45%, #dfeaff0d);
-}
-
 @media (max-width: 600px) {
   .photo-brand-logo { margin-right: 4px; }
 }

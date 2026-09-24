@@ -6,9 +6,9 @@ import { sharedPointer, installInputState, setScrollSource, recordScrollInput } 
 import { installLayoutSnapshot, invalidateLayout, prepareLayoutSnapshot, getLayoutRevision, getLayoutRect } from './layoutSnapshot';
 import { recordTouchMetric, recordTouchEvent, sampleTouchMetric } from './touchDiagnostics';
 
-export type FramePhase = 'scroll' | 'measure' | 'update' | 'render';
+export type FramePhase = 'scroll' | 'measure' | 'update' | 'render' | 'overlay';
 type Frame = (time: number, delta: number) => boolean | void;
-const phases: FramePhase[] = ['scroll', 'measure', 'update', 'render'];
+const phases: FramePhase[] = ['scroll', 'measure', 'update', 'render', 'overlay'];
 const subscribers = new Map<FramePhase, Set<Frame>>(phases.map(phase => [phase, new Set()]));
 const pointer = sharedPointer;
 const snapshot = { time: 0, delta: 1 / 60, elapsed: 1 / 60, nativeDelta: 1 / 60, targetFps: 60, scrollY: 0, scrollSpeed: 0, width: 0, height: 0, pointer };

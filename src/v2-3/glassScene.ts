@@ -1,3 +1,4 @@
+import { presentBrandBackdrop } from '../shared/brandGlass/backdrop';
 import * as THREE from 'three';
 import { visual } from './config';
 import { HeroPost } from './heroPost';
@@ -398,6 +399,7 @@ export async function mountGlass(host: HTMLElement, area: HTMLElement, disabled:
         render(0); dock.present();
         return;
       }
+      presentBrandBackdrop(renderer.domElement);
       recordTouchMetric(postDrawing ? 'heroPostFrames' : 'heroBaseFrames');
       sampleTouchMetric('heroDrawCpuMs', performance.now() - renderStarted);
       if (touchInteracting || post?.active) {

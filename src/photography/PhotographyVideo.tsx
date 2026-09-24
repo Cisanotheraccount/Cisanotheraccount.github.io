@@ -34,8 +34,7 @@ export function PhotographyVideo({ item, started, muted, prewarm, register, onSt
   const fullscreenLayout = useRef<{ card: HTMLElement; panel: HTMLElement; height: string; top: number } | null>(null);
   const [phase, setPhase] = useState<Phase>('idle');
   const [currentTime, setCurrentTime] = useState(0), [duration, setDuration] = useState(item.duration);
-  const [paused, setPaused] = useState(true), [volume, setVolume] = useState(1);
-  const [volumeSupported, setVolumeSupported] = useState(!/iPhone|iPod/.test(navigator.userAgent));
+  const [paused, setPaused] = useState(true);
   const [fullscreen, setFullscreen] = useState(false);
   const [prewarmState, setPrewarmState] = useState<'idle' | 'loading' | 'ready' | 'timeout'>('idle');
   const titleId = `video-title-${item.id}`;
@@ -80,10 +79,6 @@ export function PhotographyVideo({ item, started, muted, prewarm, register, onSt
     const video = videoRef.current;
     if (!video) return;
     const unregister = register(item.id, video);
-    if (!/iPhone|iPod/.test(navigator.userAgent)) {
-      try { video.volume = .5; setVolumeSupported(video.volume === .5); video.volume = 1; }
-      catch { setVolumeSupported(false); }
-    }
     return () => { activeRef.current = false; ++requestId.current; unregister(); unload(video); restoreInlineLayout(); };
   }, [item.id, register, restoreInlineLayout]);
   useLayoutEffect(() => {
@@ -203,16 +198,9 @@ export function PhotographyVideo({ item, started, muted, prewarm, register, onSt
     if (!activeRef.current || phase === 'error') loadAndPlay(phase === 'error');
     else if (videoRef.current?.paused) play(); else pause();
   };
-  const changeVolume = (value: number) => {
-    hoverPlayback.current = false;
-    const video = videoRef.current;
-    if (!video || !started) return;
-    video.volume = value; setVolume(video.volume); onMutedChange(value === 0);
-  };
   const toggleMuted = () => {
     hoverPlayback.current = false;
     if (!started) return;
-    if (muted && volume === 0 && videoRef.current) { videoRef.current.volume = 1; setVolume(1); }
     onMutedChange(!muted);
   };
   const restart = () => {
@@ -287,7 +275,7 @@ export function PhotographyVideo({ item, started, muted, prewarm, register, onSt
         onEnded={() => { setPaused(true); setPhase('ready'); }}
         onWaiting={() => { if (activeRef.current && !videoRef.current?.paused) { lastProgressAt.current = performance.now(); setPhase('loading'); } }}
         onError={() => { if (activeRef.current) { setPaused(true); setPhase('error'); } }}
-        onVolumeChange={event => { setVolume(event.currentTarget.volume); if (activeRef.current) onMutedChange(event.currentTarget.muted); }}>
+        onVolumeChange={event => { if (activeRef.current) onMutedChange(event.currentTarget.muted); }}>
         <source ref={sourceRef} type="video/mp4" onError={() => { if (activeRef.current) { pause(); setPhase('error'); } }} />
       </video>
       {!started && <button ref={coverRef} type="button" className="photo-video-cover-button" aria-label={`Play ${item.title} muted`} onClick={() => { hoverPlayback.current = false; loadAndPlay(); }}>
@@ -305,19 +293,17 @@ export function PhotographyVideo({ item, started, muted, prewarm, register, onSt
       <button ref={primaryControlRef} type="button" className="photo-video-control photo-video-toggle" onClick={togglePlayback} aria-label={phase === 'error' ? 'Retry video' : paused ? 'Play video' : 'Pause video'}>
         {phase === 'error' ? <RotateCcw aria-hidden="true" /> : paused ? <Play fill="currentColor" aria-hidden="true" /> : <Pause fill="currentColor" aria-hidden="true" />}
       </button>
-      <div className="photo-video-timeline"><span aria-hidden="true">{time(currentTime)}</span>
+      <button className="photo-video-control photo-video-mute" type="button" disabled={!started} onClick={toggleMuted}
+        data-muted={muted} aria-label={muted ? 'Turn sound on' : 'Mute video'} title={muted ? 'Turn sound on' : 'Mute video'} aria-keyshortcuts="M">
+        {muted ? <VolumeX aria-hidden="true" /> : <Volume2 aria-hidden="true" />}</button>
+      <div className="photo-video-timeline">
         <input type="range" className="photo-video-seek" min={0} max={duration || 1} step="any" value={Math.min(currentTime, duration)} disabled={!started || phase === 'error'}
           aria-label="Video progress" aria-valuetext={`${time(currentTime)} of ${time(duration)}`}
           style={{ backgroundImage: `linear-gradient(to right, #f2f0eb ${progress}%, #ffffff42 ${progress}%)` }}
           onChange={event => { hoverPlayback.current = false; const video = videoRef.current; if (video && Number.isFinite(video.duration)) { const value = Number(event.currentTarget.value); if (pausedPosition.current !== null) pausedPosition.current = value; video.currentTime = value; setCurrentTime(value); } }} />
-        <span aria-hidden="true">{time(duration)}</span></div>
+        <div className="photo-video-times" aria-hidden="true"><span>{time(currentTime)}</span><span>{time(duration)}</span></div>
+      </div>
       <div className="photo-video-actions">
-        <button className="photo-video-control" type="button" disabled={!started} onClick={toggleMuted} aria-label={muted ? 'Turn sound on' : 'Mute video'} aria-keyshortcuts="M">
-          {muted || volume === 0 ? <VolumeX aria-hidden="true" /> : <Volume2 aria-hidden="true" />}</button>
-        {volumeSupported ? <input className="photo-video-volume" type="range" min={0} max={1} step={.05} value={muted ? 0 : volume} disabled={!started}
-          aria-label="Volume" aria-valuetext={`${Math.round((muted ? 0 : volume) * 100)} percent`}
-          style={{ backgroundImage: `linear-gradient(to right, #f2f0eb ${(muted ? 0 : volume) * 100}%, #ffffff42 ${(muted ? 0 : volume) * 100}%)` }}
-          onChange={event => changeVolume(Number(event.currentTarget.value))} /> : <small className="photo-video-system-volume-hint">System volume</small>}
         <button className="photo-video-control" type="button" disabled={!started} onClick={restart} aria-label="Restart video"><RotateCcw aria-hidden="true" /></button>
         <button ref={fullButtonRef} className="photo-video-control" type="button" disabled={!started} onClick={toggleFullscreen} aria-label={fullscreen ? 'Exit full screen' : 'Enter full screen'} aria-keyshortcuts="F"><Expand aria-hidden="true" /></button>
         <button className="photo-video-control photo-video-close" type="button" disabled={!started} onClick={close} aria-label="Close video"><X aria-hidden="true" /></button>

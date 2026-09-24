@@ -141,11 +141,11 @@
 
 .photo-video-transport {
   display: grid;
-  grid-template-columns: 44px minmax(0, 1fr);
-  grid-template-rows: 44px 44px;
-  gap: 8px 10px;
-  min-height: 106px;
-  padding: 8px 12px;
+  grid-template-columns: 44px 56px minmax(44px, 1fr) auto;
+  align-items: center;
+  gap: 4px;
+  min-height: 74px;
+  padding: 8px;
   border-top: 1px solid var(--photo-line);
   border-bottom: 1px solid var(--photo-line);
   background: #0b0b0c;
@@ -177,14 +177,26 @@
 .photo-video-control:focus-visible,
 .photo-video-close:focus-visible { outline-offset: 3px; }
 
+.photo-video-mute {
+  width: 56px;
+  min-width: 56px;
+  height: 56px;
+  min-height: 56px;
+  border-color: #ffffff70;
+  background: #f1f0ed;
+  color: #101012;
+}
+.photo-video-mute svg { width: 26px; height: 26px; }
+.photo-video-mute[data-muted='false'] { background: #ffffff12; color: #f1f0ed; }
+
 .photo-video-timeline {
   display: grid;
-  grid-template-columns: auto minmax(24px, 1fr) auto;
+  grid-template-rows: 44px 12px;
   min-width: 0;
   align-items: center;
-  gap: 8px;
 }
 
+.photo-video-times { display: flex; justify-content: space-between; gap: 4px; }
 .photo-video-timeline span {
   color: #c9c8c5;
   font-size: 10px;
@@ -192,16 +204,12 @@
 }
 
 .photo-video-actions {
-  display: grid;
-  grid-column: 1 / -1;
-  grid-template-columns: 44px minmax(32px, 1fr) repeat(3, 44px);
+  display: flex;
   min-width: 0;
   align-items: center;
-  gap: 6px;
 }
 
-.photo-video-seek,
-.photo-video-volume {
+.photo-video-seek {
   appearance: none;
   -webkit-appearance: none;
   width: 100%;
@@ -217,8 +225,7 @@
   cursor: pointer;
 }
 
-.photo-video-seek::-webkit-slider-thumb,
-.photo-video-volume::-webkit-slider-thumb {
+.photo-video-seek::-webkit-slider-thumb {
   -webkit-appearance: none;
   width: 16px;
   height: 16px;
@@ -227,8 +234,7 @@
   background: #f2f0eb;
 }
 
-.photo-video-seek::-moz-range-thumb,
-.photo-video-volume::-moz-range-thumb {
+.photo-video-seek::-moz-range-thumb {
   width: 16px;
   height: 16px;
   border: 0;
@@ -236,24 +242,9 @@
   background: #f2f0eb;
 }
 
-.photo-video-seek::-moz-range-track,
-.photo-video-volume::-moz-range-track { background: transparent; }
-.photo-video-seek:disabled,
-.photo-video-volume:disabled { cursor: not-allowed; opacity: .42; }
-.photo-video-seek:focus-visible,
-.photo-video-volume:focus-visible { border-radius: 3px; outline-offset: 1px; }
-
-.photo-video-actions small,
-.photo-video-system-volume-hint,
-.system-volume-hint {
-  display: flex;
-  min-width: 0;
-  height: 44px;
-  align-items: center;
-  color: var(--photo-muted);
-  font-size: 9px;
-  line-height: 1.2;
-}
+.photo-video-seek::-moz-range-track { background: transparent; }
+.photo-video-seek:disabled { cursor: not-allowed; opacity: .42; }
+.photo-video-seek:focus-visible { border-radius: 3px; outline-offset: 1px; }
 
 .photo-video-cover-copy {
   display: grid;
@@ -384,6 +375,7 @@
   .photo-video-close:not(:disabled):hover,
   .photo-video-error button:hover,
   .photo-video-error a:hover { background-color: #ffffff12; }
+  .photo-video-mute[data-muted='true']:not(:disabled):hover { background-color: #fff; }
 }
 
 @media (min-width: 761px) and (max-width: 1000px) {
@@ -405,22 +397,19 @@
 }
 
 @media (max-width: 360px) {
-  .photo-video-transport { gap: 8px; padding-inline: 6px; }
-  .photo-video-timeline { gap: 5px; }
+  .photo-video-transport { padding-inline: 6px; }
   .photo-video-timeline span { font-size: 9px; }
-  .photo-video-actions { gap: 4px; }
 }
 
 @media (max-height: 600px) and (orientation: landscape) {
-  .photo-video-player-shell:fullscreen .photo-video-transport { min-height: 96px; padding-block: 4px; }
+  .photo-video-player-shell:fullscreen .photo-video-transport { min-height: 66px; padding-block: 4px; }
   .photo-video-player-shell:fullscreen .photo-video-cover-copy { gap: 4px; padding-block: 5px max(5px, env(safe-area-inset-bottom)); }
   .photo-video-player-shell:fullscreen .photo-video-cover-copy h3 { font-size: 15px; }
   .photo-video-player-shell:fullscreen .photo-video-original { min-height: 44px; }
 }
 
 @media (forced-colors: active) {
-  .photo-video-seek,
-  .photo-video-volume { appearance: auto; -webkit-appearance: auto; }
+  .photo-video-seek { appearance: auto; -webkit-appearance: auto; }
   .photo-video-control,
   .photo-video-close,
   .photo-video-error button,

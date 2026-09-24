@@ -13,10 +13,11 @@ import './glass.css';
 
 export type PhotographyGlassCategory = 'landscape' | 'concert' | 'video';
 
-export type GlassCategoryNavProps = {
-  active: PhotographyGlassCategory;
-  showVideo?: boolean;
-  onNavigate: (category: PhotographyGlassCategory, keyboard: boolean) => void;
+export type GlassCategoryNavProps<Category extends string> = {
+  active: Category;
+  items: readonly { id: Category; label: string }[];
+  hidden?: boolean;
+  onNavigate: (category: Category, keyboard: boolean) => void;
 };
 
 type Lens = {
@@ -57,12 +58,50 @@ const glass = {
   specular: 0.82,
 } as const;
 
-export function GlassCategoryNav({ active, showVideo = false, onNavigate }: GlassCategoryNavProps) {
+export function GlassCategoryNav<Category extends string>({ active, items, hidden = false, onNavigate }: GlassCategoryNavProps<Category>) {
   const surfaceRef = useRef<HTMLElement>(null);
+  const scrollerRef = useRef<HTMLSpanElement>(null);
+  const linksRef = useRef<HTMLSpanElement>(null);
+  const indicatorRef = useRef<HTMLSpanElement>(null);
   const feImageRef = useRef<SVGFEImageElement>(null);
   const filterId = `photo-glass-${useId().replace(/:/g, '')}`;
   const [supported] = useState(supportsBackdropRefraction);
   const [lens, setLens] = useState<Lens>(emptyLens);
+
+  // Move only this horizontal scroller, never the page or an inactive photo panel.
+  const revealLink = (link: HTMLAnchorElement) => {
+    const scroller = scrollerRef.current;
+    if (!scroller) return;
+    const left = link.offsetLeft;
+    const right = left + link.offsetWidth;
+    if (left < scroller.scrollLeft) scroller.scrollLeft = left;
+    else if (right > scroller.scrollLeft + scroller.clientWidth) {
+      scroller.scrollLeft = right - scroller.clientWidth;
+    }
+  };
+
+  useLayoutEffect(() => {
+    const scroller = scrollerRef.current;
+    const links = linksRef.current;
+    const indicator = indicatorRef.current;
+    if (!scroller || !links || !indicator || hidden) return;
+    let disposed = false;
+    const measure = () => {
+      if (disposed) return;
+      const selected = links.querySelector<HTMLAnchorElement>('a[aria-current="page"]');
+      if (!selected || !selected.offsetWidth) return;
+      indicator.style.width = `${selected.offsetWidth}px`;
+      indicator.style.transform = `translate3d(${selected.offsetLeft}px, 0, 0)`;
+      revealLink(selected);
+    };
+    measure();
+    const observer = new ResizeObserver(() => measure());
+    observer.observe(scroller);
+    observer.observe(links);
+    links.querySelectorAll('a').forEach(link => observer.observe(link));
+    void document.fonts?.ready.then(() => measure());
+    return () => { disposed = true; observer.disconnect(); };
+  }, [active, items, hidden]);
 
   useLayoutEffect(() => {
     const surface = surfaceRef.current;
@@ -123,7 +162,7 @@ export function GlassCategoryNav({ active, showVideo = false, onNavigate }: Glas
   const backdrop = `blur(${blur}px) ${ready ? `url("#${filterId}") ` : ''}saturate(${glass.saturation})`;
   const displacement = Math.hypot(lens.width, lens.height) * glass.strength;
   const margin = Math.ceil(displacement + blur * 3 + 2);
-  const navigate = (category: PhotographyGlassCategory) => (event: MouseEvent<HTMLAnchorElement>) => {
+  const navigate = (category: Category) => (event: MouseEvent<HTMLAnchorElement>) => {
     if (event.metaKey || event.ctrlKey || event.shiftKey || event.altKey || event.button !== 0) return;
     event.preventDefault();
     onNavigate(category, event.detail === 0);
@@ -133,9 +172,11 @@ export function GlassCategoryNav({ active, showVideo = false, onNavigate }: Glas
     <nav
       ref={surfaceRef}
       className="photo-glass-nav"
+      hidden={hidden}
       aria-label={t('Photography categories')}
       data-active={active}
-      data-count={showVideo ? 3 : 2}
+      data-count={items.length}
+      data-wide={items.length > 2 ? 'true' : undefined}
       data-glass={ready ? 'refraction' : 'frosted'}
     >
       <svg className="photo-glass-nav__defs" aria-hidden="true" width="0" height="0" focusable="false">
@@ -171,17 +212,15 @@ export function GlassCategoryNav({ active, showVideo = false, onNavigate }: Glas
         aria-hidden="true"
         style={{ backdropFilter: backdrop, WebkitBackdropFilter: backdrop } as CSSProperties}
       />
-      <span className="photo-glass-nav__indicator" aria-hidden="true" />
-      <span className="photo-glass-nav__links">
-        <a href="#landscape" aria-current={active === 'landscape' ? 'page' : undefined} onClick={navigate('landscape')}>
-          {t('Landscape')}
-        </a>
-        <a href="#concert" aria-current={active === 'concert' ? 'page' : undefined} onClick={navigate('concert')}>
-          {t('Concert')}
-        </a>
-        {showVideo && <a href="#video" aria-current={active === 'video' ? 'page' : undefined} onClick={navigate('video')}>
-          {t('Video')}
-        </a>}
+      <span ref={scrollerRef} className="photo-glass-nav__scroller">
+        <span ref={linksRef} className="photo-glass-nav__links">
+          <span ref={indicatorRef} className="photo-glass-nav__indicator" aria-hidden="true" />
+          {items.map(item => <a key={item.id} href={`#${item.id}`}
+            aria-current={active === item.id ? 'page' : undefined}
+            onFocus={event => revealLink(event.currentTarget)} onClick={navigate(item.id)}>
+            {item.label}
+          </a>)}
+        </span>
       </span>
     </nav>
   );

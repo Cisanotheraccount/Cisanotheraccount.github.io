@@ -183,7 +183,7 @@ export function PhotographySite() {
     <div className="photo-background" aria-hidden="true"><picture><img src="/photography-assets/background/stars-1536.jpg" srcSet="/photography-assets/background/stars-1536.jpg 1536w, /photography-assets/background/stars-2560.jpg 2560w, /photography-assets/background/stars-4096.jpg 4096w" sizes="100vw" alt="" width="8192" height="5464" /></picture></div>
     <a className="photo-skip" href={`#${category}`} onClick={event => { event.preventDefault(); panels.current[category]?.querySelector<HTMLElement>('h1')?.focus({ preventScroll: true }); backToTop(category); }}>{videoEnabled ? t('Skip to current collection') : t('Skip to photographs')}</a>
     <a className="photo-brand" href={isChinese ? sitePath('home') : '/galaxci/'} aria-label={t('Gala X Ci — design portfolio')}><PhotographyBrand subtitle={t('Photography')} /></a>
-    <GlassCategoryNav active={category} showVideo={videoEnabled} onNavigate={navigate} />
+    <GlassCategoryNav active={category} items={categories} hidden={!!opened} onNavigate={navigate} />
     <main className="photo-viewport" aria-label={t('Photography')}>
       <div className="photo-track" style={{ transform: `translate3d(-${categoryIndex * 100}%, 0, 0)` }}>
         {categories.map(item => {

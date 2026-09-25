@@ -1,7 +1,7 @@
 import { useEffect, useLayoutEffect, useRef, useState, type MouseEvent, type CSSProperties, type RefObject } from 'react';
 import { createPortal } from 'react-dom';
 import { motion, animate, useMotionValue, useTransform } from 'motion/react';
-import { ArrowUpRight, ArrowDown, ArrowLeft, ArrowRight, Plus, X, Menu, Pause, Play } from 'lucide-react';
+import { ArrowUpRight, ArrowDown, ArrowLeft, ArrowRight, Plus, X, Menu, Pause, Play, Check } from 'lucide-react';
 import { workProjects, portfolioContact, type PortfolioProject } from './content/portfolioData';
 import rawGalleries from './content/projectGalleries.json';
 import { localizeMain, t } from '../localization/main';
@@ -15,7 +15,7 @@ import { HeroTwinkles } from './HeroTwinkles';
 import { WorkCanvas } from './WorkCanvas';
 import { WorkBackdrop } from './WorkBackdrop';
 import type { WorkScene } from './workScene';
-import { shotFlowCaseCover, shotFlowCaseScreens } from './shotflowCaseContent';
+import { shotFlowCaseCover, shotFlowCaseScreens, shotFlowPainPoints, shotFlowExampleShots, shotFlowReferencePreview } from './shotflowCaseContent';
 import { mobileThumbnail, useMobileThumbnailMode, workImageSizes, workLayout } from './mobileThumbnails';
 
 import ShotFlowDemo from './ShotFlowDemo';
@@ -322,10 +322,76 @@ function ShotFlowCase({ item, heading, slot, onZoom, active }: { item: Portfolio
     if (button instanceof HTMLButtonElement) button.focus({ preventScroll: true });
   }}>
     <section className="gxc-shotflow-introduction" aria-labelledby="gxc-detail-title">
-      <header className="gxc-detail-heading"><span className="gxc-mono">{item.category}</span><h2 ref={heading} id="gxc-detail-title" tabIndex={-1}>{item.title}</h2><p>{item.summary}</p></header>
-      <p className="gxc-shotflow-context">{t('ShotFlow uses a pretrained TransNet V2 deep learning model to find cuts and transitions in reference footage. I integrated it through Core ML to run locally on iPhone, then connected the detected shots to a workflow for reviewing references, refining a shot list and planning a shoot.')}</p>
-      <p className="gxc-shotflow-tags gxc-mono">{item.tags.join(' / ')}</p>
-      <button className="gxc-text-link gxc-shotflow-demo-link" onClick={visitDemo}>{t('Try the workflow')}<ArrowDown size={17}/></button>
+      <header className="gxc-detail-heading"><span className="gxc-mono">{item.category}</span><h2 ref={heading} id="gxc-detail-title" tabIndex={-1}>{item.title}</h2></header>
+      <section className="gxc-shotflow-product-cover" aria-labelledby="gxc-shotflow-cover-title">
+        <div className="gxc-shotflow-cover-copy">
+          <span className="gxc-mono">{t('SHOTFLOW AT A GLANCE')}</span>
+          <h3 id="gxc-shotflow-cover-title">{t('Turn reference videos into a shot list.')}</h3>
+          <p>{t('Automatically find the cuts. Review and plan what to film.')}</p>
+        </div>
+        <div className="gxc-shotflow-cover-source">
+          <p className="gxc-shotflow-cover-count"><strong>1</strong><span>{t('reference video')}</span></p>
+          <StudyImage study={{ ...shotFlowReferencePreview, loading: 'eager' }} onZoom={onZoom}/>
+          <p className="gxc-shotflow-cover-note">{t('96-second demo reference')}</p>
+        </div>
+        <div className="gxc-shotflow-cover-transfer"><span>{t('Automatic shot detection')}</span><span className="gxc-shotflow-cover-arrow" aria-hidden="true"><ArrowRight size={24}/></span></div>
+        <div className="gxc-shotflow-cover-result">
+          <p className="gxc-shotflow-cover-count"><strong>32</strong><span>{t('individual shots')}</span></p>
+          <div className="gxc-shotflow-cover-phone"><StudyImage study={{ ...screens[2], loading: 'eager' }} onZoom={onZoom} phoneFrame/></div>
+          <p className="gxc-shotflow-cover-note">{t('Review · Arrange · Check off')}</p>
+        </div>
+        <p className="gxc-shotflow-cover-caption">{t('Native development build · Actual analysis result')}</p>
+      </section>
+      <div className="gxc-shotflow-pain-grid">
+        {shotFlowPainPoints.map(point => <article className="gxc-shotflow-pain" key={point.id} aria-labelledby={`gxc-shotflow-pain-${point.id}`}>
+          <StudyImage study={{ ...point, loading: 'eager' }} onZoom={onZoom}/>
+          <div className="gxc-shotflow-pain-copy">
+            <span className="gxc-mono">{t(point.stage)}</span>
+            <h3 id={`gxc-shotflow-pain-${point.id}`}>{t(point.title)}</h3>
+            <p>{t(point.description)}</p>
+          </div>
+        </article>)}
+      </div>
+      <section className="gxc-shotflow-comparison" aria-labelledby="gxc-shotflow-comparison-title">
+        <header className="gxc-shotflow-compare-heading">
+          <span className="gxc-mono">{t('Illustrative example · A café film')}</span>
+          <h3 id="gxc-shotflow-comparison-title">{t('From a reference film to a list of things to film.')}</h3>
+          <p>{t('Each of these moments needs to be planned and filmed.')}</p>
+        </header>
+        <div className="gxc-shotflow-compare-grid">
+          <div className="gxc-shotflow-reference">
+            <h4>{t('What you watch')}</h4>
+            <p className="gxc-shotflow-compare-note">{t('One continuous reference film.')}</p>
+            <ol className="gxc-shotflow-filmstrip" aria-label={t('Three moments in the same reference film')}>
+              {shotFlowExampleShots.map((shot, i) => <li key={shot.id}>
+                <StudyImage study={{ ...shot, caption: `${number(i)} / ${t(shot.label)}`, sizes: '(max-width: 1000px) calc((100vw - 80px) / 3), 180px' }} onZoom={onZoom}/>
+              </li>)}
+            </ol>
+          </div>
+          <div className="gxc-shotflow-manual-work">
+            <h4>{t('The work in between')}</h4>
+            <ol aria-label={t('Manually turning a reference into filming tasks')}>
+              {['Pause', 'Find', 'Select', 'Record'].map((step, i) => <li key={step}><span>{t(step)}</span>{i < 3 && <ArrowDown size={15} aria-hidden="true"/>}</li>)}
+            </ol>
+            <p className="gxc-shotflow-compare-note">{t('Write down what to film.')}</p>
+          </div>
+          <div className="gxc-shotflow-filming-tasks">
+            <h4>{t('What you need to shoot')}</h4>
+            <p className="gxc-shotflow-compare-note">{t('Separate tasks, each linked to its reference.')}</p>
+            <ol className="gxc-shotflow-task-list" aria-label={t('Illustrative filming tasks and progress')}>
+              {shotFlowExampleShots.map((shot, i) => <li key={shot.id}>
+                <StudyImage study={{ ...shot, caption: t(shot.task), sizes: '(max-width: 760px) 88px, 108px' }} onZoom={onZoom}/>
+                <div className="gxc-shotflow-task-copy"><p><span className="gxc-shotflow-task-number" aria-hidden="true">{number(i)} / </span>{t(shot.task)}</p><span className="gxc-shotflow-task-status" data-filmed={shot.filmed}><span className="gxc-shotflow-task-mark" aria-hidden="true">{shot.filmed && <Check size={12}/>}</span>{t(shot.filmed ? 'Filmed' : 'To film')}</span></div>
+              </li>)}
+            </ol>
+            <p className="gxc-shotflow-compare-note gxc-shotflow-progress-note">{t('Example progress during filming.')}</p>
+          </div>
+        </div>
+      </section>
+      <div className="gxc-shotflow-response">
+        <div><span className="gxc-mono">{t('THE IDEA')}</span><p>{t('ShotFlow turns reference footage into individual shots you can review, arrange and check off as you shoot.')}</p><p className="gxc-shotflow-choice">{t('You choose which moments belong in your own shoot.')}</p></div>
+        <button className="gxc-text-link gxc-shotflow-demo-link" onClick={visitDemo}>{t('Try the workflow')}<ArrowDown size={17}/></button>
+      </div>
     </section>
     <section ref={demo} className="gxc-shotflow-walkthrough" aria-labelledby="gxc-shotflow-demo-title">
       <header className="gxc-shotflow-step"><h3 ref={demoHeading} id="gxc-shotflow-demo-title" tabIndex={-1}>{t('From a video to its shots.')}</h3></header>
@@ -343,9 +409,10 @@ function ShotFlowCase({ item, heading, slot, onZoom, active }: { item: Portfolio
     <section className="gxc-shotflow-review" aria-labelledby="gxc-shotflow-analysis-title">
       <div className="gxc-shotflow-step">
         <span className="gxc-mono">{t('02 / AUTOMATIC ANALYSIS')}</span><h3 id="gxc-shotflow-analysis-title">{t('Let the shots emerge.')}</h3>
-        <p>{t('TransNet V2 predicts shot boundaries across the source frames. Its pretrained weights are converted to Core ML FP16 and bundled with the app; local inference and ShotFlow’s post-processing turn those predictions into time-aligned segments. Each shot keeps its original video, timing and visual reference.')}</p>
+        <p>{t('ShotFlow runs a pretrained TransNet V2 model locally on iPhone through Core ML. Its weights are converted to Core ML FP16; inference and ShotFlow’s post-processing turn boundary predictions into time-aligned segments. Each shot keeps its original video, timing and visual reference.')}</p>
         <p>{t('My contribution is the model integration and the product workflow around its output. Apple Vision, optical flow and local rules support the separate framing and camera-motion suggestions. Users can review and adjust the detected shots before taking the plan on set.')}</p>
         <p>{t('The analysis screen keeps that work visible and attached to its source. After it finishes, the workspace brings the source video and generated shot count together. The example above uses the actual output from the entire reference; its recorded waiting time is shortened only for the web walkthrough.')}</p>
+        <p className="gxc-shotflow-tags gxc-mono">{item.tags.join(' / ')}</p>
       </div>
       <div className="gxc-shotflow-screen"><StudyImage study={screens[1]} onZoom={onZoom} phoneFrame/></div>
     </section>
@@ -460,7 +527,7 @@ function ProjectDialog({ project, brandFromHome, onHome, entrySource, source, in
       {morph && target && source && <motion.div className={'gxc-transition-cover cover-' + shown.slug} data-fit={shown.imageFit ?? 'cover'} style={{ x, y, width: coverWidth, height: coverHeight, opacity: harvard ? harvardCloneOpacity : cloneOpacity, backgroundColor: shown.slug === 'introme' ? introBackground : undefined }}><img src={shown.slug === 'shotflow' ? shotFlowCaseCover.image : shown.slug === 'introme' ? introMeMedia.portrait.image : shown.image} alt=""/></motion.div>}
     </div>}
     {shown && <DetailBrand progress={progress} entering={!!project} fromHome={brandFromHome} onHome={onHome} />}
-    <ZoomImage study={zoom} close={() => setZoom(null)} phoneFrame={shown?.slug === 'shotflow'} theme={harvard?.slug}/>
+    <ZoomImage study={zoom} close={() => setZoom(null)} phoneFrame={shown?.slug === 'shotflow' && shotFlowCaseScreens.some(screen => screen.image === zoom?.image)} theme={harvard?.slug}/>
   </dialog>, document.body);
 }
 function StudyImage({ study, onZoom, phoneFrame = false }: { study: Study; onZoom(study: Study): void; phoneFrame?: boolean }) {

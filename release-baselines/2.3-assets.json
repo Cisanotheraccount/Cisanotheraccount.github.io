@@ -1001,6 +1001,66 @@
       "path": "v2-3/entry/manifest.json",
       "bytes": 884,
       "sha256": "eb00aef1cc87566783c3be33924dbc3193ba93001267a6801478f63dd404e359"
+    },
+    {
+      "path": "v2-3/shotflow-painpoints-v1/on-set-uncertainty-640.webp",
+      "bytes": 36722,
+      "sha256": "ae61b3df072255068145f4eeb0d6dcafb23917000929f9838773ec0ee3cda063"
+    },
+    {
+      "path": "v2-3/shotflow-painpoints-v1/on-set-uncertainty.webp",
+      "bytes": 89704,
+      "sha256": "e864391a3f354400fbd4de2db081119ccac486cbc44f61bbfaa8b46c9bc489eb"
+    },
+    {
+      "path": "v2-3/shotflow-painpoints-v1/reference-overload-640.webp",
+      "bytes": 44772,
+      "sha256": "3cd107e2676604bde45e267f3a3f869da04616034bea60bfc6f75d8f002f0e22"
+    },
+    {
+      "path": "v2-3/shotflow-painpoints-v1/reference-overload.webp",
+      "bytes": 122248,
+      "sha256": "ba8eef64a102f4a0bcf19e9d112d0e7daf7363d1dc7f32c231e8dc6389f7a9f0"
+    },
+    {
+      "path": "v2-3/shotflow-painpoints-v1/repeated-search-640.webp",
+      "bytes": 39510,
+      "sha256": "6b3612c8bb2d63aaaef3a60d30ead04f3336a3c328710af195393beda4c89f7e"
+    },
+    {
+      "path": "v2-3/shotflow-painpoints-v1/repeated-search.webp",
+      "bytes": 112408,
+      "sha256": "479742632faa65b283bc794e786ef8b74a97f886340a87dc2850ee50ae4fde26"
+    },
+    {
+      "path": "v2-3/shotflow-comprehension-v1/cafe-entrance-480.webp",
+      "bytes": 50112,
+      "sha256": "bef7178bca5ef7e6ce986fc9e26da7620988212438a35726b82af2042537a6ef"
+    },
+    {
+      "path": "v2-3/shotflow-comprehension-v1/cafe-entrance.webp",
+      "bytes": 182894,
+      "sha256": "35753ebc55c5f416073c4f9635af424dc1335c48cded33e6b6e51f9a6ee1e3cc"
+    },
+    {
+      "path": "v2-3/shotflow-comprehension-v1/coffee-pour-480.webp",
+      "bytes": 45716,
+      "sha256": "f50d81b7a0cabeec8990f80d01e52d1f3a7469fcd907e8afca5c8d96f48f0e93"
+    },
+    {
+      "path": "v2-3/shotflow-comprehension-v1/coffee-pour.webp",
+      "bytes": 157590,
+      "sha256": "4482bcf1b201c29d3fec4e21ae47f8430b63c292505b70c64466974747001413"
+    },
+    {
+      "path": "v2-3/shotflow-comprehension-v1/cup-handoff-480.webp",
+      "bytes": 42506,
+      "sha256": "a441dc4ca0195d0140dc1891b3e06b758600acebd439389e418bdd661be51f34"
+    },
+    {
+      "path": "v2-3/shotflow-comprehension-v1/cup-handoff.webp",
+      "bytes": 145804,
+      "sha256": "ccb6a40d0ada10585fd65de05e7991002a87bbff382a362fb6e827bbac08bd15"
     }
   ]
 }

@@ -193,7 +193,6 @@ export function NextPortfolio() {
         <HeroTwinkles paused={paused} reduced={reduce} suspended={entryPhase === 'preparing' || locked || menuVisible || !!project} />
         <div className="gxc-hero-top gxc-gutter">
           <p className="gxc-mono"><span className="gxc-reveal-line"><span data-gxc-reveal="1">CI SONG</span></span><span className="gxc-reveal-line"><span data-gxc-reveal="2">{t('DESIGN & EXPLORATION')}</span></span></p>
-          <p className="gxc-hero-statement"><span className="gxc-reveal-line"><span data-gxc-reveal="2">{t('Between people,')}</span></span><span className="gxc-reveal-line"><span data-gxc-reveal="3">{t('interfaces & environments.')}</span></span></p>
           <p className="gxc-mono gxc-hero-photo-credit"><span className="gxc-reveal-line"><span data-gxc-reveal="3">{t('PHOTOGRAPHED BY')}</span></span><span className="gxc-reveal-line"><span data-gxc-reveal="4">CI SONG · <time dateTime="2022">2022</time></span></span></p>
         </div>
         <h1 className="gxc-sr">Gala X Ci — Ci Song</h1>

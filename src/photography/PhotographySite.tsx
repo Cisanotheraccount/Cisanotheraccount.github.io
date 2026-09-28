@@ -12,6 +12,7 @@ import { photographyVideoCatalog } from './videoCatalog';
 import { arrangePhotos, galleryMode } from './galleryLayout';
 import { photographyText as t } from '../localization/photography';
 import { isChinese, sitePath } from '../localization/locale';
+import { analytics } from '../shared/analytics/client';
 import './site.css';
 
 type Category = PhotographyGlassCategory;
@@ -163,10 +164,12 @@ export function PhotographySite() {
       if (panel) panel.inert = item.id !== category;
     }
     document.title = `${categories.find(item => item.id === category)?.label} — Ci Song ${t('Photography')}`;
+    analytics.commitView(`photography:${category}`, category, null, 'category');
   }, [category]);
 
   const navigate = (next: Category, keyboard = false) => {
     if (category !== next) {
+      analytics.emit('category_change', { from: category, to: next, input_method: keyboard ? 'keyboard' : 'pointer' });
       window.history.pushState(null, '', `#${next}`);
       setCategory(next);
     }
@@ -238,12 +241,18 @@ function PhotoDialog({ photos, initialPhotoId, returnFocus, onClose }: { photos:
   const dialog = useRef<HTMLDialogElement>(null);
   const opener = useRef<HTMLElement | null>(returnFocus);
   const [frame, setFrame] = useState(() => Math.max(0, photos.findIndex(photo => photo.id === initialPhotoId)));
+  const frameRef = useRef(frame);
   const photo = photos[frame];
+  const reportedOpen = useRef(false);
   const series = seriesById.get(photo.seriesId);
   const step = (direction: number) => {
     // Keep focus on a persistent control when the keyed image/retry UI unmounts.
     dialog.current?.querySelector<HTMLButtonElement>(`button[data-photo-step="${direction > 0 ? 'next' : 'previous'}"]`)?.focus({ preventScroll: true });
-    setFrame(value => (value + direction + photos.length) % photos.length);
+    const nextIndex = (frameRef.current + direction + photos.length) % photos.length;
+    frameRef.current = nextIndex;
+    const next = photos[nextIndex];
+    analytics.emit('photo_step', { media_id: next.id, direction: direction > 0 ? 'next' : 'previous', category: next.seriesId });
+    setFrame(nextIndex);
   };
 
   useEffect(() => {
@@ -251,6 +260,7 @@ function PhotoDialog({ photos, initialPhotoId, returnFocus, onClose }: { photos:
     if (!element) return;
     document.documentElement.dataset.photoDialogOpen = 'true';
     element.showModal();
+    if (!reportedOpen.current) { analytics.emit('photo_open', { media_id: initialPhotoId, category: photo.seriesId }); reportedOpen.current = true; }
     element.querySelector<HTMLElement>('button')?.focus({ preventScroll: true });
     return () => {
       if (element.open) element.close();

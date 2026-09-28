@@ -30,6 +30,7 @@ import { markEntryAppReady, useEntryPhase } from './entry';
 import { BrandMark } from './BrandMark';
 import { DetailBrand } from './DetailBrand';
 import { useDeferredImage } from './deferredMedia';
+import { analytics } from '../shared/analytics/client';
 
 type Rect = { x: number; y: number; width: number; height: number };
 type Study = { image: string; alt: string; caption: string; width?: number; height?: number; srcSet?: string; sizes?: string; loading?: 'lazy' | 'eager' };
@@ -54,6 +55,7 @@ export function NextPortfolio() {
   const disabled = reduce || paused;
   const [project, setProject] = useState<PortfolioProject | null>(parseProject);
   const [entrySource, setEntrySource] = useState<'hero' | 'work'>(() => history.state?.gxcEntry === 'hero' ? 'hero' : 'work');
+  const [openEntry, setOpenEntry] = useState<'hero' | 'work' | 'next' | 'history'>('history');
   const [menu, setMenu] = useState(false);
   const [menuVisible, setMenuVisible] = useState(false);
   const closing = useRef(false);
@@ -69,6 +71,7 @@ export function NextPortfolio() {
   const pendingOpen = useRef<AbortController | null>(null);
   const [openingSlug, setOpeningSlug] = useState<string | null>(null);
   const projectRef = useRef(project); projectRef.current = project;
+  useEffect(() => { if (!project && !locked) analytics.commitView('portfolio:home', 'home', null, 'home'); }, [project, locked]);
   useSmoothScene(disabled, locked || menuVisible || entering);
   useEffect(() => {
     const oldRestoration = history.scrollRestoration; history.scrollRestoration = 'manual';
@@ -77,7 +80,8 @@ export function NextPortfolio() {
       const retired = retiredProject();
       if (retired) history.replaceState(null, '', '#work');
       const next = parseProject();
-      if (next) { closing.current = false; setEntrySource(history.state?.gxcEntry === 'hero' ? 'hero' : 'work'); }
+      if (!closing.current && projectRef.current && projectRef.current.slug !== next?.slug) analytics.emit('project_close', { close_method: 'history' });
+      if (next) { closing.current = false; setEntrySource(history.state?.gxcEntry === 'hero' ? 'hero' : 'work'); setOpenEntry('history'); }
       setProject(next); setMenu(false);
       if (retired) {
         savedScroll.current = Math.max(0, (document.getElementById('work')?.offsetTop ?? 0) - 90);
@@ -120,6 +124,7 @@ export function NextPortfolio() {
   }
   const jump = (id: string, instant = false) => {
     cancelPending();
+    analytics.emit('section_navigate', { section: id, entry: menu ? 'menu' : 'site', input_method: keyboard || instant ? 'keyboard' : 'pointer' });
     setMenu(false);
     history.pushState(null, '', '#' + id);
     const el = document.getElementById(id);
@@ -132,9 +137,12 @@ export function NextPortfolio() {
     const anchor = e.currentTarget, instant = disabled || e.detail === 0;
     setKeyboard(e.detail === 0); closing.current = false;
     if (projectRef.current) {
+      if (projectRef.current.slug !== item.slug) analytics.emit('project_close', { close_method: 'next' });
+      setOpenEntry('next');
       history.replaceState(history.state, '', '#/work/' + item.slug); setProject(item); return;
     }
     setEntrySource(entry);
+    setOpenEntry(entry);
     pendingOpen.current?.abort();
     const controller = new AbortController(); pendingOpen.current = controller;
     setOpeningSlug(item.slug); setLocked(true); setScrollLocked(true);
@@ -157,12 +165,14 @@ export function NextPortfolio() {
   const close = () => {
     if (pendingOpen.current) { cancelPending(); return; }
     if (closing.current || !project) return; closing.current = true;
+    analytics.emit('project_close', { close_method: 'back' });
     if (history.state?.gxcProject && returnFocus.current) history.back();
     else { const target = entrySource === 'hero' ? 'top' : 'work'; setProject(null); history.replaceState(null, '', '#' + target); savedScroll.current = Math.max(0, (document.getElementById(target)?.offsetTop ?? 0) - 90); }
   };
   const homeFromProject = (event: MouseEvent<HTMLAnchorElement>) => {
     if (modified(event)) return;
     event.preventDefault(); cancelPending(); setMenu(false); setKeyboard(event.detail === 0);
+    if (projectRef.current) analytics.emit('project_close', { close_method: 'home' });
     closing.current = true; savedScroll.current = 0; origin.current = null;
     returnFocus.current = document.getElementById('top');
     history.pushState(null, '', '#top'); setProject(null);
@@ -226,7 +236,7 @@ export function NextPortfolio() {
     <WorkCanvas root={workRoot} scene={workScene} disabled={disabled} suspended={!!project || menuVisible} enabled={!entering}/>
     <PerformancePanel />
     <MobileMenu open={menu} close={() => setMenu(false)} jump={jump} instant={disabled || keyboard} onPresenceChange={setMenuVisible} returnFocus={menuTrigger} />
-    <ProjectDialog project={project} brandFromHome={!!returnFocus.current} onHome={homeFromProject} entrySource={entrySource} source={origin.current} instant={disabled || keyboard} onClose={close} onLock={() => setLocked(true)} onPrepareRestore={prepareRestore} onRestored={restore} onOpen={open}/>
+    <ProjectDialog project={project} brandFromHome={!!returnFocus.current} onHome={homeFromProject} entrySource={entrySource} openEntry={openEntry} source={origin.current} instant={disabled || keyboard} onClose={close} onLock={() => setLocked(true)} onPrepareRestore={prepareRestore} onRestored={restore} onOpen={open}/>
   </div>;
 }
 
@@ -443,7 +453,7 @@ function ShotFlowCase({ item, heading, slot, onZoom, active }: { item: Portfolio
   </div>;
 }
 
-function ProjectDialog({ project, brandFromHome, onHome, entrySource, source, instant, onClose, onLock, onPrepareRestore, onRestored, onOpen }: { project: PortfolioProject | null; brandFromHome: boolean; onHome(e: MouseEvent<HTMLAnchorElement>): void; entrySource: 'hero' | 'work'; source: Rect | null; instant: boolean; onClose(): void; onLock(): void; onPrepareRestore(): Promise<void>; onRestored(): void; onOpen(e: MouseEvent<HTMLAnchorElement>, item: PortfolioProject): void }) {
+function ProjectDialog({ project, brandFromHome, onHome, entrySource, openEntry, source, instant, onClose, onLock, onPrepareRestore, onRestored, onOpen }: { project: PortfolioProject | null; brandFromHome: boolean; onHome(e: MouseEvent<HTMLAnchorElement>): void; entrySource: 'hero' | 'work'; openEntry: 'hero' | 'work' | 'next' | 'history'; source: Rect | null; instant: boolean; onClose(): void; onLock(): void; onPrepareRestore(): Promise<void>; onRestored(): void; onOpen(e: MouseEvent<HTMLAnchorElement>, item: PortfolioProject): void }) {
   const dialog = useRef<HTMLDialogElement>(null);
   const scroller = useRef<HTMLDivElement>(null);
   const slot = useRef<HTMLDivElement>(null);
@@ -476,6 +486,7 @@ function ProjectDialog({ project, brandFromHome, onHome, entrySource, source, in
         if (identity.current) setMorph(false);
         identity.current = project.slug;
         setShown(project); setZoom(null); if (scroller.current) scroller.current.scrollTop = 0;
+        analytics.commitView(`portfolio:work:${project.slug}`, `work:${project.slug}`, project.slug, 'project', openEntry);
       }
     }
     let cancelled = false;
@@ -509,16 +520,17 @@ function ProjectDialog({ project, brandFromHome, onHome, entrySource, source, in
   const studies: Study[] = shown ? [...((galleries as Record<string, Study[]>)[shown.slug] ?? []), ...(shown.gallery ?? [])] : [];
   const next = shown ? workProjects[(workProjects.indexOf(shown) + 1) % workProjects.length] : workProjects[0];
   const harvard = shown ? harvardCase(shown.slug) : undefined;
+  const zoomTo = (study: Study) => { setZoom(study); analytics.emit('image_open', { media_id: 'image:' + (study.image.split('/').pop()?.split('?')[0] ?? 'unknown').replace(/[^A-Za-z0-9_.:-]/g, '-').slice(0, 90) }); };
   return createPortal(<dialog ref={dialog} className="gxc-detail-dialog" data-harvard={harvard?.slug} data-film={shown?.video ? shown.slug : undefined} aria-labelledby="gxc-detail-title" onCancel={e => { e.preventDefault(); if (zoom) setZoom(null); else onClose(); }}>
     <motion.div className="gxc-detail-bg" style={{ opacity }}/>
     {shown && <div ref={scroller} className="gxc-detail-scroll" data-native-scroll>
       <motion.div className="gxc-detail-toolbar" style={{ opacity }}><button onClick={onClose} aria-label={t(entrySource === 'hero' ? 'Back to home' : 'Back to work')}><ArrowLeft size={17}/><span className="gxc-back-full">{t(entrySource === 'hero' ? 'Back to home' : 'Back to work')}</span><span className="gxc-back-short" aria-hidden="true">{t('Back')}</span></button><button onClick={onClose} aria-label={t('Close project')}><X size={20}/></button></motion.div>
       <motion.article className="gxc-detail-content" style={{ opacity: contentOpacity }}>
-        {shown.slug === 'shotflow' ? <ShotFlowCase item={shown} heading={heading} slot={slot} onZoom={setZoom} active={project?.slug === 'shotflow' && !zoom}/> : shown.slug === 'introme' ? <IntroMeCase item={shown} heading={heading} slot={slot} renderStudy={study => <StudyImage study={study} onZoom={setZoom}/>} instant={instant} active={project?.slug === 'introme' && !zoom}/> : harvard ? <HarvardCase data={harvard} heading={heading} slot={slot} renderStudy={study => <StudyImage study={study} onZoom={setZoom}/>}/> : shown.video ? <FilmCase key={shown.slug} item={shown} heading={heading} slot={slot} active={project?.slug === shown.slug && !zoom} instant={instant} studies={studies} renderStudy={study => <StudyImage study={study} onZoom={setZoom}/>}/> : <>
+        {shown.slug === 'shotflow' ? <ShotFlowCase item={shown} heading={heading} slot={slot} onZoom={zoomTo} active={project?.slug === 'shotflow' && !zoom}/> : shown.slug === 'introme' ? <IntroMeCase item={shown} heading={heading} slot={slot} renderStudy={study => <StudyImage study={study} onZoom={zoomTo}/>} instant={instant} active={project?.slug === 'introme' && !zoom}/> : harvard ? <HarvardCase data={harvard} heading={heading} slot={slot} renderStudy={study => <StudyImage study={study} onZoom={zoomTo}/>}/> : shown.video ? <FilmCase key={shown.slug} item={shown} heading={heading} slot={slot} active={project?.slug === shown.slug && !zoom} instant={instant} studies={studies} renderStudy={study => <StudyImage study={study} onZoom={zoomTo}/>}/> : <>
         <header className="gxc-detail-heading"><span className="gxc-mono">{shown.category}</span><h2 ref={heading} id="gxc-detail-title" tabIndex={-1}>{shown.title}</h2><p>{shown.summary}</p></header>
         <div ref={slot} className={'gxc-detail-cover cover-' + shown.slug} data-fit={shown.imageFit ?? 'cover'}><img src={shown.image} alt={shown.imageAlt} width={shown.imageWidth} height={shown.imageHeight}/></div>
         <div className="gxc-detail-overview"><aside><span className="gxc-mono">{t('PROJECT OVERVIEW')}</span>{shown.role && <p><small>{t('ROLE')}</small>{shown.role}</p>}{shown.period && <p><small>{t('PERIOD')}</small>{shown.period}</p>}<p><small>{t('EXPLORING')}</small>{shown.tags.join(' / ')}</p></aside><div>{shown.overview.map(text => <p key={text}>{text}</p>)}{shown.externalLinks.length > 0 && <div className="gxc-material-links">{shown.externalLinks.map(link => <a key={link.url} className="gxc-text-link" href={link.url} target="_blank" rel="noreferrer">{link.label}<ArrowUpRight size={17}/></a>)}</div>}</div></div>
-        <div className="gxc-detail-highlights">{shown.highlights.map((h, i) => <section key={h.title}><span className="gxc-mono">{number(i)}</span><h3>{h.title}</h3><p>{h.body}</p></section>)}</div>{studies.length > 0 && <div className="gxc-studies"><div className="gxc-studies-heading"><span className="gxc-mono">{t('PROCESS & DESIGN STUDIES')}</span><h3>{t('A closer look.')}</h3></div>{studies.map(study => <StudyImage study={study} key={study.image} onZoom={setZoom}/>)}</div>}
+        <div className="gxc-detail-highlights">{shown.highlights.map((h, i) => <section key={h.title}><span className="gxc-mono">{number(i)}</span><h3>{h.title}</h3><p>{h.body}</p></section>)}</div>{studies.length > 0 && <div className="gxc-studies"><div className="gxc-studies-heading"><span className="gxc-mono">{t('PROCESS & DESIGN STUDIES')}</span><h3>{t('A closer look.')}</h3></div>{studies.map(study => <StudyImage study={study} key={study.image} onZoom={zoomTo}/>)}</div>}
         </>}
         {shown.liveDemo && <div className="gxc-live-status"><span className="gxc-mono">{t('LIVE EXPERIENCE')}</span><p>{shown.liveDemo.description}</p></div>}
         <a className="gxc-next-project" href={'#/work/' + next.slug} onClick={e => onOpen(e, next)}><div><span className="gxc-mono">{t('NEXT EXPLORATION')}</span><h3>{next.title}</h3></div><ArrowRight size={38}/></a>

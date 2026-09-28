@@ -4,6 +4,7 @@ import { nextUnfinishedDemoShot, shotFlowCapture, shotFlowCaptureSize, shotFlowD
 import './shotflowDemo.css';
 import { ShotFlowPhoneFrame } from './ShotFlowPhoneFrame';
 import { t } from '../localization/main';
+import { analytics } from '../shared/analytics/client';
 
 type MediaStatus = 'idle' | 'loading' | 'playing' | 'paused' | 'ended' | 'error';
 const rectStyle = ([left, top, width, height]: ShotFlowRect): CSSProperties => ({ left: left + '%', top: top + '%', width: width + '%', height: height + '%' });
@@ -40,6 +41,8 @@ export default function ShotFlowDemo({ active, preview }: { active: boolean; pre
   const autoStart = useRef<string | null>(null);
   const playRequest = useRef(0);
   const wantsPlayback = useRef(false);
+  const reportedMedia = useRef('');
+  const reportedMilestones = useRef(new Set<number>());
   const isActive = useRef(active); isActive.current = active;
   const step = shotFlowWalkthrough[index];
   const isAnalysis = step.kind === 'analysis';
@@ -50,12 +53,14 @@ export default function ShotFlowDemo({ active, preview }: { active: boolean; pre
   const capture = shotFlowCapture.states[step.id];
   const screenImage = isPlayer ? clip.playerImage : capture.image;
   const mediaKey = isPlayer ? clip.shotId : step.id;
+  const analyticsMediaId = `shotflow:${mediaKey}`;
   const hasVideo = isAnalysis || isPlayer;
   const mediaSource = isAnalysis ? shotFlowCapture.analysis.recording : clip.media;
   const ui = shotFlowThreeCapture.ui;
 
   const pauseRecording = useCallback(() => {
     playRequest.current += 1; wantsPlayback.current = false; autoStart.current = null;
+    analytics.setPlaying('shotflow-demo', false);
     video.current?.pause();
     setMediaStatus(status => status === 'playing' || status === 'loading' ? 'paused' : status);
   }, []);
@@ -67,7 +72,7 @@ export default function ShotFlowDemo({ active, preview }: { active: boolean; pre
   useLayoutEffect(() => { if (!active) pauseRecording(); }, [active, pauseRecording]);
   useLayoutEffect(() => {
     const element = video.current;
-    return () => { playRequest.current += 1; wantsPlayback.current = false; element?.pause(); };
+    return () => { analytics.setPlaying('shotflow-demo', false); playRequest.current += 1; wantsPlayback.current = false; element?.pause(); };
   }, [started, mediaKey]);
   useEffect(() => {
     const pauseWhenHidden = () => { if (document.hidden) pauseRecording(); };
@@ -209,11 +214,12 @@ export default function ShotFlowDemo({ active, preview }: { active: boolean; pre
                   <div className="gxc-shotflow-native-progress" style={{ ...rectStyle(ui.workspaceProgress.rectPercent), backgroundImage: `url(${ui.workspaceProgress.background})` }}><span style={{ width: completed.length / 32 * 100 + '%' }}/></div>
                 </>}
                 {hasVideo && <video key={mediaKey} ref={video} src={mediaSource} poster={isAnalysis ? screenImage : clip.poster} preload="none" playsInline muted={isAnalysis || muted} style={rectStyle(isAnalysis ? fullFrame : clip.videoRectPercent)} aria-label={isAnalysis ? t('Recorded analysis, condensed demo timing') : `${t('Reference shot ')}${clip.order}`} data-visible={recordingRequested && mediaStatus !== 'error' ? 'true' : undefined}
-                  onTimeUpdate={event => { if (event.currentTarget === video.current) setElapsed(event.currentTarget.currentTime); }}
-                  onPlaying={event => { if (!wantsPlayback.current || !isActive.current || document.hidden || event.currentTarget !== video.current) { event.currentTarget.pause(); return; } setMediaStatus('playing'); }}
-                  onPause={event => { if (event.currentTarget === video.current) setMediaStatus(status => status === 'playing' || status === 'loading' ? 'paused' : status); }}
+                  onTimeUpdate={event => { if (event.currentTarget === video.current) { setElapsed(event.currentTarget.currentTime); if (reportedMedia.current === analyticsMediaId && !event.currentTarget.paused && !event.currentTarget.seeking && Number.isFinite(event.currentTarget.duration) && event.currentTarget.duration > 0) for (const milestone of [25, 50, 75]) if (event.currentTarget.currentTime / event.currentTarget.duration * 100 >= milestone && !reportedMilestones.current.has(milestone)) { reportedMilestones.current.add(milestone); analytics.emit('media_progress', { media_id: analyticsMediaId, source: 'native', milestone }); } } }}
+                  onPlaying={event => { if (!wantsPlayback.current || !isActive.current || document.hidden || event.currentTarget !== video.current) { event.currentTarget.pause(); return; } setMediaStatus('playing'); analytics.setPlaying('shotflow-demo', true); if (reportedMedia.current !== analyticsMediaId) { reportedMedia.current = analyticsMediaId; reportedMilestones.current.clear(); analytics.emit('media_start', { media_id: analyticsMediaId, source: 'native' }); } }}
+                  onPause={event => { if (event.currentTarget === video.current) { analytics.setPlaying('shotflow-demo', false); setMediaStatus(status => status === 'playing' || status === 'loading' ? 'paused' : status); } }}
                   onEnded={event => {
                     if (!wantsPlayback.current || !isActive.current || document.hidden || event.currentTarget !== video.current) return;
+                    analytics.setPlaying('shotflow-demo', false); if (reportedMedia.current === analyticsMediaId) analytics.emit('media_complete', { media_id: analyticsMediaId, source: 'native', milestone: 100 });
                     wantsPlayback.current = false; event.currentTarget.pause(); setMediaStatus('ended');
                     if (isAnalysis) showStep(index + 1);
                   }}

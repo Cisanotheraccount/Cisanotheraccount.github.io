@@ -2,6 +2,7 @@ import { useCallback, useEffect, useLayoutEffect, useRef, useState } from 'react
 import { ArrowUpRight, Expand, Pause, Play, RotateCcw, Volume2, VolumeX, X } from 'lucide-react';
 import type { PhotographyVideoItem } from './videoCatalog';
 import { browserAllowsVideoPreload, VIDEO_PRELOAD_TIMEOUT_MS } from './videoPreload';
+import { analytics } from '../shared/analytics/client';
 import './video.css';
 
 type Phase = 'idle' | 'loading' | 'ready' | 'playing' | 'error' | 'blocked';
@@ -28,6 +29,7 @@ export function PhotographyVideo({ item, started, muted, prewarm, register, onSt
   const primaryControlRef = useRef<HTMLButtonElement>(null);
   const activeRef = useRef(false), fullscreenRef = useRef(false), fullscreenPending = useRef(false);
   const hoverPlayback = useRef(false), mouseInside = useRef(false);
+  const mediaMilestones = useRef(new Set<number>()), reportedStart = useRef(false);
   const prewarmAttempted = useRef(false);
   const requestId = useRef(0), restoreTime = useRef(0), lastProgressAt = useRef(0);
   const pausedPosition = useRef<number | null>(null);
@@ -79,12 +81,13 @@ export function PhotographyVideo({ item, started, muted, prewarm, register, onSt
     const video = videoRef.current;
     if (!video) return;
     const unregister = register(item.id, video);
-    return () => { activeRef.current = false; ++requestId.current; unregister(); unload(video); restoreInlineLayout(); };
+    return () => { analytics.setPlaying(item.id, false); activeRef.current = false; ++requestId.current; unregister(); unload(video); restoreInlineLayout(); };
   }, [item.id, register, restoreInlineLayout]);
   useLayoutEffect(() => {
     if (started) return;
     const video = videoRef.current, wasActive = activeRef.current;
     hoverPlayback.current = false;
+    analytics.setPlaying(item.id, false); mediaMilestones.current.clear(); reportedStart.current = false;
     activeRef.current = false; ++requestId.current;
     if (document.fullscreenElement === shellRef.current) void document.exitFullscreen().catch(() => undefined);
     if (video?.webkitDisplayingFullscreen) video.webkitExitFullscreen?.();
@@ -212,6 +215,7 @@ export function PhotographyVideo({ item, started, muted, prewarm, register, onSt
   };
   const close = () => {
     hoverPlayback.current = false;
+    analytics.setPlaying(item.id, false);
     pause(); pausedPosition.current = null; activeRef.current = false; unload(videoRef.current);
     if (document.fullscreenElement === shellRef.current) void document.exitFullscreen().catch(() => undefined);
     if (videoRef.current?.webkitDisplayingFullscreen) videoRef.current.webkitExitFullscreen?.();
@@ -263,16 +267,19 @@ export function PhotographyVideo({ item, started, muted, prewarm, register, onSt
             setCurrentTime(saved);
             if (visible() && Math.abs(video.currentTime - saved) > .1) video.currentTime = saved;
           } else setCurrentTime(video.currentTime);
+          if (!hoverPlayback.current && reportedStart.current && !video.paused && !video.seeking && Number.isFinite(video.duration) && video.duration > 0) {
+            for (const milestone of [25, 50, 75]) if (video.currentTime / video.duration * 100 >= milestone && !mediaMilestones.current.has(milestone)) { mediaMilestones.current.add(milestone); analytics.emit('media_progress', { media_id: item.id, source: 'native', milestone }); }
+          }
         }} onSeeking={event => setCurrentTime(pausedPosition.current ?? event.currentTarget.currentTime)}
         onPlay={() => { if (!mayPlay()) pause(); else { setPaused(false); setPhase('loading'); } }}
-        onPlaying={() => { if (!mayPlay()) pause(); else { setPaused(false); setPhase('playing'); } }}
+        onPlaying={() => { if (!mayPlay()) pause(); else { setPaused(false); setPhase('playing'); analytics.setPlaying(item.id, true); if (!hoverPlayback.current && !reportedStart.current) { reportedStart.current = true; analytics.emit('media_start', { media_id: item.id, source: 'native' }); } } }}
         onCanPlay={event => {
           const next = event.currentTarget.paused ? 'ready' : 'playing';
           if (activeRef.current) setPhase(value => value === 'error' || value === 'blocked' ? value : next);
         }}
         onProgress={() => { lastProgressAt.current = performance.now(); }}
-        onPause={() => { setPaused(true); setPhase(value => value === 'error' || value === 'blocked' || value === 'idle' ? value : 'ready'); }}
-        onEnded={() => { setPaused(true); setPhase('ready'); }}
+        onPause={() => { analytics.setPlaying(item.id, false); setPaused(true); setPhase(value => value === 'error' || value === 'blocked' || value === 'idle' ? value : 'ready'); }}
+        onEnded={() => { analytics.setPlaying(item.id, false); if (!hoverPlayback.current && reportedStart.current) analytics.emit('media_complete', { media_id: item.id, source: 'native', milestone: 100 }); setPaused(true); setPhase('ready'); }}
         onWaiting={() => { if (activeRef.current && !videoRef.current?.paused) { lastProgressAt.current = performance.now(); setPhase('loading'); } }}
         onError={() => { if (activeRef.current) { setPaused(true); setPhase('error'); } }}
         onVolumeChange={event => { if (activeRef.current) onMutedChange(event.currentTarget.muted); }}>

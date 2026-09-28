@@ -1,12 +1,16 @@
 import { ArrowUpRight, Play } from 'lucide-react';
+import { useEffect, useRef } from 'react';
 import type { PortfolioProject } from './content/portfolioData';
 import './projectVideo.css';
 import { t } from '../localization/main';
 import { isChinese } from '../localization/locale';
+import { analytics } from '../shared/analytics/client';
 
 /** Native player: only the active detail owns an iframe, so leaving stops playback. */
 export function ProjectVideo({ project, active, requested = true, onRequest }: { project: PortfolioProject; active: boolean; requested?: boolean; onRequest?(): void }) {
+  const reported = useRef(false);
   const video = project.video;
+  useEffect(() => { if (active && requested && video && !reported.current) { reported.current = true; analytics.emit('media_load_request', { media_id: video.id, provider: 'youtube' }); } if (!active || !requested) reported.current = false; }, [active, requested, video]);
   if (!video) return null;
   const watchUrl = `https://www.youtube.com/watch?v=${video.id}`;
   const embedUrl = `https://www.youtube-nocookie.com/embed/${video.id}?autoplay=0&playsinline=1&controls=1&rel=0&hl=${isChinese ? 'zh-CN' : 'en'}`;

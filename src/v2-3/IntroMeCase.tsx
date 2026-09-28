@@ -4,6 +4,7 @@ import type { PortfolioProject } from './content/portfolioData';
 import { introMeMedia, introMeExplorations, introMeRecordingStates, introMeKnowledge, introMeVoice, introMeIntent, introMeLimits, introMePresentation, type IntroMeStudy } from './introMeCaseContent';
 import './introMeCase.css';
 import { t } from '../localization/main';
+import { analytics } from '../shared/analytics/client';
 
 type Props = {
   item: PortfolioProject;
@@ -46,7 +47,7 @@ function CapstonePresentation({ active }: { active: boolean }) {
         ref={playButton}
         type="button"
         className="im-presentation-play"
-        onClick={() => setPlaying(true)}
+        onClick={() => { analytics.emit('media_load_request', { media_id: 'introme-presentation', provider: 'vimeo' }); setPlaying(true); }}
         disabled={!active}
         aria-label={t(`Play ${title} from the beginning (${durationLabel})`)}
       >

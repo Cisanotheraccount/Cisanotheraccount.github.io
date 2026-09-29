@@ -210,7 +210,7 @@ export function NextPortfolio() {
         <GlassHero disabled={disabled} suspended={locked || menuVisible || !!project} />
         <div className="gxc-hero-footer">
           <div className="gxc-hero-bottom gxc-gutter">
-            <p><span className="gxc-reveal-line"><span data-gxc-reveal="4">{t('Designing experiences across')}</span></span><span className="gxc-reveal-line"><span data-gxc-reveal="5">{t('digital and physical worlds.')}</span></span></p>
+            <p><span className="gxc-reveal-line"><span data-gxc-reveal="4">{t('Creative Technologist')}</span></span><span className="gxc-reveal-line"><span data-gxc-reveal="5">{t('Photographer')}</span></span></p>
             <div><span className="gxc-mono"><span className="gxc-reveal-line"><span data-gxc-reveal="5">{t('INTERFACES, EXPERIMENTS,')}</span></span><span className="gxc-reveal-line"><span data-gxc-reveal="6">{t('AND ENVIRONMENTS.')}</span></span></span><a className="gxc-round-link" data-gxc-reveal="7" href="#work" onClick={e => { e.preventDefault(); jump('work', e.detail === 0); }} aria-label={t('Explore selected work')}><ArrowDown size={22}/></a></div>
           </div>
           <div className="gxc-hero-rule gxc-gutter" data-gxc-reveal="7" aria-hidden="true"><Plus/><span/><Plus/></div>

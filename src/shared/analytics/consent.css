@@ -3,7 +3,7 @@
   z-index: 11000;
   right: max(12px, env(safe-area-inset-right));
   bottom: max(12px, env(safe-area-inset-bottom));
-  font: 500 14px/1.5 Inter, Arial, sans-serif;
+  font: 400 14px/1.5 Inter, Arial, sans-serif;
   color: #fff;
   pointer-events: none;
 }
@@ -13,58 +13,69 @@
   isolation: isolate;
   box-sizing: border-box;
   width: min(332px, calc(100vw - 24px));
-  padding: 16px;
-  border: 1px solid rgb(255 255 255 / 34%);
+  padding: 0;
+  border: 0;
   border-radius: 24px;
-  background:
-    linear-gradient(138deg, rgb(255 255 255 / 6%) 0%, rgb(255 255 255 / 2%) 42%, rgb(3 7 13 / 5%) 100%),
-    rgb(7 12 20 / 61%);
-  box-shadow:
-    inset 0 1px 0 rgb(255 255 255 / 42%),
-    inset 0 -1px 0 rgb(4 8 15 / 22%),
-    0 14px 36px rgb(0 4 12 / 22%);
   max-height: calc(100dvh - 24px);
-  overflow: auto;
+  display: flex;
+  flex-direction: column;
+  overflow: hidden;
+  color: #fff;
+  animation: gxc-consent-glass-in 180ms cubic-bezier(.22, 1, .36, 1) both;
+}
+/* Use Menu's actual optical layer, with no additional dark panel or drawn rim. */
+.gxc-consent-glass.gxc-liquid-surface,
+.gxc-consent-glass.gxc-liquid-surface[data-glass="frosted"] {
+  background: transparent;
+  box-shadow: 0 22px 64px #00000038, 0 3px 9px #00000020;
+}
+.gxc-consent-glass.gxc-liquid-surface > .gxc-liquid-optics,
+.gxc-consent-glass.gxc-liquid-surface[data-glass="frosted"] > .gxc-liquid-optics {
+  background: linear-gradient(155deg, #ffffff0c, #ffffff03 48%, #ffffff06);
+}
+.gxc-consent-content {
+  position: relative;
+  z-index: 2;
+  box-sizing: border-box;
+  padding: 16px;
+  min-height: 0;
+  max-height: inherit;
+  overflow-y: auto;
+  border-radius: inherit;
   overscroll-behavior: contain;
   scrollbar-color: rgb(255 255 255 / 38%) transparent;
-  color: #fff;
-  text-shadow: 0 1px 2px rgb(0 3 10 / 92%), 0 0 12px rgb(0 3 10 / 44%);
-  animation: gxc-consent-glass-in 180ms cubic-bezier(.22, 1, .36, 1) both;
+  text-shadow: 0 1px 2px #000b;
+  -webkit-text-stroke: .35px #000000d9;
+  paint-order: stroke fill;
 }
 .gxc-analytics-details {
   width: min(440px, calc(100vw - 24px));
-  padding: 18px;
-  background:
-    linear-gradient(138deg, rgb(255 255 255 / 6%) 0%, rgb(255 255 255 / 2%) 34%, rgb(3 7 13 / 6%) 100%),
-    rgb(7 12 20 / 64%);
 }
+.gxc-analytics-details > .gxc-consent-content { padding: 18px; }
 .gxc-consent-glass__defs {
   position: absolute;
   pointer-events: none;
 }
 .gxc-analytics p { margin: 0 0 12px; }
-.gxc-analytics-prompt > p { font-size: 15px; font-weight: 650; letter-spacing: -.01em; }
+.gxc-analytics-prompt p { font-size: 15px; font-weight: 400; letter-spacing: -.01em; }
 .gxc-analytics-actions { display: flex; gap: 10px; }
 .gxc-analytics button {
   min-width: 44px;
   min-height: 44px;
   padding: 9px 14px;
-  border: 1px solid rgb(255 255 255 / 34%);
-  border-radius: 999px;
+  border: 1px solid rgb(255 255 255 / 17%);
+  border-radius: 14px;
   color: #fff;
-  background: linear-gradient(145deg, rgb(255 255 255 / 12%), rgb(255 255 255 / 4%)), rgb(0 3 9 / 30%);
-  box-shadow: inset 0 1px 0 rgb(255 255 255 / 27%), 0 5px 14px rgb(0 4 12 / 12%);
+  background: transparent;
+  box-shadow: none;
   cursor: pointer;
   font: inherit;
-  font-weight: 600;
-  text-shadow: 0 1px 2px rgb(0 3 10 / 78%);
+  font-weight: 400;
+  text-shadow: inherit;
   transition: background-color 140ms ease, border-color 140ms ease, transform 140ms ease;
   -webkit-tap-highlight-color: transparent;
 }
 .gxc-analytics-actions > button { flex: 1; }
-.gxc-analytics-actions > button:first-child {
-  border-color: rgb(255 255 255 / 46%);
-}
 .gxc-analytics button:active { transform: scale(.98); }
 .gxc-analytics .gxc-analytics-text {
   display: block;
@@ -74,15 +85,14 @@
   border-color: transparent;
   background: transparent;
   box-shadow: none;
-  text-decoration: underline;
-  text-decoration-color: rgb(255 255 255 / 72%);
+  text-decoration: none;
   text-underline-offset: 4px;
 }
 .gxc-analytics button:focus-visible, .gxc-analytics summary:focus-visible, .gxc-privacy-link:focus-visible {
   outline: 2px solid #fff;
   outline-offset: 3px;
 }
-.gxc-analytics-details h2 { margin: 0 52px 13px 0; font-size: 18px; font-weight: 680; line-height: 44px; letter-spacing: -.012em; }
+.gxc-analytics-details h2 { margin: 0 52px 13px 0; font-size: 18px; font-weight: 500; line-height: 44px; letter-spacing: -.012em; }
 .gxc-analytics .gxc-analytics-dismiss {
   position: absolute;
   z-index: 2;
@@ -90,7 +100,7 @@
   top: 12px;
   width: 44px;
   padding: 0;
-  border-color: rgb(255 255 255 / 27%);
+  border-color: transparent;
   font-size: 24px;
   line-height: 1;
 }
@@ -100,17 +110,15 @@
   padding: 10px 2px;
   box-sizing: border-box;
   cursor: pointer;
-  font-weight: 650;
+  font-weight: 400;
 }
 .gxc-analytics details { margin: 0 0 9px; }
 .gxc-analytics details p { margin-left: 2px; }
 .gxc-analytics-status {
-  padding: 9px 11px;
-  border: 1px solid rgb(255 255 255 / 17%);
-  border-radius: 13px;
-  background: rgb(2 7 14 / 15%);
+  padding: 10px 0;
+  border-top: 1px solid rgb(255 255 255 / 17%);
   color: #fff;
-  font-weight: 600;
+  font-weight: 400;
 }
 .gxc-privacy-link {
   display: inline-flex;
@@ -129,8 +137,8 @@
 }
 .photo-footer > div:has(> .gxc-privacy-link) { flex-wrap: wrap; }
 @media (hover: hover) {
-  .gxc-analytics button:hover { background-color: rgb(0 3 9 / 20%); border-color: rgb(255 255 255 / 52%); }
-  .gxc-analytics .gxc-analytics-text:hover { background: rgb(0 3 9 / 12%); }
+  .gxc-analytics button:hover { background-color: rgb(255 255 255 / 6%); border-color: rgb(255 255 255 / 34%); }
+  .gxc-analytics .gxc-analytics-text:hover { background: transparent; border-color: transparent; text-decoration: underline; }
 }
 @media (max-width: 760px) and (orientation: portrait) {
   .gxc-analytics[data-surface="photography"] { bottom: max(96px, calc(env(safe-area-inset-bottom) + 82px)); }
@@ -138,7 +146,8 @@
 }
 @media (max-height: 520px) and (orientation: landscape) {
   .gxc-analytics { right: max(8px, env(safe-area-inset-right)); bottom: max(8px, env(safe-area-inset-bottom)); }
-  .gxc-analytics-prompt, .gxc-analytics-details { max-height: calc(100dvh - 16px); padding: 14px; }
+  .gxc-analytics-prompt, .gxc-analytics-details { max-height: calc(100dvh - 16px); }
+  .gxc-consent-glass > .gxc-consent-content { padding: 14px; }
 }
 @keyframes gxc-consent-glass-in {
   from { opacity: 0; transform: translate3d(0, 7px, 0) scale(.985); }

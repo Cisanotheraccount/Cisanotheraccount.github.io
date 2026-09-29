@@ -11,6 +11,7 @@ import {
 import { MaterialFilterContents } from '../../v2-3/vendor/simple-liquid-glass/MaterialFilter';
 import { createLensMapGenerator } from '../../v2-3/vendor/simple-liquid-glass/displacement';
 import { uiGlass } from '../../v2-3/uiGlassConfig';
+import '../../v2-3/liquidSurface.css';
 
 type Lens = {
   width: number;
@@ -144,9 +145,7 @@ export function ConsentGlass({
   }, []);
 
   const ready = supported && Boolean(lens.map);
-  const blur = ready
-    ? variant === 'details' ? uiGlass.menuBlur : uiGlass.blur
-    : variant === 'details' ? uiGlass.fallbackMenuBlur : uiGlass.fallbackBlur;
+  const blur = ready ? uiGlass.menuBlur : uiGlass.fallbackMenuBlur;
   const backdrop = `blur(${blur}px) ${ready ? `url("#${filterId}") ` : ''}saturate(${uiGlass.saturation})`;
   const displacement = Math.hypot(lens.width, lens.height) * uiGlass.menuStrength;
   const margin = Math.ceil(displacement + blur * 3 + 2);
@@ -155,14 +154,15 @@ export function ConsentGlass({
     <div
       {...props}
       ref={surfaceRef}
-      className={`${className} gxc-consent-glass`}
+      className={`${className} gxc-consent-glass gxc-glass gxc-liquid-surface`}
       data-consent-variant={variant}
+      data-liquid-kind="menu"
       data-glass={ready ? 'refraction' : 'frosted'}
       data-liquid-map-revision={lens.revision || undefined}
       data-motion={reducedMotion ? 'reduced' : 'full'}
-      style={{ backdropFilter: backdrop, WebkitBackdropFilter: backdrop } as CSSProperties}
+      style={{ '--liquid-contrast-tint': `rgba(0,0,0,${uiGlass.menuTint})` } as CSSProperties}
     >
-      <svg className="gxc-consent-glass__defs" aria-hidden="true" width="0" height="0" focusable="false">
+      <svg className="gxc-consent-glass__defs gxc-liquid-defs" aria-hidden="true" width="0" height="0" focusable="false">
         {ready && (
           <defs>
             <filter
@@ -190,7 +190,9 @@ export function ConsentGlass({
           </defs>
         )}
       </svg>
-      {children}
+      <span className="gxc-liquid-optics" aria-hidden="true"
+        style={{ backdropFilter: backdrop, WebkitBackdropFilter: backdrop } as CSSProperties} />
+      <div className="gxc-consent-content">{children}</div>
     </div>
   );
 }

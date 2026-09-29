@@ -52,7 +52,7 @@ export function validatePhotographyCatalog(catalog) {
   exactKeys(catalog, ['version', 'heroPhotoId', 'photos', 'series'], 'catalog');
   assert.equal(catalog.version, 'landscape-20260923', 'Catalog version must be landscape-20260923');
   assert(typeof catalog.heroPhotoId === 'string' && catalog.heroPhotoId, 'Missing heroPhotoId');
-  assert(Array.isArray(catalog.photos) && catalog.photos.length === 81, 'Catalog must contain exactly 81 photos');
+  assert(Array.isArray(catalog.photos) && catalog.photos.length === 77, 'Catalog must contain exactly 77 photos');
   assert(Array.isArray(catalog.series) && catalog.series.length > 0, 'Catalog must contain series');
   const ids = new Set(); let landscapes = 0; let live = 0; let hdrPhotos = 0;
   const variantPaths = new Set();
@@ -104,7 +104,7 @@ export function validatePhotographyCatalog(catalog) {
     for (const variant of photo.variants) assert(Math.max(variant.width, variant.height) <= 1600, `Preview exceeds 1600 pixels: ${photo.id}`);
     hdrPhotos += hasHdrJpeg;
   }
-  assert.equal(landscapes, 60, 'Catalog must contain 60 Landscapes photos');
+  assert.equal(landscapes, 56, 'Catalog must contain 56 Landscapes photos');
   assert.equal(live, 21, 'Catalog must contain 21 Live photos');
   assert.equal(hdrPhotos, 0, 'Catalog must contain only SDR photos');
   assert(ids.has(catalog.heroPhotoId), 'heroPhotoId is not in photos');
@@ -125,7 +125,7 @@ export function validatePhotographyCatalog(catalog) {
   assert.equal(landscapeSeries.length, 1, 'Catalog must contain exactly one Landscape series');
   assert.equal(landscapeSeries[0].id, 'landscape-color-flow', 'Landscape series id must remain landscape-color-flow');
   assert.equal(landscapeSeries[0].title, 'Landscape', 'Landscape series title must remain Landscape');
-  assert.equal(landscapeSeries[0].photoIds.length, 60, 'Landscape series must contain all 60 Landscapes photos');
+  assert.equal(landscapeSeries[0].photoIds.length, 56, 'Landscape series must contain all 56 Landscapes photos');
   assert.equal(assigned.size, catalog.photos.length, 'Every photo must appear in exactly one series');
   return { photos: catalog.photos.length, landscapes, live, hdrPhotos, variantPaths };
 }

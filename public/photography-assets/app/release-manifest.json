@@ -2,8 +2,8 @@
   "version": 1,
   "catalog": {
     "path": "photography-assets/app/catalog.json",
-    "photos": 81,
-    "landscapes": 60,
+    "photos": 77,
+    "landscapes": 56,
     "live": 21,
     "hdrPhotos": 0
   },
@@ -18,14 +18,14 @@
       "path": "photography/index.html",
       "source": "photography-assets/app/photography.index.html",
       "bytes": 518,
-      "sha256": "c74ecf342ea3d1649600629a35a0499ba3c4a291cb4ad62ddb00b72457a834f3",
+      "sha256": "bdce0f51a70ec042710b652344fc85df606f7f7271d215818a2c386bc90c90eb",
       "mime": "text/html; charset=utf-8"
     },
     {
       "path": "photography-assets/app/catalog.json",
       "source": "photography-assets/app/catalog.json",
-      "bytes": 43749,
-      "sha256": "9e02af5f208f612e9db9f45ef7b703fc33e8519a9ee4115221fe003be9b08c56",
+      "bytes": 41605,
+      "sha256": "26b8d59cd7f1f0947bc5e1fb8f764434296ee6b93df46a1d14d685923b0991d3",
       "mime": "application/json; charset=utf-8"
     },
     {
@@ -57,18 +57,18 @@
       "mime": "image/png"
     },
     {
+      "path": "photography-assets/app/photography-B-ZzdNSn.js",
+      "source": "photography-assets/app/photography-B-ZzdNSn.js",
+      "bytes": 302155,
+      "sha256": "cc3f6812bf1911054226437726e57cc6a641ec411206f50c093a35cb63237a52",
+      "mime": "text/javascript; charset=utf-8"
+    },
+    {
       "path": "photography-assets/app/photography-BEKbNG83.css",
       "source": "photography-assets/app/photography-BEKbNG83.css",
       "bytes": 29308,
       "sha256": "26dcc02c6a3895d437563f9b85077ea2e90910a1438460020f1deb73c401ed9c",
       "mime": "text/css; charset=utf-8"
-    },
-    {
-      "path": "photography-assets/app/photography-z7eVKMrP.js",
-      "source": "photography-assets/app/photography-z7eVKMrP.js",
-      "bytes": 304299,
-      "sha256": "0a9c9c2b7a87f0051b8a50e4c469dd292af3b611146d26c0fc32964d39352034",
-      "mime": "text/javascript; charset=utf-8"
     },
     {
       "path": "photography-assets/app/space-grotesk-latin-DPT1xrvW.woff2",
@@ -204,13 +204,6 @@
       "mime": "image/jpeg"
     },
     {
-      "path": "photography-assets/landscape-20260923/gxc-b58f1df4c03a-1600.jpg",
-      "source": "photography-assets/landscape-20260923/gxc-b58f1df4c03a-1600.jpg",
-      "bytes": 81806,
-      "sha256": "cf2d83c650793d3849b78859d2938f14cb70a974c49d7c4f93384023dd7dcf6d",
-      "mime": "image/jpeg"
-    },
-    {
       "path": "photography-assets/landscape-20260923/gxc-dc8c779730d4-1600.jpg",
       "source": "photography-assets/landscape-20260923/gxc-dc8c779730d4-1600.jpg",
       "bytes": 155715,
@@ -229,13 +222,6 @@
       "source": "photography-assets/landscape-20260923/gxc-764fc0c16811-1600.jpg",
       "bytes": 371713,
       "sha256": "2b3aaf37b6ca75946272b972ff76ea741ac3bda7c0ce3fec8b6f5737f7e1e04a",
-      "mime": "image/jpeg"
-    },
-    {
-      "path": "photography-assets/landscape-20260923/gxc-341b319d52ec-1600.jpg",
-      "source": "photography-assets/landscape-20260923/gxc-341b319d52ec-1600.jpg",
-      "bytes": 271659,
-      "sha256": "04ffef7bf756326c50dba55b71575fda72a4fa8d79a32cc7397d6877063a6633",
       "mime": "image/jpeg"
     },
     {
@@ -302,13 +288,6 @@
       "mime": "image/jpeg"
     },
     {
-      "path": "photography-assets/landscape-20260923/gxc-cf81f30b2860-1600.jpg",
-      "source": "photography-assets/landscape-20260923/gxc-cf81f30b2860-1600.jpg",
-      "bytes": 243492,
-      "sha256": "be89f64070597317117eb1e4051c97eb99df72d83361e85dd7dac55a329b1450",
-      "mime": "image/jpeg"
-    },
-    {
       "path": "photography-assets/landscape-20260923/gxc-bbf7a0db0ec8-1600.jpg",
       "source": "photography-assets/landscape-20260923/gxc-bbf7a0db0ec8-1600.jpg",
       "bytes": 357518,
@@ -320,13 +299,6 @@
       "source": "photography-assets/landscape-20260923/gxc-8b8273e9eb80-1600.jpg",
       "bytes": 170831,
       "sha256": "5aec0e246668816ee1253b8a9a78abf391a5ee5fc18b46e20291088c36f2c69a",
-      "mime": "image/jpeg"
-    },
-    {
-      "path": "photography-assets/landscape-20260923/gxc-24e1a231fc9d-1600.jpg",
-      "source": "photography-assets/landscape-20260923/gxc-24e1a231fc9d-1600.jpg",
-      "bytes": 230258,
-      "sha256": "283b69ed496e486d3ce54183ee8dd3b1bb038cb52af0535e7f0c7ba90ead0eab",
       "mime": "image/jpeg"
     },
     {

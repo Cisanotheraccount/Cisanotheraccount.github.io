@@ -377,28 +377,6 @@
       }
     },
     {
-      "id": "gxc-b58f1df4c03a",
-      "category": "Landscapes",
-      "seriesId": "landscape-color-flow",
-      "width": 8192,
-      "height": 5464,
-      "alt": "Soft pink clouds gather in a lavender evening sky.",
-      "variants": [
-        {
-          "src": "/photography-assets/landscape-20260923/gxc-b58f1df4c03a-1600.jpg",
-          "width": 1600,
-          "height": 1067,
-          "format": "jpeg"
-        }
-      ],
-      "original": {
-        "src": "https://github.com/Cisanotheraccount/Cisanotheraccount.github.io/releases/download/photography-landscape-2026-09-23/gxc-b58f1df4c03a.jpg",
-        "width": 8192,
-        "height": 5464,
-        "bytes": 15939167
-      }
-    },
-    {
       "id": "gxc-dc8c779730d4",
       "category": "Landscapes",
       "seriesId": "landscape-color-flow",
@@ -462,28 +440,6 @@
         "width": 5464,
         "height": 8192,
         "bytes": 23654539
-      }
-    },
-    {
-      "id": "gxc-341b319d52ec",
-      "category": "Landscapes",
-      "seriesId": "landscape-color-flow",
-      "width": 5464,
-      "height": 8192,
-      "alt": "Pink blossoms frame a fountain, a lake, and city towers.",
-      "variants": [
-        {
-          "src": "/photography-assets/landscape-20260923/gxc-341b319d52ec-1600.jpg",
-          "width": 1067,
-          "height": 1600,
-          "format": "jpeg"
-        }
-      ],
-      "original": {
-        "src": "https://github.com/Cisanotheraccount/Cisanotheraccount.github.io/releases/download/photography-landscape-2026-09-23/gxc-341b319d52ec.jpg",
-        "width": 5464,
-        "height": 8192,
-        "bytes": 20003569
       }
     },
     {
@@ -685,28 +641,6 @@
       }
     },
     {
-      "id": "gxc-cf81f30b2860",
-      "category": "Landscapes",
-      "seriesId": "landscape-color-flow",
-      "width": 8192,
-      "height": 5464,
-      "alt": "A small tree grows on an isolated sea rock framed by out-of-focus branches.",
-      "variants": [
-        {
-          "src": "/photography-assets/landscape-20260923/gxc-cf81f30b2860-1600.jpg",
-          "width": 1600,
-          "height": 1067,
-          "format": "jpeg"
-        }
-      ],
-      "original": {
-        "src": "https://github.com/Cisanotheraccount/Cisanotheraccount.github.io/releases/download/photography-landscape-2026-09-23/gxc-cf81f30b2860.jpg",
-        "width": 8192,
-        "height": 5464,
-        "bytes": 17099489
-      }
-    },
-    {
       "id": "gxc-bbf7a0db0ec8",
       "category": "Landscapes",
       "seriesId": "landscape-color-flow",
@@ -748,28 +682,6 @@
         "width": 8192,
         "height": 2731,
         "bytes": 11558425
-      }
-    },
-    {
-      "id": "gxc-24e1a231fc9d",
-      "category": "Landscapes",
-      "seriesId": "landscape-color-flow",
-      "width": 8192,
-      "height": 5464,
-      "alt": "Jagged snow-covered mountain peaks rise through clouds above a dark forest.",
-      "variants": [
-        {
-          "src": "/photography-assets/landscape-20260923/gxc-24e1a231fc9d-1600.jpg",
-          "width": 1600,
-          "height": 1067,
-          "format": "jpeg"
-        }
-      ],
-      "original": {
-        "src": "https://github.com/Cisanotheraccount/Cisanotheraccount.github.io/releases/download/photography-landscape-2026-09-23/gxc-24e1a231fc9d.jpg",
-        "width": 8192,
-        "height": 5464,
-        "bytes": 18224843
       }
     },
     {
@@ -1809,11 +1721,9 @@
         "gxc-4409f3877c02",
         "gxc-51f89490ce06",
         "gxc-36ac1e7ae914",
-        "gxc-b58f1df4c03a",
         "gxc-dc8c779730d4",
         "gxc-0f9a3ef8f795",
         "gxc-764fc0c16811",
-        "gxc-341b319d52ec",
         "gxc-2810224a9bb6",
         "gxc-313e26a18b20",
         "gxc-40dc8be2af63",
@@ -1823,10 +1733,8 @@
         "gxc-c6c8b6694076",
         "gxc-599de7d8fecf",
         "gxc-f336f8e5841a",
-        "gxc-cf81f30b2860",
         "gxc-bbf7a0db0ec8",
         "gxc-8b8273e9eb80",
-        "gxc-24e1a231fc9d",
         "gxc-dde679f416a6",
         "gxc-7b857b9aeca0",
         "gxc-9e104f1970cd",

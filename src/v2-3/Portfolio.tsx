@@ -1,3 +1,4 @@
+import { AnalyticsPrivacyLink } from '../shared/analytics/Consent';
 import { useEffect, useLayoutEffect, useRef, useState, type MouseEvent, type CSSProperties, type RefObject } from 'react';
 import { createPortal } from 'react-dom';
 import { motion, animate, useMotionValue, useTransform } from 'motion/react';
@@ -5,7 +6,7 @@ import { ArrowUpRight, ArrowDown, ArrowLeft, ArrowRight, Plus, X, Menu, Pause, P
 import { workProjects, portfolioContact, type PortfolioProject } from './content/portfolioData';
 import rawGalleries from './content/projectGalleries.json';
 import { localizeMain, t } from '../localization/main';
-import { sitePath } from '../localization/locale';
+import { isChinese, sitePath } from '../localization/locale';
 import { visual } from './config';
 import { useSmoothScene, scrollToPage, setScrollLocked, resetScrollSample } from './runtime';
 import { GlassHero, HeroPhoto } from './Hero';
@@ -229,7 +230,7 @@ export function NextPortfolio() {
         <div className="gxc-contact-top gxc-mono"><span>{t('03 / WHAT’S NEXT?')}</span><span>{t('OPEN TO OPPORTUNITIES')}</span></div>
         <h2 id="contact-title">{t('Let’s make')}<br/><em>{t('what’s next.')}</em><a className="gxc-contact-arrow" href={'mailto:' + portfolioContact.email} aria-label={t('Email Ci Song')}><ArrowUpRight/></a></h2>
         <a className="gxc-email" href={'mailto:' + portfolioContact.email}>{portfolioContact.email}</a>
-        <footer><span className="gxc-mono">GALA X CI / CI SONG</span><div><a href={portfolioContact.linkedIn} target="_blank" rel="noreferrer">LinkedIn <ArrowUpRight size={13}/></a><a href={sitePath('photography')}>{t('Photography & Film')} <ArrowUpRight size={13}/></a><a href="#top" onClick={e => { e.preventDefault(); jump('top', e.detail === 0); }}>{t('Back to top')} <ArrowUpRight size={13}/></a></div></footer>
+        <footer><span className="gxc-mono">GALA X CI / CI SONG</span><div><a href={portfolioContact.linkedIn} target="_blank" rel="noreferrer">LinkedIn <ArrowUpRight size={13}/></a><a href={sitePath('photography')}>{t('Photography & Film')} <ArrowUpRight size={13}/></a>{!isChinese && <AnalyticsPrivacyLink />}<a href="#top" onClick={e => { e.preventDefault(); jump('top', e.detail === 0); }}>{t('Back to top')} <ArrowUpRight size={13}/></a></div></footer>
       </section>
     </main>
     <WorkBackdrop root={workRoot} paused={paused} reduced={reduce} suspended={locked || menuVisible || !!project} enabled={!entering}/>

@@ -1,3 +1,4 @@
+import { AnalyticsPrivacyLink } from '../shared/analytics/Consent';
 import { useEffect, useLayoutEffect, useMemo, useRef, useState, type KeyboardEvent as ReactKeyboardEvent, type MutableRefObject } from 'react';
 import { ArrowLeft, ArrowRight, ArrowUpRight, X } from 'lucide-react';
 import catalogJson from './catalog.json';
@@ -205,7 +206,7 @@ export function PhotographySite() {
               <div className="photo-contact-top photo-kicker"><span>{t('Let’s work together')}</span><span>{t('Photography inquiries')}</span></div>
               <h2 id={`${item.id}-contact-title`}>{t('Let’s make')}<br /><em>{t('something real.')}</em><a className="photo-contact-arrow" href="mailto:galaxci.song@gmail.com" aria-label={t('Email Ci Song')}><ArrowUpRight strokeWidth={1} aria-hidden="true" /></a></h2>
               <a className="photo-email" href={`mailto:galaxci.song@gmail.com?subject=${encodeURIComponent(t('Photography inquiry'))}`}>galaxci.song@gmail.com</a>
-              <footer className="photo-footer"><span>GALA X CI / CI SONG</span><div><a href={isChinese ? sitePath('home') : '/galaxci/'}>{t('Design portfolio')} <ArrowUpRight size={14} aria-hidden="true" /></a><a href={`#${item.id}`} onClick={event => { event.preventDefault(); backToTop(item.id); }}>{t('Back to top ↑')}</a></div></footer>
+              <footer className="photo-footer"><span>GALA X CI / CI SONG</span><div><a href={isChinese ? sitePath('home') : '/galaxci/'}>{t('Design portfolio')} <ArrowUpRight size={14} aria-hidden="true" /></a>{!isChinese && <AnalyticsPrivacyLink />}<a href={`#${item.id}`} onClick={event => { event.preventDefault(); backToTop(item.id); }}>{t('Back to top ↑')}</a></div></footer>
             </section>
           </section>;
         })}

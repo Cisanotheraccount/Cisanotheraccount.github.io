@@ -142,7 +142,7 @@ em { font-style: normal; color: #87888a; }
 .gxc-contact footer { display: flex; align-items: center; justify-content: space-between; padding: 90px 0 35px; gap: 24px; }
 .gxc-contact footer > span { color: #9da0a6; font-size: 9px; }
 .gxc-contact footer > div { display: flex; gap: 32px; }
-.gxc-contact footer a { display: inline-flex; align-items: center; gap: 9px; font-size: 10px; min-height: 44px; }
+.gxc-contact footer a, .gxc-contact footer .gxc-privacy-link { display: inline-flex; align-items: center; gap: 9px; font-size: 10px; min-height: 44px; }
 .gxc-menu-dialog { border: 0; background: none; color: #fff; padding: 0; margin: 14px; width: calc(100% - 28px); max-width: 740px; height: auto; max-height: calc(100svh - 28px); overflow: visible; }
 .gxc-menu-dialog::backdrop { background: #04070c4d; }
 .gxc-menu-panel { border-radius: 32px; padding: 18px 24px 30px; transform-origin: top right; background: linear-gradient(150deg,#121a2466,#10192599 43%,#10172099 75%,#31415661); text-shadow: 0 1px 5px #0009; box-shadow: 0 28px 70px #0006, 0 4px 12px #0003, inset 0 1px 1px #ffffffe0, inset 0 -1px 1px #d3e3ff70, inset 1px 0 2px #ffffff36, inset -1px 0 2px #ffffff24; }
@@ -360,7 +360,7 @@ em { font-style: normal; color: #87888a; }
   .gxc-email { font-size: 21px; }
   .gxc-contact footer { display: block; padding-top: 48px; }
   .gxc-contact footer > div { flex-wrap: wrap; gap: 0 20px; margin-top: 12px; }
-  .gxc-contact footer > div a { font-size: 9px; }
+  .gxc-contact footer > div a, .gxc-contact footer > div .gxc-privacy-link { font-size: 9px; }
   .gxc-detail-toolbar { height: 70px; }
   .gxc-detail-toolbar > span { display: none; }
   .gxc-detail-heading { padding: 36px 0 26px; }

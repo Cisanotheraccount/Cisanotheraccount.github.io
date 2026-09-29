@@ -1,5 +1,5 @@
-/* Import after styles.css. Interface optics live on their own layer so the
-   backdrop bends while DOM labels, focus outlines, and hit targets stay crisp. */
+/* Interface optics live on their own layer so the backdrop bends while DOM
+   labels, focus outlines, and hit targets stay crisp. */
 .gxc-glass.gxc-liquid-surface {
   background: transparent;
   border: 0;
@@ -9,6 +9,10 @@
   color: #fff;
   text-shadow: 0 1px 3px #0009;
 }
+/* Shared consent imports can load this file before styles.css. Keep the
+   interface shell clear even when later legacy frosted selectors match it. */
+.gxc-nav.gxc-liquid-surface[data-glass],
+.gxc-menu-panel.gxc-liquid-surface[data-glass] { background: transparent; }
 .gxc-glass.gxc-liquid-surface::before,
 .gxc-glass.gxc-liquid-surface::after { content: none; }
 .gxc-glass.gxc-liquid-surface > .gxc-liquid-defs {
@@ -26,7 +30,7 @@
   background: var(--liquid-contrast-tint, transparent); pointer-events: none;
 }
 .gxc-glass.gxc-liquid-surface[data-glass=frosted] > .gxc-liquid-optics {
-  background: linear-gradient(150deg, #f0f4ff0a, #ffffff02 52%, #eaf2ff06);
+  background: linear-gradient(150deg, #ffffff0a, #ffffff02 52%, #ffffff06);
   box-shadow: inset 0 .5px .5px #ffffff73, inset 0 -.5px 1px #ffffff20;
 }
 .gxc-glass.gxc-liquid-surface > .gxc-liquid-feedback {

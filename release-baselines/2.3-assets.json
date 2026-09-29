@@ -1061,6 +1061,21 @@
       "path": "v2-3/shotflow-comprehension-v1/cup-handoff.webp",
       "bytes": 145804,
       "sha256": "ccb6a40d0ada10585fd65de05e7991002a87bbff382a362fb6e827bbac08bd15"
+    },
+    {
+      "path": "v2-3/about/ci-song-portrait-480.webp",
+      "bytes": 34560,
+      "sha256": "071980f4f4b9f219a68fe8d7cbc61cdc99a547556e743d61dfb594e538e81569"
+    },
+    {
+      "path": "v2-3/about/ci-song-portrait-960.webp",
+      "bytes": 140154,
+      "sha256": "10f47432beffbb4cf735a747c055bba0176cb5ba910f3ea0083baebda420aaa1"
+    },
+    {
+      "path": "v2-3/about/ci-song-portrait-1440.webp",
+      "bytes": 309402,
+      "sha256": "d6ee0974779898376cf579d8f2c97c9ac84bb02901a6ed4b4730bedf64047705"
     }
   ]
 }

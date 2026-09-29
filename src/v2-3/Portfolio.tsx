@@ -38,6 +38,7 @@ type Study = { image: string; alt: string; caption: string; width?: number; heig
 const number = (n: number) => String(n + 1).padStart(2, '0');
 const galleries = localizeMain(rawGalleries);
 const parseProject = () => workProjects.find(p => location.hash === '#/work/' + p.slug) ?? null;
+const homeSections = isChinese ? ['top', 'work', 'about', 'contact'] : ['top', 'about', 'work', 'contact'];
 const retiredProject = () => /^#\/work\/m-box\/?$/.test(location.hash);
 const modified = (e: MouseEvent) => e.metaKey || e.ctrlKey || e.shiftKey || e.altKey || e.button !== 0;
 
@@ -105,7 +106,7 @@ export function NextPortfolio() {
   }, [project]);
   useEffect(() => {
     const observer = new IntersectionObserver(() => {
-      const items = ['top', 'work', 'about', 'contact'];
+      const items = homeSections;
       let current = 'top';
       for (const id of items) if ((document.getElementById(id)?.getBoundingClientRect().top ?? 9999) <= innerHeight * .42) current = id;
       setActive(current);
@@ -193,7 +194,7 @@ export function NextPortfolio() {
     <header className="gxc-header">
       <a className="gxc-brand" href="#top" onClick={e => { if (modified(e)) return; e.preventDefault(); jump('top', e.detail === 0); }} aria-label={t('Gala X Ci, back to top')}><BrandMark /></a>
       <GlassNav className="gxc-nav">
-        <nav aria-label={t('Main navigation')}>{['work', 'about', 'contact'].map(id => <a key={id} href={'#' + id} aria-current={active === id ? 'location' : undefined} onClick={e => { e.preventDefault(); jump(id, e.detail === 0); }}>{t(id)}<span aria-hidden="true" /></a>)}</nav>
+        <nav aria-label={t('Main navigation')}>{homeSections.slice(1).map(id => <a key={id} href={'#' + id} aria-current={active === id ? 'location' : undefined} onClick={e => { e.preventDefault(); jump(id, e.detail === 0); }}>{t(id)}<span aria-hidden="true" /></a>)}</nav>
         <button className="gxc-motion" aria-label={t(reduce ? 'System reduced motion enabled' : paused ? 'Resume motion' : 'Pause motion')} aria-pressed={disabled} disabled={reduce} onClick={() => setPaused(!paused)}>{disabled ? <Play size={13} /> : <Pause size={13} />}</button>
         <button ref={menuTrigger} className="gxc-menu-trigger" aria-expanded={menu} aria-controls="gxc-menu" aria-label={t('Open menu')} onClick={() => { cancelPending(); setMenu(true); }}><Menu size={21} /></button>
       </GlassNav>
@@ -203,29 +204,43 @@ export function NextPortfolio() {
         <HeroPhoto />
         <HeroTwinkles paused={paused} reduced={reduce} suspended={entryPhase === 'preparing' || locked || menuVisible || !!project} />
         <div className="gxc-hero-top gxc-gutter">
-          <p className="gxc-mono"><span className="gxc-reveal-line"><span data-gxc-reveal="1">CI SONG</span></span><span className="gxc-reveal-line"><span data-gxc-reveal="2">{t('DESIGN & EXPLORATION')}</span></span></p>
+          <p className="gxc-mono"><span className="gxc-reveal-line"><span data-gxc-reveal="1">CI SONG</span></span>{isChinese && <span className="gxc-reveal-line"><span data-gxc-reveal="2">{t('DESIGN & EXPLORATION')}</span></span>}</p>
           <p className="gxc-mono gxc-hero-photo-credit"><span className="gxc-reveal-line"><span data-gxc-reveal="3">{t('PHOTOGRAPHED BY')}</span></span><span className="gxc-reveal-line"><span data-gxc-reveal="4">CI SONG · <time dateTime="2022">2022</time></span></span></p>
         </div>
         <h1 className="gxc-sr">Gala X Ci — Ci Song</h1>
         <GlassHero disabled={disabled} suspended={locked || menuVisible || !!project} />
         <div className="gxc-hero-footer">
-          <div className="gxc-hero-bottom gxc-gutter">
+          <div className={'gxc-hero-bottom gxc-gutter' + (isChinese ? '' : ' gxc-hero-bottom-about')}>
             <p><span className="gxc-reveal-line"><span data-gxc-reveal="4">{t('Creative Technologist')}</span></span><span className="gxc-reveal-line"><span data-gxc-reveal="5">{t('Photographer')}</span></span></p>
-            <div><span className="gxc-mono"><span className="gxc-reveal-line"><span data-gxc-reveal="5">{t('INTERFACES, EXPERIMENTS,')}</span></span><span className="gxc-reveal-line"><span data-gxc-reveal="6">{t('AND ENVIRONMENTS.')}</span></span></span><a className="gxc-round-link" data-gxc-reveal="7" href="#work" onClick={e => { e.preventDefault(); jump('work', e.detail === 0); }} aria-label={t('Explore selected work')}><ArrowDown size={22}/></a></div>
+            <div>
+              <span className="gxc-mono">{isChinese ? <><span className="gxc-reveal-line"><span data-gxc-reveal="5">{t('INTERFACES, EXPERIMENTS,')}</span></span><span className="gxc-reveal-line"><span data-gxc-reveal="6">{t('AND ENVIRONMENTS.')}</span></span></> : <span className="gxc-reveal-line"><span data-gxc-reveal="5">GET TO KNOW ME.</span></span>}</span>
+              <a className="gxc-round-link" data-gxc-reveal="7" href={isChinese ? '#work' : '#about'} onClick={e => { e.preventDefault(); jump(isChinese ? 'work' : 'about', e.detail === 0); }} aria-label={isChinese ? t('Explore selected work') : 'About Ci Song'}><ArrowDown size={22}/></a>
+            </div>
           </div>
           <div className="gxc-hero-rule gxc-gutter" data-gxc-reveal="7" aria-hidden="true"><Plus/><span/><Plus/></div>
           <HeroMeteors paused={paused} reduced={reduce} suspended={entryPhase === 'preparing' || locked || menuVisible || !!project} onOpen={(e, item) => open(e, item, 'hero')} />
         </div>
       </section>
+      {!isChinese && <section className="gxc-about gxc-about-intro gxc-gutter" id="about" tabIndex={-1} data-section aria-labelledby="about-title">
+        <div className="gxc-about-label gxc-mono">01 / A LITTLE ABOUT ME<ArrowDown size={18}/></div>
+        <figure className="gxc-about-portrait">
+          <img src="/v2-3/about/ci-song-portrait-960.webp" srcSet="/v2-3/about/ci-song-portrait-480.webp 480w, /v2-3/about/ci-song-portrait-960.webp 960w, /v2-3/about/ci-song-portrait-1440.webp 1440w" sizes="(max-width: 760px) 264px, (max-width: 1000px) calc(55vw - 46.2px), 462px" width={1440} height={1440} loading="lazy" decoding="async" alt="Ci Song in a black hooded jacket, standing in front of a building." />
+        </figure>
+        <div className="gxc-about-main">
+          <h2 id="about-title">Hi, I’m Ci Song.</h2>
+          <div className="gxc-about-copy"><p>I’m a creative technologist. I design and prototype digital tools and interactive 3D experiences, combining interface design, AI integration, and visual storytelling.</p></div>
+          <a className="gxc-text-link" href={portfolioContact.linkedIn} target="_blank" rel="noreferrer">LinkedIn<ArrowUpRight size={18}/></a>
+        </div>
+      </section>}
       <section ref={workRoot} className="gxc-work gxc-gutter" id="work" tabIndex={-1} data-section aria-labelledby="work-title">
-        <div className="gxc-section-heading"><span className="gxc-mono">{t('01 / SELECTED EXPLORATIONS')}</span><h2 id="work-title">{t('Ideas, made')}<br/><em>{t('tangible.')}</em></h2><p>{t('Conversation. Environments.')}<br/>{t('New ways to interact.')}</p></div>
+        <div className="gxc-section-heading"><span className="gxc-mono">{isChinese ? t('01 / SELECTED EXPLORATIONS') : '02 / SELECTED EXPLORATIONS'}</span><h2 id="work-title">{t('Ideas, made')}<br/><em>{t('tangible.')}</em></h2><p>{t('Conversation. Environments.')}<br/>{t('New ways to interact.')}</p></div>
         <div className="gxc-project-grid">{workProjects.map((item, i) => <ProjectCard key={item.id} item={item} index={i} pending={openingSlug === item.slug} mobileThumbnails={mobileThumbnails} onOpen={open} />)}</div>
         <div className="gxc-work-end gxc-mono"><span>{t('FROM CONVERSATION TO ENVIRONMENTS.')}</span><Plus size={15}/><span>{t('ALWAYS EXPLORING.')}</span></div>
       </section>
-      <section className="gxc-about gxc-gutter" id="about" tabIndex={-1} data-section aria-labelledby="about-title">
+      {isChinese && <section className="gxc-about gxc-gutter" id="about" tabIndex={-1} data-section aria-labelledby="about-title">
         <div className="gxc-about-label gxc-mono">{t('02 / A LITTLE ABOUT ME')}<ArrowDown size={18}/></div>
         <div className="gxc-about-main"><h2 id="about-title">{t('Between people,')}<br/>{t('interfaces')}<br/>& <em>{t('environments.')}</em></h2><div className="gxc-about-copy"><p>{t('People and technology. Screens and spaces. An idea and the moment it becomes an experience.')}</p><p>{t('My work explores conversational AI, virtual environments, and physical interfaces. I make things to understand how they might feel, work, and fit into our lives.')}</p></div><a className="gxc-text-link" href={'mailto:' + portfolioContact.email + '?subject=' + encodeURIComponent(t('Resume request'))}>{t('Request my résumé')}<ArrowUpRight size={18}/></a></div>
-      </section>
+      </section>}
       <section className="gxc-contact gxc-gutter" id="contact" tabIndex={-1} data-section aria-labelledby="contact-title">
         <div className="gxc-contact-top gxc-mono"><span>{t('03 / WHAT’S NEXT?')}</span><span>{t('OPEN TO OPPORTUNITIES')}</span></div>
         <h2 id="contact-title">{t('Let’s make')}<br/><em>{t('what’s next.')}</em><a className="gxc-contact-arrow" href={'mailto:' + portfolioContact.email} aria-label={t('Email Ci Song')}><ArrowUpRight/></a></h2>
@@ -312,7 +327,7 @@ function MobileMenu({ open, close, jump, instant, onPresenceChange, returnFocus 
     <motion.div ref={panel} className="gxc-menu-panel gxc-glass" data-glass="frosted" style={{ opacity: progress, y, scale: menuScale }}>
       {material}
       <div className="gxc-menu-top"><span className="gxc-mono">GALA X CI</span><button onClick={close} aria-label={t('Close menu')}><X/></button></div>
-      <nav>{['top', 'work', 'about', 'contact'].map((id, i) => <a key={id} href={'#' + id} onClick={e => { e.preventDefault(); pendingJump.current = { id, instant: e.detail === 0 }; close(); }}><span className="gxc-mono">{number(i)}</span>{t(id === 'top' ? 'Home' : id)}<ArrowUpRight/></a>)}</nav>
+      <nav>{homeSections.map((id, i) => <a key={id} href={'#' + id} onClick={e => { e.preventDefault(); pendingJump.current = { id, instant: e.detail === 0 }; close(); }}><span className="gxc-mono">{number(i)}</span>{t(id === 'top' ? 'Home' : id)}<ArrowUpRight/></a>)}</nav>
       <a className="gxc-menu-photo" href={sitePath('photography')}>{t('Photography & Film')}<ArrowUpRight size={18}/></a>
       <span className="gxc-mono">{t('CI SONG / DESIGN & EXPLORATION')}</span>
     </motion.div>

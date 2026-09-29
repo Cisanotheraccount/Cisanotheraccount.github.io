@@ -81,6 +81,8 @@ p, h1, h2, h3, figure { margin: 0; }
 .gxc-hero-bottom > p > .gxc-reveal-line + .gxc-reveal-line { color: #a8a9ad; }
 .gxc-hero-bottom > div { display: flex; align-items: center; gap: 44px; }
 .gxc-hero-bottom .gxc-mono { font-size: 9px; color: #a8a9ad; }
+.gxc-hero-bottom-about { flex-direction: row-reverse; }
+.gxc-hero-bottom-about > p { text-align: right; }
 .gxc-round-link { border: 1px solid #ffffff60; border-radius: 50%; width: 56px; height: 56px; display: grid; place-items: center; transition: background .25s ease, color .25s ease, transform .25s var(--ease); }
 .gxc-hero-rule { display: flex; align-items: center; gap: 12px; position: relative; z-index: 3; }
 .gxc-hero-rule span { height: 1px; background: var(--line); flex: 1; }
@@ -129,6 +131,15 @@ em { font-style: normal; color: #87888a; }
 .gxc-about-label { color: #9698a0; display: flex; flex-direction: column; gap: 45px; }
 .gxc-about-main h2 { font: 400 clamp(48px,5.6vw,88px)/1.07 var(--font-display); letter-spacing: -.065em; }
 .gxc-about-copy { display: grid; grid-template-columns: 1fr 1fr; gap: 40px; margin: 48px 0 28px; color: #a5a7ae; font-size: 13px; line-height: 1.85; }
+/* Compact English introduction before work; the reviewed Chinese About stays unchanged. */
+.gxc-about-intro { position: relative; z-index: 2; margin-top: 0; padding-top: clamp(64px,7vw,104px); padding-bottom: clamp(64px,7vw,104px); border-top: 0; background: #090a0c; grid-template-columns: minmax(0,1fr) minmax(0,2fr); align-items: center; }
+.gxc-about-intro .gxc-about-label { grid-column: 1 / -1; flex-direction: row; justify-content: space-between; padding-top: 0; gap: 28px; }
+.gxc-about-portrait { position: relative; display: grid; place-items: center; width: min(100%,280px); aspect-ratio: 4 / 5; border: 1px solid #ffffff18; border-radius: 8px; overflow: hidden; background: radial-gradient(ellipse at 25% 15%,#303840,transparent 70%),linear-gradient(160deg,#181d22,#0e1013); }
+.gxc-about-portrait > img { width: 100%; height: 100%; min-height: 0; object-fit: cover; transform: scale(1.32); transform-origin: 50% 70%; }
+.gxc-about-intro .gxc-about-main { min-width: 0; }
+.gxc-about-intro .gxc-about-main h2 { font-size: clamp(36px,4vw,58px); line-height: 1.12; letter-spacing: -.045em; }
+.gxc-about-intro .gxc-about-copy { display: block; max-width: 58ch; margin: 24px 0 20px; font-size: clamp(16px,1.35vw,19px); line-height: 1.7; color: #bbbcc1; }
+.gxc-work + .gxc-contact { margin-top: 110px; }
 .gxc-text-link { display: inline-flex; align-items: center; justify-content: space-between; gap: 24px; font-size: 12px; min-height: 44px; border-bottom: 1px solid #ffffff55; transition: border-color .2s ease; }
 .gxc-text-link svg { transition: transform .25s var(--ease); }
 .gxc-contact { position: relative; padding-top: 50px; border-top: 1px solid var(--line); overflow: hidden; }
@@ -350,6 +361,12 @@ em { font-style: normal; color: #87888a; }
   .gxc-about-label { flex-direction: row; justify-content: space-between; margin-bottom: 32px; font-size: 9px; }
   .gxc-about-main h2 { font-size: clamp(39px,10vw,64px); }
   .gxc-about-copy { margin-top: 28px; font-size: 13px; }
+  .gxc-about-intro { margin-top: 0; padding-top: 48px; padding-bottom: 48px; }
+  .gxc-about-intro .gxc-about-label { padding-top: 0; margin-bottom: 24px; }
+  .gxc-about-portrait { width: 160px; margin-bottom: 28px; }
+  .gxc-about-intro .gxc-about-main h2 { font-size: clamp(34px,8.5vw,48px); }
+  .gxc-about-intro .gxc-about-copy { margin-top: 20px; font-size: 16px; }
+  .gxc-work + .gxc-contact { margin-top: 64px; }
   .gxc-contact { padding-top: 35px; }
   .gxc-contact-top { font-size: 8px; gap: 18px; }
   .gxc-contact-top > span:last-child { text-align: right; }

@@ -1,0 +1,1 @@
+const s=1,t="CX",n=[],o=[["Flying Fish Cove","Flying Fish Cove","00",-10.4217,105.6791]],i={version:1,country:"CX",admin1:n,cities:o};export{n as admin1,o as cities,t as country,i as default,s as version};

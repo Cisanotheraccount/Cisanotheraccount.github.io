@@ -1,0 +1,1 @@
+const a=1,e="SJ",n=[["21","Svalbard","Svalbard","7521757"],["22","Jan Mayen","Jan Mayen","3041964"]],o=[["Longyearbyen","Longyearbyen","21",78.2233,15.6469],["Olonkinbyen","Olonkinbyen","22",70.9221,-8.7187]],t={version:1,country:"SJ",admin1:n,cities:o};export{n as admin1,o as cities,e as country,t as default,a as version};

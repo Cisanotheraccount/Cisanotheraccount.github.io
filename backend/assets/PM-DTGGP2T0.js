@@ -1,0 +1,1 @@
+const i=1,o="PM",n=[["97501","Miquelon-Langlade","Miquelon-Langlade","3424938"],["97502","Saint-Pierre","Saint-Pierre","3424935"]],e=[["Miquelon","Miquelon","97501",47.0975,-56.3814],["Saint-Pierre","Saint-Pierre","97502",46.7791,-56.1773]],t={version:1,country:"PM",admin1:n,cities:e};export{n as admin1,e as cities,o as country,t as default,i as version};

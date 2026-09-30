@@ -1,0 +1,1 @@
+const s=1,t="VG",n=[],o=[["Road Town","Road Town","00",18.4269,-64.6208],["Spanish Town","Spanish Town","00",18.4481,-64.4347]],c={version:1,country:"VG",admin1:n,cities:o};export{n as admin1,o as cities,t as country,c as default,s as version};

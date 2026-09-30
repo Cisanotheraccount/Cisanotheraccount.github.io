@@ -1,0 +1,1 @@
+const o=1,t="IO",e=[],n=[["Downtown","Downtown","00",-7.2623,72.3768],["Seabreeze village","Seabreeze village","",-7.2875,72.3809]],s={version:1,country:"IO",admin1:e,cities:n};export{e as admin1,n as cities,t as country,s as default,o as version};

@@ -1,0 +1,4 @@
+/* The hit target follows the existing projected signature bounds; it is not a new visual control. */
+button.gxc-glass-touch { padding: 0; margin: 0; border: 0; border-radius: 14px; background: transparent; box-shadow: none; color: inherit; }
+button.gxc-glass-touch[data-ripple-available=true] { pointer-events: auto; cursor: pointer; }
+button.gxc-glass-touch:focus-visible { outline: 1px solid rgb(255 255 255 / .65); outline-offset: 6px; }

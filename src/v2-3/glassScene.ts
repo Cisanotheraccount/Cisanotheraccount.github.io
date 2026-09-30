@@ -15,13 +15,14 @@ import { createEntryLogo, type EntryLogo } from './entryLogo';
 import { prepareWritingField } from './liquidWriting';
 import { createSignatureWriting } from './signatureWriting';
 import { createDockLogo } from './dockLogo';
+import { createGlassRipple } from './glassRipple';
 import type { EntryTransition } from './entry';
 import { observeHeroLayout, type HeroLayout } from './heroLayout';
 
 declare global { interface Window { __gxcCapturePoster?: () => string } }
 
 type Wordmark = { positions: number[]; normals: number[]; indices: number[] };
-export interface GlassScene { setMotion(value: boolean): void; setSuspended(value: boolean): void; dispose(): void }
+export interface GlassScene { setMotion(value: boolean): void; setSuspended(value: boolean): void; rippleAt(x?: number, y?: number): boolean; dispose(): void }
 
 function createStudio(renderer: THREE.WebGLRenderer) {
   const studio = new THREE.Scene(); studio.background = new THREE.Color(0x111216);
@@ -56,7 +57,7 @@ export async function mountGlass(host: HTMLElement, area: HTMLElement, disabled:
     renderer.outputColorSpace = THREE.SRGBColorSpace;
     renderer.toneMapping = THREE.ACESFilmicToneMapping;
     renderer.toneMappingExposure = visual.lighting.exposure;
-    renderer.debug.onShaderError = () => { throw new Error('Glass shader could not compile'); };
+    renderer.debug.onShaderError = (gl, _program, vertex, fragment) => { throw new Error('Glass shader could not compile: ' + gl.getShaderInfoLog(vertex) + ' / ' + gl.getShaderInfoLog(fragment)); };
     renderer.domElement.setAttribute('aria-hidden', 'true');
     host.appendChild(renderer.domElement);
     const contextUnavailable = (event: Event) => {
@@ -197,6 +198,9 @@ export async function mountGlass(host: HTMLElement, area: HTMLElement, disabled:
     scene.add(glassOwner); glassOwner.add(group);
     const dock = createDockLogo(camera, hero, host, material, [light, fill]);
     glassOwner.add(dock.mesh, dock.lights);
+    let ripple: ReturnType<typeof createGlassRipple> | undefined;
+    let lastRippleTime: number | null = null;
+    cleanup.push(() => ripple?.dispose());
     const partBox = new THREE.Box3();
     const syncGlass = () => {
       glassOwner.updateMatrixWorld(true);
@@ -206,7 +210,7 @@ export async function mountGlass(host: HTMLElement, area: HTMLElement, disabled:
       glassOwner.geometry.boundingBox!.makeEmpty();
       for (const part of parts) {
         if (!part.geometry.boundingBox) part.geometry.computeBoundingBox();
-        partBox.copy(part.geometry.boundingBox!).applyMatrix4(part.matrixWorld);
+        partBox.copy(part.userData.heroBounds instanceof THREE.Box3 ? part.userData.heroBounds : part instanceof THREE.InstancedMesh && part.boundingBox ? part.boundingBox : part.geometry.boundingBox!).applyMatrix4(part.matrixWorld);
         glassOwner.geometry.boundingBox!.union(partBox);
       }
       glassOwner.userData.heroMaskRevision = (glassOwner.userData.heroMaskRevision ?? 0) + 1;
@@ -236,13 +240,14 @@ export async function mountGlass(host: HTMLElement, area: HTMLElement, disabled:
     const wordPlane = new THREE.Plane(new THREE.Vector3(0, 0, 1), 0);
     const parent = host.parentElement?.parentElement ?? host;
     const reset = (immediate = false) => {
+      if (immediate) lastRippleTime = null;
       pointerX = 0; pointerY = 0; targetAngle = visual.rimLight.angle; inside = false; lastPointerTime = -1;
       touchInteracting = false; previousContact = null;
       if (immediate) { rx = .07; ry = -.07; angle = visual.rimLight.angle; cameraX = 0; cameraY = 0; post?.reset(); lastDrawAt = 0; }
       dirty = true; requestFrame();
     };
     const updatePost = () => {
-      const wanted = enabled && (finePointer.matches || touchInteracting || entryLogo?.active) && !noPost && !(noFluid && noFlare) && !postFailed;
+      const wanted = enabled && (finePointer.matches || touchInteracting || ripple?.active || entryLogo?.active) && !noPost && !(noFluid && noFlare) && !postFailed;
       // A phone pays for these buffers only after its first glass gesture. Keep
       // them for the next contact, but bypass the post pipeline once its tail ends.
       if (wanted && !post) {
@@ -259,7 +264,7 @@ export async function mountGlass(host: HTMLElement, area: HTMLElement, disabled:
       }
       renderer.domElement.dataset.postfx = post ? 'ready' : postFailed ? 'unsupported' : 'disabled';
     };
-    const usePost = () => !!post && enabled && !noPost && (finePointer.matches || touchInteracting || post.active);
+    const usePost = () => !!post && enabled && !noPost && (finePointer.matches || touchInteracting || ripple?.active || post.active);
     cleanup.push(() => post?.dispose());
     const resize = ({ canvas: rect, word, documentTop: measuredTop, dpr: deviceDpr }: HeroLayout) => {
       if (disposed || contextLost) return;
@@ -543,12 +548,59 @@ export async function mountGlass(host: HTMLElement, area: HTMLElement, disabled:
       return true;
     };
     if (entryLogo?.active) { post?.invalidateBackground(); entryLogo.present(); }
+    // Prepare the extra geometry after the initial frame. Compilation is done
+    // with temporary visibility restored synchronously, never across an await.
+    let preparingRipple = false;
+    const prepareRipple = async () => {
+      if (disposed || contextLost || !enabled || preparingRipple || ripple || diagnostics.has('no-ripple')) return;
+      preparingRipple = true;
+      let candidate: ReturnType<typeof createGlassRipple> | undefined;
+      try {
+        candidate = createGlassRipple(geometry, material); group.add(candidate.root);
+        const wasVisible = mesh.visible;
+        let colorReady: Promise<unknown>, maskReady: Promise<unknown>;
+        try {
+          candidate.root.visible = true; mesh.visible = false;
+          colorReady = renderer.compileAsync(scene, camera);
+          candidate.surface.material = candidate.mask;
+          maskReady = renderer.compileAsync(scene, camera);
+        } finally {
+          // Restore the decorated physical material saved by the ripple module.
+          candidate.surface.material = candidate.physical;
+          candidate.root.visible = false; mesh.visible = wasVisible;
+        }
+        await Promise.all([colorReady, maskReady]);
+        if (disposed || contextLost) { candidate.dispose(); return; }
+        ripple = candidate; host.dataset.rippleReady = 'true';
+      } catch (error) { candidate?.dispose(); host.dataset.rippleReady = 'failed'; if (import.meta.env.DEV) console.error('Glass ripple preparation failed', error); }
+      finally { preparingRipple = false; }
+    };
+    const rippleTimer = window.setTimeout(() => void prepareRipple(), 160);
+    cleanup.push(() => window.clearTimeout(rippleTimer));
     let pendingRender = false;
+    const reducedMotion = matchMedia('(prefers-reduced-motion: reduce)');
+    const restoreForReducedMotion = () => {
+      if (disposed || contextLost || !reducedMotion.matches || !ripple?.active) return;
+      ripple.cancel(); mesh.visible = true; host.dataset.rippleState = 'rest';
+      if (diagnostics.get('qa') === '1') host.dataset.rippleProgress = '0';
+      post?.invalidateMask(); dirty = true; pendingRender = true; requestFrame();
+    };
+    // Observe independently: paused || reduced remains true if the OS setting
+    // changes while manually paused, so React's disabled prop need not change.
+    reducedMotion.addEventListener('change', restoreForReducedMotion);
+    cleanup.push(() => reducedMotion.removeEventListener('change', restoreForReducedMotion));
     const offUpdate = subscribeFrame((_time, dt) => {
       if (entryLogo?.active) return false;
       if (!visible || disposed || contextLost || document.hidden || suspended) return false;
       if (getPerformanceSnapshot('hero').staticFallback) { host.dataset.failed = 'performance'; onLost(); dispose(); return false; }
       const snapshot = getFrameSnapshot(), pointer = snapshot.pointer;
+      if (enabled && ripple?.active) {
+        const rippleDt = lastRippleTime === null ? 0 : Math.max(0, (_time - lastRippleTime) / 1000);
+        lastRippleTime = _time; ripple.advance(rippleDt); mesh.visible = !ripple.active;
+        post?.invalidateMask(); pendingRender = true;
+        host.dataset.rippleState = ripple.active ? 'active' : 'rest';
+        if (diagnostics.get('qa') === '1') host.dataset.rippleProgress = String(ripple.progress);
+      }
       const top = documentTop - snapshot.scrollY;
       const touchPoint = enabled && pointer.kind === 'touch' && pointer.glassTouch && pointer.pressed && pointer.contacts === 1;
       const mousePoint = enabled && finePointer.matches && pointer.kind !== 'touch' && pointer.inside
@@ -591,7 +643,7 @@ export async function mountGlass(host: HTMLElement, area: HTMLElement, disabled:
         if (moving) publishWordRect(false);
         pendingRender = true;
       }
-      return moving || !!post?.active;
+      return moving || !!post?.active || (enabled && !!ripple?.active);
     }, 'update');
     const offRender = subscribeFrame((_time, dt) => {
       if (morph) {
@@ -611,7 +663,17 @@ export async function mountGlass(host: HTMLElement, area: HTMLElement, disabled:
       // the photographed sky and the glass transmission share the same instant.
       if (getSky(hero).revision !== skyRevision || getTwinkles(hero).revision !== twinkleRevision
         || getProjectSky(hero).revision !== projectRevision) pendingRender = true;
-      if (pendingRender) { render(dt); pendingRender = false; }
+      if (pendingRender) {
+        try { render(dt); }
+        catch (error) {
+          if (!ripple?.active) throw error;
+          // A transient effect must never stop the shared page scheduler.
+          ripple.cancel(); ripple.dispose(); ripple = undefined; mesh.visible = true;
+          host.dataset.rippleReady = 'failed'; host.dataset.rippleState = 'unavailable';
+          post?.invalidateMask(); render(0);
+        }
+        pendingRender = false;
+      }
       return !!post?.active;
     }, 'render');
     cleanup.push(offUpdate, offRender);
@@ -619,7 +681,27 @@ export async function mountGlass(host: HTMLElement, area: HTMLElement, disabled:
       if (!disposed) window.__gxcCapturePoster = () => capturePoster(renderer, scene, camera, mesh, backdrop);
     });
     return {
-      setMotion(value) { if (disposed || contextLost) return; enabled = value; reset(true); updatePost(); },
+      setMotion(value) {
+        if (disposed || contextLost) return;
+        enabled = value;
+        if (!value) restoreForReducedMotion();
+        reset(true); updatePost(); if (value) void prepareRipple();
+      },
+      rippleAt(x, y) {
+        if (!enabled || suspended || disposed || contextLost || !visible || document.hidden || !ripple || ripple.active || entryLogo?.active || morph) return false;
+        const origin = wordCenter.clone();
+        if (x !== undefined && y !== undefined) {
+          const bounds = host.getBoundingClientRect();
+          rayNdc.set((x - bounds.left) / bounds.width * 2 - 1, 1 - (y - bounds.top) / bounds.height * 2);
+          raycaster.setFromCamera(rayNdc, camera); mesh.updateWorldMatrix(true, false);
+          const hits = raycaster.intersectObject(mesh, false);
+          if (!hits.length) return false; // Sky and gaps between letters stay inert.
+          origin.copy(hits[0].point); mesh.worldToLocal(origin);
+        }
+        if (!ripple.start(origin)) return false;
+        mesh.visible = false; lastRippleTime = performance.now(); host.dataset.rippleState = 'active';
+        updatePost(); post?.invalidateMask(); pendingRender = true; requestFrame(); return true;
+      },
       setSuspended(value) { suspended = value; if (value) reset(true); else { dirty = true; requestFrame(); } },
       dispose,
     };

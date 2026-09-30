@@ -11,6 +11,8 @@ export interface PortfolioProject {
   slug: string;
   title: string;
   category: string;
+  /** English homepage copy; detail categories remain independent. */
+  cardDescription?: string;
   summary: string;
   image: string;
   imageSmall: string;
@@ -37,6 +39,7 @@ const sourcePortfolioProjects: PortfolioProject[] = [
   {
     id: 'P04',
     slug: 'hypnos-cockpit',
+    cardDescription: "AI-assisted cabin concept",
     title: 'Hýpnos Cockpit',
     category: 'AI-assisted cabin concept',
     summary: 'Designing an adaptive rest experience around AI and biometric sensing.',
@@ -71,6 +74,7 @@ const sourcePortfolioProjects: PortfolioProject[] = [
   {
     id: 'P01',
     slug: 'psytrain',
+    cardDescription: "AI-driven 3D avatar for counseling training",
     title: 'PsytrAIn',
     category: 'AI avatar · VR concept',
     summary: 'Exploring counseling practice with an AI avatar in virtual reality.',
@@ -105,6 +109,7 @@ const sourcePortfolioProjects: PortfolioProject[] = [
   {
     id: 'P19',
     slug: 'introme',
+    cardDescription: "Real-time AI avatar of myself",
     title: 'IntroMe',
     category: 'Generative video · AI avatar',
     summary: 'A conversational portfolio built around a generative video avatar.',
@@ -147,6 +152,7 @@ const sourcePortfolioProjects: PortfolioProject[] = [
   {
     "id": "P02",
     "slug": "deal-points",
+    cardDescription: "UI/UX design for credit card rewards",
     "title": "Deal Points",
     "category": "Travel rewards experience",
     "summary": "Making travel rewards easier to understand.",
@@ -189,6 +195,7 @@ const sourcePortfolioProjects: PortfolioProject[] = [
   {
     "id": "P03",
     "slug": "orbit",
+    cardDescription: "Wearable AI for spatial memory",
     "title": "Orbit",
     "category": "Physical AI · Wearable concept",
     "summary": "Exploring computer vision and spatial memory in a wearable AI assistant.",
@@ -273,6 +280,7 @@ const sourcePortfolioProjects: PortfolioProject[] = [
   {
     "id": "P20",
     "slug": "shotflow",
+    cardDescription: "On-device deep learning for shot planning",
     "title": "ShotFlow",
     "category": "On-device AI · Filmmaking",
     "summary": "Turning reference footage into a shot list with on-device deep learning.",
@@ -322,6 +330,7 @@ const sourcePortfolioProjects: PortfolioProject[] = [
   {
     id: 'P08',
     slug: 'cyber-city',
+    cardDescription: "Photorealistic 3D animation",
     video: { provider: 'youtube', id: 'ZXkFvkEzTj0', title: 'Restart' },
     title: 'Cyber City',
     category: '3D environment & moving image',
@@ -348,6 +357,7 @@ const sourcePortfolioProjects: PortfolioProject[] = [
   {
     id: 'P09',
     slug: 'crystal-city',
+    cardDescription: "Stylized 3D environment design",
     video: { provider: 'youtube', id: 'XHEck7ViX74', title: 'Crystal City' },
     title: 'Crystal City',
     category: 'Light, space & moving image',
@@ -375,6 +385,7 @@ const sourcePortfolioProjects: PortfolioProject[] = [
   {
     id: 'P07',
     slug: 'last-one',
+    cardDescription: "3D animation & rendering",
     video: { provider: 'youtube', id: '359ZBX6A7V8', title: 'Last_One' },
     title: 'Last_One',
     category: 'Animation & moving image',
@@ -401,6 +412,7 @@ const sourcePortfolioProjects: PortfolioProject[] = [
   {
     id: 'P06',
     slug: 'gala-x-ci-vr-gallery',
+    cardDescription: "Immersive VR gallery experience",
     video: { provider: 'youtube', id: '70033a2SJx0', title: 'Gala x Ci VR Gallery' },
     title: 'Gala x Ci VR Gallery',
     category: 'Virtual exhibition',

@@ -4,6 +4,8 @@ import type { GlassScene } from './glassScene';
 import { heroPhoto, subscribeHeroPhoto } from './heroPhoto';
 import { registerPerformanceScene, setPerformanceReady } from './runtime';
 import { bindHeroTouch } from './heroTouch';
+import { bindGlassActivation } from './glassActivation';
+import './glassRipple.css';
 import { settleEntryPart } from './entry';
 import { observeHeroLayout } from './heroLayout';
 
@@ -29,9 +31,10 @@ export function HeroPhoto() {
 export function GlassHero({ disabled, suspended }: { disabled: boolean; suspended: boolean }) {
   const host = useRef<HTMLDivElement>(null);
   const area = useRef<HTMLDivElement>(null);
-  const touch = useRef<HTMLDivElement>(null);
+  const touch = useRef<HTMLButtonElement>(null);
   const scene = useRef<GlassScene | undefined>(undefined);
   const [ready, setReady] = useState(false);
+  const [rippleReady, setRippleReady] = useState(false);
   const disabledRef = useRef(disabled); disabledRef.current = disabled;
   const suspendedRef = useRef(suspended); suspendedRef.current = suspended;
   useEffect(() => {
@@ -73,15 +76,25 @@ export function GlassHero({ disabled, suspended }: { disabled: boolean; suspende
     });
     return () => { disposed = true; scene.current?.dispose(); scene.current = undefined; };
   }, []);
+  useEffect(() => {
+    const element = host.current;
+    if (!element) return;
+    const sync = () => setRippleReady(ready && element.dataset.rippleReady === 'true');
+    const observer = new MutationObserver(sync);
+    observer.observe(element, { attributes: true, attributeFilter: ['data-ripple-ready'] });
+    sync(); return () => observer.disconnect();
+  }, [ready]);
   useEffect(() => { scene.current?.setMotion(!disabled); }, [disabled]);
   useEffect(() => { scene.current?.setSuspended(suspended); }, [suspended]);
   useEffect(() => {
     if (!ready || disabled || suspended || !host.current || !touch.current) return;
-    return bindHeroTouch(touch.current, host.current);
+    const releaseTouch = bindHeroTouch(touch.current, host.current);
+    const releaseActivation = bindGlassActivation(touch.current, (x, y) => scene.current?.rippleAt(x, y));
+    return () => { releaseTouch(); releaseActivation(); };
   }, [ready, disabled, suspended]);
-  return <div ref={area} className="gxc-wordmark-space" role="img" aria-label={sceneText('galaxci, a connected glass signature against a starry sky')}>
+  return <div ref={area} className="gxc-wordmark-space" role="group" aria-label={sceneText('galaxci, a connected glass signature against a starry sky')}>
     {!ready && <div className="gxc-wordmark-fallback"><img src="/v-next/galaxci-glass-poster.webp" alt="" width="2133" height="933"/></div>}
     <div ref={host} className="gxc-canvas" data-ready={ready ? 'true' : 'false'} aria-hidden="true"/>
-    <div ref={touch} className="gxc-glass-touch" data-touch-available="false" data-touch-state="inactive" aria-hidden="true"/>
+    <button ref={touch} type="button" className="gxc-glass-touch" data-touch-available="false" data-touch-state="inactive" data-ripple-available={ready && rippleReady && !disabled && !suspended} tabIndex={rippleReady ? 0 : -1} aria-disabled={!rippleReady || undefined} disabled={!ready || disabled || suspended} aria-label="Create a gentle ripple in the glass signature"/>
   </div>;
 }

@@ -1076,6 +1076,26 @@
       "path": "v2-3/about/ci-song-portrait-1440.webp",
       "bytes": 309402,
       "sha256": "d6ee0974779898376cf579d8f2c97c9ac84bb02901a6ed4b4730bedf64047705"
+    },
+    {
+      "path": "v2-3/shotflow-home-user-v2/shotflow-480.webp",
+      "bytes": 29234,
+      "sha256": "71a3365957e88201f90392f62a1e9d80008b51e4c9870ff4930ba43f21c62171"
+    },
+    {
+      "path": "v2-3/shotflow-home-user-v2/shotflow-800.webp",
+      "bytes": 65746,
+      "sha256": "6602522afc031f293691ba7dc2edef49a6e706f59dcb2825f760e8ed2f3ac95d"
+    },
+    {
+      "path": "v2-3/shotflow-home-user-v2/shotflow-1600.webp",
+      "bytes": 197832,
+      "sha256": "67b2815e984854756c849f1a5bd193fb65d1910e66a3c8e48242eb9e110f533c"
+    },
+    {
+      "path": "v2-3/shotflow-home-user-v2/shotflow-2400.webp",
+      "bytes": 427348,
+      "sha256": "0b41155bb21e4cca49d3aa8126056a8b0bfad1f30ccb4dc88c7ba3808262099b"
     }
   ]
 }

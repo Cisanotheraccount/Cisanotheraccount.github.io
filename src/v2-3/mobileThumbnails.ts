@@ -36,8 +36,8 @@ export function workLayout(index: number): WorkLayout {
 }
 
 // Keep these calculations paired with styles.css: twelve columns, responsive
-// gutters/gaps and, for ShotFlow, two portrait images inside a square card.
-export function workImageSizes(layout: WorkLayout, shotFlow = false) {
+// gutters/gaps. ShotFlow uses its own responsive direct-image srcSet.
+export function workImageSizes(layout: WorkLayout) {
   const desktopSpan = { lead: 9, wide: 7, narrow: 4, left: 6, right: 5 }[layout];
   const tabletSpan = layout === 'lead' ? 11 : 6;
   const grid = (span: number, gutter: number, gap: number) => ({
@@ -45,12 +45,6 @@ export function workImageSizes(layout: WorkLayout, shotFlow = false) {
     px: (2 * gutter * span + gap * (12 - span)) / 12,
   });
   const calc = (vw: number, px: number) => `calc(${Number(vw.toFixed(6))}vw - ${Number(px.toFixed(6))}px)`;
-  const width = ({ vw, px }: { vw: number; px: number }, mobile = false) => {
-    if (!shotFlow) return calc(vw, px);
-    const ratio = 1290 / 2796;
-    // Width is capped by both the two-column fit (36px horizontal padding +
-    // 20px gap) and intrinsic portrait width at the available image height.
-    return `min(${calc(vw / 2, (px + 56) / 2)}, ${calc(vw * ratio, (px + (mobile ? 36 : 48)) * ratio)})`;
-  };
-  return `(max-width: 760px) ${width({ vw: 100, px: 44 }, true)}, (max-width: 1000px) ${width(grid(tabletSpan, 32, 24))}, (min-width: 1600px) ${width(grid(desktopSpan, 80, 40))}, ${width(grid(desktopSpan, 56, 32))}`;
+  const width = ({ vw, px }: { vw: number; px: number }) => calc(vw, px);
+  return `(max-width: 760px) ${width({ vw: 100, px: 44 })}, (max-width: 1000px) ${width(grid(tabletSpan, 32, 24))}, (min-width: 1600px) ${width(grid(desktopSpan, 80, 40))}, ${width(grid(desktopSpan, 56, 32))}`;
 }

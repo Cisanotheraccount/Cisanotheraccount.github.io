@@ -16,7 +16,7 @@ import { HeroTwinkles } from './HeroTwinkles';
 import { WorkCanvas } from './WorkCanvas';
 import { WorkBackdrop } from './WorkBackdrop';
 import type { WorkScene } from './workScene';
-import { shotFlowCaseCover, shotFlowCaseScreens, shotFlowPainPoints, shotFlowExampleShots, shotFlowReferencePreview } from './shotflowCaseContent';
+import { shotFlowCaseScreens, shotFlowPainPoints, shotFlowExampleShots, shotFlowReferencePreview } from './shotflowCaseContent';
 import { mobileThumbnail, useMobileThumbnailMode, workImageSizes, workLayout } from './mobileThumbnails';
 
 import ShotFlowDemo from './ShotFlowDemo';
@@ -156,8 +156,7 @@ export function NextPortfolio() {
       // Native scrolling can deliver one final compositor update after cancellation.
       // Capture the reading position in the same frame as the settled cover bounds.
       savedScroll.current = scrollY;
-      const selector = item.slug === 'shotflow' ? '.gxc-project-picture > img' : '.gxc-project-picture';
-      const rect = entry === 'work' ? anchor.querySelector(selector)?.getBoundingClientRect() : undefined;
+      const rect = entry === 'work' ? anchor.querySelector('.gxc-project-picture')?.getBoundingClientRect() : undefined;
       origin.current = rect ? { x: rect.x, y: rect.y, width: rect.width, height: rect.height } : null;
       pendingOpen.current = null; setOpeningSlug(null);
       history.pushState({ gxcProject: true, gxcEntry: entry }, '', '#/work/' + item.slug);
@@ -277,19 +276,26 @@ function ProjectThumbnail({ slug, id, mobile, src, desktopSrcSet, sizes, alt, wi
   return <img ref={imageRef} className={className} src={admitted ? fallback ? src : light?.src ?? src : undefined} srcSet={admitted && !fallback ? light?.srcSet ?? desktopSrcSet : undefined} sizes={sizes} alt={alt} width={width} height={height} loading="lazy" decoding="async" data-load={admitted ? 'admitted' : 'pending'} data-thumbnail-id={id} data-thumbnail-mode={fallback ? 'fallback' : light ? 'mobile' : 'desktop'} onError={() => { if (!fallback) setFailedKey(sourceKey); }}/>
 }
 
+// Home-only artwork; native screenshots and the guided demo keep their own media.
+const shotFlowHomeCover = {
+  image: '/v2-3/shotflow-home-user-v2/shotflow-1600.webp',
+  srcSet: [480, 800, 1600, 2400].map(width => `/v2-3/shotflow-home-user-v2/shotflow-${width}.webp ${width}w`).join(', '),
+  imageAlt: 'Hand holding a phone with the ShotFlow Reference Study workspace, showing 32 shots and storyboard controls',
+  imageWidth: 3844, imageHeight: 2996, imageFit: 'cover' as const,
+};
+
 function ProjectCard({ item, index, pending, mobileThumbnails, onOpen }: { item: PortfolioProject; index: number; pending: boolean; mobileThumbnails: boolean; onOpen: (e: MouseEvent<HTMLAnchorElement>, p: PortfolioProject) => void }) {
-  const media = item.slug === 'shotflow' ? shotFlowCaseCover : item;
+  const media = item.slug === 'shotflow' ? shotFlowHomeCover : item;
   const layout = workLayout(index);
-  const sizes = workImageSizes(layout, item.slug === 'shotflow');
+  const sizes = workImageSizes(layout);
   const pictureStyle = { '--project-image-ratio': `${media.imageWidth} / ${media.imageHeight}` } as CSSProperties;
   return <article className={'gxc-project gxc-project-' + item.slug} data-layout={layout}>
     <a href={'#/work/' + item.slug} onClick={e => onOpen(e, item)} data-opening={pending ? 'true' : undefined} aria-busy={pending || undefined} aria-label={t('Explore ') + item.title}>
-      <div className="gxc-project-picture" data-fit={item.imageFit ?? 'cover'} style={pictureStyle}>
-        <ProjectThumbnail slug={item.slug} id={item.slug === 'shotflow' ? 'workspace' : 'cover'} mobile={mobileThumbnails} src={media.image} desktopSrcSet={media.imageSmall + ' 800w, ' + media.image + ' ' + media.imageWidth + 'w'} sizes={sizes} alt={media.imageAlt} width={media.imageWidth} height={media.imageHeight}/>
-        {item.slug === 'shotflow' && <ProjectThumbnail slug={item.slug} id="storyboard" mobile={mobileThumbnails} className="gxc-shotflow-second" src={shotFlowCaseScreens[2].image} sizes={sizes} alt={t('ShotFlow English native storyboard capture')} width={1290} height={2796}/>}
-        <span className="gxc-project-index gxc-mono">{number(index)} / {t(index < 3 ? 'IN FOCUS' : 'EXPLORATION')}</span><span className="gxc-project-open"><ArrowUpRight size={22}/></span>
+      <div className="gxc-project-picture" data-fit={media.imageFit ?? 'cover'} style={pictureStyle}>
+        <ProjectThumbnail slug={item.slug} id={item.slug === 'shotflow' ? 'mockup' : 'cover'} mobile={item.slug !== 'shotflow' && mobileThumbnails} src={media.image} desktopSrcSet={item.slug === 'shotflow' ? shotFlowHomeCover.srcSet : item.imageSmall + ' 800w, ' + item.image + ' ' + item.imageWidth + 'w'} sizes={sizes} alt={media.imageAlt} width={media.imageWidth} height={media.imageHeight}/>
+        {isChinese && <span className="gxc-project-index gxc-mono">{number(index)} / {t(index < 3 ? 'IN FOCUS' : 'EXPLORATION')}</span>}<span className="gxc-project-open"><ArrowUpRight size={22}/></span>
       </div>
-      <div className="gxc-project-caption"><div><h3>{item.title}</h3><p>{item.category}</p></div><span className="gxc-mono">{item.tags[0]}</span></div>
+      <div className="gxc-project-caption" data-description={isChinese ? undefined : 'expanded'}><div><h3>{item.title}</h3><p>{isChinese ? item.category : item.cardDescription ?? item.category}</p></div>{isChinese && <span className="gxc-mono">{item.tags[0]}</span>}</div>
     </a>
   </article>;
 }
@@ -551,7 +557,10 @@ function ProjectDialog({ project, brandFromHome, onHome, entrySource, openEntry,
         {shown.liveDemo && <div className="gxc-live-status"><span className="gxc-mono">{t('LIVE EXPERIENCE')}</span><p>{shown.liveDemo.description}</p></div>}
         <a className="gxc-next-project" href={'#/work/' + next.slug} onClick={e => onOpen(e, next)}><div><span className="gxc-mono">{t('NEXT EXPLORATION')}</span><h3>{next.title}</h3></div><ArrowRight size={38}/></a>
       </motion.article>
-      {morph && target && source && <motion.div className={'gxc-transition-cover cover-' + shown.slug} data-fit={shown.imageFit ?? 'cover'} style={{ x, y, width: coverWidth, height: coverHeight, opacity: harvard ? harvardCloneOpacity : cloneOpacity, backgroundColor: shown.slug === 'introme' ? introBackground : undefined }}><img src={shown.slug === 'shotflow' ? shotFlowCaseCover.image : shown.slug === 'introme' ? introMeMedia.portrait.image : shown.image} alt=""/></motion.div>}
+      {morph && target && source && (shown.slug === 'shotflow'
+        // The user-supplied horizontal cover cannot morph into the native portrait detail capture.
+        ? <motion.div className="gxc-transition-cover cover-shotflow" style={{ x: source.x, y: source.y, width: source.width, height: source.height, opacity: harvardCloneOpacity }}><img src={shotFlowHomeCover.image} srcSet={shotFlowHomeCover.srcSet} sizes={`${source.width}px`} alt=""/></motion.div>
+        : <motion.div className={'gxc-transition-cover cover-' + shown.slug} data-fit={shown.imageFit ?? 'cover'} style={{ x, y, width: coverWidth, height: coverHeight, opacity: harvard ? harvardCloneOpacity : cloneOpacity, backgroundColor: shown.slug === 'introme' ? introBackground : undefined }}><img src={shown.slug === 'introme' ? introMeMedia.portrait.image : shown.image} alt=""/></motion.div>)}
     </div>}
     {shown && <DetailBrand progress={progress} entering={!!project} fromHome={brandFromHome} onHome={onHome} />}
     <ZoomImage study={zoom} close={() => setZoom(null)} phoneFrame={shown?.slug === 'shotflow' && shotFlowCaseScreens.some(screen => screen.image === zoom?.image)} theme={harvard?.slug}/>

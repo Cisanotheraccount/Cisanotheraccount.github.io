@@ -1,0 +1,1 @@
+const e="FeatureCollection",t=[{type:"Feature",properties:{code:"GI",name:"Gibraltar",label:[-5.3467,36.12943]},geometry:{type:"Polygon",coordinates:[[[-5.35839,36.14111],[-5.33877,36.14112],[-5.33992,36.12983],[-5.33906,36.12385],[-5.34203,36.1105],[-5.35025,36.11929],[-5.35839,36.14111]]]}}],o={type:e,features:t};export{o as default,t as features,e as type};

@@ -1,0 +1,1 @@
+const e="FeatureCollection",t=[{type:"Feature",properties:{code:"VA",name:"Vatican City",label:[12.45342,41.90332]},geometry:{type:"Polygon",coordinates:[[[12.45314,41.90275],[12.45271,41.90302],[12.45277,41.90344],[12.45303,41.90391],[12.45398,41.90386],[12.45403,41.90275],[12.45314,41.90275]]]}}],o={type:e,features:t};export{o as default,t as features,e as type};

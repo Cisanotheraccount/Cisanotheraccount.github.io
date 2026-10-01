@@ -313,20 +313,23 @@ export async function mountGlass(host: HTMLElement, area: HTMLElement, disabled:
       backdrop.updateMatrixWorld(true);
     };
     const publishWordRect = (layoutChanged = true) => {
-      const bounds = geometry.boundingBox!, point = new THREE.Vector3();
-      let minX = Infinity, minY = Infinity, maxX = -Infinity, maxY = -Infinity;
-      for (const x of [bounds.min.x, bounds.max.x]) for (const y of [bounds.min.y, bounds.max.y]) for (const z of [bounds.min.z, bounds.max.z]) {
-        point.set(x, y, z).applyMatrix4(mesh.matrixWorld).project(camera);
-        const px = (point.x + 1) * lastWidth / 2, py = (1 - point.y) * lastHeight / 2;
-        minX = Math.min(minX, px); maxX = Math.max(maxX, px); minY = Math.min(minY, py); maxY = Math.max(maxY, py);
-      }
-      // Include the small pointer parallax and liquid perimeter when reserving space.
-      const margin = 18;
-      const next = JSON.stringify({ left: minX - margin, top: minY - margin, width: maxX - minX + margin * 2, height: maxY - minY + margin * 2 });
+      const point = new THREE.Vector3();
+      const projected = (bounds: THREE.Box3) => {
+        let minX = Infinity, minY = Infinity, maxX = -Infinity, maxY = -Infinity;
+        for (const x of [bounds.min.x, bounds.max.x]) for (const y of [bounds.min.y, bounds.max.y]) for (const z of [bounds.min.z, bounds.max.z]) {
+          point.set(x, y, z).applyMatrix4(mesh.matrixWorld).project(camera);
+          const px = (point.x + 1) * lastWidth / 2, py = (1 - point.y) * lastHeight / 2;
+          minX = Math.min(minX, px); maxX = Math.max(maxX, px); minY = Math.min(minY, py); maxY = Math.max(maxY, py);
+        }
+        const margin = 18;
+        return JSON.stringify({ left: minX - margin, top: minY - margin, width: maxX - minX + margin * 2, height: maxY - minY + margin * 2 });
+      };
+      const next = projected(geometry.boundingBox!);
       if (layoutChanged && host.dataset.wordRect !== next) host.dataset.wordRect = next;
-      // Interaction follows the current pose without forcing the meteor layout
-      // to recompute its reserved wordmark area on every pointer movement.
-      if (host.dataset.touchRect !== next) host.dataset.touchRect = next;
+      // Keep the meteor reservation unchanged; only the live touch target grows
+      // to cover displaced edge strokes. Project links/nav retain their z-order.
+      const touch = ripple?.active ? projected(ripple.surface.userData.heroBounds) : next;
+      if (host.dataset.touchRect !== touch) host.dataset.touchRect = touch;
     };
     replacePhoto = (asset, texture) => {
       if (disposed || contextLost) return;
@@ -581,8 +584,8 @@ export async function mountGlass(host: HTMLElement, area: HTMLElement, disabled:
     const reducedMotion = matchMedia('(prefers-reduced-motion: reduce)');
     const restoreForReducedMotion = () => {
       if (disposed || contextLost || !reducedMotion.matches || !ripple?.active) return;
-      ripple.cancel(); mesh.visible = true; host.dataset.rippleState = 'rest';
-      if (diagnostics.get('qa') === '1') host.dataset.rippleProgress = '0';
+      ripple.cancel(); mesh.visible = true; host.dataset.rippleState = 'rest'; publishWordRect(false);
+      if (diagnostics.get('qa') === '1') { host.dataset.rippleProgress = '0'; host.dataset.rippleCount = '0'; }
       post?.invalidateMask(); dirty = true; pendingRender = true; requestFrame();
     };
     // Observe independently: paused || reduced remains true if the OS setting
@@ -597,9 +600,10 @@ export async function mountGlass(host: HTMLElement, area: HTMLElement, disabled:
       if (enabled && ripple?.active) {
         const rippleDt = lastRippleTime === null ? 0 : Math.max(0, (_time - lastRippleTime) / 1000);
         lastRippleTime = _time; ripple.advance(rippleDt); mesh.visible = !ripple.active;
+        if (!ripple.active) publishWordRect(false);
         post?.invalidateMask(); pendingRender = true;
         host.dataset.rippleState = ripple.active ? 'active' : 'rest';
-        if (diagnostics.get('qa') === '1') host.dataset.rippleProgress = String(ripple.progress);
+        if (diagnostics.get('qa') === '1') { host.dataset.rippleProgress = String(ripple.progress); host.dataset.rippleCount = String(ripple.count); }
       }
       const top = documentTop - snapshot.scrollY;
       const touchPoint = enabled && pointer.kind === 'touch' && pointer.glassTouch && pointer.pressed && pointer.contacts === 1;
@@ -688,18 +692,30 @@ export async function mountGlass(host: HTMLElement, area: HTMLElement, disabled:
         reset(true); updatePost(); if (value) void prepareRipple();
       },
       rippleAt(x, y) {
-        if (!enabled || suspended || disposed || contextLost || !visible || document.hidden || !ripple || ripple.active || entryLogo?.active || morph) return false;
+        if (!enabled || suspended || disposed || contextLost || !visible || document.hidden || !ripple || ripple.full || entryLogo?.active || morph) return false;
         const origin = wordCenter.clone();
         if (x !== undefined && y !== undefined) {
           const bounds = host.getBoundingClientRect();
           rayNdc.set((x - bounds.left) / bounds.width * 2 - 1, 1 - (y - bounds.top) / bounds.height * 2);
           raycaster.setFromCamera(rayNdc, camera); mesh.updateWorldMatrix(true, false);
-          const hits = raycaster.intersectObject(mesh, false);
-          if (!hits.length) return false; // Sky and gaps between letters stay inert.
-          origin.copy(hits[0].point); mesh.worldToLocal(origin);
+          if (ripple.active) {
+            const point = ripple.hitRestPoint(raycaster);
+            if (!point) return false;
+            origin.copy(point);
+          } else {
+            const hits = raycaster.intersectObject(mesh, false);
+            if (!hits.length) return false; // Sky and gaps between letters stay inert.
+            origin.copy(hits[0].point); mesh.worldToLocal(origin);
+          }
         }
+        // Bring older waves to the click time before adding an age-zero wave;
+        // another click must never reset or discard their elapsed interval.
+        const now = performance.now();
+        if (ripple.active && lastRippleTime !== null) ripple.advance(Math.max(0, (now - lastRippleTime) / 1000));
+        lastRippleTime = now;
         if (!ripple.start(origin)) return false;
-        mesh.visible = false; lastRippleTime = performance.now(); host.dataset.rippleState = 'active';
+        mesh.visible = false; host.dataset.rippleState = 'active'; publishWordRect(false);
+        if (diagnostics.get('qa') === '1') host.dataset.rippleCount = String(ripple.count);
         updatePost(); post?.invalidateMask(); pendingRender = true; requestFrame(); return true;
       },
       setSuspended(value) { suspended = value; if (value) reset(true); else { dirty = true; requestFrame(); } },

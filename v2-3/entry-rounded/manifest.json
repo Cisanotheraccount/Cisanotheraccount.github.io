@@ -1,0 +1,34 @@
+{
+  "version": 2,
+  "files": [
+    {
+      "path": "v2-3/entry-rounded/logo.svg",
+      "sha256": "f92e7a1374c24d3b33c23a2950cd4726238a641e7ea0ff29fa7e530e2fe0ad92",
+      "bytes": 1236,
+      "width": 1160,
+      "height": 1040,
+      "mime": "image/svg+xml"
+    },
+    {
+      "path": "v2-3/entry-rounded/logo-mesh.json",
+      "mime": "application/json",
+      "bytes": 1842641,
+      "sha256": "68e3c3a91837c899b1b5a5e5bb56d6c05a3199a385277d1f5c91864f6909f5a7",
+      "vertices": 19566
+    }
+  ],
+  "source": {
+    "kind": "User-supplied personal logo SVG",
+    "path": "public/assets/gala-x-ci-logo-silver-fill.svg",
+    "sha256": "22a602ba52c5eb4e2821d64aed5d7a91b2e0330c6971e4dfb1dd24709ee107b3",
+    "description": "Unmodified user-supplied silver-fill source retained for provenance; the 2.3 fallback and closed Poisson mesh apply the documented lower-inner-corner repair only.",
+    "date": "2026-09-19"
+  },
+  "repair": {
+    "date": "2026-10-03",
+    "scope": "2.3 English entry and shared small header logo",
+    "sourceSha256": "22a602ba52c5eb4e2821d64aed5d7a91b2e0330c6971e4dfb1dd24709ee107b3",
+    "derivedSvgSha256": "f92e7a1374c24d3b33c23a2950cd4726238a641e7ea0ff29fa7e530e2fe0ad92",
+    "description": "Closed the left piece lower-inner path exactly to remove the visible miter needle. Removed the overlapping zero-length h0 plus 0.23px by 0.13px middle-piece detour and compensated its following relative line so every downstream endpoint remains unchanged."
+  }
+}

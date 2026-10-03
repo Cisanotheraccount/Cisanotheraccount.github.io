@@ -1,5 +1,5 @@
 import { build } from 'vite';
-import { applyZhRelease } from './zh-release.mjs';
+import { applyZhRelease, zhReceipt } from './zh-release.mjs';
 import react from '@vitejs/plugin-react';
 import assert from 'node:assert/strict';
 import { cp, mkdir, readFile, rename, rm, writeFile } from 'node:fs/promises';
@@ -44,6 +44,21 @@ try {
     await cp(path.join(root, 'public', file.path), dest);
   }
   await applyPhotographyRelease(candidate, { releaseRoot: path.join(root, 'public') });
+  // The frozen Chinese bundle still imports the earlier hashed logo maps.
+  // Photography retains byte-identical reviewed copies; keep those dependencies
+  // when the English logo emits new hashes, without rebuilding either package.
+  const chinese = JSON.parse(await readFile(zhReceipt, 'utf8'));
+  for (const file of chinese.sharedMedia ?? []) {
+    const target = path.join(candidate, file.path);
+    try { await readFile(target); }
+    catch (error) {
+      if (error.code !== 'ENOENT' || !/^assets\/2-3\/logo-(?:highlight|mask|optics)-[A-Za-z0-9_-]+\.png$/.test(file.path)) throw error;
+      const retained = path.join(candidate, 'photography-assets/app', path.basename(file.path));
+      const bytes = await readFile(retained);
+      assert.equal(sha256(bytes), file.sha256, 'Retained Chinese logo map changed: ' + file.path);
+      await cp(retained, target);
+    }
+  }
   const html = await readFile(path.join(staging, 'v2-3/index.html'), 'utf8');
   for (const route of ['galaxci/2.3', 'v2-3']) {
     await mkdir(path.join(candidate, route), { recursive: true });

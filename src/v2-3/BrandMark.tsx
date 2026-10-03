@@ -40,5 +40,5 @@ export function BrandMark({ secondary = false }: { secondary?: boolean }) {
     document.fonts.addEventListener('loadingdone', measure);
     return () => { disposed = true; observer.disconnect(); window.removeEventListener('resize', measure); document.fonts.removeEventListener('loadingdone', measure); };
   }, []);
-  return <span ref={host} className="gxc-brand-content"><span data-gxc-brand-logo={secondary ? undefined : ""} className="gxc-brand-logo" aria-hidden="true"><img src="/v2-3/entry/logo.svg" alt="" width="1160" height="1040" /><LogoGlass /></span><span className="gxc-brand-text" data-gxc-brand-text={secondary ? undefined : ""} data-gxc-reveal={secondary ? undefined : "0"}>GALA X CI</span></span>;
+  return <span ref={host} className="gxc-brand-content"><span data-gxc-brand-logo={secondary ? undefined : ""} className="gxc-brand-logo" aria-hidden="true"><img src="/v2-3/entry-rounded/logo.svg" alt="" width="1160" height="1040" /><LogoGlass /></span><span className="gxc-brand-text" data-gxc-brand-text={secondary ? undefined : ""} data-gxc-reveal={secondary ? undefined : "0"}>GALA X CI</span></span>;
 }

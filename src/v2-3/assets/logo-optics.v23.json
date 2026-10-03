@@ -1,0 +1,86 @@
+{
+  "generator": "scripts/generate-logo-optics-v23.mjs",
+  "source": "public/v2-3/entry-rounded/logo-mesh.json",
+  "sourceSha256": "68e3c3a91837c899b1b5a5e5bb56d6c05a3199a385277d1f5c91864f6909f5a7",
+  "meshSourceSha256": "f92e7a1374c24d3b33c23a2950cd4726238a641e7ea0ff29fa7e530e2fe0ad92",
+  "originalSourceSha256": "22a602ba52c5eb4e2821d64aed5d7a91b2e0330c6971e4dfb1dd24709ee107b3",
+  "dimensions": {
+    "width": 456,
+    "height": 400,
+    "supersample": 4
+  },
+  "bounds": [
+    [
+      -3.7155172,
+      -3.2637931,
+      -0.6344779
+    ],
+    [
+      3.7137931,
+      3.2637931,
+      0.6344779
+    ]
+  ],
+  "boundsAspectRatio": 1.1381405120318442,
+  "camera": "+z; front-most triangle z-buffer; barycentric interpolated vertex normals",
+  "encoding": {
+    "logo-optics.png": "opaque RGB; R=128+126*normal.x, G=128-126*normal.y (canvas-down), B=128 neutral; outside silhouette remains neutral",
+    "logo-mask.png": "RGBA; white RGB with supersampled alpha from the actual front silhouette",
+    "logo-highlight.png": "RGBA; white, transparent except subtle directional normal-derived glints and rim light"
+  },
+  "stats": {
+    "occupiedSamples": 1867364,
+    "displacement": {
+      "min": 2,
+      "max": 254
+    },
+    "highlight": {
+      "nonTransparentPixels": 105479,
+      "peakAlpha": 242
+    },
+    "maskComponents": 3,
+    "maskComponentPixels": [
+      {
+        "pixels": 42530,
+        "bounds": {
+          "minX": 131,
+          "minY": 0,
+          "maxX": 314,
+          "maxY": 399
+        }
+      },
+      {
+        "pixels": 40567,
+        "bounds": {
+          "minX": 246,
+          "minY": 32,
+          "maxX": 455,
+          "maxY": 367
+        }
+      },
+      {
+        "pixels": 33735,
+        "bounds": {
+          "minX": 0,
+          "minY": 0,
+          "maxX": 174,
+          "maxY": 366
+        }
+      }
+    ]
+  },
+  "files": {
+    "logo-optics.png": {
+      "bytes": 77440,
+      "sha256": "e8c830b6292507667042a542c35f5715a049e10ef9dedf14aec076327e7472ef"
+    },
+    "logo-mask.png": {
+      "bytes": 8979,
+      "sha256": "07348db04cacee3682c7c12d5cfc778bb3c382a0ba79c577a07942eefeac35c3"
+    },
+    "logo-highlight.png": {
+      "bytes": 54674,
+      "sha256": "60fb67a1c2703f23426bc75cc17e32de24716ddadb04d489298c90191782d85c"
+    }
+  }
+}

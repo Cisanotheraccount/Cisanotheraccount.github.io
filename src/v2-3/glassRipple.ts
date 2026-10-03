@@ -39,10 +39,52 @@ export function evaluateGlassRipple(x: number, y: number, waves: readonly THREE.
   return out;
 }
 
-export function createGlassRipple(source: THREE.BufferGeometry, original: THREE.MeshPhysicalMaterial) {
+/** Shared wave packets for the signature shader and the CPU opening mesh. */
+export function createGlassRippleField(bounds: THREE.Box3) {
   const c = glassRippleTiming;
   const waves = Array.from({ length: c.capacity }, () => ({ uniform: new THREE.Vector4(0, 0, c.softness, 0), elapsed: 0, reach: 0, active: false, amount: 0 }));
   const uniforms = waves.map(wave => wave.uniform);
+  let latest = waves[0];
+  const pose = () => {
+    let total = 0;
+    for (const wave of waves) {
+      const state = sampleGlassRipple(wave.elapsed, wave.reach);
+      wave.uniform.z = state.front; wave.amount = wave.active ? state.amount : 0; total += wave.amount;
+    }
+    // Smooth energy budget: a new age-zero wave never dims older waves abruptly.
+    const gain = 1 / Math.hypot(1, total / c.amplitudeBudget);
+    for (const wave of waves) wave.uniform.w = wave.amount * gain;
+  };
+  return {
+    uniforms,
+    get active() { return waves.some(wave => wave.active); },
+    get full() { return waves.every(wave => wave.active); },
+    get count() { return waves.filter(wave => wave.active).length; },
+    get progress() { return latest.active ? latest.elapsed / c.duration : 0; },
+    start(origin: THREE.Vector3) {
+      const wave = waves.find(candidate => !candidate.active);
+      if (!wave) return false;
+      wave.reach = Math.hypot(Math.max(Math.abs(bounds.min.x - origin.x), Math.abs(bounds.max.x - origin.x)),
+        Math.max(Math.abs(bounds.min.y - origin.y), Math.abs(bounds.max.y - origin.y)));
+      wave.elapsed = 0; wave.active = true; latest = wave;
+      wave.uniform.set(origin.x, origin.y, c.softness, 0); pose(); return true;
+    },
+    cancel() { for (const wave of waves) { wave.active = false; wave.elapsed = 0; wave.uniform.w = 0; } },
+    advance(dt: number) {
+      if (!waves.some(wave => wave.active)) return false;
+      for (const wave of waves) if (wave.active) {
+        wave.elapsed = Math.min(c.duration, wave.elapsed + Math.max(0, dt));
+        if (wave.elapsed >= c.duration) wave.active = false;
+      }
+      pose(); return true;
+    },
+  };
+}
+
+export function createGlassRipple(source: THREE.BufferGeometry, original: THREE.MeshPhysicalMaterial) {
+  const c = glassRippleTiming;
+  const packets = createGlassRippleField(source.boundingBox!);
+  const uniforms = packets.uniforms;
   // Sum displacements AND their Jacobians before transforming the normal. Both
   // surface and mask borrow this uniform array, including interference regions.
   const header = `uniform vec4 gxcRipples[${c.capacity}];
@@ -99,35 +141,17 @@ export function createGlassRipple(source: THREE.BufferGeometry, original: THREE.
   const bounds = source.boundingBox!;
   surface.userData.heroBounds = bounds.clone().expandByScalar(c.boundsMargin);
   const root = new THREE.Group(); root.add(surface); root.visible = false;
-  let latest = waves[0];
   let hitMesh: THREE.Mesh | undefined;
   const field = new Float64Array(8);
-  const pose = () => {
-    let total = 0;
-    for (const wave of waves) {
-      const state = sampleGlassRipple(wave.elapsed, wave.reach);
-      wave.uniform.z = state.front; wave.amount = wave.active ? state.amount : 0; total += wave.amount;
-    }
-    // A smooth energy budget, not an active-count divisor. A new wave enters at
-    // zero and never abruptly dims or restarts the waves already on the surface.
-    const gain = 1 / Math.hypot(1, total / c.amplitudeBudget);
-    for (const wave of waves) wave.uniform.w = wave.amount * gain;
-    root.visible = waves.some(wave => wave.active);
-  };
-  const cancel = () => { for (const wave of waves) { wave.active = false; wave.elapsed = 0; wave.uniform.w = 0; } root.visible = false; };
+  const cancel = () => { packets.cancel(); root.visible = false; };
   return {
     root, surface, mask, physical: material,
-    get active() { return root.visible; },
-    get full() { return waves.every(wave => wave.active); },
-    get count() { return waves.filter(wave => wave.active).length; },
-    get progress() { return latest.active ? latest.elapsed / c.duration : 0; },
+    get active() { return packets.active; },
+    get full() { return packets.full; },
+    get count() { return packets.count; },
+    get progress() { return packets.progress; },
     start(origin: THREE.Vector3) {
-      const wave = waves.find(candidate => !candidate.active);
-      if (!wave) return false; // Bounded simultaneous input, never a delayed queue.
-      wave.reach = Math.hypot(Math.max(Math.abs(bounds.min.x - origin.x), Math.abs(bounds.max.x - origin.x)),
-        Math.max(Math.abs(bounds.min.y - origin.y), Math.abs(bounds.max.y - origin.y)));
-      wave.elapsed = 0; wave.active = true; latest = wave;
-      wave.uniform.set(origin.x, origin.y, c.softness, 0); pose(); return true;
+      const started = packets.start(origin); root.visible = packets.active; return started;
     },
     // The second click must hit the visible displaced stroke, not its old rest
     // outline. A lazy CPU-only mesh updates once per click; it is never rendered.
@@ -152,12 +176,7 @@ export function createGlassRipple(source: THREE.BufferGeometry, original: THREE.
     },
     cancel,
     advance(dt: number) {
-      if (!root.visible) return false;
-      for (const wave of waves) if (wave.active) {
-        wave.elapsed = Math.min(c.duration, wave.elapsed + Math.max(0, dt));
-        if (wave.elapsed >= c.duration) wave.active = false;
-      }
-      pose(); return true;
+      const changed = packets.advance(dt); root.visible = packets.active; return changed;
     },
     dispose() { cancel(); root.removeFromParent(); hitMesh?.geometry.dispose(); material.dispose(); mask.dispose(); },
   };

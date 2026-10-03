@@ -1,5 +1,7 @@
 import * as THREE from 'three';
 import { visual } from './config';
+import { createEntryRipple } from './entryRipple';
+import { bindGlassActivation } from './glassActivation';
 import { createLogoGeometry, logoUnits, logoViewBox } from './logoGeometry';
 import { createLogoWave, logoWaveConfig, type LogoWaveSnapshot } from './logoWave';
 import type { EntryTransition } from './entry';
@@ -58,6 +60,8 @@ export function createEntryLogo(renderer: THREE.WebGLRenderer, hero: HTMLElement
   material.customProgramCacheKey = () => 'entry-glass-rim-v1';
   const mesh = new THREE.Mesh(createLogoGeometry(), material);
   const wave = createLogoWave(mesh.geometry);
+  const ripple = createEntryRipple(mesh.geometry);
+  const raycaster = new THREE.Raycaster(), hitNdc = new THREE.Vector2();
   const pose = new THREE.Group(); pose.add(mesh); scene.add(pose);
   const key = new THREE.PointLight(0xe7f3ff, visual.lighting.point, 0, 2); key.position.set(-4, 5, 7);
   const warm = new THREE.PointLight(0xffe6c4, 90, 0, 2); warm.position.set(5, -2, 4);
@@ -265,8 +269,32 @@ export function createEntryLogo(renderer: THREE.WebGLRenderer, hero: HTMLElement
   const leave = () => { if (!drag) reset(); };
   const lostCapture = () => { if (drag) { drag = undefined; reset(); } };
   const loseWindow = () => { touches.clear(); releaseDrag(); reset(); };
+  const reportRipple = () => {
+    if (!qa) return;
+    canvasHost.dataset.entryRippleCount = String(ripple.count);
+    canvasHost.dataset.entryRippleProgress = String(ripple.progress);
+    canvasHost.dataset.entryRippleState = ripple.active ? 'active' : 'rest';
+  };
+  const activateRipple = (x?: number, y?: number) => {
+    if (disposed || handingOff || poseFrozen || document.hidden || !motionEnabled() || ripple.full || !presentationRequested) return;
+    let point = new THREE.Vector3();
+    if (x !== undefined && y !== undefined) {
+      const bounds = hero.getBoundingClientRect();
+      hitNdc.set((x - bounds.left) / bounds.width * 2 - 1, 1 - (y - bounds.top) / bounds.height * 2);
+      camera.updateMatrixWorld(); mesh.updateWorldMatrix(true, false);
+      raycaster.setFromCamera(hitNdc, camera);
+      const hit = raycaster.intersectObject(mesh, false)[0];
+      if (!hit) return; // Empty space between the three pieces is not glass.
+      const materialPoint = ripple.hitPoint(hit);
+      if (!materialPoint) return;
+      point = materialPoint;
+    }
+    if (ripple.start(point)) { reportRipple(); mark(); }
+  };
+  cleanup.push(bindGlassActivation(visualElement, activateRipple));
   const keydown = (event: KeyboardEvent) => {
     if (!motionEnabled() || handingOff) return;
+    if (event.key === 'Enter' || event.key === ' ') { event.preventDefault(); activateRipple(); return; }
     if (event.key === 'ArrowLeft') targetX = Math.max(-1, targetX - .25);
     else if (event.key === 'ArrowRight') targetX = Math.min(1, targetX + .25);
     else if (event.key === 'ArrowUp') targetY = Math.max(-1, targetY - .25);
@@ -297,6 +325,10 @@ export function createEntryLogo(renderer: THREE.WebGLRenderer, hero: HTMLElement
   cleanup.push(() => observer.disconnect(), subscribeViewportChange(refresh));
   const motionChanged = () => {
     loseWindow();
+    if (!motionEnabled()) {
+      ripple.cancel(); reportRipple();
+      if (!handingOff && !poseFrozen) { wave.setPhase(wavePhase, 0); ripple.apply(); }
+    }
     if (!motionEnabled() && !handingOff && !poseFrozen) { tiltX = 0; tiltY = 0; cameraX = 0; cameraY = 0; lightAngle = visual.rimLight.angle; }
     mark();
   };
@@ -311,6 +343,7 @@ export function createEntryLogo(renderer: THREE.WebGLRenderer, hero: HTMLElement
       const elapsed = Math.min(.1, getFrameSnapshot().elapsed || delta);
       wavePhase = qaWavePhase ?? (wavePhase + Math.PI * 2 * elapsed / logoWaveConfig.period) % (Math.PI * 2);
       wave.setPhase(wavePhase, qaWaveAmplitude);
+      ripple.advance(getFrameSnapshot().elapsed || delta); ripple.apply(); reportRipple();
       const follow = 1 - Math.exp(-visual.pointer.damping * delta);
       tiltX += (targetX * visual.pointer.rotationY - tiltX) * follow;
       tiltY += (targetY * visual.pointer.rotationX - tiltY) * follow;
@@ -335,6 +368,7 @@ export function createEntryLogo(renderer: THREE.WebGLRenderer, hero: HTMLElement
     if (disposed) return;
     disposed = true; api.active = false; window.clearTimeout(handoffTimer);
     cleanup.splice(0).forEach(fn => fn());
+    ripple.cancel(); reportRipple();
     mesh.geometry.dispose(); material.dispose(); if (ownsPhotoTexture) photoTexture?.dispose();
     photoPlane.geometry.dispose(); photoMaterial.dispose();
     for (const target of transmissionTargets) target.dispose();
@@ -418,7 +452,7 @@ export function createEntryLogo(renderer: THREE.WebGLRenderer, hero: HTMLElement
       if (phase === null) qaWavePhase = undefined;
       else if (Number.isFinite(phase)) { qaWavePhase = ((phase % (Math.PI * 2)) + Math.PI * 2) % (Math.PI * 2); wavePhase = qaWavePhase; }
       else return;
-      if (!poseFrozen && !handingOff) wave.setPhase(wavePhase, qaWaveAmplitude);
+      if (!poseFrozen && !handingOff) { wave.setPhase(wavePhase, qaWaveAmplitude); ripple.apply(); }
       mark();
     };
     const qaWave = {

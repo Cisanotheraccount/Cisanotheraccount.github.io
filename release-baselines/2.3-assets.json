@@ -1096,6 +1096,21 @@
       "path": "v2-3/shotflow-home-user-v2/shotflow-2400.webp",
       "bytes": 427348,
       "sha256": "0b41155bb21e4cca49d3aa8126056a8b0bfad1f30ccb4dc88c7ba3808262099b"
+    },
+    {
+      "path": "v2-3/entry-rounded/logo-mesh.json",
+      "bytes": 1842641,
+      "sha256": "68e3c3a91837c899b1b5a5e5bb56d6c05a3199a385277d1f5c91864f6909f5a7"
+    },
+    {
+      "path": "v2-3/entry-rounded/logo.svg",
+      "bytes": 1236,
+      "sha256": "f92e7a1374c24d3b33c23a2950cd4726238a641e7ea0ff29fa7e530e2fe0ad92"
+    },
+    {
+      "path": "v2-3/entry-rounded/manifest.json",
+      "bytes": 1485,
+      "sha256": "90fdd3e7ecd45bcbbf54a3976ba403466dba715517e39d29bf9740e151d021f3"
     }
   ]
 }

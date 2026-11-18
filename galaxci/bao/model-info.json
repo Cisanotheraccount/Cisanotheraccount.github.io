@@ -1,0 +1,27 @@
+{
+  "title": "Bao restaurant",
+  "creator": "Ci Song",
+  "source": "19 registered 360° panorama photographs",
+  "trainer": "Spirula Studio v2026.10.30",
+  "steps": 16000,
+  "gaussians": 997248,
+  "format": "SPZ v3",
+  "shDegree": 3,
+  "antialiased": false,
+  "modelSha256": "815d6daa915117738e9970739f9c9461914958bda47bca51ebb02977bf6ce401",
+  "originalPlySha256": "1c52db85eee19a1e65fe83f1333ee3337610157fe93c08bc1a6e8f636146f511",
+  "quantizedExport": true,
+  "visualExportCheck": {
+    "camera": "011",
+    "dimensions": [
+      1778,
+      2046,
+      3
+    ],
+    "compressedVsPlyPSNR": 35.5549589734332,
+    "mae255": 3.3506009696002077,
+    "samePose": true,
+    "scope": "Web export parity at one training camera, not held-out quality"
+  },
+  "limitations": "Reconstruction may be blurry or incomplete in occluded areas and away from the capture path."
+}

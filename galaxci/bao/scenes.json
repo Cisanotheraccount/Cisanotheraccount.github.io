@@ -1,0 +1,22 @@
+{
+  "defaultScene": "bao",
+  "scenes": [
+    {
+      "id": "bao",
+      "title": "包之面",
+      "subtitle": "360° 全景照片 · 交互三维重建",
+      "label": "01 · 包之面",
+      "status": "completed",
+      "model": "models/bao-restaurant.spz",
+      "cameras": "cameras/bao.json",
+      "defaultMode": "fly",
+      "note": "由 19 张 360° 全景照片重建。沿拍摄路线浏览时细节更完整；遮挡区域可能出现模糊或空洞。",
+      "iteration": 16000,
+      "totalIterations": 16000,
+      "gaussianCount": 997248,
+      "revision": "bao-public-20261117",
+      "trainer": "Spirula Studio v2026.10.30",
+      "updatedAt": "2026-11-07T01:03:01.607413+00:00"
+    }
+  ]
+}

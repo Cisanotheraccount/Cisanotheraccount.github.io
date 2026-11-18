@@ -1,6 +1,6 @@
 <!doctype html>
 <html lang="zh-CN">
-<head><meta charset="UTF-8"><meta name="viewport" content="width=device-width, initial-scale=1.0"><meta name="description" content="Explore Bao restaurant as an interactive 3D Gaussian Splatting scene by Ci Song."><meta property="og:title" content="包之面 · Interactive 3D Space — Gala X Ci"><meta property="og:description" content="Walk through a restaurant reconstructed from 360° photographs."><link rel="canonical" href="https://galaxci.com/galaxci/bao/"><meta name="color-scheme" content="dark"><title>包之面 · Gala X Ci</title>  <script type="module" crossorigin src="./assets/index-QKwVMBsU.js"></script>
+<head><meta charset="UTF-8"><meta name="viewport" content="width=device-width, initial-scale=1.0"><meta name="description" content="Explore Bao restaurant as an interactive 3D Gaussian Splatting scene by Ci Song."><meta property="og:title" content="包之面 · Interactive 3D Space — Gala X Ci"><meta property="og:description" content="Walk through a restaurant reconstructed from 360° photographs."><link rel="canonical" href="https://galaxci.com/galaxci/bao/"><meta name="color-scheme" content="dark"><title>包之面 · Gala X Ci</title>  <script type="module" crossorigin src="./assets/index-C3f5d8w2.js"></script>
   <link rel="stylesheet" crossorigin href="./assets/index-BbmsOXJ3.css">
 </head>
 <body>
@@ -18,7 +18,7 @@
     <section id="help-panel" hidden aria-labelledby="help-title">
       <div class="panel-heading"><h2 id="help-title">探索这个空间</h2><button id="help-close" type="button" aria-label="关闭操作说明">×</button></div>
       <dl class="scene-facts"><div><dt>状态</dt><dd id="fact-stage">准备中</dd></div><div><dt>训练</dt><dd id="fact-steps">—</dd></div><div><dt>引擎</dt><dd id="fact-trainer">Spirula Studio</dd></div></dl>
-      <p><strong>漫游：</strong>拖动鼠标环顾。<kbd>W</kbd><kbd>A</kbd><kbd>S</kbd><kbd>D</kbd> 前后左右，<kbd>Q</kbd><kbd>E</kbd> 升降，按住 <kbd>Shift</kbd> 加速。滚轮向前或向后移动。</p>
+      <p><strong>漫游：</strong>打开场景后会自动环顾一周（约 30 秒）。按方向键、WASD、触屏箭头或拖动画面即可接管，自动漫游不会再次开始。<br>拖动鼠标环顾。<kbd>W</kbd><kbd>A</kbd><kbd>S</kbd><kbd>D</kbd> 或方向键前后左右，<kbd>Q</kbd><kbd>E</kbd> 升降，按住 <kbd>Shift</kbd> 加速。滚轮向前或向后移动。</p>
       <p><strong>环绕：</strong>拖动旋转，滚轮拉近或拉远，右键拖动平移。</p>
       <p>下方位置按钮返回实际重建机位。按 <kbd>R</kbd> 回到起点。</p>
       <p id="scene-note" class="muted"></p>
@@ -29,7 +29,7 @@
     <section class="bottom-panel" aria-label="场景控制">
       <div class="control-row"><div class="view-label"><span class="eyebrow">VIEWPOINT</span><strong id="position-name">等待场景</strong></div><div class="actions"><div class="mode-switch" role="group" aria-label="导航模式"><button id="mode-fly" class="active" type="button" aria-pressed="true">漫游</button><button id="mode-orbit" type="button" aria-pressed="false">环绕</button></div><button id="capture" type="button" disabled><span class="wide-label">保存画面</span><span class="narrow-label">保存</span></button><button id="reset" type="button">回到起点</button><button id="reload" type="button" aria-label="重新加载场景">↻</button></div></div>
       <div id="waypoints" aria-label="拍摄位置"></div>
-      <footer><span id="model-status">正在准备</span><span id="fps"></span><span class="keyboard-hint">拖动环顾 · WASD 移动</span><label class="speed">速度 <input id="speed" type="range" min="0.25" max="3" step="0.25" value="1" aria-label="移动速度"></label></footer>
+      <footer><span id="model-status">正在准备</span><span id="fps"></span><span class="keyboard-hint">方向键 / WASD 接管漫游</span><label class="speed">速度 <input id="speed" type="range" min="0.25" max="3" step="0.25" value="1" aria-label="移动速度"></label></footer>
     </section>
   </main>
 </body>

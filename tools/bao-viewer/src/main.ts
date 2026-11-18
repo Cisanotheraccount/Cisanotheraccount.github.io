@@ -85,6 +85,9 @@ let frames = 0
 let renderUntil = 0
 let lastRendered = 0
 let capturing = false
+let introTour: { elapsed: number; quaternion: THREE.Quaternion } | null = null
+let introStarted = false
+const introDuration = 30
 let pointer: { id: number; x: number; y: number } | null = null
 let tween: { started: number; position: THREE.Vector3; quaternion: THREE.Quaternion; target: THREE.Vector3; nextPosition: THREE.Vector3; nextQuaternion: THREE.Quaternion; nextTarget: THREE.Vector3 } | null = null
 
@@ -110,6 +113,7 @@ function setControlsEnabled(enabled: boolean) {
   for (const id of ['mode-fly', 'mode-orbit', 'reset', 'capture']) (el(id) as HTMLButtonElement).disabled = !enabled
 }
 function clearScene() {
+  introTour = null
   ready = false
   keys.clear()
   velocity.set(0, 0, 0)
@@ -270,6 +274,12 @@ async function loadScene(record: SceneRecord, preserveView = false) {
       for (const b of waypoints.querySelectorAll('button')) b.classList.toggle('active', b.dataset.id === savedView.waypoint)
     }
     panel.hidden = true
+    if (!savedView && !introStarted) {
+      introStarted = true
+      setMode('fly')
+      introTour = { elapsed: 0, quaternion: camera.quaternion.clone() }
+      el('position-name').textContent = '自动漫游 · 环顾一周'
+    }
     requestFrames(2000)
     el('model-status').textContent = `${count.toLocaleString('zh-CN')} 个高斯`
     const download = el<HTMLAnchorElement>('download')
@@ -309,6 +319,7 @@ function captureUp(capture: Capture) {
 }
 function visit(capture: Capture, smooth = true) {
   if (!ready) return
+  introTour = null
   velocity.set(0, 0, 0)
   const next = new THREE.PerspectiveCamera()
   next.position.fromArray(capture.position)
@@ -346,6 +357,7 @@ function visit(capture: Capture, smooth = true) {
   requestFrames(1500)
 }
 function setMode(next: Mode) {
+  if (introTour) markFree()
   mode = next
   if (orbit) orbit.enabled = ready && mode === 'orbit'
   if (ready && mode === 'orbit') {
@@ -365,6 +377,7 @@ function setMode(next: Mode) {
   requestFrames(750)
 }
 function markFree() {
+  introTour = null
   tween = null
   el('position-name').textContent = '自由视点'
   for (const b of waypoints.querySelectorAll('button.active')) b.classList.remove('active')
@@ -382,6 +395,19 @@ function animate(time: number) {
   lastTime = time
   if (document.hidden) return
   if (ready) {
+    if (introTour) {
+      introTour.elapsed = Math.min(introDuration, introTour.elapsed + dt)
+      const t = introTour.elapsed / introDuration
+      const eased = t * t * (3 - 2 * t)
+      rotation.setFromAxisAngle(worldUp, -Math.PI * 2 * eased)
+      camera.quaternion.copy(introTour.quaternion).premultiply(rotation)
+      requestFrames(500)
+      if (t === 1) {
+        camera.quaternion.copy(introTour.quaternion)
+        introTour = null
+        el('position-name').textContent = startCapture?.label ?? '漫游结束 · 自由探索'
+      }
+    }
     if (tween) {
       const t = THREE.MathUtils.clamp((time - tween.started) / 750, 0, 1)
       const s = t * t * (3 - 2 * t)
@@ -463,6 +489,7 @@ try {
 
 canvas.addEventListener('pointerdown', event => {
   if (!ready || event.button !== 0 || mode !== 'fly') return
+  markFree()
   pointer = { id: event.pointerId, x: event.clientX, y: event.clientY }
   canvas.setPointerCapture(event.pointerId)
   canvas.focus({ preventScroll: true })
@@ -489,23 +516,33 @@ canvas.addEventListener('wheel', event => {
   camera.getWorldDirection(direction)
   camera.position.addScaledVector(direction, -Math.sign(event.deltaY) * movementSpeed * Number(speedInput.value) * 0.2)
 }, { passive: false })
+const arrowKeys: Record<string, string> = { ArrowUp: 'KeyW', ArrowDown: 'KeyS', ArrowLeft: 'KeyA', ArrowRight: 'KeyD' }
 const movementKeys = new Set(['KeyW', 'KeyA', 'KeyS', 'KeyD', 'KeyQ', 'KeyE', 'ShiftLeft', 'ShiftRight'])
+const heldMovement = new Map<string, string>()
 window.addEventListener('keydown', event => {
   if (event.target instanceof HTMLInputElement || event.target instanceof HTMLTextAreaElement || event.target instanceof HTMLSelectElement) return
-  if (movementKeys.has(event.code) && ready) {
-    if (mode === 'orbit' && event.code.startsWith('Key')) setMode('fly')
-    keys.add(event.code)
+  const code = arrowKeys[event.code] ?? event.code
+  if (movementKeys.has(code) && ready) {
+    if (mode === 'orbit') setMode('fly')
+    markFree()
+    heldMovement.set(event.code, code)
+    keys.add(code)
     event.preventDefault()
   }
   if (event.code === 'KeyR' && startCapture) visit(startCapture)
   if (event.code === 'Escape') toggleHelp(false)
 })
-window.addEventListener('keyup', event => keys.delete(event.code))
-window.addEventListener('blur', () => { keys.clear(); velocity.set(0, 0, 0); pointer = null })
+window.addEventListener('keyup', event => {
+  const code = heldMovement.get(event.code)
+  heldMovement.delete(event.code)
+  if (code && !Array.from(heldMovement.values()).includes(code)) keys.delete(code)
+})
+window.addEventListener('blur', () => { heldMovement.clear(); keys.clear(); velocity.set(0, 0, 0); pointer = null })
 for (const button of document.querySelectorAll<HTMLButtonElement>('[data-key]')) {
   button.addEventListener('pointerdown', event => {
     if (!ready) return
     if (mode !== 'fly') setMode('fly')
+    markFree()
     button.setPointerCapture(event.pointerId)
     keys.add(button.dataset.key!)
     event.preventDefault()

@@ -1,0 +1,12 @@
+{
+  "name": "spirula-local-scenes",
+  "private": true,
+  "version": "1.0.0",
+  "type": "module",
+  "scripts": {
+    "dev": "node node_modules/vite/bin/vite.js --host 127.0.0.1 --port 4190",
+    "build": "node node_modules/typescript/bin/tsc --noEmit && node node_modules/vite/bin/vite.js build"
+  },
+  "dependencies": { "@sparkjsdev/spark": "2.1.0", "three": "0.180.0" },
+  "devDependencies": { "@types/three": "0.180.0", "typescript": "5.9.2", "vite": "7.1.12" }
+}
